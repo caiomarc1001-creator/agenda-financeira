@@ -1,0 +1,3689 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agenda de Plantões & Produtividade</title>
+  <style>
+    :root{
+      --bg0:#070b14;--bg1:#0b1330;--card:rgba(16,22,42,.85);--line:rgba(255,255,255,.10);
+      --txt:#f2f6ff;--mut:rgba(242,246,255,.72);--mut2:rgba(242,246,255,.56);
+      --acc:#60a5fa;--good:#39d98a;--warn:#ffb020;--bad:#ff5d5d;--shadow:0 16px 60px rgba(0,0,0,.45);
+      --cellH:128px;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
+    }
+    body[data-theme="light"]{--bg0:#eef3ff;--bg1:#cfdcff;--card:rgba(255,255,255,.94);--line:rgba(10,20,40,.10);--txt:#0f1a2e;--mut:rgba(15,26,46,.72);--mut2:rgba(15,26,46,.56);--shadow:0 14px 40px rgba(40,50,70,.14)}
+    body[data-theme="ocean"]{--bg0:#06131f;--bg1:#0a2940;--card:rgba(10,30,50,.88);--line:rgba(125,211,252,.16);--txt:#ecfeff;--mut:rgba(236,254,255,.76);--mut2:rgba(236,254,255,.58);--acc:#38bdf8}
+    body[data-theme="violet"]{--bg0:#12081f;--bg1:#2d1457;--card:rgba(34,18,60,.88);--line:rgba(196,181,253,.16);--txt:#f5f3ff;--mut:rgba(245,243,255,.76);--mut2:rgba(245,243,255,.58);--acc:#a78bfa}
+    body[data-theme="gold"]{--bg0:#120d04;--bg1:#3b2b08;--card:rgba(40,29,10,.88);--line:rgba(253,224,71,.18);--txt:#fffbea;--mut:rgba(255,251,234,.76);--mut2:rgba(255,251,234,.58);--acc:#facc15}
+    body[data-theme="graphite"]{--bg0:#111317;--bg1:#1b2028;--card:rgba(34,39,48,.94);--line:rgba(255,255,255,.14);--txt:#f7fafc;--mut:rgba(247,250,252,.80);--mut2:rgba(247,250,252,.62);--acc:#7dd3fc}
+    body[data-theme="paper"]{--bg0:#f7f7f4;--bg1:#ece9e1;--card:rgba(255,255,255,.97);--line:rgba(27,32,40,.14);--txt:#18212b;--mut:rgba(24,33,43,.76);--mut2:rgba(24,33,43,.56);--acc:#2563eb;--shadow:0 14px 40px rgba(40,50,70,.14)}
+    body[data-theme="emerald"]{--bg0:#071610;--bg1:#0d2a20;--card:rgba(13,38,29,.92);--line:rgba(255,255,255,.14);--txt:#f3fff9;--mut:rgba(243,255,249,.78);--mut2:rgba(243,255,249,.58);--acc:#34d399}
+
+    body[data-theme="senna_mclaren"]{
+      --bg0:#050505;
+      --bg1:#121212;
+      --card:rgba(245,245,245,.08);
+      --line:rgba(255,255,255,.14);
+      --txt:#f7f7f5;
+      --mut:rgba(247,247,245,.76);
+      --mut2:rgba(247,247,245,.56);
+      --acc:#d61f26;
+      --good:#d4af37;
+      --warn:#ffb020;
+      --bad:#ff5d5d;
+      --shadow:0 18px 60px rgba(0,0,0,.48);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:var(--font);color:var(--txt);min-height:100vh;
+      background:
+        radial-gradient(1400px 700px at 20% 0%, rgba(96,165,250,.33), transparent 60%),
+        radial-gradient(1200px 600px at 80% 0%, rgba(139,92,246,.28), transparent 60%),
+        linear-gradient(180deg,var(--bg1),var(--bg0));
+    }
+    button,input,select,textarea{font-family:inherit}
+    button{cursor:pointer}
+    .hdr{position:sticky;top:0;z-index:70;padding:10px 14px;background:linear-gradient(180deg,rgba(0,0,0,.42),rgba(0,0,0,.08));border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}
+    .headerAligned{width:100%;display:grid;grid-template-columns:minmax(220px,280px) minmax(0,1fr) auto;align-items:center;gap:14px}
+    .compactBrand h1{font-size:18px;font-weight:1000;line-height:1.12}
+    .compactBrand p{font-size:11px;color:var(--mut);line-height:1.3}
+    .toolbarCenter{min-width:0;display:flex;align-items:center;justify-content:center;gap:12px}
+    .primaryButtons{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+    .primaryButtons .btn{min-width:96px;text-align:center;white-space:nowrap}
+    .saveDock{display:flex;align-items:center;justify-content:flex-end;min-width:130px}
+    .btn{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.05));color:var(--txt);border-radius:999px;padding:10px 14px;font-weight:900;font-size:14px}
+    .btn.primary{border-color:rgba(96,165,250,.55);background:linear-gradient(135deg,rgba(96,165,250,.30),rgba(139,92,246,.22))}
+    .btn.danger{border-color:rgba(255,93,93,.40);background:linear-gradient(135deg,rgba(255,93,93,.18),rgba(255,93,93,.08))}
+    .statusPill{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-size:12px;font-weight:900}
+    .statusDot{width:10px;height:10px;border-radius:999px;background:var(--mut2)}
+    .statusPill.saved .statusDot{background:var(--good)}
+    .statusPill.dirty .statusDot{background:var(--warn)}
+    .statusPill.saving .statusDot{background:var(--acc);animation:pulse 1s ease-in-out infinite}
+    .statusPill.error .statusDot{background:var(--bad)}
+    @keyframes pulse{0%{transform:scale(.8);opacity:.4}50%{transform:scale(1.25);opacity:1}100%{transform:scale(.8);opacity:.4}}
+    .hambWrap{position:relative;z-index:300}
+    .hambWrap summary{list-style:none}
+    .hambWrap summary::-webkit-details-marker{display:none}
+    .hambBtn{width:44px;height:44px;border-radius:14px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.05));color:var(--txt);display:flex;align-items:center;justify-content:center;padding:0}
+    .hambBtn .hambLines,.hambBtn .hambLines::before,.hambBtn .hambLines::after{content:"";display:block;width:18px;height:2px;border-radius:999px;background:rgba(255,255,255,.94)}
+    .hambBtn .hambLines{position:relative}
+    .hambBtn .hambLines::before{position:absolute;left:0;top:-6px}
+    .hambBtn .hambLines::after{position:absolute;left:0;top:6px}
+    .hambMenu{position:absolute;top:52px;left:0;min-width:220px;padding:10px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(14,20,38,.98),rgba(9,14,28,.96));box-shadow:0 18px 40px rgba(0,0,0,.28);display:none;flex-direction:column;gap:8px;z-index:9999}
+    .hambWrap[open] .hambMenu{display:flex !important}
+    .hambMenu .menuItem{width:100%;justify-content:center;display:flex}
+    .container{width:100%;padding:14px 14px 40px;display:grid;grid-template-columns:minmax(280px,320px) minmax(0,1fr);gap:14px;align-items:start}
+    .sidebarCol,.mainCol{display:flex;flex-direction:column;gap:14px;min-width:0}
+    .card{border:1px solid var(--line);background:linear-gradient(180deg,var(--card),rgba(0,0,0,.06));border-radius:18px;box-shadow:var(--shadow)}
+    .section{margin-top:14px}
+    .sectionHead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+    .sectionHead .ttl{font-weight:950}.sectionHead .sub{font-size:12px;color:var(--mut)}.padded{padding:14px 16px}
+    .summaryGrid{display:grid;grid-template-columns:1fr;gap:10px}
+    .sumBox{border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));padding:12px}
+    .sumBox .lbl{font-size:12px;color:var(--mut2);font-weight:900}.sumBox .val{margin-top:6px;font-weight:950;font-size:20px}
+    .mainCalendarCard .sectionHead{position:sticky;top:72px;z-index:44;min-height:92px;background:linear-gradient(180deg,rgba(8,12,24,.96),rgba(8,12,24,.88));backdrop-filter:blur(14px)}
+    .monthRow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center}
+    .month{font-size:32px;font-weight:1000;letter-spacing:.2px;color:var(--txt);text-shadow:0 3px 16px rgba(0,0,0,.35)}
+    .note{font-size:14px;font-weight:900;color:var(--mut);padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+    body[data-theme="light"] .month,body[data-theme="paper"] .month{color:#0f172a;text-shadow:none}
+    body[data-theme="light"] .note,body[data-theme="paper"] .note{color:#334155;background:rgba(15,23,42,.05);border-color:rgba(15,23,42,.12)}
+    .dowShell{display:grid;grid-template-columns:44px 1fr 44px;gap:10px;padding:10px 16px 0}
+    .dowRow{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+    .dow{text-align:center;font-size:14px;color:var(--txt);font-weight:1000;padding:12px 0;border:1px solid var(--line);border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.03))}
+    .calFrame{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:10px;align-items:stretch;padding:12px 16px 16px}
+    .sideOut{width:100%;height:100%;min-height:calc(var(--cellH) * 6 + 42px);border-radius:14px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05));color:var(--txt);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:6px 2px;text-align:center;box-shadow:0 12px 34px rgba(0,0,0,.22)}
+    .sideOut .arrow{font-size:22px;line-height:1}.sideOut .sideLabel{font-size:8px;font-weight:1000;letter-spacing:.4px;text-transform:uppercase;color:var(--mut2)}.sideOut .sideMonth{font-size:10px;font-weight:1000;line-height:1.15;color:var(--txt)}
+    .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+    .day{height:var(--cellH);border-radius:14px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));padding:8px 8px 6px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+    .day.other{opacity:.35}
+    .day.today{
+      border-color:rgba(250,204,21,.98);
+      box-shadow:
+        0 0 0 3px rgba(250,204,21,.34) inset,
+        0 0 0 2px rgba(250,204,21,.34),
+        0 0 28px rgba(250,204,21,.28);
+      background:linear-gradient(180deg,rgba(250,204,21,.18),rgba(255,255,255,.04));
+      transform:scale(1.01);
+    }
+    .day.today .num{
+      color:#fff7c2;
+      font-size:17px;
+      font-weight:1000;
+      text-shadow:0 0 12px rgba(250,204,21,.34);
+    }
+    body[data-theme="light"] .day.today,
+    body[data-theme="paper"] .day.today{
+      border-color:rgba(37,99,235,.98);
+      box-shadow:
+        0 0 0 3px rgba(37,99,235,.20) inset,
+        0 0 0 2px rgba(37,99,235,.24),
+        0 0 20px rgba(37,99,235,.16);
+      background:linear-gradient(180deg,rgba(37,99,235,.12),rgba(255,255,255,.98));
+      transform:scale(1.01);
+    }
+    body[data-theme="light"] .day.today .num,
+    body[data-theme="paper"] .day.today .num{
+      color:#1d4ed8;
+      font-size:17px;
+      font-weight:1000;
+      text-shadow:none;
+    }
+    .day.selected{box-shadow:0 0 0 2px rgba(96,165,250,.32) inset;border-color:rgba(96,165,250,.55)}
+    .dayTop{display:flex;justify-content:space-between}.day .num{font-weight:950;font-size:14px}.day .cnt{font-size:11px;color:var(--mut);font-weight:900}
+    .day .chips{flex:1 1 auto;display:flex;flex-direction:column;gap:6px;overflow:auto}
+    .chip{border-radius:10px;padding:6px 10px;font-size:11px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:8px;background:var(--chipBg);color:var(--chipFg);border:1px solid rgba(255,255,255,.14)}
+    .chipMark{width:10px;height:10px;border-radius:4px;background:rgba(0,0,0,.22)}
+    .payList{display:flex;flex-direction:column;gap:10px}.payRow{border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));padding:12px}
+    .payRowTop{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.payRowTop .a,.payRowTop .b{font-weight:950}.small{font-size:12px;color:var(--mut);margin-top:4px;line-height:1.5}
+    .ov{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:16px;z-index:200}.ov.open{display:flex}
+    .modal{width:min(920px,100%);max-height:90vh;overflow:auto;border-radius:22px;border:2px solid rgba(96,165,250,.45);background:linear-gradient(180deg, rgba(18,26,48,.98), rgba(11,17,34,.97));box-shadow:0 0 0 4px rgba(96,165,250,.16),var(--shadow);padding:16px}
+    .mHead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 2px 12px}.mHead h3{font-size:18px;font-weight:950;color:var(--txt)}
+    .closeX{width:40px;height:40px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05));color:var(--txt)}
+    .form{display:flex;flex-direction:column;gap:12px}
+    .lbl{font-size:12px;color:#f2f6ff;font-weight:950}
+    .input{width:100%;border-radius:14px;border:1px solid rgba(255,255,255,.18);padding:12px;background:rgba(6,10,22,.72);color:#fff;outline:none;font-weight:900;font-size:14px}
+    .input::placeholder{color:rgba(242,246,255,.68);opacity:1}.input:focus{border-color:rgba(96,165,250,.65);box-shadow:0 0 0 3px rgba(96,165,250,.18)}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    .helper,.cloudHint{font-size:12px;color:#eef4ff;line-height:1.7;border:1px dashed rgba(96,165,250,.40);background:rgba(96,165,250,.10);border-radius:14px;padding:10px}
+    .mFoot{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+    .mBtn{border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:10px 12px;font-weight:950;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.05));color:#fff}
+    .mBtn.primary{border-color:rgba(96,165,250,.55);background:linear-gradient(135deg,rgba(96,165,250,.32),rgba(139,92,246,.22))}
+    .mBtn.danger{border-color:rgba(255,93,93,.45);background:rgba(255,93,93,.14);color:#ffd7d7}.mBtn.ghost{background:transparent}
+    .smallBtn{border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.05));color:#fff;border-radius:999px;padding:8px 10px;font-weight:950;font-size:12px}
+    .smallBtn.danger{border-color:rgba(255,93,93,.42);background:rgba(255,93,93,.10);color:#ffd7d7}
+    .colorGrid{display:grid;grid-template-columns:repeat(10,1fr);gap:8px;margin-top:10px}.colorBtn{width:100%;aspect-ratio:1/1;border-radius:12px;border:1px solid rgba(255,255,255,.22);background:var(--c)}.colorBtn.on{outline:3px solid rgba(96,165,250,.60)}
+    .scopeBtn{flex:1 1 200px;text-align:center}
+    body[data-theme="light"] .modal,body[data-theme="paper"] .modal{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(242,246,255,.96));border-color:rgba(59,130,246,.28)}
+    body[data-theme="light"] .mHead h3,body[data-theme="paper"] .mHead h3,body[data-theme="light"] .lbl,body[data-theme="paper"] .lbl{color:#10233f}
+    body[data-theme="light"] .input,body[data-theme="paper"] .input{background:rgba(15,35,63,.06);color:#10233f;border-color:rgba(16,35,63,.12)}
+    body[data-theme="light"] .input::placeholder,body[data-theme="paper"] .input::placeholder{color:rgba(16,35,63,.52)}
+    body[data-theme="light"] .helper,body[data-theme="paper"] .helper,body[data-theme="light"] .cloudHint,body[data-theme="paper"] .cloudHint{color:#163255;background:rgba(59,130,246,.08)}
+    body[data-theme="light"] .mBtn,body[data-theme="paper"] .mBtn,body[data-theme="light"] .smallBtn,body[data-theme="paper"] .smallBtn{color:#10233f;border-color:rgba(16,35,63,.12)}
+    @media(max-width:1100px){.container{grid-template-columns:1fr}.mainCalendarCard .sectionHead{top:104px}}
+    @media(max-width:980px){.headerAligned{grid-template-columns:1fr;align-items:start}.toolbarCenter,.saveDock{justify-content:flex-start}.mainCalendarCard .sectionHead{top:122px}}
+    @media(max-width:760px){.row3{grid-template-columns:1fr}}
+    @media(max-width:680px){.row2{grid-template-columns:1fr}.dowShell,.calFrame{grid-template-columns:38px 1fr 38px;gap:6px}.grid,.dowRow{gap:6px}.day{padding:6px}.day .num{font-size:12px}.chip{padding:5px 8px;font-size:10px}.sideOut .sideLabel,.sideOut .sideMonth{display:none}.sideOut .arrow{font-size:18px}}
+  
+/* =========================
+   CORREÇÕES DE LEGIBILIDADE — TEMA CLARO
+========================= */
+body[data-theme="light"] .hdr,
+body[data-theme="paper"] .hdr{
+  background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(242,246,255,.82));
+  border-bottom-color:rgba(15,23,42,.10);
+}
+
+body[data-theme="light"] .hambBtn,
+body[data-theme="paper"] .hambBtn{
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(241,245,249,.90));
+  border-color:rgba(15,23,42,.14);
+  color:#0b1220;
+}
+
+body[data-theme="light"] .hambBtn .hambLines,
+body[data-theme="light"] .hambBtn .hambLines::before,
+body[data-theme="light"] .hambBtn .hambLines::after,
+body[data-theme="paper"] .hambBtn .hambLines,
+body[data-theme="paper"] .hambBtn .hambLines::before,
+body[data-theme="paper"] .hambBtn .hambLines::after{
+  background:#0b1220;
+}
+
+body[data-theme="light"] .hambMenu,
+body[data-theme="paper"] .hambMenu{
+  background:linear-gradient(180deg,rgba(255,255,255,.99),rgba(241,245,249,.98));
+  border-color:rgba(15,23,42,.14);
+}
+
+body[data-theme="light"] .hambMenu .btn,
+body[data-theme="paper"] .hambMenu .btn{
+  color:#0b1220;
+  background:linear-gradient(180deg,rgba(15,23,42,.04),rgba(15,23,42,.02));
+  border-color:rgba(15,23,42,.12);
+}
+
+body[data-theme="light"] .mainCalendarCard .sectionHead,
+body[data-theme="paper"] .mainCalendarCard .sectionHead{
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(241,245,249,.94));
+}
+
+body[data-theme="light"] .monthRow .month,
+body[data-theme="paper"] .monthRow .month{
+  color:#0b1220;
+  text-shadow:none;
+}
+
+body[data-theme="light"] .monthRow .note,
+body[data-theme="paper"] .monthRow .note{
+  color:#1e293b;
+  background:rgba(15,23,42,.05);
+  border-color:rgba(15,23,42,.14);
+}
+
+body[data-theme="light"] .dow,
+body[data-theme="paper"] .dow{
+  color:#0b1220;
+  text-shadow:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,250,252,.92));
+  border-color:rgba(15,23,42,.12);
+}
+
+body[data-theme="light"] .sideOut,
+body[data-theme="paper"] .sideOut{
+  color:#0b1220;
+  background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(248,250,252,.93));
+  border-color:rgba(15,23,42,.14);
+}
+
+body[data-theme="light"] .sideOut .sideLabel,
+body[data-theme="paper"] .sideOut .sideLabel{
+  color:rgba(15,23,42,.62);
+}
+
+body[data-theme="light"] .sideOut .sideMonth,
+body[data-theme="paper"] .sideOut .sideMonth{
+  color:#0b1220;
+}
+
+body[data-theme="light"] .btn,
+body[data-theme="paper"] .btn{
+  color:#0b1220;
+  border-color:rgba(15,23,42,.12);
+}
+
+body[data-theme="light"] .statusPill,
+body[data-theme="paper"] .statusPill{
+  color:#0b1220;
+  background:rgba(255,255,255,.75);
+  border-color:rgba(15,23,42,.12);
+}
+
+
+    body[data-theme="senna_mclaren"]{
+      background:
+        radial-gradient(1200px 620px at 20% 0%, rgba(214,31,38,.20), transparent 55%),
+        radial-gradient(900px 520px at 82% 0%, rgba(255,255,255,.10), transparent 58%),
+        linear-gradient(180deg,#141414,#030303);
+    }
+    body[data-theme="senna_mclaren"] .hdr{
+      background:linear-gradient(180deg,rgba(12,12,12,.92),rgba(12,12,12,.66));
+      border-bottom-color:rgba(255,255,255,.10);
+      box-shadow:0 10px 26px rgba(0,0,0,.28);
+    }
+    body[data-theme="senna_mclaren"] .card{
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.04));
+      border-color:rgba(255,255,255,.12);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.06) inset,
+        0 18px 48px rgba(0,0,0,.34);
+    }
+    body[data-theme="senna_mclaren"] .btn.primary,
+    body[data-theme="senna_mclaren"] .mBtn.primary{
+      background:linear-gradient(135deg,rgba(214,31,38,.88),rgba(120,10,14,.94));
+      border-color:rgba(255,255,255,.14);
+      color:#fffaf7;
+      box-shadow:0 10px 24px rgba(214,31,38,.24);
+    }
+    body[data-theme="senna_mclaren"] .btn,
+    body[data-theme="senna_mclaren"] .mBtn,
+    body[data-theme="senna_mclaren"] .smallBtn,
+    body[data-theme="senna_mclaren"] .statusPill,
+    body[data-theme="senna_mclaren"] .sideOut,
+    body[data-theme="senna_mclaren"] .dow{
+      background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.05));
+      border-color:rgba(255,255,255,.12);
+    }
+    body[data-theme="senna_mclaren"] .month{
+      letter-spacing:.4px;
+      color:#fff8f6;
+      text-shadow:0 0 22px rgba(214,31,38,.16);
+    }
+    body[data-theme="senna_mclaren"] .day.today{
+      border-color:rgba(214,31,38,.96);
+      box-shadow:
+        0 0 0 3px rgba(214,31,38,.28) inset,
+        0 0 0 1px rgba(214,31,38,.35),
+        0 0 24px rgba(214,31,38,.22);
+      background:linear-gradient(180deg,rgba(214,31,38,.20),rgba(255,255,255,.04));
+    }
+    body[data-theme="senna_mclaren"] .day.today .num{
+      color:#fff4e8;
+      text-shadow:0 0 12px rgba(214,31,38,.30);
+    }
+    body[data-theme="senna_mclaren"] .payRowTop .b,
+    body[data-theme="senna_mclaren"] #paySum{
+      color:#d4af37 !important;
+    }
+    body[data-theme="senna_mclaren"] .helper,
+    body[data-theme="senna_mclaren"] .cloudHint{
+      background:rgba(255,255,255,.05);
+      border-color:rgba(212,175,55,.24);
+      color:#f4efe7;
+    }
+    body[data-theme="senna_mclaren"] .chip{
+      border-color:rgba(255,255,255,.10);
+      box-shadow:0 1px 0 rgba(255,255,255,.05) inset;
+    }
+
+
+    body[data-theme="senna_capacete"]{
+      --bg0:#0a0a0a;--bg1:#101820;--card:rgba(255,225,0,.08);--line:rgba(0,255,100,.18);
+      --txt:#fffde7;--mut:rgba(255,253,231,.75);--mut2:rgba(255,253,231,.55);--acc:#ffe100;--good:#00ff88;--warn:#ffcc00;--bad:#ff3b3b;--shadow:0 20px 60px rgba(0,0,0,.55);
+    }
+    body[data-theme="tesla"]{
+      --bg0:#050505;--bg1:#121212;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);
+      --txt:#f5f5f5;--mut:rgba(245,245,245,.76);--mut2:rgba(245,245,245,.56);--acc:#e82127;--good:#c5c5c5;--warn:#ffb020;--bad:#ff5d5d;--shadow:0 18px 60px rgba(0,0,0,.52);
+    }
+    body[data-theme="windows_xp"]{
+      --bg0:#9dd3ff;--bg1:#2d7de0;--card:rgba(255,255,255,.84);--line:rgba(11,63,135,.16);
+      --txt:#0b2b58;--mut:rgba(11,43,88,.72);--mut2:rgba(11,43,88,.52);--acc:#2c7df0;--good:#2bb44a;--warn:#ffb020;--bad:#ff5d5d;--shadow:0 18px 46px rgba(15,73,160,.18);
+    }
+    body[data-theme="toy_story"]{
+      --bg0:#8fd3ff;--bg1:#2f78d6;--card:rgba(255,255,255,.88);--line:rgba(29,78,216,.14);
+      --txt:#17345e;--mut:rgba(23,52,94,.74);--mut2:rgba(23,52,94,.56);--acc:#ffd230;--good:#ef4444;--warn:#ff8a00;--bad:#d62828;--shadow:0 18px 46px rgba(17,72,150,.16);
+    }
+    body[data-theme="sexta_13"]{
+      --bg0:#090909;--bg1:#1a0000;--card:rgba(255,255,255,.05);--line:rgba(255,70,70,.16);
+      --txt:#f3efef;--mut:rgba(243,239,239,.74);--mut2:rgba(243,239,239,.54);--acc:#c1121f;--good:#d4af37;--warn:#ffb020;--bad:#ff5d5d;--shadow:0 18px 60px rgba(0,0,0,.56);
+    }
+    body[data-theme="game_of_thrones"]{
+      --bg0:#0d1015;--bg1:#1c232c;--card:rgba(255,255,255,.06);--line:rgba(196,179,140,.14);
+      --txt:#f2eee7;--mut:rgba(242,238,231,.74);--mut2:rgba(242,238,231,.56);--acc:#9b7b4f;--good:#c7b38a;--warn:#ffb020;--bad:#ff5d5d;--shadow:0 18px 60px rgba(0,0,0,.54);
+    }
+    body[data-theme="sonic"]{
+      --bg0:#061b3d;--bg1:#0a56c2;--card:rgba(255,255,255,.10);--line:rgba(255,255,255,.16);
+      --txt:#f8fbff;--mut:rgba(248,251,255,.76);--mut2:rgba(248,251,255,.56);--acc:#0ea5ff;--good:#ffd700;--warn:#ffb020;--bad:#ff5d5d;--shadow:0 18px 60px rgba(0,0,0,.42);
+    }
+    body[data-theme="resident_evil_2"]{
+      --bg0:#080b10;--bg1:#131d29;--card:rgba(255,255,255,.05);--line:rgba(107,28,28,.18);
+      --txt:#f5f4f2;--mut:rgba(245,244,242,.74);--mut2:rgba(245,244,242,.56);--acc:#8b1e1e;--good:#8492a6;--warn:#ffb020;--bad:#ff6b6b;--shadow:0 18px 60px rgba(0,0,0,.56);
+    }
+
+    .themeGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+    .themeCard{border:1px solid var(--line);border-radius:18px;padding:14px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.03));cursor:pointer;transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}
+    .themeCard:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(0,0,0,.18)}
+    .themeCard.active{border-color:rgba(96,165,250,.60);box-shadow:0 0 0 2px rgba(96,165,250,.18) inset}
+    .themeSwatches{display:flex;gap:8px;margin:10px 0 8px}
+    .themeSw{width:18px;height:18px;border-radius:999px;border:1px solid rgba(255,255,255,.24)}
+    .themeTitle{font-weight:1000}
+    .themeDesc{font-size:12px;color:var(--mut);margin-top:4px;line-height:1.4}
+    .customThemeGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+    .themeSectionTitle{font-weight:1000;margin-bottom:10px}
+
+
+    body[data-theme="senna_capacete"] .hdr{
+      background:linear-gradient(180deg,rgba(12,12,12,.92),rgba(12,12,12,.66));
+      border-bottom-color:rgba(255,255,255,.10);
+      box-shadow:0 10px 26px rgba(0,0,0,.28);
+    }
+    body[data-theme="senna_capacete"] .card{
+      background:linear-gradient(180deg,rgba(255,225,0,.10),rgba(255,255,255,.03));
+      border-color:rgba(0,255,100,.16);
+      box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 18px 48px rgba(0,0,0,.34);
+    }
+    body[data-theme="senna_capacete"] .btn.primary,
+    body[data-theme="senna_capacete"] .mBtn.primary{
+      background:linear-gradient(135deg,rgba(255,225,0,.90),rgba(180,140,0,.95));
+      border-color:rgba(255,255,255,.12);
+      color:#161616;
+      box-shadow:0 10px 24px rgba(255,225,0,.22);
+    }
+    body[data-theme="senna_capacete"] .btn,
+    body[data-theme="senna_capacete"] .mBtn,
+    body[data-theme="senna_capacete"] .smallBtn,
+    body[data-theme="senna_capacete"] .statusPill,
+    body[data-theme="senna_capacete"] .sideOut,
+    body[data-theme="senna_capacete"] .dow{
+      background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.05));
+      border-color:rgba(255,255,255,.12);
+    }
+    body[data-theme="senna_capacete"] .month{
+      letter-spacing:.4px;
+      color:#fffde7;
+      text-shadow:0 0 22px rgba(255,225,0,.18);
+    }
+    body[data-theme="senna_capacete"] .day.today{
+      border-color:#ffe100;
+      box-shadow:
+        0 0 0 3px rgba(255,225,0,.25) inset,
+        0 0 20px rgba(0,255,120,.25),
+        0 0 40px rgba(255,225,0,.15);
+      background:linear-gradient(180deg,rgba(255,225,0,.15),rgba(0,255,120,.05));
+      transform:scale(1.01);
+    }
+    body[data-theme="senna_capacete"] .day.today .num{
+      color:#fffde7;
+      font-size:17px;
+      font-weight:1000;
+      text-shadow:0 0 12px rgba(255,225,0,.34);
+    }
+    body[data-theme="senna_capacete"] .payRowTop .b,
+    body[data-theme="senna_capacete"] #paySum{
+      color:#ffe100 !important;
+    }
+    body[data-theme="senna_capacete"] .helper,
+    body[data-theme="senna_capacete"] .cloudHint{
+      background:rgba(255,255,255,.05);
+      border-color:rgba(0,255,100,.24);
+      color:#fffde7;
+    }
+
+
+
+/* =========================
+   TEMA DEFINITIVO — IDENTIDADES VISUAIS DISTINTAS
+========================= */
+
+/* Base refinements */
+.themeCard{
+  overflow:hidden;
+  position:relative;
+}
+.themeCard::after{
+  content:"";
+  position:absolute;
+  inset:auto -20% -35% -20%;
+  height:60%;
+  background:radial-gradient(ellipse at center, rgba(255,255,255,.14), transparent 65%);
+  pointer-events:none;
+}
+.card{
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+}
+.card:hover{
+  transform:translateY(-1px);
+}
+.btn, .mBtn, .smallBtn{
+  transition:transform .15s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+}
+.btn:hover, .mBtn:hover, .smallBtn:hover{
+  transform:translateY(-1px);
+}
+.day{
+  transition:transform .14s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+}
+.day:hover{
+  transform:translateY(-1px);
+}
+.month{
+  letter-spacing:.35px;
+}
+.note{
+  font-weight:950;
+}
+.dow, .sideOut, .statusPill, .btn, .mBtn, .smallBtn{
+  font-weight:1000;
+}
+
+/* SENNA CAPACETE — velocidade, legado, precisão */
+body[data-theme="senna_capacete"]{
+  background:
+    radial-gradient(1000px 560px at 18% 0%, rgba(255,225,0,.34), transparent 58%),
+    radial-gradient(760px 420px at 82% 0%, rgba(0,255,120,.18), transparent 58%),
+    linear-gradient(180deg,#111317,#020202);
+}
+body[data-theme="senna_capacete"] .hdr{
+  background:linear-gradient(180deg,rgba(8,8,8,.94),rgba(8,8,8,.68));
+  border-bottom-color:rgba(255,225,0,.16);
+}
+body[data-theme="senna_capacete"] .card{
+  background:
+    linear-gradient(180deg,rgba(255,225,0,.11),rgba(255,255,255,.03));
+  border-color:rgba(0,255,120,.18);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.05) inset,
+    0 22px 56px rgba(0,0,0,.40);
+}
+body[data-theme="senna_capacete"] .btn.primary,
+body[data-theme="senna_capacete"] .mBtn.primary{
+  background:linear-gradient(135deg,rgba(255,225,0,.94),rgba(180,140,0,.96));
+  border-color:rgba(255,255,255,.14);
+  color:#141414;
+  box-shadow:0 14px 30px rgba(255,225,0,.24);
+}
+body[data-theme="senna_capacete"] .month{
+  color:#fffde7;
+  text-shadow:0 0 20px rgba(255,225,0,.20);
+}
+body[data-theme="senna_capacete"] .day.today{
+  border-color:#ffe100;
+  box-shadow:
+    0 0 0 3px rgba(255,225,0,.28) inset,
+    0 0 20px rgba(0,255,120,.22),
+    0 0 42px rgba(255,225,0,.16);
+  background:linear-gradient(180deg,rgba(255,225,0,.17),rgba(0,255,120,.05));
+  transform:scale(1.025);
+}
+body[data-theme="senna_capacete"] .day.today .num{
+  color:#fffde7;
+  text-shadow:0 0 12px rgba(255,225,0,.36);
+}
+body[data-theme="senna_capacete"] .payRowTop .b,
+body[data-theme="senna_capacete"] #paySum{
+  color:#ffe100 !important;
+}
+
+/* SENNA MCLAREN — executivo, carbono, tensão */
+body[data-theme="senna_mclaren"]{
+  background:
+    radial-gradient(980px 540px at 18% 0%, rgba(214,31,38,.26), transparent 58%),
+    radial-gradient(820px 420px at 82% 0%, rgba(255,255,255,.10), transparent 58%),
+    linear-gradient(180deg,#151515,#020202);
+}
+body[data-theme="senna_mclaren"] .hdr{
+  background:linear-gradient(180deg,rgba(10,10,10,.94),rgba(10,10,10,.70));
+  border-bottom-color:rgba(214,31,38,.18);
+}
+body[data-theme="senna_mclaren"] .card{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
+  border-color:rgba(255,255,255,.12);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.05) inset,
+    0 22px 56px rgba(0,0,0,.42);
+}
+body[data-theme="senna_mclaren"] .btn.primary,
+body[data-theme="senna_mclaren"] .mBtn.primary{
+  background:linear-gradient(135deg,rgba(214,31,38,.92),rgba(108,12,16,.96));
+  border-color:rgba(255,255,255,.14);
+  box-shadow:0 14px 30px rgba(214,31,38,.24);
+}
+body[data-theme="senna_mclaren"] .month{
+  color:#fff8f6;
+  text-shadow:0 0 18px rgba(214,31,38,.14);
+}
+body[data-theme="senna_mclaren"] .day.today{
+  border-color:rgba(214,31,38,.95);
+  box-shadow:
+    0 0 0 3px rgba(214,31,38,.24) inset,
+    0 0 18px rgba(214,31,38,.18),
+    0 0 34px rgba(214,31,38,.12);
+  background:linear-gradient(180deg,rgba(214,31,38,.16),rgba(255,255,255,.04));
+  transform:scale(1.02);
+}
+
+/* TESLA — ultra clean, precise, premium tech */
+body[data-theme="tesla"]{
+  background:
+    radial-gradient(1000px 520px at 20% 0%, rgba(232,33,39,.16), transparent 56%),
+    linear-gradient(180deg,#141414,#020202);
+}
+body[data-theme="tesla"] .hdr{
+  background:linear-gradient(180deg,rgba(12,12,12,.96),rgba(12,12,12,.78));
+  border-bottom-color:rgba(255,255,255,.08);
+}
+body[data-theme="tesla"] .card{
+  background:#101010;
+  border-color:#232323;
+  box-shadow:0 18px 44px rgba(0,0,0,.40);
+}
+body[data-theme="tesla"] .btn,
+body[data-theme="tesla"] .mBtn,
+body[data-theme="tesla"] .smallBtn,
+body[data-theme="tesla"] .statusPill,
+body[data-theme="tesla"] .dow,
+body[data-theme="tesla"] .sideOut{
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border-color:#2a2a2a;
+}
+body[data-theme="tesla"] .btn.primary,
+body[data-theme="tesla"] .mBtn.primary{
+  background:linear-gradient(135deg,rgba(232,33,39,.96),rgba(120,12,18,.98));
+  border-color:#411416;
+}
+body[data-theme="tesla"] .day.today{
+  border-color:#e82127;
+  box-shadow:
+    0 0 0 2px rgba(232,33,39,.18) inset,
+    0 0 20px rgba(232,33,39,.18);
+  background:linear-gradient(180deg,rgba(232,33,39,.12),rgba(255,255,255,.02));
+}
+
+/* WINDOWS XP — nostálgico e claramente diferente */
+body[data-theme="windows_xp"]{
+  background:
+    radial-gradient(600px 220px at 22% 22%, rgba(255,255,255,.85), transparent 58%),
+    linear-gradient(180deg,#67a9ff,#86d957 140%);
+}
+body[data-theme="windows_xp"] .hdr{
+  background:linear-gradient(180deg,rgba(239,247,255,.96),rgba(218,236,255,.88));
+  border-bottom:1px solid #2c6ecf;
+  box-shadow:none;
+}
+body[data-theme="windows_xp"] .card{
+  background:linear-gradient(180deg,#ffffff,#eef6ff);
+  border:1px solid #3a6ea5;
+  border-radius:10px;
+  box-shadow:0 4px 0 rgba(58,110,165,.10);
+}
+body[data-theme="windows_xp"] .btn,
+body[data-theme="windows_xp"] .mBtn,
+body[data-theme="windows_xp"] .smallBtn{
+  background:linear-gradient(180deg,#fdfefe,#dbeaff);
+  border:1px solid #3a6ea5;
+  color:#10345f;
+  box-shadow:none;
+  border-radius:8px;
+}
+body[data-theme="windows_xp"] .btn.primary,
+body[data-theme="windows_xp"] .mBtn.primary{
+  background:linear-gradient(180deg,#5da7ff,#2d7de0);
+  color:#fff;
+}
+body[data-theme="windows_xp"] .dow,
+body[data-theme="windows_xp"] .sideOut{
+  background:linear-gradient(180deg,#ffffff,#e8f2ff);
+  border-color:#3a6ea5;
+  color:#10345f;
+  border-radius:10px;
+}
+body[data-theme="windows_xp"] .day.today{
+  border-color:#2d7de0;
+  box-shadow:0 0 0 2px rgba(45,125,224,.18) inset, 0 0 0 1px rgba(45,125,224,.20);
+  background:linear-gradient(180deg,rgba(45,125,224,.12),rgba(255,255,255,.96));
+}
+
+/* TOY STORY — alegre, céu, nuvens, lúdico */
+body[data-theme="toy_story"]{
+  background:
+    radial-gradient(220px 120px at 18% 18%, rgba(255,255,255,.98), rgba(255,255,255,0) 60%),
+    radial-gradient(250px 130px at 72% 14%, rgba(255,255,255,.98), rgba(255,255,255,0) 58%),
+    radial-gradient(240px 130px at 48% 8%, rgba(255,255,255,.96), rgba(255,255,255,0) 56%),
+    linear-gradient(180deg,#83d0ff,#2c7bd7);
+}
+body[data-theme="toy_story"] .hdr{
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(241,247,255,.88));
+  border-bottom-color:rgba(44,123,215,.20);
+}
+body[data-theme="toy_story"] .card{
+  background:linear-gradient(180deg,rgba(255,255,255,.90),rgba(255,255,255,.84));
+  border-color:rgba(44,123,215,.14);
+  box-shadow:0 18px 42px rgba(28,74,150,.16);
+}
+body[data-theme="toy_story"] .btn.primary,
+body[data-theme="toy_story"] .mBtn.primary{
+  background:linear-gradient(135deg,#ffd230,#ff9f1c);
+  color:#17345e;
+  border-color:rgba(255,255,255,.30);
+}
+body[data-theme="toy_story"] .btn,
+body[data-theme="toy_story"] .mBtn,
+body[data-theme="toy_story"] .smallBtn{
+  background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(249,252,255,.90));
+  color:#17345e;
+}
+body[data-theme="toy_story"] .day.today{
+  border-color:#ef4444;
+  box-shadow:0 0 0 2px rgba(239,68,68,.16) inset, 0 0 18px rgba(239,68,68,.14);
+  background:linear-gradient(180deg,rgba(255,210,48,.18),rgba(255,255,255,.94));
+}
+
+/* SEXTA-FEIRA 13 — agressivo, horror, impacto */
+body[data-theme="sexta_13"]{
+  background:
+    radial-gradient(1000px 560px at 18% 0%, rgba(193,18,31,.24), transparent 58%),
+    linear-gradient(180deg,#140000,#020202);
+}
+body[data-theme="sexta_13"] .hdr{
+  background:linear-gradient(180deg,rgba(12,0,0,.94),rgba(12,0,0,.72));
+  border-bottom-color:rgba(193,18,31,.16);
+}
+body[data-theme="sexta_13"] .card{
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+  border-color:rgba(193,18,31,.18);
+}
+body[data-theme="sexta_13"] .btn.primary,
+body[data-theme="sexta_13"] .mBtn.primary{
+  background:linear-gradient(135deg,rgba(193,18,31,.96),rgba(84,5,10,.98));
+}
+body[data-theme="sexta_13"] .day.today{
+  border-color:#c1121f;
+  box-shadow:0 0 0 3px rgba(193,18,31,.24) inset, 0 0 22px rgba(193,18,31,.20);
+  background:linear-gradient(180deg,rgba(193,18,31,.18),rgba(255,255,255,.03));
+}
+
+/* GAME OF THRONES — metal, couro, realeza pesada */
+body[data-theme="game_of_thrones"]{
+  background:
+    radial-gradient(1000px 540px at 50% 0%, rgba(155,123,79,.22), transparent 58%),
+    linear-gradient(180deg,#232a33,#07090c);
+}
+body[data-theme="game_of_thrones"] .hdr{
+  background:linear-gradient(180deg,rgba(17,21,27,.96),rgba(17,21,27,.78));
+  border-bottom-color:rgba(196,179,140,.16);
+}
+body[data-theme="game_of_thrones"] .card{
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));
+  border-color:rgba(196,179,140,.22);
+  box-shadow:0 22px 54px rgba(0,0,0,.44);
+}
+body[data-theme="game_of_thrones"] .btn,
+body[data-theme="game_of_thrones"] .mBtn,
+body[data-theme="game_of_thrones"] .smallBtn{
+  border-color:rgba(196,179,140,.20);
+}
+body[data-theme="game_of_thrones"] .btn.primary,
+body[data-theme="game_of_thrones"] .mBtn.primary{
+  background:linear-gradient(135deg,rgba(155,123,79,.96),rgba(78,58,36,.98));
+}
+body[data-theme="game_of_thrones"] .month,
+body[data-theme="game_of_thrones"] .payRowTop .b,
+body[data-theme="game_of_thrones"] #paySum{
+  color:#d7c09a !important;
+}
+body[data-theme="game_of_thrones"] .day.today{
+  border-color:#b89867;
+  box-shadow:0 0 0 3px rgba(184,152,103,.22) inset, 0 0 20px rgba(184,152,103,.16);
+  background:linear-gradient(180deg,rgba(155,123,79,.18),rgba(255,255,255,.03));
+}
+
+/* SONIC — energia elétrica, velocidade */
+body[data-theme="sonic"]{
+  background:
+    radial-gradient(980px 540px at 18% 0%, rgba(14,165,255,.32), transparent 58%),
+    radial-gradient(780px 420px at 82% 0%, rgba(255,215,0,.16), transparent 58%),
+    linear-gradient(180deg,#0a56c2,#041328);
+}
+body[data-theme="sonic"] .hdr{
+  background:linear-gradient(180deg,rgba(6,22,56,.94),rgba(6,22,56,.70));
+  border-bottom-color:rgba(14,165,255,.20);
+}
+body[data-theme="sonic"] .card{
+  background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.04));
+  border-color:rgba(255,255,255,.14);
+}
+body[data-theme="sonic"] .btn.primary,
+body[data-theme="sonic"] .mBtn.primary{
+  background:linear-gradient(135deg,rgba(14,165,255,.96),rgba(2,77,165,.98));
+}
+body[data-theme="sonic"] .day.today{
+  border-color:#0ea5ff;
+  box-shadow:0 0 0 3px rgba(14,165,255,.22) inset, 0 0 28px rgba(0,200,255,.34);
+  background:linear-gradient(180deg,rgba(14,165,255,.18),rgba(255,255,255,.04));
+  transform:scale(1.03);
+}
+body[data-theme="sonic"] .payRowTop .b,
+body[data-theme="sonic"] #paySum{
+  color:#ffd700 !important;
+}
+
+/* RESIDENT EVIL 2 — frio, tenso, cinematográfico */
+body[data-theme="resident_evil_2"]{
+  background:
+    radial-gradient(980px 540px at 18% 0%, rgba(139,30,30,.28), transparent 58%),
+    linear-gradient(180deg,#141c26,#030506);
+}
+body[data-theme="resident_evil_2"] .hdr{
+  background:linear-gradient(180deg,rgba(11,15,20,.96),rgba(11,15,20,.74));
+  border-bottom-color:rgba(139,30,30,.18);
+}
+body[data-theme="resident_evil_2"] .card{
+  background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+  border-color:rgba(139,30,30,.18);
+  backdrop-filter:blur(8px);
+}
+body[data-theme="resident_evil_2"] .btn.primary,
+body[data-theme="resident_evil_2"] .mBtn.primary{
+  background:linear-gradient(135deg,rgba(139,30,30,.96),rgba(66,10,10,.98));
+}
+body[data-theme="resident_evil_2"] .day.today{
+  border-color:#8b1e1e;
+  box-shadow:0 0 0 3px rgba(139,30,30,.22) inset, 0 0 18px rgba(139,30,30,.18);
+  background:linear-gradient(180deg,rgba(139,30,30,.16),rgba(255,255,255,.02));
+}
+body[data-theme="resident_evil_2"] .month{
+  color:#f4f1ec;
+}
+
+/* Light-family fine tuning */
+body[data-theme="light"] .card,
+body[data-theme="paper"] .card{
+  box-shadow:0 16px 34px rgba(28,45,84,.12);
+}
+body[data-theme="light"] .btn.primary,
+body[data-theme="paper"] .btn.primary,
+body[data-theme="light"] .mBtn.primary,
+body[data-theme="paper"] .mBtn.primary{
+  box-shadow:0 10px 24px rgba(37,99,235,.16);
+}
+
+
+/* =========================================================
+   REVISÃO MEGA DETALHADA DE LEGIBILIDADE — TEXTO GLOBAL
+========================================================= */
+
+body,
+.compactBrand h1,
+.compactBrand p,
+.sectionHead .ttl,
+.sectionHead .sub,
+.sumBox .lbl,
+.sumBox .val,
+.month,
+.note,
+.dow,
+.sideOut,
+.sideOut .sideLabel,
+.sideOut .sideMonth,
+.day .num,
+.day .cnt,
+.payRowTop .a,
+.payRowTop .b,
+.small,
+.helper,
+.cloudHint,
+.lbl,
+.input,
+.input::placeholder,
+.btn,
+.mBtn,
+.smallBtn,
+.statusPill,
+.themeTitle,
+.themeDesc,
+.themeSectionTitle,
+.hambMenu .btn,
+.closeX,
+.chip,
+.mHead h3{
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.compactBrand h1,
+.sectionHead .ttl,
+.month,
+.sumBox .val,
+.payRowTop .a,
+.payRowTop .b,
+.mHead h3,
+.themeTitle{font-weight:1000}
+
+.compactBrand p,
+.sectionHead .sub,
+.sumBox .lbl,
+.small,
+.helper,
+.cloudHint,
+.themeDesc{line-height:1.55}
+
+.input::placeholder{opacity:1}
+.note,.statusPill,.btn,.mBtn,.smallBtn,.dow,.sideOut{font-weight:950}
+.day .num{font-weight:1000}
+.day .cnt{font-weight:900}
+.month{line-height:1.12}
+.note{line-height:1.3}
+.helper,.cloudHint{backdrop-filter:blur(8px)}
+.hambMenu .btn{justify-content:center}
+
+/* TEMAS CLAROS */
+body[data-theme="light"],
+body[data-theme="paper"],
+body[data-theme="windows_xp"],
+body[data-theme="toy_story"]{color:#0b1220}
+
+body[data-theme="light"] .compactBrand h1,
+body[data-theme="paper"] .compactBrand h1,
+body[data-theme="windows_xp"] .compactBrand h1,
+body[data-theme="toy_story"] .compactBrand h1,
+body[data-theme="light"] .sectionHead .ttl,
+body[data-theme="paper"] .sectionHead .ttl,
+body[data-theme="windows_xp"] .sectionHead .ttl,
+body[data-theme="toy_story"] .sectionHead .ttl,
+body[data-theme="light"] .mHead h3,
+body[data-theme="paper"] .mHead h3,
+body[data-theme="windows_xp"] .mHead h3,
+body[data-theme="toy_story"] .mHead h3,
+body[data-theme="light"] .themeTitle,
+body[data-theme="paper"] .themeTitle,
+body[data-theme="windows_xp"] .themeTitle,
+body[data-theme="toy_story"] .themeTitle{
+  color:#0b1220 !important;
+  text-shadow:none !important;
+}
+
+body[data-theme="light"] .compactBrand p,
+body[data-theme="paper"] .compactBrand p,
+body[data-theme="windows_xp"] .compactBrand p,
+body[data-theme="toy_story"] .compactBrand p,
+body[data-theme="light"] .sectionHead .sub,
+body[data-theme="paper"] .sectionHead .sub,
+body[data-theme="windows_xp"] .sectionHead .sub,
+body[data-theme="toy_story"] .sectionHead .sub,
+body[data-theme="light"] .small,
+body[data-theme="paper"] .small,
+body[data-theme="windows_xp"] .small,
+body[data-theme="toy_story"] .small,
+body[data-theme="light"] .helper,
+body[data-theme="paper"] .helper,
+body[data-theme="windows_xp"] .helper,
+body[data-theme="toy_story"] .helper,
+body[data-theme="light"] .cloudHint,
+body[data-theme="paper"] .cloudHint,
+body[data-theme="windows_xp"] .cloudHint,
+body[data-theme="toy_story"] .cloudHint,
+body[data-theme="light"] .themeDesc,
+body[data-theme="paper"] .themeDesc,
+body[data-theme="windows_xp"] .themeDesc,
+body[data-theme="toy_story"] .themeDesc{
+  color:#334155 !important;
+}
+
+body[data-theme="light"] .month,
+body[data-theme="paper"] .month,
+body[data-theme="windows_xp"] .month,
+body[data-theme="toy_story"] .month{
+  color:#0b1220 !important;
+  text-shadow:none !important;
+}
+
+body[data-theme="light"] .note,
+body[data-theme="paper"] .note,
+body[data-theme="windows_xp"] .note,
+body[data-theme="toy_story"] .note,
+body[data-theme="light"] .statusPill,
+body[data-theme="paper"] .statusPill,
+body[data-theme="windows_xp"] .statusPill,
+body[data-theme="toy_story"] .statusPill{
+  color:#1e293b !important;
+  background:rgba(255,255,255,.92) !important;
+  border-color:rgba(15,23,42,.14) !important;
+}
+
+body[data-theme="light"] .dow,
+body[data-theme="paper"] .dow,
+body[data-theme="windows_xp"] .dow,
+body[data-theme="toy_story"] .dow,
+body[data-theme="light"] .sideOut,
+body[data-theme="paper"] .sideOut,
+body[data-theme="windows_xp"] .sideOut,
+body[data-theme="toy_story"] .sideOut{
+  color:#0b1220 !important;
+  text-shadow:none !important;
+}
+
+body[data-theme="light"] .btn,
+body[data-theme="paper"] .btn,
+body[data-theme="windows_xp"] .btn,
+body[data-theme="toy_story"] .btn,
+body[data-theme="light"] .mBtn,
+body[data-theme="paper"] .mBtn,
+body[data-theme="windows_xp"] .mBtn,
+body[data-theme="toy_story"] .mBtn,
+body[data-theme="light"] .smallBtn,
+body[data-theme="paper"] .smallBtn,
+body[data-theme="windows_xp"] .smallBtn,
+body[data-theme="toy_story"] .smallBtn,
+body[data-theme="light"] .hambMenu .btn,
+body[data-theme="paper"] .hambMenu .btn,
+body[data-theme="windows_xp"] .hambMenu .btn,
+body[data-theme="toy_story"] .hambMenu .btn{
+  color:#0b1220 !important;
+}
+
+body[data-theme="light"] .lbl,
+body[data-theme="paper"] .lbl,
+body[data-theme="windows_xp"] .lbl,
+body[data-theme="toy_story"] .lbl{color:#0f172a !important}
+
+body[data-theme="light"] .input,
+body[data-theme="paper"] .input,
+body[data-theme="windows_xp"] .input,
+body[data-theme="toy_story"] .input{color:#0f172a !important}
+
+body[data-theme="light"] .input::placeholder,
+body[data-theme="paper"] .input::placeholder,
+body[data-theme="windows_xp"] .input::placeholder,
+body[data-theme="toy_story"] .input::placeholder{color:rgba(15,23,42,.54) !important}
+
+body[data-theme="light"] .hambBtn .hambLines,
+body[data-theme="light"] .hambBtn .hambLines::before,
+body[data-theme="light"] .hambBtn .hambLines::after,
+body[data-theme="paper"] .hambBtn .hambLines,
+body[data-theme="paper"] .hambBtn .hambLines::before,
+body[data-theme="paper"] .hambBtn .hambLines::after,
+body[data-theme="windows_xp"] .hambBtn .hambLines,
+body[data-theme="windows_xp"] .hambBtn .hambLines::before,
+body[data-theme="windows_xp"] .hambBtn .hambLines::after,
+body[data-theme="toy_story"] .hambBtn .hambLines,
+body[data-theme="toy_story"] .hambBtn .hambLines::before,
+body[data-theme="toy_story"] .hambBtn .hambLines::after{
+  background:#0b1220 !important;
+}
+
+/* TEMAS ESCUROS */
+body[data-theme="dark"],
+body[data-theme="ocean"],
+body[data-theme="violet"],
+body[data-theme="gold"],
+body[data-theme="graphite"],
+body[data-theme="emerald"],
+body[data-theme="tesla"],
+body[data-theme="sexta_13"],
+body[data-theme="game_of_thrones"],
+body[data-theme="sonic"],
+body[data-theme="resident_evil_2"],
+body[data-theme="senna_mclaren"],
+body[data-theme="senna_capacete"]{color:var(--txt)}
+
+body[data-theme="dark"] .compactBrand h1,
+body[data-theme="ocean"] .compactBrand h1,
+body[data-theme="violet"] .compactBrand h1,
+body[data-theme="gold"] .compactBrand h1,
+body[data-theme="graphite"] .compactBrand h1,
+body[data-theme="emerald"] .compactBrand h1,
+body[data-theme="tesla"] .compactBrand h1,
+body[data-theme="sexta_13"] .compactBrand h1,
+body[data-theme="game_of_thrones"] .compactBrand h1,
+body[data-theme="sonic"] .compactBrand h1,
+body[data-theme="resident_evil_2"] .compactBrand h1,
+body[data-theme="senna_mclaren"] .compactBrand h1,
+body[data-theme="senna_capacete"] .compactBrand h1,
+body[data-theme="dark"] .sectionHead .ttl,
+body[data-theme="ocean"] .sectionHead .ttl,
+body[data-theme="violet"] .sectionHead .ttl,
+body[data-theme="gold"] .sectionHead .ttl,
+body[data-theme="graphite"] .sectionHead .ttl,
+body[data-theme="emerald"] .sectionHead .ttl,
+body[data-theme="tesla"] .sectionHead .ttl,
+body[data-theme="sexta_13"] .sectionHead .ttl,
+body[data-theme="game_of_thrones"] .sectionHead .ttl,
+body[data-theme="sonic"] .sectionHead .ttl,
+body[data-theme="resident_evil_2"] .sectionHead .ttl,
+body[data-theme="senna_mclaren"] .sectionHead .ttl,
+body[data-theme="senna_capacete"] .sectionHead .ttl,
+body[data-theme="dark"] .mHead h3,
+body[data-theme="ocean"] .mHead h3,
+body[data-theme="violet"] .mHead h3,
+body[data-theme="gold"] .mHead h3,
+body[data-theme="graphite"] .mHead h3,
+body[data-theme="emerald"] .mHead h3,
+body[data-theme="tesla"] .mHead h3,
+body[data-theme="sexta_13"] .mHead h3,
+body[data-theme="game_of_thrones"] .mHead h3,
+body[data-theme="sonic"] .mHead h3,
+body[data-theme="resident_evil_2"] .mHead h3,
+body[data-theme="senna_mclaren"] .mHead h3,
+body[data-theme="senna_capacete"] .mHead h3{
+  color:var(--txt) !important;
+}
+
+body[data-theme="dark"] .compactBrand p,
+body[data-theme="ocean"] .compactBrand p,
+body[data-theme="violet"] .compactBrand p,
+body[data-theme="gold"] .compactBrand p,
+body[data-theme="graphite"] .compactBrand p,
+body[data-theme="emerald"] .compactBrand p,
+body[data-theme="tesla"] .compactBrand p,
+body[data-theme="sexta_13"] .compactBrand p,
+body[data-theme="game_of_thrones"] .compactBrand p,
+body[data-theme="sonic"] .compactBrand p,
+body[data-theme="resident_evil_2"] .compactBrand p,
+body[data-theme="senna_mclaren"] .compactBrand p,
+body[data-theme="senna_capacete"] .compactBrand p,
+body[data-theme="dark"] .sectionHead .sub,
+body[data-theme="ocean"] .sectionHead .sub,
+body[data-theme="violet"] .sectionHead .sub,
+body[data-theme="gold"] .sectionHead .sub,
+body[data-theme="graphite"] .sectionHead .sub,
+body[data-theme="emerald"] .sectionHead .sub,
+body[data-theme="tesla"] .sectionHead .sub,
+body[data-theme="sexta_13"] .sectionHead .sub,
+body[data-theme="game_of_thrones"] .sectionHead .sub,
+body[data-theme="sonic"] .sectionHead .sub,
+body[data-theme="resident_evil_2"] .sectionHead .sub,
+body[data-theme="senna_mclaren"] .sectionHead .sub,
+body[data-theme="senna_capacete"] .sectionHead .sub,
+body[data-theme="dark"] .small,
+body[data-theme="ocean"] .small,
+body[data-theme="violet"] .small,
+body[data-theme="gold"] .small,
+body[data-theme="graphite"] .small,
+body[data-theme="emerald"] .small,
+body[data-theme="tesla"] .small,
+body[data-theme="sexta_13"] .small,
+body[data-theme="game_of_thrones"] .small,
+body[data-theme="sonic"] .small,
+body[data-theme="resident_evil_2"] .small,
+body[data-theme="senna_mclaren"] .small,
+body[data-theme="senna_capacete"] .small,
+body[data-theme="dark"] .themeDesc,
+body[data-theme="ocean"] .themeDesc,
+body[data-theme="violet"] .themeDesc,
+body[data-theme="gold"] .themeDesc,
+body[data-theme="graphite"] .themeDesc,
+body[data-theme="emerald"] .themeDesc,
+body[data-theme="tesla"] .themeDesc,
+body[data-theme="sexta_13"] .themeDesc,
+body[data-theme="game_of_thrones"] .themeDesc,
+body[data-theme="sonic"] .themeDesc,
+body[data-theme="resident_evil_2"] .themeDesc,
+body[data-theme="senna_mclaren"] .themeDesc,
+body[data-theme="senna_capacete"] .themeDesc{
+  color:var(--mut) !important;
+}
+
+body[data-theme="dark"] .month,
+body[data-theme="ocean"] .month,
+body[data-theme="violet"] .month,
+body[data-theme="gold"] .month,
+body[data-theme="graphite"] .month,
+body[data-theme="emerald"] .month,
+body[data-theme="tesla"] .month,
+body[data-theme="sexta_13"] .month,
+body[data-theme="game_of_thrones"] .month,
+body[data-theme="sonic"] .month,
+body[data-theme="resident_evil_2"] .month,
+body[data-theme="senna_mclaren"] .month,
+body[data-theme="senna_capacete"] .month{color:var(--txt) !important}
+
+body[data-theme="dark"] .note,
+body[data-theme="ocean"] .note,
+body[data-theme="violet"] .note,
+body[data-theme="gold"] .note,
+body[data-theme="graphite"] .note,
+body[data-theme="emerald"] .note,
+body[data-theme="tesla"] .note,
+body[data-theme="sexta_13"] .note,
+body[data-theme="game_of_thrones"] .note,
+body[data-theme="sonic"] .note,
+body[data-theme="resident_evil_2"] .note,
+body[data-theme="senna_mclaren"] .note,
+body[data-theme="senna_capacete"] .note{color:var(--txt) !important}
+
+body[data-theme="dark"] .dow,
+body[data-theme="ocean"] .dow,
+body[data-theme="violet"] .dow,
+body[data-theme="gold"] .dow,
+body[data-theme="graphite"] .dow,
+body[data-theme="emerald"] .dow,
+body[data-theme="tesla"] .dow,
+body[data-theme="sexta_13"] .dow,
+body[data-theme="game_of_thrones"] .dow,
+body[data-theme="sonic"] .dow,
+body[data-theme="resident_evil_2"] .dow,
+body[data-theme="senna_mclaren"] .dow,
+body[data-theme="senna_capacete"] .dow,
+body[data-theme="dark"] .sideOut,
+body[data-theme="ocean"] .sideOut,
+body[data-theme="violet"] .sideOut,
+body[data-theme="gold"] .sideOut,
+body[data-theme="graphite"] .sideOut,
+body[data-theme="emerald"] .sideOut,
+body[data-theme="tesla"] .sideOut,
+body[data-theme="sexta_13"] .sideOut,
+body[data-theme="game_of_thrones"] .sideOut,
+body[data-theme="sonic"] .sideOut,
+body[data-theme="resident_evil_2"] .sideOut,
+body[data-theme="senna_mclaren"] .sideOut,
+body[data-theme="senna_capacete"] .sideOut{color:var(--txt) !important}
+
+body[data-theme="dark"] .btn,
+body[data-theme="ocean"] .btn,
+body[data-theme="violet"] .btn,
+body[data-theme="gold"] .btn,
+body[data-theme="graphite"] .btn,
+body[data-theme="emerald"] .btn,
+body[data-theme="tesla"] .btn,
+body[data-theme="sexta_13"] .btn,
+body[data-theme="game_of_thrones"] .btn,
+body[data-theme="sonic"] .btn,
+body[data-theme="resident_evil_2"] .btn,
+body[data-theme="senna_mclaren"] .btn,
+body[data-theme="senna_capacete"] .btn,
+body[data-theme="dark"] .mBtn,
+body[data-theme="ocean"] .mBtn,
+body[data-theme="violet"] .mBtn,
+body[data-theme="gold"] .mBtn,
+body[data-theme="graphite"] .mBtn,
+body[data-theme="emerald"] .mBtn,
+body[data-theme="tesla"] .mBtn,
+body[data-theme="sexta_13"] .mBtn,
+body[data-theme="game_of_thrones"] .mBtn,
+body[data-theme="sonic"] .mBtn,
+body[data-theme="resident_evil_2"] .mBtn,
+body[data-theme="senna_mclaren"] .mBtn,
+body[data-theme="senna_capacete"] .mBtn,
+body[data-theme="dark"] .smallBtn,
+body[data-theme="ocean"] .smallBtn,
+body[data-theme="violet"] .smallBtn,
+body[data-theme="gold"] .smallBtn,
+body[data-theme="graphite"] .smallBtn,
+body[data-theme="emerald"] .smallBtn,
+body[data-theme="tesla"] .smallBtn,
+body[data-theme="sexta_13"] .smallBtn,
+body[data-theme="game_of_thrones"] .smallBtn,
+body[data-theme="sonic"] .smallBtn,
+body[data-theme="resident_evil_2"] .smallBtn,
+body[data-theme="senna_mclaren"] .smallBtn,
+body[data-theme="senna_capacete"] .smallBtn,
+body[data-theme="dark"] .statusPill,
+body[data-theme="ocean"] .statusPill,
+body[data-theme="violet"] .statusPill,
+body[data-theme="gold"] .statusPill,
+body[data-theme="graphite"] .statusPill,
+body[data-theme="emerald"] .statusPill,
+body[data-theme="tesla"] .statusPill,
+body[data-theme="sexta_13"] .statusPill,
+body[data-theme="game_of_thrones"] .statusPill,
+body[data-theme="sonic"] .statusPill,
+body[data-theme="resident_evil_2"] .statusPill,
+body[data-theme="senna_mclaren"] .statusPill,
+body[data-theme="senna_capacete"] .statusPill{color:var(--txt) !important}
+
+body[data-theme="dark"] .lbl,
+body[data-theme="ocean"] .lbl,
+body[data-theme="violet"] .lbl,
+body[data-theme="gold"] .lbl,
+body[data-theme="graphite"] .lbl,
+body[data-theme="emerald"] .lbl,
+body[data-theme="tesla"] .lbl,
+body[data-theme="sexta_13"] .lbl,
+body[data-theme="game_of_thrones"] .lbl,
+body[data-theme="sonic"] .lbl,
+body[data-theme="resident_evil_2"] .lbl,
+body[data-theme="senna_mclaren"] .lbl,
+body[data-theme="senna_capacete"] .lbl{color:var(--txt) !important}
+
+body[data-theme="dark"] .input,
+body[data-theme="ocean"] .input,
+body[data-theme="violet"] .input,
+body[data-theme="gold"] .input,
+body[data-theme="graphite"] .input,
+body[data-theme="emerald"] .input,
+body[data-theme="tesla"] .input,
+body[data-theme="sexta_13"] .input,
+body[data-theme="game_of_thrones"] .input,
+body[data-theme="sonic"] .input,
+body[data-theme="resident_evil_2"] .input,
+body[data-theme="senna_mclaren"] .input,
+body[data-theme="senna_capacete"] .input{color:var(--txt) !important}
+
+body[data-theme="dark"] .input::placeholder,
+body[data-theme="ocean"] .input::placeholder,
+body[data-theme="violet"] .input::placeholder,
+body[data-theme="gold"] .input::placeholder,
+body[data-theme="graphite"] .input::placeholder,
+body[data-theme="emerald"] .input::placeholder,
+body[data-theme="tesla"] .input::placeholder,
+body[data-theme="sexta_13"] .input::placeholder,
+body[data-theme="game_of_thrones"] .input::placeholder,
+body[data-theme="sonic"] .input::placeholder,
+body[data-theme="resident_evil_2"] .input::placeholder,
+body[data-theme="senna_mclaren"] .input::placeholder,
+body[data-theme="senna_capacete"] .input::placeholder{color:var(--mut) !important}
+
+body[data-theme="dark"] .helper,
+body[data-theme="ocean"] .helper,
+body[data-theme="violet"] .helper,
+body[data-theme="gold"] .helper,
+body[data-theme="graphite"] .helper,
+body[data-theme="emerald"] .helper,
+body[data-theme="tesla"] .helper,
+body[data-theme="sexta_13"] .helper,
+body[data-theme="game_of_thrones"] .helper,
+body[data-theme="sonic"] .helper,
+body[data-theme="resident_evil_2"] .helper,
+body[data-theme="senna_mclaren"] .helper,
+body[data-theme="senna_capacete"] .helper,
+body[data-theme="dark"] .cloudHint,
+body[data-theme="ocean"] .cloudHint,
+body[data-theme="violet"] .cloudHint,
+body[data-theme="gold"] .cloudHint,
+body[data-theme="graphite"] .cloudHint,
+body[data-theme="emerald"] .cloudHint,
+body[data-theme="tesla"] .cloudHint,
+body[data-theme="sexta_13"] .cloudHint,
+body[data-theme="game_of_thrones"] .cloudHint,
+body[data-theme="sonic"] .cloudHint,
+body[data-theme="resident_evil_2"] .cloudHint,
+body[data-theme="senna_mclaren"] .cloudHint,
+body[data-theme="senna_capacete"] .cloudHint{color:var(--txt) !important}
+
+body[data-theme="dark"] .hambMenu .btn,
+body[data-theme="ocean"] .hambMenu .btn,
+body[data-theme="violet"] .hambMenu .btn,
+body[data-theme="gold"] .hambMenu .btn,
+body[data-theme="graphite"] .hambMenu .btn,
+body[data-theme="emerald"] .hambMenu .btn,
+body[data-theme="tesla"] .hambMenu .btn,
+body[data-theme="sexta_13"] .hambMenu .btn,
+body[data-theme="game_of_thrones"] .hambMenu .btn,
+body[data-theme="sonic"] .hambMenu .btn,
+body[data-theme="resident_evil_2"] .hambMenu .btn,
+body[data-theme="senna_mclaren"] .hambMenu .btn,
+body[data-theme="senna_capacete"] .hambMenu .btn{color:var(--txt) !important}
+
+
+/* ===== CUSTOMIZAÇÃO MANUAL DE CORES FUNCIONAL EM QUALQUER TEMA ===== */
+body[data-manual-colors="on"] .month{
+  color: var(--custom-month-color) !important;
+  text-shadow: none !important;
+}
+body[data-manual-colors="on"] .modal,
+body[data-manual-colors="on"] .modal .mHead h3,
+body[data-manual-colors="on"] .modal .themeSectionTitle,
+body[data-manual-colors="on"] .modal .themeTitle,
+body[data-manual-colors="on"] .modal .themeDesc,
+body[data-manual-colors="on"] .modal .lbl,
+body[data-manual-colors="on"] .modal .helper,
+body[data-manual-colors="on"] .modal .cloudHint,
+body[data-manual-colors="on"] .modal .small,
+body[data-manual-colors="on"] .modal .input,
+body[data-manual-colors="on"] .modal .mBtn,
+body[data-manual-colors="on"] .modal .smallBtn,
+body[data-manual-colors="on"] .modal .closeX{
+  color: var(--custom-modal-text-color) !important;
+}
+body[data-manual-colors="on"] .modal .input::placeholder{
+  color: var(--custom-modal-placeholder-color) !important;
+}
+body[data-manual-colors="on"] .modal .input{
+  border-color: var(--custom-modal-border-color) !important;
+}
+
+
+/* =========================================================
+   FOCO VISUAL NO MÊS EM EDIÇÃO
+   - Dias do mês atual: mais presentes
+   - Dias de outros meses: quase apagados
+========================================================= */
+
+.day{
+  opacity: 1;
+}
+
+.day.other{
+  opacity: .16 !important;
+  filter: grayscale(1) saturate(.25);
+  background: rgba(255,255,255,.015) !important;
+  border-color: rgba(255,255,255,.045) !important;
+  box-shadow: none !important;
+}
+
+.day.other .num,
+.day.other .cnt,
+.day.other .chip,
+.day.other .chip span{
+  opacity: .28 !important;
+  color: var(--mut2) !important;
+  text-shadow: none !important;
+}
+
+.day.other .chip{
+  background: rgba(255,255,255,.035) !important;
+  border-color: rgba(255,255,255,.04) !important;
+}
+
+.day:not(.other){
+  opacity: 1 !important;
+}
+
+.day:not(.other) .num{
+  opacity: 1 !important;
+  font-weight: 1000;
+}
+
+/* Em temas claros, os dias de outros meses ficam em cinza muito suave */
+body[data-theme="light"] .day.other,
+body[data-theme="paper"] .day.other,
+body[data-theme="windows_xp"] .day.other,
+body[data-theme="toy_story"] .day.other{
+  opacity: .20 !important;
+  background: rgba(15,23,42,.025) !important;
+  border-color: rgba(15,23,42,.045) !important;
+}
+
+body[data-theme="light"] .day.other .num,
+body[data-theme="paper"] .day.other .num,
+body[data-theme="windows_xp"] .day.other .num,
+body[data-theme="toy_story"] .day.other .num,
+body[data-theme="light"] .day.other .chip,
+body[data-theme="paper"] .day.other .chip,
+body[data-theme="windows_xp"] .day.other .chip,
+body[data-theme="toy_story"] .day.other .chip{
+  color: rgba(15,23,42,.26) !important;
+}
+
+/* O dia atual continua destacado mesmo quando pertence ao mês atual */
+.day.today:not(.other){
+  opacity: 1 !important;
+  filter: none !important;
+  z-index: 2;
+}
+
+/* Se o dia atual estiver fora do mês exibido, ele NÃO rouba o foco */
+.day.today.other{
+  opacity: .26 !important;
+  filter: grayscale(1) saturate(.35);
+}
+
+
+/* ===== CUSTOMIZAÇÃO MANUAL DE BOTÕES EM QUALQUER TEMA ===== */
+body[data-manual-buttons="on"] .btn,
+body[data-manual-buttons="on"] .mBtn,
+body[data-manual-buttons="on"] .smallBtn,
+body[data-manual-buttons="on"] .hambMenu .btn,
+body[data-manual-buttons="on"] .closeX{
+  background: var(--custom-button-bg) !important;
+  color: var(--custom-button-text) !important;
+  border-color: var(--custom-button-border) !important;
+  text-shadow:none !important;
+}
+body[data-manual-buttons="on"] .btn.primary,
+body[data-manual-buttons="on"] .mBtn.primary{
+  background: var(--custom-button-bg) !important;
+  color: var(--custom-button-text) !important;
+  box-shadow:0 12px 26px var(--custom-button-shadow) !important;
+}
+body[data-manual-buttons="on"] .hambBtn .hambLines,
+body[data-manual-buttons="on"] .hambBtn .hambLines::before,
+body[data-manual-buttons="on"] .hambBtn .hambLines::after{
+  background: var(--custom-button-text) !important;
+}
+
+</style>
+</head>
+<body data-theme="senna_capacete">
+  <header class="hdr">
+    <div class="headerAligned">
+      <div class="compactBrand">
+        <h1>Agenda de Plantões &amp; Produtividade</h1>
+        
+      </div>
+      <div class="toolbarCenter">
+        <details class="hambWrap" id="hambWrap">
+          <summary aria-label="Menu" class="hambBtn"><span class="hambLines"></span></summary>
+          <div class="hambMenu">
+            <button class="btn menuItem" id="btnDayH">Altura do dia</button>
+            <button class="btn menuItem" id="btnBonusRules">Bonificação</button>
+            <button class="btn menuItem" id="btnImport">Importar</button>
+            <button class="btn menuItem" id="btnExport">Exportar</button>
+            <button class="btn menuItem" id="btnLogin">Login</button>
+            <button class="btn danger menuItem" id="btnReset">Zerar</button>
+            <input accept="application/json" hidden id="fileImport" type="file" />
+          </div>
+        </details>
+        <div class="primaryButtons">
+          <button class="btn primary" id="btnNew">Novo</button>
+          <button class="btn" id="btnTheme">Tema</button>
+          <button class="btn" id="btnPay">Regras de pagamento</button>
+          <button class="btn" id="btnUndo">Desfazer</button>
+          <button class="btn" id="btnSaveNow">Salvar agora</button>
+        </div>
+      </div>
+      <div class="saveDock">
+        <div class="statusPill saved" id="savePill"><span class="statusDot"></span><span id="saveLabel">Salvo</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <aside class="sidebarCol">
+      <section class="card section">
+        <div class="sectionHead">
+          <div>
+            <div class="ttl">Produtividade mensal</div>
+            <div class="sub">Resumo do mês visível</div>
+          </div>
+          <button class="smallBtn" id="btnToggleSummary" type="button">Recolher</button>
+        </div>
+        <div class="padded" id="summaryBody">
+          <div class="summaryGrid">
+            <div class="sumBox"><div class="lbl">Ocorrências no mês</div><div class="val" id="sumCount">0</div></div>
+            <div class="sumBox"><div class="lbl">Total (mês)</div><div class="val" id="sumTotal">R$ 0,00</div></div>
+            <div class="sumBox"><div class="lbl">Horas (mês)</div><div class="val" id="sumHours">0h</div></div>
+            <div class="sumBox"><div class="lbl">Dia selecionado</div><div class="val" id="sumSel">—</div></div>
+          </div>
+          <div class="helper" style="margin-top:12px">Resumo mensal e acompanhamento dos compromissos visíveis no calendário.</div>
+        </div>
+      </section>
+
+      <section class="card section">
+        <div class="sectionHead">
+          <div>
+            <div class="ttl">Valores a receber</div>
+            <div class="sub">Resumo por instituição no mês visível</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <div class="sub"><b>Total:</b> <span id="paySum" style="color:var(--good);font-weight:950">R$ 0,00</span></div>
+            <button class="smallBtn" id="btnTogglePayments" type="button">Recolher</button>
+          </div>
+        </div>
+        <div class="padded" id="paymentsBody"><div class="payList" id="payList"></div></div>
+      </section>
+    </aside>
+
+    <section class="mainCol">
+      <section class="card section mainCalendarCard">
+        <div class="sectionHead">
+          <div style="width:100%">
+            <div class="monthRow" style="width:100%">
+              <div class="month" id="monthLabel">—</div>
+              <div class="note" id="monthNote" style="display:none"></div>
+            </div>
+          </div>
+        </div>
+        <div class="dowShell"><div></div><div class="dowRow" id="dowRow"></div><div></div></div>
+        <div class="calFrame">
+          <button class="sideOut" id="sidePrev" title="Mês anterior"><span class="arrow">‹</span><span class="sideLabel">Mês anterior</span><span class="sideMonth" id="prevMonthMini"></span></button>
+          <div class="grid" id="grid"></div>
+          <button class="sideOut" id="sideNext" title="Próximo mês"><span class="arrow">›</span><span class="sideLabel">Próximo mês</span><span class="sideMonth" id="nextMonthMini"></span></button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="ov" id="ovEvent">
+    <div class="modal">
+      <div class="mHead">
+        <h3 id="evTitle">Evento</h3>
+        <button class="closeX" id="evClose">✕</button>
+      </div>
+      <div class="form">
+        <div>
+          <div class="lbl">Instituição / Local</div>
+          <input class="input" id="evName" placeholder="Ex: Hospital Regional" />
+        </div>
+        <div class="row2">
+          <div><div class="lbl">Data</div><input class="input" id="evDate" type="date" /></div>
+          <div><div class="lbl">Horário (opcional)</div><input class="input" id="evTime" placeholder="Ex: 07:00–19:00" /></div>
+        </div>
+        <div class="row2">
+          <div>
+            <div class="lbl">Tipo de serviço</div>
+            <select class="input" id="evType">
+              <option value="plantao">Plantão</option>
+              <option value="cirurgia">Cirurgia</option>
+              <option value="peq_cir">Pequenas Cirurgias</option>
+              <option value="ambulatorio">Ambulatório</option>
+              <option value="particular">Atendimento Particular</option>
+            </select>
+          </div>
+          <div>
+            <div class="lbl">Cor do evento</div>
+            <button class="smallBtn" id="btnPickColor" type="button" data-color="#3B82F6">Escolher cor</button>
+          </div>
+        </div>
+        <div class="row3">
+          <div><div class="lbl">Valor por hora (R$/h)</div><input class="input" id="evRate" type="number" min="0" step="0.01" /></div>
+          <div><div class="lbl">Horas</div><input class="input" id="evHours" type="number" min="0" step="0.25" /></div>
+          <div><div class="lbl">Total (calculado)</div><input class="input" id="evTotal" readonly type="text" /></div>
+        </div>
+        <div class="row2">
+          <div>
+            <div class="lbl">Recorrência</div>
+            <select class="input" id="evRec">
+              <option value="none">Não repete</option>
+              <option value="weekly">Semanal</option>
+              <option value="biweekly">Quinzenal</option>
+              <option value="monthly">Mensal</option>
+            </select>
+          </div>
+          <div id="recEndRow" style="display:none">
+            <div class="lbl">Repetir até (opcional)</div>
+            <input class="input" id="evEnd" type="date" />
+          </div>
+        </div>
+
+        <div class="helper"><b>Aplicação retroativa:</b> use quando esse evento já existia antes da data principal.</div>
+        <div class="row2">
+          <div>
+            <div class="lbl">Modo retroativo</div>
+            <select class="input" id="evRetroMode">
+              <option value="none">Não aplicar</option>
+              <option value="single">Criar 1 data retroativa</option>
+              <option value="period">Criar período retroativo</option>
+              <option value="info">Apenas informar início retroativo</option>
+            </select>
+          </div>
+          <div id="retroSingleRow" style="display:none">
+            <div class="lbl">Data retroativa única</div>
+            <input class="input" id="evRetroSingleDate" type="date" />
+          </div>
+        </div>
+        <div class="row2" id="retroPeriodRow" style="display:none">
+          <div><div class="lbl">Período retroativo: início</div><input class="input" id="evRetroStartDate" type="date" /></div>
+          <div>
+            <div class="lbl">Período retroativo: fim</div>
+            <input class="input" id="evRetroEndDate" type="date" />
+            <div class="mFoot" style="margin-top:8px;padding-top:0;border-top:none">
+              <button class="smallBtn" id="btnRetroToday" type="button">Até hoje</button>
+            </div>
+          </div>
+        </div>
+        <div id="retroInfoRow" style="display:none">
+          <div class="lbl">Data de início informativa</div>
+          <input class="input" id="evRetroInfoDate" type="date" />
+        </div>
+
+        <div>
+          <div class="lbl">Observação</div>
+          <textarea class="input" id="evNote" rows="3"></textarea>
+        </div>
+        <div class="helper">
+          <b>Preview do chip:</b>
+          <div style="margin-top:10px;max-width:420px">
+            <div class="chip" id="chipPreview" style="--chipBg:#3B82F6;--chipFg:#fff">
+              <span class="chipMark"></span>
+              <span id="chipPreviewTxt">Exemplo</span>
+            </div>
+          </div>
+        </div>
+        <div class="mFoot">
+          <button class="mBtn" id="btnCopySpecificDates" type="button">Copiar p/ datas específicas</button>
+          <button class="mBtn" id="btnDeleteSpecificDates" type="button">Excluir datas específicas</button>
+          <button class="mBtn danger" id="evDelete">Excluir</button>
+          <button class="mBtn ghost" id="evCancel">Cancelar</button>
+          <button class="mBtn primary" id="evSave">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovSpecificDates">
+    <div class="modal" style="width:min(760px,100%)">
+      <div class="mHead">
+        <h3 id="specificDatesTitle">Datas específicas</h3>
+        <button class="closeX" id="specificDatesClose">✕</button>
+      </div>
+      <div class="form">
+        <div class="helper">
+          Informe uma data por linha, ou separadas por vírgula, no formato DD/MM/AAAA. Exemplo:<br>
+          10/05/2026<br>
+          14/05/2026, 21/05/2026
+        </div>
+        <div class="row2">
+          <div>
+            <div class="lbl">Data inicial rápida (DD/MM/AAAA)</div>
+            <input class="input" id="specificStartDate" type="text" placeholder="DD/MM/AAAA" />
+          </div>
+          <div>
+            <div class="lbl">Data final rápida (DD/MM/AAAA)</div>
+            <input class="input" id="specificEndDate" type="text" placeholder="DD/MM/AAAA" />
+          </div>
+        </div>
+        <div class="mFoot" style="margin-top:0;padding-top:0;border-top:none">
+          <button class="smallBtn" id="btnSpecificFillRange" type="button">Gerar intervalo diário</button>
+          <button class="smallBtn" id="btnSpecificFillWeekly" type="button">Gerar semanal</button>
+          <button class="smallBtn" id="btnSpecificFillBiweekly" type="button">Gerar quinzenal</button>
+          <button class="smallBtn" id="btnSpecificClear" type="button">Limpar</button>
+        </div>
+        <div>
+          <div class="lbl">Datas selecionadas</div>
+          <textarea class="input" id="specificDatesText" rows="8" placeholder="10/05/2026&#10;14/05/2026&#10;21/05/2026"></textarea>
+        </div>
+        <div class="helper" id="specificDatesHint">As cópias serão criadas como eventos independentes. Na exclusão, as datas serão removidas do grupo vinculado ao evento atual.</div>
+        <div id="copyModeWrap" style="display:none">
+          <div class="lbl">Modo de cópia</div>
+          <div class="row2" style="margin-top:8px">
+            <label class="helper" style="display:flex;align-items:center;gap:10px;cursor:pointer">
+              <input id="copyModeSingle" name="copyMode" type="radio" value="single" checked />
+              <span>Copiar como evento único</span>
+            </label>
+            <label class="helper" style="display:flex;align-items:center;gap:10px;cursor:pointer">
+              <input id="copyModeRecurring" name="copyMode" type="radio" value="recurring" />
+              <span>Copiar recorrência</span>
+            </label>
+          </div>
+        </div>
+        <div class="mFoot">
+          <button class="mBtn ghost" id="specificDatesCancel" type="button">Cancelar</button>
+          <button class="mBtn primary" id="specificDatesConfirm" type="button">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovScope">
+    <div class="modal" style="width:min(640px,100%)">
+      <div class="mHead">
+        <h3>Alterar recorrência</h3>
+        <button class="closeX" id="scopeClose">✕</button>
+      </div>
+      <div class="helper">Esse evento se repete. A alteração deve valer para:</div>
+      <div class="mFoot">
+        <button class="mBtn scopeBtn" id="scopeSingle">Apenas este</button>
+        <button class="mBtn primary scopeBtn" id="scopeFuture">Este e futuros</button>
+        <button class="mBtn scopeBtn" id="scopeAll">Todos</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovDelScope">
+    <div class="modal" style="width:min(640px,100%)">
+      <div class="mHead">
+        <h3>Excluir recorrência</h3>
+        <button class="closeX" id="delScopeClose">✕</button>
+      </div>
+      <div class="helper">Esse evento se repete. A exclusão será aplicada à série atualmente aberta. Se for uma cópia recorrente, a fonte original não será apagada.</div>
+      <div class="mFoot">
+        <button class="mBtn scopeBtn" id="delSingle">Apenas este</button>
+        <button class="mBtn danger scopeBtn" id="delFuture">Este e futuros</button>
+        <button class="mBtn danger scopeBtn" id="delAll">Todos</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovRetroDelScope">
+    <div class="modal" style="width:min(720px,100%)">
+      <div class="mHead">
+        <h3>Excluir retroativos</h3>
+        <button class="closeX" id="retroDelScopeClose">✕</button>
+      </div>
+      <div class="helper">Este item faz parte de um período retroativo gerado automaticamente. Você pode excluir apenas este evento, apagar todo o período retroativo de uma vez, ou apagar somente um intervalo específico de datas retroativas.</div>
+      <div class="row2" style="margin-top:12px">
+        <div>
+          <div class="lbl">Período específico: início (DD/MM/AAAA)</div>
+          <input class="input" id="retroDelStartDate" type="text" placeholder="DD/MM/AAAA" />
+        </div>
+        <div>
+          <div class="lbl">Período específico: fim (DD/MM/AAAA)</div>
+          <input class="input" id="retroDelEndDate" type="text" placeholder="DD/MM/AAAA" />
+        </div>
+      </div>
+      <div class="mFoot">
+        <button class="mBtn scopeBtn" id="retroDelSingle">Apenas este</button>
+        <button class="mBtn danger scopeBtn" id="retroDelAll">Todo o período retroativo</button>
+        <button class="mBtn danger scopeBtn" id="retroDelRange">Período específico</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovColor">
+    <div class="modal">
+      <div class="mHead">
+        <h3>Escolher cor</h3>
+        <button class="closeX" id="colorClose">✕</button>
+      </div>
+      <div class="row2" style="margin-top:10px">
+        <div><div class="lbl">Seletor</div><input class="input" id="colorPicker" type="color" value="#3B82F6" /></div>
+        <div><div class="lbl">Hex</div><input class="input" id="colorHex" /></div>
+      </div>
+      <div class="colorGrid" id="colorGrid"></div>
+      <div class="mFoot"><button class="mBtn primary" id="colorOk">Fechar</button></div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovDayH">
+    <div class="modal">
+      <div class="mHead">
+        <h3>Altura do dia</h3>
+        <button class="closeX" id="dayHClose">✕</button>
+      </div>
+      <div style="margin-top:12px">
+        <div class="lbl">Altura: <span id="dayHVal">—</span></div>
+        <input class="input" id="dayHRange" max="220" min="90" step="1" type="range" />
+      </div>
+      <div class="mFoot"><button class="mBtn primary" id="dayHOk">Fechar</button></div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovPay">
+    <div class="modal">
+      <div class="mHead">
+        <h3>Regras de pagamento</h3>
+        <button class="closeX" id="payClose">✕</button>
+      </div>
+      <div class="helper">As regras ficam cadastradas para uso futuro. Nesta versão funcional, o resumo financeiro do mês usa os valores lançados nos próprios eventos.</div>
+      <div id="rulesHost" style="margin-top:12px"></div>
+      <div class="mFoot">
+        <button class="mBtn" id="addRule">+ Adicionar</button>
+        <button class="mBtn primary" id="saveRules">Salvar regras</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovBonusRules">
+    <div class="modal">
+      <div class="mHead">
+        <h3>Regras de Bonificação</h3>
+        <button class="closeX" id="bonusRulesClose">✕</button>
+      </div>
+      <div class="helper">Defina acréscimos percentuais por faixa horária e restrinja por instituição, tipo ou data. O cálculo será aplicado automaticamente ao valor do evento.</div>
+      <div id="bonusRulesHost" style="margin-top:12px"></div>
+      <div class="mFoot">
+        <button class="mBtn" id="addBonusRule">+ Adicionar Regra</button>
+        <button class="mBtn primary" id="saveBonusRules">Salvar Regras</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovLogin">
+    <div class="modal" style="width:min(620px,100%)">
+      <div class="mHead">
+        <h3>Login e nuvem</h3>
+        <button class="closeX" id="loginClose">✕</button>
+      </div>
+      <div class="form">
+        <div class="cloudHint">Esta versão está preparada para Firebase. Para ativar depois, preencha o objeto <b>FIREBASE_CONFIG</b> no código e habilite Email/Password e Cloud Firestore.</div>
+        <div><div class="lbl">E-mail</div><input class="input" id="loginEmail" placeholder="voce@exemplo.com" type="email" /></div>
+        <div><div class="lbl">Senha</div><input class="input" id="loginPassword" placeholder="mínimo 6 caracteres" type="password" /></div>
+        <div class="mFoot">
+          <button class="mBtn" type="button">Criar conta</button>
+          <button class="mBtn primary" type="button">Entrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovThemeSelector">
+    <div class="modal" style="width:min(980px,100%)">
+      <div class="mHead">
+        <h3>Temas premium</h3>
+        <button class="closeX" id="themeSelectorClose">✕</button>
+      </div>
+      <div class="form">
+        <div>
+          <div class="themeSectionTitle">Temas pré-definidos</div>
+          <div class="themeGrid" id="themeGrid"></div>
+        </div>
+        <div>
+          <div class="themeSectionTitle">Seletor livre de cores</div>
+          <div class="customThemeGrid">
+            <div><div class="lbl">Fundo principal</div><input class="input" id="customBg0" type="color" value="#0b0f19"></div>
+            <div><div class="lbl">Fundo secundário</div><input class="input" id="customBg1" type="color" value="#1c2740"></div>
+            <div><div class="lbl">Card</div><input class="input" id="customCard" type="color" value="#22304f"></div>
+            <div><div class="lbl">Linhas / bordas</div><input class="input" id="customLine" type="color" value="#5b7fc9"></div>
+            <div><div class="lbl">Texto</div><input class="input" id="customTxt" type="color" value="#f5f7fb"></div>
+            <div><div class="lbl">Texto secundário</div><input class="input" id="customMut" type="color" value="#b8c4de"></div>
+            <div><div class="lbl">Destaque</div><input class="input" id="customAcc" type="color" value="#3b82f6"></div>
+            <div><div class="lbl">Valor / positivo</div><input class="input" id="customGood" type="color" value="#39d98a"></div>
+            <div><div class="lbl">Cor do mês</div><input class="input" id="customMonth" type="color" value="#f5f7fb"></div>
+            <div><div class="lbl">Fonte das janelas</div><input class="input" id="customModalText" type="color" value="#10233f"></div>
+            <div><div class="lbl">Cor dos botões</div><input class="input" id="customButtonBg" type="color" value="#3b82f6"></div>
+            <div><div class="lbl">Texto dos botões</div><input class="input" id="customButtonText" type="color" value="#ffffff"></div>
+          </div>
+        </div>
+        <div class="mFoot">
+          <button class="mBtn" id="btnApplyTextColors" type="button">Aplicar só cores de texto</button>
+          <button class="mBtn" id="btnApplyButtonColors" type="button">Aplicar cores dos botões</button>
+          <button class="mBtn" id="btnSavePresetEdit" type="button">Salvar edição no tema atual</button>
+          <button class="mBtn" id="btnResetCurrentPreset" type="button">Reverter tema atual</button>
+          <button class="mBtn" id="btnResetTextColors" type="button">Desativar cores manuais</button>
+          <button class="mBtn" id="btnResetButtonColors" type="button">Desativar botões manuais</button>
+          <button class="mBtn" id="btnApplyCustomTheme" type="button">Aplicar tema personalizado</button>
+          <button class="mBtn ghost" id="themeSelectorCancel" type="button">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+  (() => {
+    const LS_KEY = 'agenda_prod_funcional_recorrencia_v1';
+    const LS_HISTORY = 'agenda_prod_funcional_recorrencia_history_v1';
+    const THEMES = ['senna_mclaren','senna_capacete','tesla','windows_xp','toy_story','sexta_13','game_of_thrones','sonic','resident_evil_2','dark','light','ocean','violet','gold','graphite','paper','emerald','custom'];
+    const PRESET_THEMES = [
+      { key:'senna_mclaren', name:'Ayrton Senna · McLaren', desc:'Preto, vermelho e dourado executivo.', sw:['#111111','#d61f26','#d4af37'] },
+      { key:'senna_capacete', name:'Ayrton Senna · Capacete', desc:'Amarelo dominante, verde vibrante e azul icônicos do capacete.', sw:['#ffe100','#00ff88','#1d4ed8'] },
+      { key:'tesla', name:'Tesla', desc:'Minimalismo preto, branco e vermelho.', sw:['#111111','#e82127','#f3f4f6'] },
+      { key:'windows_xp', name:'Windows XP', desc:'Nostalgia premium com azul e verde clássico.', sw:['#2d7de0','#7ddc4b','#f4f9ff'] },
+      { key:'toy_story', name:'Toy Story', desc:'Azul céu, amarelo e vermelho lúdicos.', sw:['#2f78d6','#ffd230','#ef4444'] },
+      { key:'sexta_13', name:'Sexta-feira 13', desc:'Escuro, vermelho e suspense refinado.', sw:['#0b0b0b','#c1121f','#5c0c0c'] },
+      { key:'game_of_thrones', name:'Game of Thrones', desc:'Aço, couro e trono em tons nobres.', sw:['#1c232c','#9b7b4f','#e8dcc6'] },
+      { key:'sonic', name:'Sonic', desc:'Azul veloz com dourado dos anéis.', sw:['#0a56c2','#0ea5ff','#ffd700'] },
+      { key:'resident_evil_2', name:'Resident Evil 2', desc:'Aço frio, sombra e vermelho tenso.', sw:['#131d29','#8b1e1e','#d8d8d6'] },
+      { key:'dark', name:'Dark', desc:'O tema escuro clássico.', sw:['#0b1330','#60a5fa','#f2f6ff'] },
+      { key:'light', name:'Light', desc:'Claro limpo e profissional.', sw:['#eef3ff','#2563eb','#0b1220'] },
+      { key:'custom', name:'Personalizado', desc:'Defina qualquer combinação de cores.', sw:['#22304f','#3b82f6','#f5f7fb'] }
+    ];
+    const COLOR_PRESETS = ['#1D4ED8','#2563EB','#3B82F6','#60A5FA','#93C5FD','#0EA5E9','#06B6D4','#14B8A6','#22C55E','#16A34A','#84CC16','#EAB308','#F59E0B','#F97316','#EF4444','#DC2626','#EC4899','#DB2777','#8B5CF6','#7C3AED'];
+    const DOW = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    const FIREBASE_CONFIG = {apiKey:'',authDomain:'',projectId:'',storageBucket:'',messagingSenderId:'',appId:''};
+
+    const UI = {
+      el: id => document.getElementById(id),
+      open: id => UI.el(id).classList.add('open'),
+      close: id => UI.el(id).classList.remove('open'),
+    };
+
+    const DEFAULTS = {
+      theme:'senna_capacete',
+      cellH:128,
+      view:(() => { const d = new Date(); return { y:d.getFullYear(), m:d.getMonth() }; })(),
+      selDate:todayISO(),
+      events:[],
+      payRules:[],
+      bonusRules:[],
+      ui:{ summaryCollapsed:false, paymentsCollapsed:false, paymentRowsCollapsed:{} },
+      customTheme:{ bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, presetOverrides:{} },
+      _meta:{ updatedAt:'', updatedBy:'local' }
+    };
+
+    let state = loadState();
+    let saveTimer = null;
+    let isDirty = false;
+    const Modal = { model:null };
+    const Scope = { masterId:null, instanceDate:null, pendingModel:null, mode:null };
+    const DelScope = { masterId:null, instanceDate:null };
+    const RetroDel = { parentId:null, eventId:null, startDate:'', endDate:'' };
+    const SpecificDates = { mode:'copy' };
+
+    function uid(){ return 'e_' + Math.random().toString(16).slice(2) + Date.now().toString(16); }
+    function pad2(n){ return String(n).padStart(2,'0'); }
+    function iso(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+    function todayISO(){ return iso(new Date()); }
+    function parseISO(s){ const [y,m,d] = String(s || '').split('-').map(Number); return new Date(y || 1970, (m || 1)-1, d || 1); }
+    function monthAdd(y,m,delta){ const d = new Date(y, m + delta, 1); return { y:d.getFullYear(), m:d.getMonth() }; }
+    function deepClone(x){ return JSON.parse(JSON.stringify(x)); }
+    function escapeHtml(s){ return String(s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
+    function escapeAttr(s){ return escapeHtml(s).replaceAll('`','&#96;'); }
+    function fmtMoney(n){ return Number(n || 0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+    function fmtHours(h){ const v = Number(h || 0); return (Math.round(v*100)/100).toLocaleString('pt-BR') + 'h'; }
+    function formatDateBR(isoDate){
+      const s = String(isoDate || '').trim();
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+      const [y,m,d] = s.split('-');
+      return `${d}/${m}/${y}`;
+    }
+    function parseDateBR(brDate){
+      const s = String(brDate || '').trim();
+      const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (!m) return '';
+      const [,d,mo,y] = m;
+      return `${y}-${mo}-${d}`;
+    }
+    function normalizeAnyDateToISO(value){
+      const s = String(value || '').trim();
+      if (!s) return '';
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+      if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return parseDateBR(s);
+      return '';
+    }
+    function normalizeDateListTextToISO(raw){
+      return String(raw || '')
+        .replace(/\b(\d{2})[\/\.-](\d{2})[\/\.-](\d{4})\b/g, '$3-$2-$1');
+    }
+    function normalizeState(obj){
+      const s = { ...deepClone(DEFAULTS), ...(obj || {}) };
+      s.events = Array.isArray(s.events) ? s.events : [];
+      s.payRules = Array.isArray(s.payRules) ? s.payRules : [];
+      s.bonusRules = Array.isArray(s.bonusRules) ? s.bonusRules : [];
+      s.ui = { summaryCollapsed:false, paymentsCollapsed:false, paymentRowsCollapsed:{}, ...(s.ui || {}) };
+      s.ui.paymentRowsCollapsed = s.ui.paymentRowsCollapsed || {};
+      s.customTheme = { bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, presetOverrides:{}, ...(s.customTheme || {}) };
+      s.customTheme.presetOverrides = s.customTheme.presetOverrides || {};
+      s.events = s.events.map(e => {
+        const item = { ...e };
+
+        if ((item.retroGenerated || item.retroParentId) && !item.retroGroupId && item.retroParentId) {
+          item.retroGroupId = 'retro_' + item.retroParentId;
+        }
+
+        if ((item.copySourceId || item.copyGroupId || item.copyRootId) && !item.copyFamilyId) {
+          const groupBase = item.copyGroupId || item.copyRootId || item.copySourceId || item.id;
+          item.copyFamilyId = 'copyfam_' + groupBase;
+        }
+
+        return item;
+      });
+      return s;
+    }
+    function loadState(){ try { const raw = localStorage.getItem(LS_KEY); return raw ? normalizeState(JSON.parse(raw)) : deepClone(DEFAULTS); } catch { return deepClone(DEFAULTS); } }
+    function saveLocal(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+    function loadHistory(){ try { return JSON.parse(localStorage.getItem(LS_HISTORY) || '[]'); } catch { return []; } }
+    function saveHistory(arr){ localStorage.setItem(LS_HISTORY, JSON.stringify(arr.slice(-20))); }
+    function pushHistorySnapshot(){ const arr = loadHistory(); const snap = JSON.stringify(state); if (arr[arr.length - 1] === snap) return; arr.push(snap); saveHistory(arr); updateUndoButton(); }
+    function setSaveStatus(kind,label){ const pill = UI.el('savePill'); pill.classList.remove('saved','dirty','saving','error'); pill.classList.add(kind); UI.el('saveLabel').textContent = label; }
+    function markDirty(){ isDirty = true; setSaveStatus('dirty','Não salvo'); clearTimeout(saveTimer); saveTimer = setTimeout(() => performSave(false), 1200); }
+    function performSave(forceHistory){ clearTimeout(saveTimer); if (forceHistory) pushHistorySnapshot(); state._meta.updatedAt = new Date().toISOString(); saveLocal(); isDirty = false; setSaveStatus('saving','Salvando...'); setTimeout(() => setSaveStatus('saved','Salvo'), 220); }
+    function save(){ saveLocal(); markDirty(); }
+    function updateUndoButton(){ UI.el('btnUndo').disabled = loadHistory().length === 0; }
+    function undoLast(){ const arr = loadHistory(); if (!arr.length) return alert('Nada para desfazer.'); const last = arr.pop(); saveHistory(arr); state = normalizeState(JSON.parse(last)); saveLocal(); clearScope(); clearDelScope(); renderAll(); setSaveStatus('saved','Desfeito'); }
+
+    function applyCustomThemeVariables(){
+      const t = state.customTheme || {};
+      const root = document.documentElement;
+      root.style.setProperty('--bg0', t.bg0 || '#0b0f19');
+      root.style.setProperty('--bg1', t.bg1 || '#1c2740');
+      root.style.setProperty('--card', `${hexToRgba(t.card || '#22304f', 0.82)}`);
+      root.style.setProperty('--line', `${hexToRgba(t.line || '#5b7fc9', 0.18)}`);
+      root.style.setProperty('--txt', t.txt || '#f5f7fb');
+      root.style.setProperty('--mut', `${hexToRgba(t.mut || '#b8c4de', 0.76)}`);
+      root.style.setProperty('--mut2', `${hexToRgba(t.mut || '#b8c4de', 0.56)}`);
+      root.style.setProperty('--acc', t.acc || '#3b82f6');
+      root.style.setProperty('--good', t.good || '#39d98a');
+      root.style.setProperty('--custom-month-color', t.month || (t.txt || '#f5f7fb'));
+      root.style.setProperty('--custom-modal-text-color', t.modalText || '#10233f');
+    }
+    function clearCustomThemeVariables(){
+      const root = document.documentElement;
+      ['--bg0','--bg1','--card','--line','--txt','--mut','--mut2','--acc','--good'].forEach(v => root.style.removeProperty(v));
+    }
+    function applyTheme(){
+      const themeKey = state.theme || 'dark';
+      document.body.setAttribute('data-theme', themeKey);
+
+      if (themeKey === 'custom') applyCustomThemeVariables();
+      else clearCustomThemeVariables();
+
+      const t = state.customTheme || {};
+      const override = ((t.presetOverrides || {})[themeKey]) || {};
+      const root = document.documentElement;
+
+      const manualTextOn = !!override.manualTextColors;
+      document.body.setAttribute('data-manual-colors', manualTextOn ? 'on' : 'off');
+      if (manualTextOn) {
+        const modalText = override.modalText || '#0b1220';
+        root.style.setProperty('--custom-month-color', override.month || '#0b1220');
+        root.style.setProperty('--custom-modal-text-color', modalText);
+        root.style.setProperty('--custom-modal-placeholder-color', hexToRgba(modalText, 0.58));
+        root.style.setProperty('--custom-modal-border-color', hexToRgba(modalText, 0.22));
+      } else {
+        ['--custom-month-color','--custom-modal-text-color','--custom-modal-placeholder-color','--custom-modal-border-color'].forEach(v => root.style.removeProperty(v));
+      }
+
+      const manualButtonOn = !!override.manualButtonColors;
+      document.body.setAttribute('data-manual-buttons', manualButtonOn ? 'on' : 'off');
+      if (manualButtonOn) {
+        const buttonBg = override.buttonBg || '#3b82f6';
+        const buttonText = override.buttonText || '#ffffff';
+        root.style.setProperty('--custom-button-bg', buttonBg);
+        root.style.setProperty('--custom-button-text', buttonText);
+        root.style.setProperty('--custom-button-border', hexToRgba(buttonText, 0.24));
+        root.style.setProperty('--custom-button-shadow', hexToRgba(buttonBg, 0.24));
+      } else {
+        ['--custom-button-bg','--custom-button-text','--custom-button-border','--custom-button-shadow'].forEach(v => root.style.removeProperty(v));
+      }
+    }
+    function applyCellH(){ document.documentElement.style.setProperty('--cellH', `${state.cellH || 128}px`); }
+    function toggleTheme(){ openThemeSelector(); }
+    function hexToRgba(hex, alpha){
+      const h = hexNorm(hex).slice(1);
+      const r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+    function renderThemeGrid(){
+      const host = UI.el('themeGrid');
+      if (!host) return;
+      host.innerHTML = '';
+      PRESET_THEMES.forEach(theme => {
+        const card = document.createElement('div');
+        card.className = 'themeCard' + ((state.theme || 'dark') === theme.key ? ' active' : '');
+        card.innerHTML = `
+          <div class="themeTitle">${theme.name}</div>
+          <div class="themeSwatches">${theme.sw.map(c => `<span class="themeSw" style="background:${c}"></span>`).join('')}</div>
+          <div class="themeDesc">${theme.desc}</div>
+        `;
+        card.addEventListener('click', () => setThemePreset(theme.key));
+        host.appendChild(card);
+      });
+    }
+    function loadCustomThemeInputs(){
+      const t = state.customTheme || {};
+      const key = state.theme || 'dark';
+      const override = (t.presetOverrides || {})[key] || {};
+
+      UI.el('customBg0').value = t.bg0 || '#0b0f19';
+      UI.el('customBg1').value = t.bg1 || '#1c2740';
+      UI.el('customCard').value = t.card || '#22304f';
+      UI.el('customLine').value = t.line || '#5b7fc9';
+      UI.el('customTxt').value = t.txt || '#f5f7fb';
+      UI.el('customMut').value = t.mut || '#b8c4de';
+      UI.el('customAcc').value = t.acc || '#3b82f6';
+      UI.el('customGood').value = t.good || '#39d98a';
+
+      UI.el('customMonth').value = override.month || '#0b1220';
+      UI.el('customModalText').value = override.modalText || '#0b1220';
+      UI.el('customButtonBg').value = override.buttonBg || '#3b82f6';
+      UI.el('customButtonText').value = override.buttonText || '#ffffff';
+    }
+    function openThemeSelector(){
+      renderThemeGrid();
+      loadCustomThemeInputs();
+      UI.open('ovThemeSelector');
+    }
+    function setThemePreset(key){
+      state.theme = key;
+      save();
+      renderAll();
+      loadCustomThemeInputs();
+      renderThemeGrid();
+    }
+    function applyCustomThemeFromInputs(){
+      const previousOverrides = (state.customTheme || {}).presetOverrides || {};
+      state.customTheme = {
+        bg0: UI.el('customBg0').value,
+        bg1: UI.el('customBg1').value,
+        card: UI.el('customCard').value,
+        line: UI.el('customLine').value,
+        txt: UI.el('customTxt').value,
+        mut: UI.el('customMut').value,
+        acc: UI.el('customAcc').value,
+        good: UI.el('customGood').value,
+        month:'#0b1220',
+        modalText:'#0b1220',
+        buttonBg:'#3b82f6',
+        buttonText:'#ffffff',
+        manualTextColors:false,
+        manualButtonColors:false,
+        presetOverrides: previousOverrides
+      };
+
+      state.theme = 'custom';
+      state.customTheme.presetOverrides.custom = {
+        month: UI.el('customMonth').value,
+        modalText: UI.el('customModalText').value,
+        buttonBg: UI.el('customButtonBg').value,
+        buttonText: UI.el('customButtonText').value,
+        manualTextColors: true,
+        manualButtonColors: true
+      };
+
+      save();
+      renderAll();
+      renderThemeGrid();
+    }
+
+    function ensureCurrentThemeOverride(){
+      const key = state.theme || 'dark';
+      state.customTheme = state.customTheme || {};
+      state.customTheme.presetOverrides = state.customTheme.presetOverrides || {};
+      state.customTheme.presetOverrides[key] = state.customTheme.presetOverrides[key] || {};
+      return state.customTheme.presetOverrides[key];
+    }
+
+    function applyOnlyTextColorsFromInputs(){
+      const o = ensureCurrentThemeOverride();
+      o.month = UI.el('customMonth').value;
+      o.modalText = UI.el('customModalText').value;
+      o.manualTextColors = true;
+      save();
+      applyTheme();
+      renderThemeGrid();
+    }
+
+    function disableManualTextColors(){
+      const o = ensureCurrentThemeOverride();
+      delete o.month;
+      delete o.modalText;
+      o.manualTextColors = false;
+      save();
+      renderAll();
+      loadCustomThemeInputs();
+      renderThemeGrid();
+    }
+
+    function applyOnlyButtonColorsFromInputs(){
+      const o = ensureCurrentThemeOverride();
+      o.buttonBg = UI.el('customButtonBg').value;
+      o.buttonText = UI.el('customButtonText').value;
+      o.manualButtonColors = true;
+      save();
+      applyTheme();
+      renderThemeGrid();
+    }
+
+    function disableManualButtonColors(){
+      const o = ensureCurrentThemeOverride();
+      delete o.buttonBg;
+      delete o.buttonText;
+      o.manualButtonColors = false;
+      save();
+      renderAll();
+      loadCustomThemeInputs();
+      renderThemeGrid();
+    }
+
+    function saveCurrentPresetEdit(){
+      const o = ensureCurrentThemeOverride();
+      o.month = UI.el('customMonth').value;
+      o.modalText = UI.el('customModalText').value;
+      o.buttonBg = UI.el('customButtonBg').value;
+      o.buttonText = UI.el('customButtonText').value;
+      o.manualTextColors = true;
+      o.manualButtonColors = true;
+      save();
+      renderAll();
+      renderThemeGrid();
+    }
+
+    function resetCurrentPresetEdit(){
+      const key = state.theme || 'dark';
+      state.customTheme = state.customTheme || {};
+      state.customTheme.presetOverrides = state.customTheme.presetOverrides || {};
+      delete state.customTheme.presetOverrides[key];
+      save();
+      renderAll();
+      loadCustomThemeInputs();
+      renderThemeGrid();
+    }
+    function buildMonthMatrix(y,m){ const first = new Date(y,m,1); const startDow = first.getDay(); const start = new Date(y,m,1-startDow); const days = []; for (let i=0; i<42; i++){ const d = new Date(start); d.setDate(start.getDate()+i); days.push(d); } return days; }
+    function monthLabelPT(y,m){ const raw = new Date(y,m,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'}); return raw.charAt(0).toUpperCase() + raw.slice(1); }
+    function monthNameShort(y,m){ const raw = new Date(y,m,1).toLocaleDateString('pt-BR',{month:'short'}).replace('.',''); return raw.charAt(0).toUpperCase() + raw.slice(1); }
+    function renderDow(){ const host = UI.el('dowRow'); host.innerHTML = ''; DOW.forEach(s => { const div = document.createElement('div'); div.className = 'dow'; div.textContent = s; host.appendChild(div); }); }
+    function bindHamburgerAutoHide(){
+      const wrap = UI.el('hambWrap');
+      if (!wrap) return;
+
+      let hideTimer = null;
+      const scheduleHide = () => {
+        clearTimeout(hideTimer);
+        hideTimer = setTimeout(() => wrap.removeAttribute('open'), 320);
+      };
+      const cancelHide = () => clearTimeout(hideTimer);
+
+      wrap.addEventListener('mouseenter', cancelHide);
+      wrap.addEventListener('mouseleave', scheduleHide);
+      wrap.addEventListener('focusin', cancelHide);
+      wrap.addEventListener('focusout', scheduleHide);
+
+      wrap.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target && target.classList && target.classList.contains('menuItem')) {
+          setTimeout(() => wrap.removeAttribute('open'), 120);
+        }
+      });
+    }
+
+    function setMonthHeader(){
+      UI.el('monthLabel').textContent = monthLabelPT(state.view.y, state.view.m);
+      UI.el('monthNote').textContent = '';
+      const prev = monthAdd(state.view.y, state.view.m, -1);
+      const next = monthAdd(state.view.y, state.view.m, 1);
+      UI.el('prevMonthMini').textContent = `${monthNameShort(prev.y, prev.m)} / ${prev.y}`;
+      UI.el('nextMonthMini').textContent = `${monthNameShort(next.y, next.m)} / ${next.y}`;
+    }
+
+    function hexNorm(hex){ let h = String(hex || '').trim(); if (!h) return '#3B82F6'; if (h[0] !== '#') h = '#' + h; if (h.length === 4) h = '#' + h[1]+h[1]+h[2]+h[2]+h[3]+h[3]; return h.toUpperCase(); }
+    function hexToRgb(hex){ const h = hexNorm(hex).slice(1); return { r:parseInt(h.slice(0,2),16), g:parseInt(h.slice(2,4),16), b:parseInt(h.slice(4,6),16) }; }
+    function relLum({r,g,b}){ const sr = [r,g,b].map(v => { v/=255; return v <= 0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055,2.4); }); return 0.2126*sr[0] + 0.7152*sr[1] + 0.0722*sr[2]; }
+    function bestTextColor(bgHex){ return relLum(hexToRgb(bgHex)) > 0.55 ? '#0B1220' : '#FFFFFF'; }
+    function parseTimeToMinutes(value){
+      const s = String(value || '').trim();
+      const m = s.match(/^(\d{1,2}):(\d{2})$/);
+      if (!m) return null;
+      const hh = Number(m[1]), mm = Number(m[2]);
+      if (hh < 0 || hh > 23 || mm < 0 || mm > 59) return null;
+      return hh * 60 + mm;
+    }
+    function parseTimeRangeToHours(value){
+      const raw = String(value || '').trim();
+      if (!raw) return null;
+      const normalized = raw
+        .replace(/\s*[–—]\s*/g, '-')
+        .replace(/\s+até\s+/gi, '-')
+        .replace(/\s+/g, '');
+      const parts = normalized.split('-').filter(Boolean);
+      if (parts.length !== 2) return null;
+      const start = parseTimeToMinutes(parts[0]);
+      const end = parseTimeToMinutes(parts[1]);
+      if (start == null || end == null) return null;
+      let diff = end - start;
+      if (diff <= 0) diff += 24 * 60;
+      return Math.round((diff / 60) * 100) / 100;
+    }
+
+
+    function parseTimeRange(value){
+      const raw = String(value || '').trim();
+      if (!raw) return null;
+      const normalized = raw
+        .replace(/\s*[–—]\s*/g, '-')
+        .replace(/\s+até\s+/gi, '-')
+        .replace(/\s+/g, '');
+      const parts = normalized.split('-').filter(Boolean);
+      if (parts.length !== 2) return null;
+      const start = parseTimeToMinutes(parts[0]);
+      const end = parseTimeToMinutes(parts[1]);
+      if (start == null || end == null) return null;
+      return { start, end };
+    }
+    function bonusRuleMatchesEvent(rule,e){
+      const ruleName = String(rule.locationName || '').trim().toLowerCase();
+      if (ruleName && String(e.name || '').trim().toLowerCase() !== ruleName) return false;
+      const ruleType = String(rule.serviceType || '').trim();
+      if (ruleType && String(e.type || '').trim() !== ruleType) return false;
+      const ruleDate = String(rule.applyDate || '').trim();
+      const eventDate = String(e.dateISO || e.startDate || '').trim();
+      if (ruleDate && eventDate !== ruleDate) return false;
+      return true;
+    }
+    function calcOverlapMinutes(eventStart,eventEnd,ruleStart,ruleEnd){
+      const start = Math.max(eventStart, ruleStart);
+      const end = Math.min(eventEnd, ruleEnd);
+      return Math.max(0, end - start);
+    }
+    function eventHours(e){ return Number(e.hours || 0); }
+    function eventRate(e){ return Number(e.rate || 0); }
+    function eventTotal(e){
+      const baseTotal = eventRate(e) * eventHours(e);
+      const range = parseTimeRange(e?.time);
+      if (!range || eventHours(e) <= 0 || eventRate(e) <= 0 || !Array.isArray(state.bonusRules) || !state.bonusRules.length) return baseTotal;
+
+      let eventStart = range.start, eventEnd = range.end;
+      if (eventEnd <= eventStart) eventEnd += 24 * 60;
+
+      let bonusAmount = 0;
+      for (const rule of state.bonusRules) {
+        if (!bonusRuleMatchesEvent(rule, e)) continue;
+        const ruleStartBase = parseTimeToMinutes(rule.startTime);
+        const ruleEndBase = parseTimeToMinutes(rule.endTime);
+        if (ruleStartBase == null || ruleEndBase == null) continue;
+        const percentage = Number(rule.percentage || 0) / 100;
+        if (!Number.isFinite(percentage) || percentage <= 0) continue;
+
+        const windows = (ruleEndBase <= ruleStartBase)
+          ? [{start:ruleStartBase,end:24*60},{start:24*60,end:48*60+ruleEndBase}]
+          : [{start:ruleStartBase,end:ruleEndBase},{start:ruleStartBase+24*60,end:ruleEndBase+24*60}];
+
+        for (const window of windows) {
+          const overlapMinutes = calcOverlapMinutes(eventStart,eventEnd,window.start,window.end);
+          if (overlapMinutes > 0) {
+            bonusAmount += (overlapMinutes / 60) * eventRate(e) * percentage;
+          }
+        }
+      }
+
+      return baseTotal + bonusAmount;
+    }
+
+    function occursOn(master,dateISO){
+      const d = parseISO(dateISO), start = parseISO(master.startDate);
+      if (d < start) return false;
+      if (master.endDate){ const end = parseISO(master.endDate); if (d > end) return false; }
+      if (Array.isArray(master.exceptions) && master.exceptions.includes(dateISO)) return false;
+      const rec = master.rec || 'none';
+      if (rec === 'none') return master.startDate === dateISO;
+      const diffDays = Math.floor((d - start) / (24*3600*1000));
+      if (rec === 'weekly') return diffDays % 7 === 0;
+      if (rec === 'biweekly') return diffDays % 14 === 0;
+      if (rec === 'monthly') return d.getDate() === start.getDate();
+      return false;
+    }
+
+    function listEventsForDate(dateISO){
+      const singles = state.events.filter(
+        e => !e.isOverride && !e.retroGenerated && (e.rec || 'none') === 'none' && e.startDate === dateISO
+      );
+
+      const overrides = state.events.filter(
+        e => e.isOverride && (e.dateISO || e.startDate) === dateISO
+      );
+
+      const masters = state.events.filter(
+        e => !e.isOverride && (e.rec || 'none') !== 'none'
+      );
+
+      const ovBySeriesAndDate = new Map();
+      overrides.forEach(ov => {
+        if (ov.seriesId) ovBySeriesAndDate.set(`${ov.seriesId}@@${ov.dateISO || ov.startDate}`, ov);
+      });
+
+      const virtuals = [];
+      for (const m of masters){
+        const ov = ovBySeriesAndDate.get(`${m.id}@@${dateISO}`);
+        if (ov) continue;
+        if (!occursOn(m,dateISO)) continue;
+
+        const v = deepClone(m);
+        v._virtual = true;
+        v._masterId = m.id;
+        v._instanceDate = dateISO;
+        v.startDate = dateISO;
+        virtuals.push(v);
+      }
+
+      const list = [...singles, ...overrides, ...virtuals];
+      list.sort((a,b) =>
+        String(a.time || '').localeCompare(String(b.time || '')) ||
+        String(a.name || '').localeCompare(String(b.name || ''))
+      );
+      return list;
+    }
+
+    function typeLabel(t){ const map = {plantao:'Plantão', cirurgia:'Cirurgia', peq_cir:'Pequenas Cirurgias', ambulatorio:'Ambulatório', particular:'Atendimento Particular'}; return map[t] || 'Serviço'; }
+
+    function renderCalendar(){
+      setMonthHeader();
+      const { y, m } = state.view;
+      const days = buildMonthMatrix(y,m);
+      const grid = UI.el('grid');
+      grid.innerHTML = '';
+      days.forEach(d => {
+        const dISO = iso(d), inMonth = d.getMonth() === m, isToday = dISO === todayISO();
+        const list = listEventsForDate(dISO);
+        const day = document.createElement('div');
+        day.className = 'day' + (inMonth ? '' : ' other') + (isToday ? ' today' : '') + (dISO === state.selDate ? ' selected' : '');
+        const top = document.createElement('div');
+        top.className = 'dayTop';
+        top.innerHTML = `<div class="num">${d.getDate()}</div><div class="cnt"></div>`;
+        const chips = document.createElement('div');
+        chips.className = 'chips';
+        list.forEach(e => {
+          const chip = document.createElement('div');
+          chip.className = 'chip';
+          const bg = hexNorm(e.color || '#3B82F6');
+          chip.style.setProperty('--chipBg', bg);
+          chip.style.setProperty('--chipFg', bestTextColor(bg));
+          const chipName = `${e.name || '(sem nome)'}`;
+          chip.title = `${e.name} • ${formatDateBR(dISO)} • ${typeLabel(e.type)}${e.time ? ` • ${e.time}` : ''} • ${fmtMoney(eventTotal(e))}`;
+          chip.innerHTML = `<span class="chipMark"></span><span>${escapeHtml(chipName)}</span>`;
+          chip.addEventListener('click', ev => { ev.stopPropagation(); openEventFromChip(e, dISO); });
+          chips.appendChild(chip);
+        });
+        day.appendChild(top);
+        day.appendChild(chips);
+        day.addEventListener('click', () => { state.selDate = dISO; save(); renderSummary(); openEventNew(dISO); renderCalendar(); });
+        grid.appendChild(day);
+      });
+    }
+
+    function renderSummary(){
+      const { y, m } = state.view;
+      const from = iso(new Date(y,m,1));
+      const to = iso(new Date(y,m+1,0));
+      let count = 0, total = 0, hours = 0;
+      for (let d = parseISO(from); iso(d) <= to; d.setDate(d.getDate()+1)) {
+        const list = listEventsForDate(iso(d));
+        list.forEach(e => { count += 1; total += eventTotal(e); hours += eventHours(e); });
+      }
+      UI.el('sumCount').textContent = String(count);
+      UI.el('sumTotal').textContent = fmtMoney(total);
+      UI.el('sumHours').textContent = fmtHours(hours);
+      UI.el('sumSel').textContent = state.selDate ? formatDateBR(state.selDate) : '—';
+    }
+
+
+    function clamp(n,a,b){ n = Number.isFinite(n) ? n : parseInt(n || 0, 10); return Math.max(a, Math.min(b, n)); }
+    function isBusinessDay(date){ const d = date.getDay(); return d !== 0 && d !== 6; }
+    function getNthBusinessDay(year,month,n){
+      let count = 0, day = 1, date = new Date(year,month,day);
+      while (count < n) {
+        if (isBusinessDay(date)) count++;
+        if (count < n) {
+          day++;
+          date = new Date(year,month,day);
+          if (date.getMonth() !== month) return null;
+        }
+      }
+      return date;
+    }
+    function getLastBusinessDay(year,month){
+      let day = new Date(year,month+1,0).getDate();
+      let date = new Date(year,month,day);
+      while (!isBusinessDay(date)) {
+        day--;
+        date = new Date(year,month,day);
+      }
+      return date;
+    }
+    function competenceRangeForPayMonth(rule,payY,payM){
+      const startDay = clamp(parseInt(rule.compStart || 1,10),1,31);
+      const endDay = clamp(parseInt(rule.compEnd || 31,10),1,31);
+      if (startDay <= endDay){
+        const prev = monthAdd(payY,payM,-1);
+        const lastPrev = new Date(prev.y,prev.m+1,0).getDate();
+        return {
+          from: iso(new Date(prev.y,prev.m,Math.min(startDay,lastPrev))),
+          to: iso(new Date(prev.y,prev.m,Math.min(endDay,lastPrev)))
+        };
+      }
+      const m1 = monthAdd(payY,payM,-2);
+      const m2 = monthAdd(payY,payM,-1);
+      const last1 = new Date(m1.y,m1.m+1,0).getDate();
+      const last2 = new Date(m2.y,m2.m+1,0).getDate();
+      return {
+        from: iso(new Date(m1.y,m1.m,Math.min(startDay,last1))),
+        to: iso(new Date(m2.y,m2.m,Math.min(endDay,last2)))
+      };
+    }
+    function paymentDateFor(rule,payY,payM){
+      if ((rule.payType || 'day') === 'last'){
+        const last = new Date(payY,payM+1,0).getDate();
+        return iso(new Date(payY,payM,last));
+      }
+      if (rule.payType === 'nthBusinessDay'){
+        const nth = clamp(parseInt(rule.payDay || 1,10),1,22);
+        const d = getNthBusinessDay(payY,payM,nth);
+        return d ? iso(d) : iso(new Date(payY,payM,1));
+      }
+      if (rule.payType === 'lastBusinessDay'){
+        const d = getLastBusinessDay(payY,payM);
+        return d ? iso(d) : iso(new Date(payY,payM,1));
+      }
+      const day = clamp(parseInt(rule.payDay || 18,10),1,31);
+      const last = new Date(payY,payM+1,0).getDate();
+      return iso(new Date(payY,payM,Math.min(day,last)));
+    }
+    function listOccurrencesBetween(fromISO,toISO){
+      const from = parseISO(fromISO), to = parseISO(toISO), out = [];
+      for (let d = new Date(from); d <= to; d.setDate(d.getDate()+1)){
+        const ds = iso(d);
+        for (const e of listEventsForDate(ds)){
+          const occ = deepClone(e);
+          occ.startDate = ds;
+          out.push(occ);
+        }
+      }
+      return out;
+    }
+
+
+    function togglePaymentInstitutionRow(key){
+      state.ui = state.ui || {};
+      state.ui.paymentRowsCollapsed = state.ui.paymentRowsCollapsed || {};
+      state.ui.paymentRowsCollapsed[key] = !state.ui.paymentRowsCollapsed[key];
+      save();
+      renderPayments();
+      applyCollapsiblePanels();
+    }
+
+    function renderPayments(){
+      const host = UI.el('payList');
+      const sumEl = UI.el('paySum');
+      host.innerHTML = '';
+
+      const payY = state.view.y, payM = state.view.m;
+      let grand = 0;
+      let visibleRows = 0;
+
+      if (!state.payRules.length){
+        host.innerHTML = '<div class="helper">Cadastre regras em “Regras de pagamento”. O painel “Valores a receber” segue exclusivamente essas regras.</div>';
+        sumEl.textContent = fmtMoney(0);
+        return;
+      }
+
+      for (const rule of state.payRules){
+        const name = String(rule.name || '').trim();
+        if (!name) continue;
+
+        const { from, to } = competenceRangeForPayMonth(rule, payY, payM);
+        const payDate = paymentDateFor(rule, payY, payM);
+
+        const items = listOccurrencesBetween(from, to)
+          .filter(o => String(o.name || '').trim() === name)
+          .map(o => ({
+            date: o.startDate,
+            name: o.name || 'Sem nome',
+            type: typeLabel(o.type),
+            time: o.time || '—',
+            hours: Number(o.hours || 0),
+            total: eventTotal(o)
+          }))
+          .sort((a,b) => String(a.date).localeCompare(String(b.date)) || String(a.time).localeCompare(String(b.time)));
+
+        const total = items.reduce((acc, item) => acc + Number(item.total || 0), 0);
+        const hours = items.reduce((acc, item) => acc + Number(item.hours || 0), 0);
+        const count = items.length;
+
+        if (total <= 0) continue;
+
+        grand += total;
+        visibleRows += 1;
+
+        const rowKey = `rule:${name}:${payDate}:${from}:${to}`;
+        const collapsed = !!(state.ui && state.ui.paymentRowsCollapsed && state.ui.paymentRowsCollapsed[rowKey]);
+
+        const itemsHtml = items.map(item => `
+          <div class="small" style="padding:8px 0;border-top:1px dashed var(--line)">
+            <b>${formatDateBR(item.date)}</b> • ${escapeHtml(item.type)} • ${escapeHtml(item.time)} • ${fmtHours(item.hours)} • ${fmtMoney(item.total)}
+          </div>
+        `).join('');
+
+        const div = document.createElement('div');
+        div.className = 'payRow';
+        div.innerHTML = `
+          <div class="payRowTop">
+            <div class="a">${escapeHtml(name)}</div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <button class="smallBtn payment-row-toggle" data-key="${escapeAttr(rowKey)}" type="button">${collapsed ? 'Expandir' : 'Recolher'}</button>
+              <div class="b">${fmtMoney(total)}</div>
+            </div>
+          </div>
+          <div class="small">
+            <b>Pagamento:</b> ${formatDateBR(payDate)} •
+            <b>Competência:</b> ${formatDateBR(from)} → ${formatDateBR(to)} •
+            <b>Eventos:</b> ${count} •
+            <b>Horas:</b> ${fmtHours(hours)}
+          </div>
+          <div class="payment-row-body" style="display:${collapsed ? 'none' : 'block'};margin-top:6px">
+            ${itemsHtml}
+          </div>
+        `;
+        host.appendChild(div);
+      }
+
+      if (!visibleRows) {
+        host.innerHTML = '<div class="helper">Nenhuma instituição com valor a receber neste mês conforme as regras de pagamento cadastradas.</div>';
+      }
+
+      host.querySelectorAll('.payment-row-toggle').forEach(btn => {
+        btn.addEventListener('click', () => togglePaymentInstitutionRow(btn.dataset.key || ''));
+      });
+
+      sumEl.textContent = fmtMoney(grand);
+    }
+
+    function defaultEvent(dateISO){
+      return {
+        id:uid(), name:'', startDate:dateISO || todayISO(), time:'', type:'plantao', color:'#3B82F6',
+        rate:0, hours:0, note:'',
+        rec:'none', endDate:'', exceptions:[],
+        isOverride:false, seriesId:'', dateISO:'',
+        retroMode:'none', retroSingleDate:'', retroStartDate:'', retroEndDate:'', retroInfoDate:''
+      };
+    }
+
+    function fillEventForm(m,title){
+      UI.el('evTitle').textContent = title || 'Evento';
+      UI.el('evName').value = m.name || '';
+      UI.el('evDate').value = m.startDate || todayISO();
+      UI.el('evTime').value = m.time || '';
+      UI.el('evType').value = m.type || 'plantao';
+      UI.el('btnPickColor').dataset.color = hexNorm(m.color || '#3B82F6');
+      UI.el('evRate').value = m.rate || '';
+      UI.el('evHours').value = m.hours || '';
+      UI.el('evNote').value = m.note || '';
+      UI.el('evRec').value = m.rec || 'none';
+      UI.el('evEnd').value = m.endDate || '';
+      UI.el('evRetroMode').value = m.retroMode || 'none';
+      UI.el('evRetroSingleDate').value = m.retroSingleDate || '';
+      UI.el('evRetroStartDate').value = m.retroStartDate || '';
+      UI.el('evRetroEndDate').value = m.retroEndDate || '';
+      UI.el('evRetroInfoDate').value = m.retroInfoDate || '';
+      UI.el('recEndRow').style.display = UI.el('evRec').value !== 'none' ? '' : 'none';
+      updateRetroUi();
+      updateEventTotalPreview();
+    }
+
+    function readEventForm(){
+      const m = deepClone(Modal.model || defaultEvent(state.selDate || todayISO()));
+      m.name = String(UI.el('evName').value || '').trim();
+      m.startDate = UI.el('evDate').value || todayISO();
+      m.time = String(UI.el('evTime').value || '').trim();
+      m.type = UI.el('evType').value || 'plantao';
+      m.color = hexNorm(UI.el('btnPickColor').dataset.color || '#3B82F6');
+      m.rate = Number(UI.el('evRate').value || 0);
+      m.hours = Number(UI.el('evHours').value || 0);
+      m.rec = UI.el('evRec').value || 'none';
+      m.endDate = m.rec !== 'none' ? (UI.el('evEnd').value || '') : '';
+      m.note = String(UI.el('evNote').value || '').trim();
+      m.retroMode = UI.el('evRetroMode').value || 'none';
+      m.retroSingleDate = UI.el('evRetroSingleDate').value || '';
+      m.retroStartDate = UI.el('evRetroStartDate').value || '';
+      m.retroEndDate = UI.el('evRetroEndDate').value || '';
+      m.retroInfoDate = UI.el('evRetroInfoDate').value || '';
+      return m;
+    }
+
+    function updateRetroUi(){
+      const mode = UI.el('evRetroMode').value || 'none';
+      UI.el('retroSingleRow').style.display = mode === 'single' ? '' : 'none';
+      UI.el('retroPeriodRow').style.display = mode === 'period' ? 'grid' : 'none';
+      UI.el('retroInfoRow').style.display = mode === 'info' ? '' : 'none';
+    }
+
+    function updateChipPreview(){
+      const model = readEventForm();
+      const bg = hexNorm(model.color || '#3B82F6');
+      UI.el('chipPreview').style.setProperty('--chipBg', bg);
+      UI.el('chipPreview').style.setProperty('--chipFg', bestTextColor(bg));
+      UI.el('chipPreviewTxt').textContent = model.name || 'Exemplo';
+      UI.el('colorPicker').value = bg;
+      UI.el('colorHex').value = bg;
+    }
+
+    function updateEventTotalPreview(){
+      const timeValue = UI.el('evTime').value || '';
+      const autoHours = parseTimeRangeToHours(timeValue);
+
+      if (autoHours != null) {
+        UI.el('evHours').value = String(autoHours);
+      }
+
+      const hours = Number(String(UI.el('evHours').value || '0').replace(',', '.')) || 0;
+      const rate = Number(String(UI.el('evRate').value || '0').replace(',', '.')) || 0;
+      UI.el('evTotal').value = fmtMoney(rate * hours);
+      updateChipPreview();
+    }
+
+    function clearScope(){ Scope.masterId = null; Scope.instanceDate = null; Scope.pendingModel = null; Scope.mode = null; }
+    function clearDelScope(){ DelScope.masterId = null; DelScope.instanceDate = null; }
+    function clearRetroDel(){ RetroDel.parentId = null; RetroDel.eventId = null; RetroDel.startDate = ''; RetroDel.endDate = ''; }
+
+    function openEventNew(dateISO){
+      clearScope();
+      Modal.model = defaultEvent(dateISO);
+      fillEventForm(Modal.model,'Novo evento');
+      UI.el('evDelete').style.display = 'none';
+      UI.open('ovEvent');
+    }
+
+    function openEventFromChip(e,dayISO){
+      if (e._virtual){
+        Scope.masterId = e._masterId;
+        Scope.instanceDate = e._instanceDate || dayISO;
+        Scope.pendingModel = deepClone(e);
+        Scope.mode = null;
+        Modal.model = deepClone(e);
+        Modal.model.startDate = Scope.instanceDate;
+        UI.open('ovScope');
+        return;
+      }
+      clearScope();
+      Modal.model = deepClone(e);
+      if (e.isOverride) Modal.model.startDate = e.dateISO || dayISO;
+      fillEventForm(Modal.model, e.isOverride ? 'Editar (override)' : 'Editar evento');
+      UI.el('evDelete').style.display = '';
+      UI.open('ovEvent');
+    }
+
+    function chooseScope(scope){
+      if (!Scope.masterId || !Scope.instanceDate){ UI.close('ovScope'); return; }
+      Scope.mode = scope;
+      UI.close('ovScope');
+      const labels = { single:'apenas este evento', future:'este evento e os futuros', all:'todos os eventos da série' };
+      const base = deepClone(Scope.pendingModel || Modal.model || defaultEvent(Scope.instanceDate));
+      base.startDate = Scope.instanceDate;
+      base.dateISO = Scope.instanceDate;
+      if (scope === 'single') {
+        base.rec = 'none';
+        base.endDate = '';
+      }
+      Modal.model = base;
+      fillEventForm(base, `Editar (série • ${labels[scope] || 'apenas este evento'})`);
+      UI.el('evDelete').style.display = '';
+      UI.open('ovEvent');
+    }
+
+    function openDeleteScope(){
+      if (!Scope.masterId || !Scope.instanceDate){
+        if (Modal.model && !Modal.model.isOverride && (Modal.model.rec || 'none') !== 'none'){
+          DelScope.masterId = Modal.model.id;
+          DelScope.instanceDate = Modal.model.startDate;
+        } else if (Modal.model && Modal.model.isOverride && Modal.model.seriesId){
+          DelScope.masterId = Modal.model.seriesId;
+          DelScope.instanceDate = Modal.model.dateISO || Modal.model.startDate;
+        }
+      } else {
+        DelScope.masterId = Scope.masterId;
+        DelScope.instanceDate = Scope.instanceDate;
+      }
+      UI.open('ovDelScope');
+    }
+
+    function generateRetroDates(baseEvent){
+      const mode = baseEvent.retroMode || 'none', out = [];
+      const today = todayISO();
+
+      function sameEventAlreadyExists(dateISO){
+        return state.events.some(e => {
+          const eventDate = e.dateISO || e.startDate || '';
+          return eventDate === dateISO &&
+            String(e.name || '').trim() === String(baseEvent.name || '').trim() &&
+            String(e.time || '').trim() === String(baseEvent.time || '').trim() &&
+            String(e.type || '').trim() === String(baseEvent.type || '').trim() &&
+            Number(e.rate || 0) === Number(baseEvent.rate || 0) &&
+            Number(e.hours || 0) === Number(baseEvent.hours || 0);
+        });
+      }
+
+      if (mode === 'single' && baseEvent.retroSingleDate){
+        const d = baseEvent.retroSingleDate;
+        if (d < baseEvent.startDate && d !== today && !sameEventAlreadyExists(d)) out.push(d);
+        return out;
+      }
+
+      if (mode !== 'period' || !baseEvent.retroStartDate || !baseEvent.retroEndDate) return out;
+
+      const startLimit = parseISO(baseEvent.retroStartDate);
+      const rawEnd = parseISO(baseEvent.retroEndDate);
+      const anchor = parseISO(baseEvent.startDate);
+      const maxRetroDate = new Date(Math.min(rawEnd.getTime(), parseISO(today).getTime(), new Date(anchor.getTime() - 86400000).getTime()));
+      if (maxRetroDate < startLimit) return out;
+
+      const rec = baseEvent.rec || 'none';
+
+      if (rec === 'weekly' || rec === 'biweekly'){
+        const step = rec === 'weekly' ? 7 : 14;
+        for (let d = new Date(anchor); d >= startLimit; d.setDate(d.getDate() - step)){
+          const dIso = iso(d);
+          if (dIso < baseEvent.startDate && d <= maxRetroDate && dIso !== today && !sameEventAlreadyExists(dIso)) out.push(dIso);
+        }
+        return [...new Set(out)].sort();
+      }
+
+      if (rec === 'monthly'){
+        const anchorDay = anchor.getDate();
+        let cursor = new Date(anchor.getFullYear(), anchor.getMonth(), 1);
+        while(true){
+          cursor.setMonth(cursor.getMonth() - 1);
+          const lastDay = new Date(cursor.getFullYear(), cursor.getMonth()+1, 0).getDate();
+          const d = new Date(cursor.getFullYear(), cursor.getMonth(), Math.min(anchorDay, lastDay));
+          if (d < startLimit) break;
+          const dIso = iso(d);
+          if (dIso < baseEvent.startDate && d <= maxRetroDate && dIso !== today && !sameEventAlreadyExists(dIso)) out.push(dIso);
+        }
+        return [...new Set(out)].sort();
+      }
+
+      for (let d = new Date(startLimit); d <= maxRetroDate; d.setDate(d.getDate()+1)){
+        const dIso = iso(d);
+        if (dIso < baseEvent.startDate && dIso !== today && !sameEventAlreadyExists(dIso)) out.push(dIso);
+      }
+      return [...new Set(out)].sort();
+    }
+
+    function createRetroSingles(baseEvent){
+      const dates = generateRetroDates(baseEvent);
+      const created = [];
+      dates.forEach(dIso => {
+        created.push({
+          ...deepClone(baseEvent),
+          id: uid(),
+          rec:'none',
+          endDate:'',
+          exceptions:[],
+          isOverride:false,
+          seriesId:'',
+          dateISO:'',
+          startDate:dIso,
+          retroGenerated:true,
+          retroParentId: baseEvent.id,
+          retroGroupId: 'retro_' + baseEvent.id
+        });
+      });
+      return created;
+    }
+
+    function isRetroChildOf(eventObj, parentId){
+      if (!eventObj) return false;
+      return !!(
+        (eventObj.retroGenerated && eventObj.retroParentId === parentId) ||
+        eventObj.retroParentId === parentId ||
+        eventObj.retroGroupId === ('retro_' + parentId)
+      );
+    }
+
+
+    function isCopiedEvent(e){
+      return !!(e && (e.copySourceId || e.copyFamilyId || e.copyGroupId || e.copyRootId));
+    }
+
+    function rootGroupIdForEvent(e){
+      if (!e) return '';
+      if (e.retroParentId) return e.retroParentId;
+      if (e.copyFamilyId) return e.copyFamilyId;
+      if (e.isOverride && e.seriesId) return e.seriesId;
+      if ((e.rec || 'none') !== 'none') return e.id;
+      return e.copyGroupId || e.id;
+    }
+
+    function parseSpecificDatesInput(raw){
+      const tokens = String(raw || '')
+        .replaceAll(';', ',')
+        .replaceAll('\n', ',')
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+      const valid = [];
+      for (const t of tokens){
+        const isoDate = normalizeAnyDateToISO(t);
+        if (isoDate) valid.push(isoDate);
+      }
+      return [...new Set(valid)].sort();
+    }
+
+    function openSpecificDatesModal(mode){
+      SpecificDates.mode = mode;
+      UI.el('specificDatesTitle').textContent = mode === 'copy' ? 'Copiar para datas específicas' : 'Excluir datas específicas';
+      UI.el('specificDatesHint').textContent = mode === 'copy'
+        ? 'Escolha se deseja copiar como evento único ou copiar a recorrência do evento atual.'
+        : 'Na exclusão, as datas informadas serão removidas do grupo vinculado ao evento atual.';
+      UI.el('specificDatesText').value = '';
+      UI.el('specificStartDate').value = '';
+      UI.el('specificEndDate').value = '';
+      UI.el('copyModeWrap').style.display = mode === 'copy' ? '' : 'none';
+      if (UI.el('copyModeSingle')) UI.el('copyModeSingle').checked = true;
+      if (UI.el('copyModeRecurring')) UI.el('copyModeRecurring').checked = false;
+      UI.open('ovSpecificDates');
+    }
+
+    function closeSpecificDatesModal(){
+      UI.close('ovSpecificDates');
+    }
+
+    function fillSpecificRange(stepDays){
+      const start = normalizeAnyDateToISO(UI.el('specificStartDate').value || '');
+      const end = normalizeAnyDateToISO(UI.el('specificEndDate').value || '');
+      if (!start || !end) return alert('Informe a data inicial e a data final no formato DD/MM/AAAA.');
+      if (start > end) return alert('A data final não pode ser anterior à inicial.');
+      const dates = [];
+      for (let d = parseISO(start); iso(d) <= end; d.setDate(d.getDate() + stepDays)) {
+        dates.push(formatDateBR(iso(d)));
+      }
+      UI.el('specificDatesText').value = dates.join('\\n');
+    }
+
+    function applySpecificDatesAction(){
+      if (!Modal.model) return;
+      const dates = parseSpecificDatesInput(normalizeDateListTextToISO(UI.el('specificDatesText').value));
+      if (!dates.length) return alert('Informe ao menos uma data válida no formato DD/MM/AAAA.');
+
+      pushHistorySnapshot();
+
+      if (SpecificDates.mode === 'copy') {
+        const base = readEventForm();
+        const sourceRootId = rootGroupIdForEvent(Modal.model);
+        const copyMode = document.querySelector('input[name="copyMode"]:checked')?.value || 'single';
+        const batchFamilyId = uid();
+
+        dates.filter(d => d !== base.startDate).forEach(d => {
+          const copy = {
+            ...deepClone(base),
+            id: uid(),
+            startDate: d,
+            exceptions: [],
+            isOverride: false,
+            seriesId: '',
+            dateISO: '',
+            retroGenerated: false,
+            retroParentId: '',
+            retroGroupId: '',
+            copyFamilyId: batchFamilyId,
+            copyGroupId: batchFamilyId,
+            copyRootId: batchFamilyId,
+            copySourceId: Modal.model.id || '',
+            copySourceRootId: sourceRootId || ''
+          };
+
+          if (copyMode === 'single') {
+            copy.rec = 'none';
+            copy.endDate = '';
+          } else if ((copy.rec || 'none') !== 'none' && copy.endDate && copy.endDate < copy.startDate) {
+            copy.endDate = '';
+          }
+
+          state.events.push(copy);
+        });
+      }
+
+      if (SpecificDates.mode === 'delete') {
+        const target = Modal.model;
+        const rootId = rootGroupIdForEvent(target);
+
+        if ((target.rec || 'none') !== 'none' || (target.isOverride && target.seriesId)) {
+          const masterId = target.isOverride ? target.seriesId : target.id;
+          const masterIndex = state.events.findIndex(e => e.id === masterId);
+          if (masterIndex >= 0) {
+            const master = deepClone(state.events[masterIndex]);
+            if (!Array.isArray(master.exceptions)) master.exceptions = [];
+            dates.forEach(d => {
+              if (!master.exceptions.includes(d)) master.exceptions.push(d);
+            });
+            state.events[masterIndex] = master;
+          }
+          state.events = state.events.filter(e => {
+            if (!(e.isOverride && e.seriesId === masterId)) return true;
+            const d = e.dateISO || e.startDate || '';
+            return !dates.includes(d);
+          });
+        } else {
+          state.events = state.events.filter(e => {
+            const sameGroup = (e.id === rootId) || (e.copyFamilyId === rootId) || (e.copyGroupId === rootId);
+            if (!sameGroup) return true;
+            return !dates.includes(e.startDate || '');
+          });
+        }
+      }
+
+      save();
+      closeSpecificDatesModal();
+      UI.close('ovEvent');
+      renderAll();
+    }
+
+    function validateEvent(e){
+      if (!e.name) return 'Informe a instituição / local.';
+      if (!e.startDate) return 'Informe a data.';
+      if (e.rate < 0 || e.hours < 0) return 'Valor por hora e horas não podem ser negativos.';
+      if (e.rec !== 'none' && e.endDate && parseISO(e.endDate) < parseISO(e.startDate)) return 'A data final da recorrência não pode ser anterior à data inicial.';
+      if (e.retroMode === 'period' && e.retroStartDate && e.retroEndDate && parseISO(e.retroEndDate) < parseISO(e.retroStartDate)) return 'No retroativo, a data final não pode ser anterior à inicial.';
+      return '';
+    }
+
+    function saveSimpleEvent(model){
+      const idx = state.events.findIndex(x => x.id === model.id);
+      if (idx >= 0) state.events[idx] = model;
+      else state.events.push(model);
+    }
+
+
+    function purgeConflictingOccurrenceCopies(masterId, instanceDate){
+      state.events = state.events.filter(e => {
+        if (e.isOverride && e.seriesId === masterId && (e.dateISO || e.startDate) === instanceDate) return true;
+        if (e.retroGenerated) return true;
+        if (!e.isOverride && (e.rec || 'none') === 'none' && e.startDate === instanceDate && e._masterId === masterId) return false;
+        return true;
+      });
+    }
+
+    function saveEvent(){
+      const model = readEventForm();
+      const err = validateEvent(model);
+      if (err) return alert(err);
+
+      pushHistorySnapshot();
+
+      if (Scope.masterId && Scope.instanceDate && Scope.mode){
+        const masterIndex = state.events.findIndex(e => e.id === Scope.masterId);
+        if (masterIndex === -1){
+          clearScope();
+          return alert('Não foi possível localizar a série original.');
+        }
+        const master = deepClone(state.events[masterIndex]);
+
+        if (Scope.mode === 'single'){
+          if (!Array.isArray(master.exceptions)) master.exceptions = [];
+          if (!master.exceptions.includes(Scope.instanceDate)) master.exceptions.push(Scope.instanceDate);
+          state.events[masterIndex] = master;
+
+          const cleanOverride = {
+            id: uid(),
+            name: model.name,
+            startDate: Scope.instanceDate,
+            time: model.time,
+            type: model.type,
+            color: model.color,
+            rate: model.rate,
+            hours: model.hours,
+            note: model.note,
+            rec: 'none',
+            endDate: '',
+            exceptions: [],
+            isOverride: true,
+            seriesId: master.id,
+            dateISO: Scope.instanceDate,
+            retroMode: model.retroMode || 'none',
+            retroSingleDate: model.retroSingleDate || '',
+            retroStartDate: model.retroStartDate || '',
+            retroEndDate: model.retroEndDate || '',
+            retroInfoDate: model.retroInfoDate || ''
+          };
+
+          const existingOverrideIndex = state.events.findIndex(
+            e => e.isOverride && e.seriesId === master.id && (e.dateISO || e.startDate) === Scope.instanceDate
+          );
+
+          if (existingOverrideIndex >= 0) {
+            cleanOverride.id = state.events[existingOverrideIndex].id;
+            state.events[existingOverrideIndex] = cleanOverride;
+          } else {
+            state.events.push(cleanOverride);
+          }
+
+          purgeConflictingOccurrenceCopies(master.id, Scope.instanceDate);
+          state.selDate = Scope.instanceDate;
+        }
+
+        if (Scope.mode === 'future'){
+          const prevDay = new Date(parseISO(Scope.instanceDate)); prevDay.setDate(prevDay.getDate() - 1);
+          master.endDate = iso(prevDay);
+          state.events[masterIndex] = master;
+
+          state.events = state.events.filter(e => !(e.isOverride && e.seriesId === master.id && (e.dateISO || e.startDate) >= Scope.instanceDate));
+          state.events = state.events.filter(e => !isRetroChildOf(e, master.id));
+
+          const newMaster = {
+            ...deepClone(model),
+            id: uid(),
+            startDate: Scope.instanceDate,
+            isOverride:false,
+            seriesId:'',
+            dateISO:'',
+            exceptions:[]
+          };
+          state.events.push(newMaster);
+          createRetroSingles(newMaster).forEach(r => state.events.push(r));
+        }
+
+        if (Scope.mode === 'all'){
+          const clean = {
+            ...deepClone(model),
+            id: master.id,
+            isOverride:false,
+            seriesId:'',
+            dateISO:'',
+            exceptions:Array.isArray(master.exceptions) ? master.exceptions : []
+          };
+          state.events[masterIndex] = clean;
+          state.events = state.events.filter(e => !isRetroChildOf(e, master.id));
+          createRetroSingles(clean).forEach(r => state.events.push(r));
+        }
+
+        state.selDate = model.startDate;
+        clearScope();
+        Modal.model = null;
+        save();
+        UI.close('ovEvent');
+        renderAll();
+        return;
+      }
+
+      if (model.isOverride){
+        const idx = state.events.findIndex(e => e.id === model.id);
+        if (idx >= 0) state.events[idx] = model;
+        else state.events.push(model);
+      } else {
+        state.events = state.events.filter(e => !isRetroChildOf(e, model.id));
+        saveSimpleEvent(model);
+        const retroSingles = createRetroSingles(model);
+        retroSingles.forEach(r => state.events.push(r));
+      }
+
+      state.selDate = model.startDate;
+      Modal.model = null;
+      save();
+      UI.close('ovEvent');
+      renderAll();
+    }
+
+    function deleteSingleOccurrence(masterId, instanceDate){
+      const idx = state.events.findIndex(e => e.id === masterId);
+      if (idx === -1) return;
+      const master = deepClone(state.events[idx]);
+      if (!Array.isArray(master.exceptions)) master.exceptions = [];
+      if (!master.exceptions.includes(instanceDate)) master.exceptions.push(instanceDate);
+      state.events[idx] = master;
+      state.events = state.events.filter(e => !(e.isOverride && e.seriesId === masterId && (e.dateISO || e.startDate) === instanceDate));
+    }
+
+    function deleteFutureOccurrences(masterId, instanceDate){
+      const idx = state.events.findIndex(e => e.id === masterId);
+      if (idx === -1) return;
+      const master = deepClone(state.events[idx]);
+      const prevDay = new Date(parseISO(instanceDate)); prevDay.setDate(prevDay.getDate() - 1);
+      master.endDate = iso(prevDay);
+      state.events[idx] = master;
+      state.events = state.events.filter(e => !(e.isOverride && e.seriesId === masterId && (e.dateISO || e.startDate) >= instanceDate));
+    }
+
+    function deleteAllOccurrences(masterId){
+      state.events = state.events.filter(e => e.id !== masterId && e.seriesId !== masterId);
+    }
+
+    function deleteEvent(){
+      // ocorrência virtual de série
+      if (Scope.masterId && Scope.instanceDate){
+        const scopedMaster = state.events.find(e => e.id === Scope.masterId);
+        if (!scopedMaster) {
+          clearScope();
+          return;
+        }
+
+        if ((scopedMaster.rec || 'none') !== 'none') {
+          if (!confirm('Excluir esta ocorrência da série?')) return;
+          DelScope.masterId = Scope.masterId;
+          DelScope.instanceDate = Scope.instanceDate;
+          UI.open('ovDelScope');
+          return;
+        }
+      }
+
+      if (!Modal.model) return;
+      if (!confirm('Excluir este evento?')) return;
+
+      pushHistorySnapshot();
+
+      if (Modal.model.retroParentId || Modal.model.retroGenerated){
+        prepareRetroDeleteModal(Modal.model.retroParentId, Modal.model.id);
+        UI.open('ovRetroDelScope');
+        return;
+      }
+
+      // série recorrente aberta diretamente (inclusive cópia recorrente)
+      if ((Modal.model.rec || 'none') !== 'none' && !Modal.model.isOverride){
+        DelScope.masterId = Modal.model.id;
+        DelScope.instanceDate = Modal.model.startDate;
+        UI.open('ovDelScope');
+        return;
+      }
+
+      // override de ocorrência
+      if (Modal.model.isOverride){
+        state.events = state.events.filter(e => e.id !== Modal.model.id);
+        Modal.model = null;
+        save();
+        UI.close('ovEvent');
+        renderAll();
+        return;
+      }
+
+      // evento único normal OU cópia única: apaga apenas o registro aberto
+      const targetId = Modal.model.id;
+      state.events = state.events.filter(e => e.id !== targetId);
+
+      Modal.model = null;
+      save();
+      UI.close('ovEvent');
+      renderAll();
+    }
+
+    function confirmDeleteScope(mode){
+      if (!DelScope.masterId || !DelScope.instanceDate){ UI.close('ovDelScope'); return; }
+      pushHistorySnapshot();
+      if (mode === 'single') deleteSingleOccurrence(DelScope.masterId, DelScope.instanceDate);
+      if (mode === 'future') deleteFutureOccurrences(DelScope.masterId, DelScope.instanceDate);
+      if (mode === 'all') deleteAllOccurrences(DelScope.masterId);
+      clearScope();
+      clearDelScope();
+      Modal.model = null;
+      save();
+      UI.close('ovDelScope');
+      UI.close('ovEvent');
+      renderAll();
+    }
+
+
+    function prepareRetroDeleteModal(parentId, eventId){
+      RetroDel.parentId = parentId || null;
+      RetroDel.eventId = eventId || null;
+
+      const children = state.events
+        .filter(e => isRetroChildOf(e, parentId))
+        .sort((a,b) => String(a.startDate || '').localeCompare(String(b.startDate || '')));
+
+      const clicked = state.events.find(e => e.id === eventId);
+      const firstDate = children.length ? (children[0].startDate || '') : '';
+      const lastDate = children.length ? (children[children.length - 1].startDate || '') : '';
+      const clickedDate = clicked?.startDate || '';
+
+      RetroDel.startDate = clickedDate || firstDate;
+      RetroDel.endDate = clickedDate || lastDate;
+
+      if (UI.el('retroDelStartDate')) UI.el('retroDelStartDate').value = RetroDel.startDate ? formatDateBR(RetroDel.startDate) : '';
+      if (UI.el('retroDelEndDate')) UI.el('retroDelEndDate').value = RetroDel.endDate ? formatDateBR(RetroDel.endDate) : '';
+    }
+
+    function buildColorGrid(){
+      const host = UI.el('colorGrid');
+      host.innerHTML = '';
+      const current = hexNorm(UI.el('btnPickColor').dataset.color || '#3B82F6');
+      COLOR_PRESETS.forEach(c => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'colorBtn' + (hexNorm(c) === current ? ' on' : '');
+        b.style.setProperty('--c', c);
+        b.addEventListener('click', () => {
+          UI.el('btnPickColor').dataset.color = hexNorm(c);
+          buildColorGrid();
+          updateChipPreview();
+        });
+        host.appendChild(b);
+      });
+    }
+
+    function confirmRetroDelete(mode){
+      if (!RetroDel.parentId && !RetroDel.eventId){
+        UI.close('ovRetroDelScope');
+        return;
+      }
+
+      if (mode === 'single') {
+        state.events = state.events.filter(e => e.id !== RetroDel.eventId);
+      }
+
+      if (mode === 'all') {
+        state.events = state.events.filter(e => !isRetroChildOf(e, RetroDel.parentId));
+
+        const parentIndex = state.events.findIndex(e => e.id === RetroDel.parentId);
+        if (parentIndex >= 0) {
+          state.events[parentIndex] = {
+            ...state.events[parentIndex],
+            retroMode:'none',
+            retroSingleDate:'',
+            retroStartDate:'',
+            retroEndDate:'',
+            retroInfoDate:''
+          };
+        }
+      }
+
+      if (mode === 'range') {
+        const start = normalizeAnyDateToISO(UI.el('retroDelStartDate')?.value || '') || RetroDel.startDate || '';
+        const end = normalizeAnyDateToISO(UI.el('retroDelEndDate')?.value || '') || RetroDel.endDate || '';
+
+        if (!start || !end) {
+          alert('Informe a data inicial e a data final do período específico.');
+          return;
+        }
+
+        if (start > end) {
+          alert('No período específico, a data final não pode ser anterior à inicial.');
+          return;
+        }
+
+        state.events = state.events.filter(e => {
+          if (!isRetroChildOf(e, RetroDel.parentId)) return true;
+          const d = e.startDate || '';
+          return !(start <= d && d <= end);
+        });
+
+        const stillHasRetro = state.events.some(e => isRetroChildOf(e, RetroDel.parentId));
+
+        if (!stillHasRetro) {
+          const parentIndex = state.events.findIndex(e => e.id === RetroDel.parentId);
+          if (parentIndex >= 0) {
+            state.events[parentIndex] = {
+              ...state.events[parentIndex],
+              retroMode:'none',
+              retroSingleDate:'',
+              retroStartDate:'',
+              retroEndDate:'',
+              retroInfoDate:''
+            };
+          }
+        }
+      }
+
+      clearRetroDel();
+      Modal.model = null;
+      save();
+      UI.close('ovRetroDelScope');
+      UI.close('ovEvent');
+      renderAll();
+    }
+
+    function renderRulesEditor(){
+      const host = UI.el('rulesHost');
+      host.innerHTML = '';
+      if (!state.payRules.length){
+        host.innerHTML = '<div class="helper">Nenhuma instituição cadastrada ainda.</div>';
+        return;
+      }
+      for (const r of state.payRules) host.appendChild(ruleCard(r));
+    }
+
+    function ruleCard(r){
+      const wrap = document.createElement('div');
+      wrap.className = 'payRow';
+      wrap.innerHTML = `<div class="payRowTop"><div class="a">Instituição</div><button class="smallBtn danger" type="button">Remover</button></div>
+      <div class="row2" style="margin-top:10px">
+        <div><div class="lbl">Nome</div><input class="input" data-k="name" value="${escapeAttr(r.name || '')}" placeholder="Ex: Hospital Regional"></div>
+        <div><div class="lbl">Dia do pagamento</div><select class="input" data-k="payType"><option value="day">Dia fixo</option><option value="last">Último dia do mês</option><option value="nthBusinessDay">Nº dia útil</option><option value="lastBusinessDay">Último dia útil</option></select></div>
+      </div>
+      <div class="row2" style="margin-top:10px">
+        <div data-role="payDayContainer" style="${(r.payType === 'day' || r.payType === 'nthBusinessDay') ? '' : 'display:none;'}"><div class="lbl" data-role="payDayLabel">${r.payType === 'nthBusinessDay' ? 'Nº do dia útil' : 'Número do dia'}</div><input class="input" data-k="payDay" type="number" min="1" max="31" step="1" value="${escapeAttr(String(r.payDay || 18))}"></div>
+        <div class="helper"><b>Competência:</b> se início ≤ fim → mês anterior. Se início > fim → cruza 2 meses.</div>
+      </div>
+      <div class="row2" style="margin-top:10px">
+        <div><div class="lbl">Dia início da competência</div><input class="input" data-k="compStart" type="number" min="1" max="31" step="1" value="${escapeAttr(String(r.compStart || 1))}"></div>
+        <div><div class="lbl">Dia fim da competência</div><input class="input" data-k="compEnd" type="number" min="1" max="31" step="1" value="${escapeAttr(String(r.compEnd || 31))}"></div>
+      </div>`;
+
+      const sel = wrap.querySelector('select[data-k="payType"]');
+      sel.value = r.payType || 'day';
+
+      const syncTypeUi = () => {
+        const v = sel.value;
+        const cont = wrap.querySelector('[data-role="payDayContainer"]');
+        const label = wrap.querySelector('[data-role="payDayLabel"]');
+        const show = (v === 'day' || v === 'nthBusinessDay');
+        cont.style.display = show ? '' : 'none';
+        label.textContent = v === 'nthBusinessDay' ? 'Nº do dia útil' : 'Número do dia';
+      };
+      syncTypeUi();
+      sel.addEventListener('change', syncTypeUi);
+
+      wrap.querySelector('button').addEventListener('click', () => {
+        state.payRules = state.payRules.filter(x => x.id !== r.id);
+        renderRulesEditor();
+      });
+
+      return wrap;
+    }
+
+    function collectRules(){
+      const host = UI.el('rulesHost');
+      const cards = [...host.querySelectorAll('.payRow')];
+      const ids = state.payRules.map(r => r.id);
+      state.payRules = cards.map((card, i) => {
+        const get = key => card.querySelector(`[data-k="${key}"]`);
+        return {
+          id: ids[i] || uid(),
+          name: String(get('name')?.value || '').trim(),
+          payType: String(get('payType')?.value || 'day'),
+          payDay: clamp(parseInt(get('payDay')?.value || 18,10),1,31),
+          compStart: clamp(parseInt(get('compStart')?.value || 1,10),1,31),
+          compEnd: clamp(parseInt(get('compEnd')?.value || 31,10),1,31),
+        };
+      }).filter(r => r.name);
+    }
+
+
+    function renderBonusRulesEditor(){
+      const host = UI.el('bonusRulesHost');
+      host.innerHTML = '';
+      if (!state.bonusRules.length){
+        host.innerHTML = '<div class="helper">Nenhuma regra de bonificação cadastrada ainda.</div>';
+        return;
+      }
+
+      state.bonusRules.forEach((rule, index) => {
+        const box = document.createElement('div');
+        box.className = 'payRow';
+        box.innerHTML = `
+          <div class="payRowTop">
+            <div class="a">Regra de bonificação</div>
+            <button class="smallBtn danger bonus-remove" data-index="${index}" type="button">Remover</button>
+          </div>
+          <div class="row2" style="margin-top:10px">
+            <div>
+              <div class="lbl">Instituição (opcional)</div>
+              <input class="input bonus-location" data-index="${index}" value="${escapeAttr(rule.locationName || '')}" placeholder="Ex: Hospital Regional">
+            </div>
+            <div>
+              <div class="lbl">Tipo (opcional)</div>
+              <select class="input bonus-type" data-index="${index}">
+                <option value="">Todos</option>
+                <option value="plantao" ${rule.serviceType === 'plantao' ? 'selected' : ''}>Plantão</option>
+                <option value="cirurgia" ${rule.serviceType === 'cirurgia' ? 'selected' : ''}>Cirurgia</option>
+                <option value="peq_cir" ${rule.serviceType === 'peq_cir' ? 'selected' : ''}>Pequenas Cirurgias</option>
+                <option value="ambulatorio" ${rule.serviceType === 'ambulatorio' ? 'selected' : ''}>Ambulatório</option>
+                <option value="particular" ${rule.serviceType === 'particular' ? 'selected' : ''}>Atendimento Particular</option>
+              </select>
+            </div>
+          </div>
+          <div class="row3" style="margin-top:10px">
+            <div>
+              <div class="lbl">Início</div>
+              <input class="input bonus-start" data-index="${index}" value="${escapeAttr(rule.startTime || '')}" placeholder="18:00">
+            </div>
+            <div>
+              <div class="lbl">Fim</div>
+              <input class="input bonus-end" data-index="${index}" value="${escapeAttr(rule.endTime || '')}" placeholder="06:00">
+            </div>
+            <div>
+              <div class="lbl">Percentual</div>
+              <input class="input bonus-percentage" type="number" min="0" step="0.01" data-index="${index}" value="${Number(rule.percentage || 0)}">
+            </div>
+          </div>
+          <div class="row2" style="margin-top:10px">
+            <div>
+              <div class="lbl">Data específica (opcional)</div>
+              <input class="input bonus-date" type="date" data-index="${index}" value="${escapeAttr(rule.applyDate || '')}">
+            </div>
+            <div class="helper">
+              A bonificação é aplicada apenas nas horas que coincidirem com essa faixa horária.
+            </div>
+          </div>
+        `;
+        host.appendChild(box);
+      });
+
+      host.querySelectorAll('.bonus-remove').forEach(btn => btn.addEventListener('click', () => {
+        const index = Number(btn.dataset.index);
+        state.bonusRules.splice(index, 1);
+        renderBonusRulesEditor();
+      }));
+    }
+
+    function collectBonusRules(){
+      const host = UI.el('bonusRulesHost');
+      const next = [];
+      host.querySelectorAll('.payRow').forEach((box, index) => {
+        next.push({
+          id: state.bonusRules[index]?.id || uid(),
+          locationName: box.querySelector('.bonus-location')?.value.trim() || '',
+          serviceType: box.querySelector('.bonus-type')?.value || '',
+          startTime: box.querySelector('.bonus-start')?.value.trim() || '',
+          endTime: box.querySelector('.bonus-end')?.value.trim() || '',
+          percentage: Number(box.querySelector('.bonus-percentage')?.value || 0),
+          applyDate: box.querySelector('.bonus-date')?.value || ''
+        });
+      });
+      state.bonusRules = next.filter(r => r.percentage > 0 && r.startTime && r.endTime);
+    }
+
+    function downloadJson(filename, payload){
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+    function exportData(){ downloadJson(`agenda_backup_${Date.now()}.json`, state); }
+    function importData(file){
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          pushHistorySnapshot();
+          state = normalizeState(data);
+          saveLocal();
+          clearScope();
+          clearDelScope();
+          clearRetroDel();
+          renderAll();
+          alert('Importação concluída.');
+        } catch {
+          alert('Arquivo JSON inválido.');
+        }
+      };
+      reader.readAsText(file);
+    }
+    function resetAll(){ if (!confirm('Tem certeza que deseja zerar os dados locais?')) return; pushHistorySnapshot(); state = deepClone(DEFAULTS); saveLocal(); clearScope(); clearDelScope(); renderAll(); setSaveStatus('saved','Zerado'); }
+
+
+    function applyCollapsiblePanels(){
+      const summaryBody = UI.el('summaryBody');
+      const paymentsBody = UI.el('paymentsBody');
+      const btnSummary = UI.el('btnToggleSummary');
+      const btnPayments = UI.el('btnTogglePayments');
+
+      if (summaryBody && btnSummary){
+        const collapsed = !!state.ui?.summaryCollapsed;
+        summaryBody.style.display = collapsed ? 'none' : '';
+        btnSummary.textContent = collapsed ? 'Expandir' : 'Recolher';
+      }
+
+      if (paymentsBody && btnPayments){
+        const collapsed = !!state.ui?.paymentsCollapsed;
+        paymentsBody.style.display = collapsed ? 'none' : '';
+        btnPayments.textContent = collapsed ? 'Expandir' : 'Recolher';
+      }
+    }
+
+    function toggleSummaryPanel(){
+      state.ui = state.ui || {};
+      state.ui.summaryCollapsed = !state.ui.summaryCollapsed;
+      save();
+      applyCollapsiblePanels();
+    }
+
+    function togglePaymentsPanel(){
+      state.ui = state.ui || {};
+      state.ui.paymentsCollapsed = !state.ui.paymentsCollapsed;
+      save();
+      applyCollapsiblePanels();
+    }
+
+    function renderAll(){
+      applyTheme();
+      applyCellH();
+      renderDow();
+      renderCalendar();
+      renderSummary();
+      renderPayments();
+      updateUndoButton();
+      applyCollapsiblePanels();
+      UI.el('dayHRange').value = String(state.cellH || 128);
+      UI.el('dayHVal').textContent = `${state.cellH || 128}px`;
+    }
+
+    function bindEvents(){
+      UI.el('btnTheme').addEventListener('click', toggleTheme);
+      UI.el('themeSelectorClose').addEventListener('click', () => UI.close('ovThemeSelector'));
+      UI.el('themeSelectorCancel').addEventListener('click', () => UI.close('ovThemeSelector'));
+      UI.el('btnApplyCustomTheme').addEventListener('click', applyCustomThemeFromInputs);
+      UI.el('btnApplyTextColors').addEventListener('click', applyOnlyTextColorsFromInputs);
+      UI.el('btnApplyButtonColors').addEventListener('click', applyOnlyButtonColorsFromInputs);
+      UI.el('btnSavePresetEdit').addEventListener('click', saveCurrentPresetEdit);
+      UI.el('btnResetCurrentPreset').addEventListener('click', resetCurrentPresetEdit);
+      UI.el('btnResetTextColors').addEventListener('click', disableManualTextColors);
+      UI.el('btnResetButtonColors').addEventListener('click', disableManualButtonColors);
+      ['customMonth','customModalText'].forEach(id => UI.el(id).addEventListener('input', applyOnlyTextColorsFromInputs));
+      ['customButtonBg','customButtonText'].forEach(id => UI.el(id).addEventListener('input', applyOnlyButtonColorsFromInputs));
+      UI.el('btnNew').addEventListener('click', () => openEventNew(state.selDate || todayISO()));
+      UI.el('btnUndo').addEventListener('click', undoLast);
+      UI.el('btnSaveNow').addEventListener('click', () => performSave(true));
+      UI.el('btnToggleSummary').addEventListener('click', toggleSummaryPanel);
+      UI.el('btnTogglePayments').addEventListener('click', togglePaymentsPanel);
+      UI.el('sidePrev').addEventListener('click', () => { state.view = monthAdd(state.view.y, state.view.m, -1); save(); renderAll(); });
+      UI.el('sideNext').addEventListener('click', () => { state.view = monthAdd(state.view.y, state.view.m, 1); save(); renderAll(); });
+
+      UI.el('evClose').addEventListener('click', () => UI.close('ovEvent'));
+      UI.el('evCancel').addEventListener('click', () => { clearScope(); UI.close('ovEvent'); });
+      UI.el('evSave').addEventListener('click', saveEvent);
+      UI.el('evDelete').addEventListener('click', deleteEvent);
+      UI.el('btnCopySpecificDates').addEventListener('click', () => openSpecificDatesModal('copy'));
+      UI.el('btnDeleteSpecificDates').addEventListener('click', () => openSpecificDatesModal('delete'));
+      ['evName','evTime','evRate','evHours','evNote'].forEach(id => UI.el(id).addEventListener('input', updateEventTotalPreview));
+      ['evType','evDate','evEnd','evRec','evRetroMode','evRetroSingleDate','evRetroStartDate','evRetroEndDate','evRetroInfoDate'].forEach(id => UI.el(id).addEventListener('change', () => {
+        if (id === 'evRec') UI.el('recEndRow').style.display = UI.el('evRec').value !== 'none' ? '' : 'none';
+        if (id === 'evRetroMode') updateRetroUi();
+        updateEventTotalPreview();
+      }));
+
+      UI.el('scopeClose').addEventListener('click', () => { clearScope(); UI.close('ovScope'); });
+      UI.el('scopeSingle').addEventListener('click', () => chooseScope('single'));
+      UI.el('scopeFuture').addEventListener('click', () => chooseScope('future'));
+      UI.el('scopeAll').addEventListener('click', () => chooseScope('all'));
+
+      UI.el('delScopeClose').addEventListener('click', () => { clearDelScope(); UI.close('ovDelScope'); });
+      UI.el('delSingle').addEventListener('click', () => confirmDeleteScope('single'));
+      UI.el('delFuture').addEventListener('click', () => confirmDeleteScope('future'));
+      UI.el('delAll').addEventListener('click', () => confirmDeleteScope('all'));
+      UI.el('specificDatesClose').addEventListener('click', closeSpecificDatesModal);
+      UI.el('specificDatesCancel').addEventListener('click', closeSpecificDatesModal);
+      UI.el('specificDatesConfirm').addEventListener('click', applySpecificDatesAction);
+      UI.el('btnSpecificFillRange').addEventListener('click', () => fillSpecificRange(1));
+      UI.el('btnSpecificFillWeekly').addEventListener('click', () => fillSpecificRange(7));
+      UI.el('btnSpecificFillBiweekly').addEventListener('click', () => fillSpecificRange(14));      
+      UI.el('btnSpecificClear').addEventListener('click', () => { UI.el('specificDatesText').value = ''; });
+
+
+      UI.el('retroDelScopeClose').addEventListener('click', () => { clearRetroDel(); UI.close('ovRetroDelScope'); });
+      UI.el('retroDelSingle').addEventListener('click', () => confirmRetroDelete('single'));
+      UI.el('retroDelAll').addEventListener('click', () => confirmRetroDelete('all'));
+      UI.el('retroDelRange').addEventListener('click', () => confirmRetroDelete('range'));
+
+      UI.el('btnRetroToday').addEventListener('click', () => {
+        const today = todayISO();
+        const start = UI.el('evDate').value || today;
+        const maxEnd = parseISO(start) <= parseISO(today) ? iso(new Date(parseISO(start).getTime() - 86400000)) : today;
+        UI.el('evRetroEndDate').value = maxEnd < (UI.el('evRetroStartDate').value || '') ? (UI.el('evRetroStartDate').value || '') : maxEnd;
+        updateEventTotalPreview();
+      });
+
+      UI.el('btnPickColor').addEventListener('click', () => { buildColorGrid(); UI.open('ovColor'); });
+      UI.el('colorClose').addEventListener('click', () => UI.close('ovColor'));
+      UI.el('colorOk').addEventListener('click', () => UI.close('ovColor'));
+      UI.el('colorPicker').addEventListener('input', e => { UI.el('btnPickColor').dataset.color = hexNorm(e.target.value); UI.el('colorHex').value = hexNorm(e.target.value); buildColorGrid(); updateChipPreview(); });
+      UI.el('colorHex').addEventListener('input', e => { UI.el('btnPickColor').dataset.color = hexNorm(e.target.value); UI.el('colorPicker').value = hexNorm(e.target.value); buildColorGrid(); updateChipPreview(); });
+
+      UI.el('btnDayH').addEventListener('click', () => { UI.el('dayHRange').value = String(state.cellH || 128); UI.el('dayHVal').textContent = `${state.cellH || 128}px`; UI.open('ovDayH'); });
+      UI.el('dayHClose').addEventListener('click', () => UI.close('ovDayH'));
+      UI.el('dayHOk').addEventListener('click', () => UI.close('ovDayH'));
+      UI.el('dayHRange').addEventListener('input', e => { state.cellH = Number(e.target.value || 128); UI.el('dayHVal').textContent = `${state.cellH}px`; applyCellH(); save(); renderCalendar(); });
+
+      UI.el('btnPay').addEventListener('click', () => { renderRulesEditor(); UI.open('ovPay'); });
+      UI.el('payClose').addEventListener('click', () => UI.close('ovPay'));
+      UI.el('addRule').addEventListener('click', () => { state.payRules.push({ id:uid(), name:'', payType:'day', payDay:18, compStart:1, compEnd:31 }); renderRulesEditor(); });
+      UI.el('saveRules').addEventListener('click', () => { collectRules(); save(); UI.close('ovPay'); renderPayments(); });
+
+      UI.el('btnBonusRules').addEventListener('click', () => { renderBonusRulesEditor(); UI.open('ovBonusRules'); });
+      UI.el('bonusRulesClose').addEventListener('click', () => UI.close('ovBonusRules'));
+      UI.el('addBonusRule').addEventListener('click', () => {
+        state.bonusRules.push({ id:uid(), locationName:'', serviceType:'', startTime:'', endTime:'', percentage:0, applyDate:'' });
+        renderBonusRulesEditor();
+      });
+      UI.el('saveBonusRules').addEventListener('click', () => { collectBonusRules(); save(); UI.close('ovBonusRules'); renderPayments(); renderCalendar(); renderSummary(); });
+
+      UI.el('btnLogin').addEventListener('click', () => UI.open('ovLogin'));
+      UI.el('loginClose').addEventListener('click', () => UI.close('ovLogin'));
+
+      UI.el('btnExport').addEventListener('click', exportData);
+      UI.el('btnImport').addEventListener('click', () => UI.el('fileImport').click());
+      UI.el('fileImport').addEventListener('change', e => { const file = e.target.files?.[0]; if (file) importData(file); e.target.value = ''; });
+      UI.el('btnReset').addEventListener('click', resetAll);
+
+      document.querySelectorAll('.ov').forEach(ov => ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); }));
+    }
+
+    bindEvents();
+    bindHamburgerAutoHide();
+    renderAll();
+  })();
+  </script>
+</body>
+</html>
