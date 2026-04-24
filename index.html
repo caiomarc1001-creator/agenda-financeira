@@ -1812,18 +1812,23 @@ body[data-manual-buttons="on"] .hambBtn .hambLines::after{
   </div>
 
   <div class="ov" id="ovLogin">
-    <div class="modal" style="width:min(620px,100%)">
+    <div class="modal" style="width:min(680px,100%)">
       <div class="mHead">
         <h3>Login e nuvem</h3>
         <button class="closeX" id="loginClose">✕</button>
       </div>
       <div class="form">
-        <div class="cloudHint">Esta versão está preparada para Firebase. Para ativar depois, preencha o objeto <b>FIREBASE_CONFIG</b> no código e habilite Email/Password e Cloud Firestore.</div>
-        <div><div class="lbl">E-mail</div><input class="input" id="loginEmail" placeholder="voce@exemplo.com" type="email" /></div>
-        <div><div class="lbl">Senha</div><input class="input" id="loginPassword" placeholder="mínimo 6 caracteres" type="password" /></div>
+        <div class="cloudHint" id="cloudHint">
+          Entre com e-mail e senha para salvar sua agenda na nuvem. Cada usuário acessa apenas os próprios dados.
+        </div>
+        <div><div class="lbl">E-mail</div><input class="input" id="loginEmail" placeholder="voce@exemplo.com" type="email" autocomplete="email" /></div>
+        <div><div class="lbl">Senha</div><input class="input" id="loginPassword" placeholder="mínimo 6 caracteres" type="password" autocomplete="current-password" /></div>
+        <div class="small" id="cloudUserStatus">Status: não conectado.</div>
         <div class="mFoot">
-          <button class="mBtn" type="button">Criar conta</button>
-          <button class="mBtn primary" type="button">Entrar</button>
+          <button class="mBtn" id="btnCreateAccount" type="button">Criar conta</button>
+          <button class="mBtn primary" id="btnSignIn" type="button">Entrar</button>
+          <button class="mBtn" id="btnSyncLocalToCloud" type="button">Enviar dados locais para nuvem</button>
+          <button class="mBtn danger" id="btnSignOut" type="button">Sair</button>
         </div>
       </div>
     </div>
@@ -1872,6 +1877,11 @@ body[data-manual-buttons="on"] .hambBtn .hambLines::after{
   </div>
 
 
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
   <script>
   (() => {
     const LS_KEY = 'agenda_prod_funcional_recorrencia_v1';
@@ -1893,7 +1903,14 @@ body[data-manual-buttons="on"] .hambBtn .hambLines::after{
     ];
     const COLOR_PRESETS = ['#1D4ED8','#2563EB','#3B82F6','#60A5FA','#93C5FD','#0EA5E9','#06B6D4','#14B8A6','#22C55E','#16A34A','#84CC16','#EAB308','#F59E0B','#F97316','#EF4444','#DC2626','#EC4899','#DB2777','#8B5CF6','#7C3AED'];
     const DOW = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-    const FIREBASE_CONFIG = {apiKey:'',authDomain:'',projectId:'',storageBucket:'',messagingSenderId:'',appId:''};
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyBEaZ3RKRqxKh9-OOoPnBKIJhrm2aTkQq8",
+      authDomain: "agenda-financeira-4a861.firebaseapp.com",
+      projectId: "agenda-financeira-4a861",
+      storageBucket: "agenda-financeira-4a861.firebasestorage.app",
+      messagingSenderId: "129226784277",
+      appId: "1:129226784277:web:839352c980797f0421981c"
+    };
 
     const UI = {
       el: id => document.getElementById(id),
@@ -1917,6 +1934,14 @@ body[data-manual-buttons="on"] .hambBtn .hambLines::after{
     let state = loadState();
     let saveTimer = null;
     let isDirty = false;
+    let firebaseApp = null;
+    let firebaseAuth = null;
+    let firebaseDb = null;
+    let currentUser = null;
+    let cloudReady = false;
+    let cloudLoadDone = false;
+    let cloudSaveTimer = null;
+    let cloudSaving = false;
     const Modal = { model:null };
     const Scope = { masterId:null, instanceDate:null, pendingModel:null, mode:null };
     const DelScope = { masterId:null, instanceDate:null };
@@ -1990,10 +2015,205 @@ body[data-manual-buttons="on"] .hambBtn .hambLines::after{
     function pushHistorySnapshot(){ const arr = loadHistory(); const snap = JSON.stringify(state); if (arr[arr.length - 1] === snap) return; arr.push(snap); saveHistory(arr); updateUndoButton(); }
     function setSaveStatus(kind,label){ const pill = UI.el('savePill'); pill.classList.remove('saved','dirty','saving','error'); pill.classList.add(kind); UI.el('saveLabel').textContent = label; }
     function markDirty(){ isDirty = true; setSaveStatus('dirty','Não salvo'); clearTimeout(saveTimer); saveTimer = setTimeout(() => performSave(false), 1200); }
-    function performSave(forceHistory){ clearTimeout(saveTimer); if (forceHistory) pushHistorySnapshot(); state._meta.updatedAt = new Date().toISOString(); saveLocal(); isDirty = false; setSaveStatus('saving','Salvando...'); setTimeout(() => setSaveStatus('saved','Salvo'), 220); }
+    function performSave(forceHistory){
+      clearTimeout(saveTimer);
+      if (forceHistory) pushHistorySnapshot();
+      state._meta.updatedAt = new Date().toISOString();
+      state._meta.updatedBy = currentUser ? currentUser.uid : 'local';
+      saveLocal();
+      isDirty = false;
+
+      if (currentUser && cloudLoadDone) {
+        setSaveStatus('saving','Salvando na nuvem...');
+        scheduleCloudSave(250);
+      } else {
+        setSaveStatus('saving','Salvando local...');
+        setTimeout(() => setSaveStatus('saved','Salvo local'), 220);
+      }
+    }
     function save(){ saveLocal(); markDirty(); }
     function updateUndoButton(){ UI.el('btnUndo').disabled = loadHistory().length === 0; }
     function undoLast(){ const arr = loadHistory(); if (!arr.length) return alert('Nada para desfazer.'); const last = arr.pop(); saveHistory(arr); state = normalizeState(JSON.parse(last)); saveLocal(); clearScope(); clearDelScope(); renderAll(); setSaveStatus('saved','Desfeito'); }
+
+
+    function hasFirebaseConfig(){
+      return !!(FIREBASE_CONFIG && FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.projectId && FIREBASE_CONFIG.appId);
+    }
+
+    function updateCloudStatus(message){
+      const label = UI.el('cloudUserStatus');
+      if (label) label.textContent = message;
+      const loginBtn = UI.el('btnLogin');
+      if (loginBtn) loginBtn.textContent = currentUser ? 'Nuvem' : 'Login';
+    }
+
+    function initFirebaseCloud(){
+      if (!hasFirebaseConfig()) {
+        updateCloudStatus('Status: Firebase não configurado.');
+        return;
+      }
+
+      try {
+        firebaseApp = firebase.apps && firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG);
+        firebaseAuth = firebase.auth();
+        firebaseDb = firebase.firestore();
+        cloudReady = true;
+
+        firebaseAuth.onAuthStateChanged(async user => {
+          currentUser = user || null;
+          cloudLoadDone = false;
+
+          if (!currentUser) {
+            updateCloudStatus('Status: não conectado.');
+            setSaveStatus('saved','Salvo local');
+            cloudLoadDone = false;
+            return;
+          }
+
+          updateCloudStatus(`Conectado: ${currentUser.email}`);
+          setSaveStatus('saving','Carregando nuvem...');
+          await loadCloudForCurrentUser();
+          cloudLoadDone = true;
+          setSaveStatus('saved','Nuvem conectada');
+        });
+      } catch (err) {
+        console.error(err);
+        updateCloudStatus('Status: erro ao iniciar Firebase.');
+        setSaveStatus('error','Erro Firebase');
+      }
+    }
+
+    function cloudDocRef(){
+      if (!firebaseDb || !currentUser) return null;
+      return firebaseDb.collection('users').doc(currentUser.uid).collection('agenda').doc('state');
+    }
+
+    function stateForCloud(){
+      const clean = normalizeState(state);
+      clean._meta = {
+        ...(clean._meta || {}),
+        updatedAt: new Date().toISOString(),
+        updatedBy: currentUser ? currentUser.uid : 'local'
+      };
+      return clean;
+    }
+
+    async function loadCloudForCurrentUser(){
+      const ref = cloudDocRef();
+      if (!ref) return;
+
+      try {
+        const snap = await ref.get();
+        const localHasData = Array.isArray(state.events) && state.events.length > 0;
+
+        if (!snap.exists) {
+          if (localHasData) {
+            await saveCloudNow(true);
+            alert('Seus dados locais foram enviados para a nuvem deste usuário.');
+          }
+          renderAll();
+          return;
+        }
+
+        const remoteState = normalizeState(snap.data().state || {});
+        const remoteHasData = Array.isArray(remoteState.events) && remoteState.events.length > 0;
+
+        if (localHasData && remoteHasData) {
+          const useLocal = confirm(
+            'Este usuário já tem dados na nuvem.\\n\\n' +
+            'Clique em OK para ENVIAR os dados atuais deste navegador para a nuvem.\\n' +
+            'Clique em Cancelar para CARREGAR os dados já salvos na nuvem.'
+          );
+
+          if (useLocal) {
+            await saveCloudNow(true);
+          } else {
+            state = remoteState;
+            saveLocal();
+          }
+        } else if (remoteHasData) {
+          state = remoteState;
+          saveLocal();
+        } else if (localHasData) {
+          await saveCloudNow(true);
+        }
+
+        clearScope();
+        clearDelScope();
+        clearRetroDel();
+        renderAll();
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao carregar dados da nuvem. Verifique Authentication, Firestore e regras.');
+        setSaveStatus('error','Erro na nuvem');
+      }
+    }
+
+    function scheduleCloudSave(delay=900){
+      clearTimeout(cloudSaveTimer);
+      cloudSaveTimer = setTimeout(() => saveCloudNow(false), delay);
+    }
+
+    async function saveCloudNow(showAlert=false){
+      if (!currentUser || !firebaseDb) return;
+      const ref = cloudDocRef();
+      if (!ref || cloudSaving) return;
+
+      cloudSaving = true;
+      try {
+        setSaveStatus('saving','Salvando na nuvem...');
+        await ref.set({
+          state: stateForCloud(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          userEmail: currentUser.email || ''
+        }, { merge:false });
+
+        saveLocal();
+        setSaveStatus('saved','Salvo na nuvem');
+        if (showAlert) alert('Dados enviados para a nuvem com sucesso.');
+      } catch (err) {
+        console.error(err);
+        setSaveStatus('error','Erro ao salvar nuvem');
+        if (showAlert) alert('Erro ao enviar para a nuvem. Verifique Firestore e regras.');
+      } finally {
+        cloudSaving = false;
+      }
+    }
+
+    async function createAccount(){
+      if (!firebaseAuth) return alert('Firebase ainda não está pronto.');
+      const email = UI.el('loginEmail').value.trim();
+      const pass = UI.el('loginPassword').value;
+      if (!email || pass.length < 6) return alert('Informe e-mail e senha com pelo menos 6 caracteres.');
+
+      try {
+        await firebaseAuth.createUserWithEmailAndPassword(email, pass);
+        UI.close('ovLogin');
+      } catch (err) {
+        alert('Erro ao criar conta: ' + (err.message || err));
+      }
+    }
+
+    async function signIn(){
+      if (!firebaseAuth) return alert('Firebase ainda não está pronto.');
+      const email = UI.el('loginEmail').value.trim();
+      const pass = UI.el('loginPassword').value;
+      if (!email || !pass) return alert('Informe e-mail e senha.');
+
+      try {
+        await firebaseAuth.signInWithEmailAndPassword(email, pass);
+        UI.close('ovLogin');
+      } catch (err) {
+        alert('Erro ao entrar: ' + (err.message || err));
+      }
+    }
+
+    async function signOut(){
+      if (!firebaseAuth) return;
+      await firebaseAuth.signOut();
+      setSaveStatus('saved','Salvo local');
+      updateCloudStatus('Status: não conectado.');
+    }
 
     function applyCustomThemeVariables(){
       const t = state.customTheme || {};
@@ -3520,6 +3740,7 @@ body[data-manual-buttons="on"] .hambBtn .hambLines::after{
           pushHistorySnapshot();
           state = normalizeState(data);
           saveLocal();
+          if (currentUser && cloudLoadDone) saveCloudNow(false);
           clearScope();
           clearDelScope();
           clearRetroDel();
@@ -3531,7 +3752,7 @@ body[data-manual-buttons="on"] .hambBtn .hambLines::after{
       };
       reader.readAsText(file);
     }
-    function resetAll(){ if (!confirm('Tem certeza que deseja zerar os dados locais?')) return; pushHistorySnapshot(); state = deepClone(DEFAULTS); saveLocal(); clearScope(); clearDelScope(); renderAll(); setSaveStatus('saved','Zerado'); }
+    function resetAll(){ if (!confirm('Tem certeza que deseja zerar os dados deste navegador?')) return; pushHistorySnapshot(); state = deepClone(DEFAULTS); saveLocal(); if (currentUser && cloudLoadDone) saveCloudNow(false); clearScope(); clearDelScope(); renderAll(); setSaveStatus('saved', currentUser ? 'Zerado e sincronizado' : 'Zerado local'); }
 
 
     function applyCollapsiblePanels(){
@@ -3669,8 +3890,12 @@ body[data-manual-buttons="on"] .hambBtn .hambLines::after{
       });
       UI.el('saveBonusRules').addEventListener('click', () => { collectBonusRules(); save(); UI.close('ovBonusRules'); renderPayments(); renderCalendar(); renderSummary(); });
 
-      UI.el('btnLogin').addEventListener('click', () => UI.open('ovLogin'));
+      UI.el('btnLogin').addEventListener('click', () => { updateCloudStatus(currentUser ? `Conectado: ${currentUser.email}` : 'Status: não conectado.'); UI.open('ovLogin'); });
       UI.el('loginClose').addEventListener('click', () => UI.close('ovLogin'));
+      UI.el('btnCreateAccount').addEventListener('click', createAccount);
+      UI.el('btnSignIn').addEventListener('click', signIn);
+      UI.el('btnSignOut').addEventListener('click', signOut);
+      UI.el('btnSyncLocalToCloud').addEventListener('click', () => saveCloudNow(true));
 
       UI.el('btnExport').addEventListener('click', exportData);
       UI.el('btnImport').addEventListener('click', () => UI.el('fileImport').click());
