@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <!-- Firebase robust module bridge v5-sync-config -->
-  <!-- Firebase robust module bridge v3 -->
-  <meta charset="UTF-8" />
+
+<meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agenda de Plantões & Produtividade</title>
   <style>
@@ -1926,6 +1925,7 @@ body[data-theme="toy_story"] .passToggle{
     </div>
   </div>
 
+  <!-- Firebase compat bridge v6 - estável para HTML único / GitHub Pages -->
   <script>
     window.FIREBASE_READY = false;
     window.FIREBASE_INIT_ERROR = null;
@@ -1938,51 +1938,42 @@ body[data-theme="toy_story"] .passToggle{
       appId: "1:129226784277:web:839352c980797f0421981c"
     };
   </script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+  <script>
+    (function(){
+      try {
+        if (!window.firebase) throw new Error("SDK Firebase compat não carregou.");
+        const app = firebase.apps && firebase.apps.length
+          ? firebase.app()
+          : firebase.initializeApp(window.FIREBASE_CONFIG);
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import {
-      getAuth,
-      onAuthStateChanged,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import {
-      getFirestore,
-      collection,
-      doc,
-      getDoc,
-      setDoc,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-    try {
-      const app = initializeApp(window.FIREBASE_CONFIG);
-      const auth = getAuth(app);
-      const db = getFirestore(app);
+        window.FirebaseAgenda = {
+          app,
+          auth,
+          db,
+          onAuthStateChanged: (callback) => auth.onAuthStateChanged(callback),
+          createUser: (email, password) => auth.createUserWithEmailAndPassword(email, password),
+          signIn: (email, password) => auth.signInWithEmailAndPassword(email, password),
+          signOut: () => auth.signOut(),
+          agendaDocRef: (uid) => db.collection("users").doc(uid).collection("agenda").doc("state"),
+          getDoc: (ref) => ref.get(),
+          setDoc: (ref, data, options) => ref.set(data, options || {}),
+          serverTimestamp: () => firebase.firestore.FieldValue.serverTimestamp()
+        };
 
-      window.FirebaseAgenda = {
-        app,
-        auth,
-        db,
-        onAuthStateChanged: (callback) => onAuthStateChanged(auth, callback),
-        createUser: (email, password) => createUserWithEmailAndPassword(auth, email, password),
-        signIn: (email, password) => signInWithEmailAndPassword(auth, email, password),
-        signOut: () => signOut(auth),
-        agendaDocRef: (uid) => doc(collection(doc(collection(db, "users"), uid), "agenda"), "state"),
-        getDoc,
-        setDoc,
-        serverTimestamp
-      };
-
-      window.FIREBASE_READY = true;
-      window.dispatchEvent(new Event("firebase-ready"));
-    } catch (err) {
-      console.error("Firebase init error:", err);
-      window.FIREBASE_INIT_ERROR = err;
-      window.dispatchEvent(new Event("firebase-error"));
-    }
+        window.FIREBASE_READY = true;
+        window.dispatchEvent(new Event("firebase-ready"));
+      } catch (err) {
+        console.error("Firebase compat init error:", err);
+        window.FIREBASE_INIT_ERROR = err;
+        window.dispatchEvent(new Event("firebase-error"));
+      }
+    })();
   </script>
 
 <script>
@@ -2140,7 +2131,7 @@ body[data-theme="toy_story"] .passToggle{
 
 
     function hasFirebaseConfig(){
-      return true;
+      return !!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey && window.FIREBASE_CONFIG.projectId && window.FIREBASE_CONFIG.appId);
     }
 
     function waitForFirebaseReady(timeoutMs = 8000){
@@ -2231,7 +2222,7 @@ body[data-theme="toy_story"] .passToggle{
         const snap = await window.FirebaseAgenda.getDoc(ref);
         const localHasData = Array.isArray(state.events) && state.events.length > 0;
 
-        if (!snap.exists()) {
+        if (!snap.exists) {
           if (localHasData) {
             await saveCloudNow(true);
             alert('Seus dados locais foram enviados para a nuvem deste usuário.');
