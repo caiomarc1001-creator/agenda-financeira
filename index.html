@@ -1444,6 +1444,41 @@ body[data-manual-buttons="on"] .hambBtn .hambLines::after{
   background: var(--custom-button-text) !important;
 }
 
+
+/* ===== CAMPOS DE SENHA COM VISUALIZAÇÃO ===== */
+.passwordWrap{
+  position:relative;
+  display:flex;
+  align-items:center;
+}
+.passwordWrap .input{
+  padding-right:52px;
+}
+.passToggle{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  width:36px;
+  height:36px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.08);
+  color:var(--txt);
+  font-weight:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+body[data-theme="light"] .passToggle,
+body[data-theme="paper"] .passToggle,
+body[data-theme="windows_xp"] .passToggle,
+body[data-theme="toy_story"] .passToggle{
+  color:#0b1220;
+  background:rgba(15,23,42,.06);
+  border-color:rgba(15,23,42,.14);
+}
+
 </style>
 </head>
 <body data-theme="senna_capacete">
@@ -1822,7 +1857,20 @@ body[data-manual-buttons="on"] .hambBtn .hambLines::after{
           Entre com e-mail e senha para salvar sua agenda na nuvem. Cada usuário acessa apenas os próprios dados.
         </div>
         <div><div class="lbl">E-mail</div><input class="input" id="loginEmail" placeholder="voce@exemplo.com" type="email" autocomplete="email" /></div>
-        <div><div class="lbl">Senha</div><input class="input" id="loginPassword" placeholder="mínimo 6 caracteres" type="password" autocomplete="current-password" /></div>
+        <div>
+          <div class="lbl">Senha</div>
+          <div class="passwordWrap">
+            <input class="input" id="loginPassword" placeholder="mínimo 6 caracteres" type="password" autocomplete="current-password" />
+            <button class="passToggle" id="toggleLoginPassword" type="button" title="Mostrar/ocultar senha">👁</button>
+          </div>
+        </div>
+        <div>
+          <div class="lbl">Confirmar senha <span class="small">(necessário para criar conta)</span></div>
+          <div class="passwordWrap">
+            <input class="input" id="loginPasswordConfirm" placeholder="repita a senha" type="password" autocomplete="new-password" />
+            <button class="passToggle" id="toggleLoginPasswordConfirm" type="button" title="Mostrar/ocultar confirmação">👁</button>
+          </div>
+        </div>
         <div class="small" id="cloudUserStatus">Status: não conectado.</div>
         <div class="mFoot">
           <button class="mBtn" id="btnCreateAccount" type="button">Criar conta</button>
@@ -2184,10 +2232,15 @@ body[data-manual-buttons="on"] .hambBtn .hambLines::after{
       if (!firebaseAuth) return alert('Firebase ainda não está pronto.');
       const email = UI.el('loginEmail').value.trim();
       const pass = UI.el('loginPassword').value;
+      const confirmPass = UI.el('loginPasswordConfirm').value;
+
       if (!email || pass.length < 6) return alert('Informe e-mail e senha com pelo menos 6 caracteres.');
+      if (pass !== confirmPass) return alert('A confirmação de senha não confere.');
 
       try {
         await firebaseAuth.createUserWithEmailAndPassword(email, pass);
+        UI.el('loginPassword').value = '';
+        UI.el('loginPasswordConfirm').value = '';
         UI.close('ovLogin');
       } catch (err) {
         alert('Erro ao criar conta: ' + (err.message || err));
@@ -3801,6 +3854,17 @@ body[data-manual-buttons="on"] .hambBtn .hambLines::after{
       UI.el('dayHVal').textContent = `${state.cellH || 128}px`;
     }
 
+    function togglePasswordVisibility(inputId, buttonId){
+      const input = UI.el(inputId);
+      const btn = UI.el(buttonId);
+      if (!input || !btn) return;
+
+      const visible = input.type === 'text';
+      input.type = visible ? 'password' : 'text';
+      btn.textContent = visible ? '👁' : '🙈';
+      btn.title = visible ? 'Mostrar senha' : 'Ocultar senha';
+    }
+
     function bindEvents(){
       UI.el('btnTheme').addEventListener('click', toggleTheme);
       UI.el('themeSelectorClose').addEventListener('click', () => UI.close('ovThemeSelector'));
@@ -3894,6 +3958,8 @@ body[data-manual-buttons="on"] .hambBtn .hambLines::after{
       UI.el('loginClose').addEventListener('click', () => UI.close('ovLogin'));
       UI.el('btnCreateAccount').addEventListener('click', createAccount);
       UI.el('btnSignIn').addEventListener('click', signIn);
+      UI.el('toggleLoginPassword').addEventListener('click', () => togglePasswordVisibility('loginPassword','toggleLoginPassword'));
+      UI.el('toggleLoginPasswordConfirm').addEventListener('click', () => togglePasswordVisibility('loginPasswordConfirm','toggleLoginPasswordConfirm'));
       UI.el('btnSignOut').addEventListener('click', signOut);
       UI.el('btnSyncLocalToCloud').addEventListener('click', () => saveCloudNow(true));
 
