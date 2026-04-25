@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <!-- Firebase robust module bridge v5-sync-config -->
   <!-- Firebase robust module bridge v3 -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -1924,6 +1925,66 @@ body[data-theme="toy_story"] .passToggle{
       </div>
     </div>
   </div>
+
+  <script>
+    window.FIREBASE_READY = false;
+    window.FIREBASE_INIT_ERROR = null;
+    window.FIREBASE_CONFIG = {
+      apiKey: "AIzaSyBEaZ3RKRqxKh9-OOoPnBKIJhrm2aTkQq8",
+      authDomain: "agenda-financeira-4a861.firebaseapp.com",
+      projectId: "agenda-financeira-4a861",
+      storageBucket: "agenda-financeira-4a861.firebasestorage.app",
+      messagingSenderId: "129226784277",
+      appId: "1:129226784277:web:839352c980797f0421981c"
+    };
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      doc,
+      getDoc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    try {
+      const app = initializeApp(window.FIREBASE_CONFIG);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      window.FirebaseAgenda = {
+        app,
+        auth,
+        db,
+        onAuthStateChanged: (callback) => onAuthStateChanged(auth, callback),
+        createUser: (email, password) => createUserWithEmailAndPassword(auth, email, password),
+        signIn: (email, password) => signInWithEmailAndPassword(auth, email, password),
+        signOut: () => signOut(auth),
+        agendaDocRef: (uid) => doc(collection(doc(collection(db, "users"), uid), "agenda"), "state"),
+        getDoc,
+        setDoc,
+        serverTimestamp
+      };
+
+      window.FIREBASE_READY = true;
+      window.dispatchEvent(new Event("firebase-ready"));
+    } catch (err) {
+      console.error("Firebase init error:", err);
+      window.FIREBASE_INIT_ERROR = err;
+      window.dispatchEvent(new Event("firebase-error"));
+    }
+  </script>
+
 <script>
   (() => {
     const LS_KEY = 'agenda_prod_funcional_recorrencia_v1';
@@ -2079,7 +2140,7 @@ body[data-theme="toy_story"] .passToggle{
 
 
     function hasFirebaseConfig(){
-      return !!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey && window.FIREBASE_CONFIG.projectId && window.FIREBASE_CONFIG.appId);
+      return true;
     }
 
     function waitForFirebaseReady(timeoutMs = 8000){
@@ -2097,7 +2158,7 @@ body[data-theme="toy_story"] .passToggle{
             reject(window.FIREBASE_INIT_ERROR);
           } else if (Date.now() - startedAt > timeoutMs) {
             clearInterval(poll);
-            reject(new Error('Tempo esgotado aguardando o Firebase carregar.'));
+            reject(new Error('Tempo esgotado aguardando o Firebase carregar. Verifique F12 > Console.'));
           }
         }, 100);
       });
