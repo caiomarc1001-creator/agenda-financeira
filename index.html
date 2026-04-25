@@ -2087,17 +2087,19 @@ body[data-theme="toy_story"] .passToggle{
       if (window.FIREBASE_INIT_ERROR) return Promise.reject(window.FIREBASE_INIT_ERROR);
 
       return new Promise((resolve, reject) => {
-        const timer = setTimeout(() => reject(new Error('Tempo esgotado aguardando o Firebase carregar.')), timeoutMs);
-
-        window.addEventListener('firebase-ready', () => {
-          clearTimeout(timer);
-          resolve(true);
-        }, { once:true });
-
-        window.addEventListener('firebase-error', () => {
-          clearTimeout(timer);
-          reject(window.FIREBASE_INIT_ERROR || new Error('Erro ao iniciar Firebase.'));
-        }, { once:true });
+        const startedAt = Date.now();
+        const poll = setInterval(() => {
+          if (window.FIREBASE_READY && window.FirebaseAgenda) {
+            clearInterval(poll);
+            resolve(true);
+          } else if (window.FIREBASE_INIT_ERROR) {
+            clearInterval(poll);
+            reject(window.FIREBASE_INIT_ERROR);
+          } else if (Date.now() - startedAt > timeoutMs) {
+            clearInterval(poll);
+            reject(new Error('Tempo esgotado aguardando o Firebase carregar.'));
+          }
+        }, 100);
       });
     }
 
@@ -2140,7 +2142,7 @@ body[data-theme="toy_story"] .passToggle{
         });
       } catch (err) {
         console.error(err);
-        updateCloudStatus('Status: erro ao iniciar Firebase.');
+        updateCloudStatus('Status: erro ao iniciar Firebase: ' + (err.message || err));
         setSaveStatus('error','Erro Firebase');
       }
     }
@@ -2243,10 +2245,12 @@ body[data-theme="toy_story"] .passToggle{
     }
 
     async function createAccount(){
-      if (!firebaseAuth) {
-        try { await initFirebaseCloud(); } catch(e) {}
+      try { await initFirebaseCloud(); } catch(e) { console.error(e); }
+      if (!window.FIREBASE_READY || !window.FirebaseAgenda) {
+        const msg = window.FIREBASE_INIT_ERROR?.message || 'Firebase não carregou. Verifique se o domínio GitHub está autorizado no Firebase Authentication.';
+        return alert('Firebase ainda não está pronto: ' + msg);
       }
-      if (!firebaseAuth) return alert('Firebase ainda não está pronto. Atualize a página com Ctrl+F5 e tente novamente.');
+
       const email = UI.el('loginEmail').value.trim();
       const pass = UI.el('loginPassword').value;
       const confirmPass = UI.el('loginPasswordConfirm').value;
@@ -2265,10 +2269,12 @@ body[data-theme="toy_story"] .passToggle{
     }
 
     async function signIn(){
-      if (!firebaseAuth) {
-        try { await initFirebaseCloud(); } catch(e) {}
+      try { await initFirebaseCloud(); } catch(e) { console.error(e); }
+      if (!window.FIREBASE_READY || !window.FirebaseAgenda) {
+        const msg = window.FIREBASE_INIT_ERROR?.message || 'Firebase não carregou. Verifique se o domínio GitHub está autorizado no Firebase Authentication.';
+        return alert('Firebase ainda não está pronto: ' + msg);
       }
-      if (!firebaseAuth) return alert('Firebase ainda não está pronto. Atualize a página com Ctrl+F5 e tente novamente.');
+
       const email = UI.el('loginEmail').value.trim();
       const pass = UI.el('loginPassword').value;
       if (!email || !pass) return alert('Informe e-mail e senha.');
@@ -2282,10 +2288,8 @@ body[data-theme="toy_story"] .passToggle{
     }
 
     async function signOut(){
-      if (!firebaseAuth) {
-        try { await initFirebaseCloud(); } catch(e) {}
-      }
-      if (!firebaseAuth || !window.FirebaseAgenda) return;
+      try { await initFirebaseCloud(); } catch(e) {}
+      if (!window.FirebaseAgenda) return;
       await window.FirebaseAgenda.signOut();
       setSaveStatus('saved','Salvo local');
       updateCloudStatus('Status: não conectado.');
