@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-
-<meta charset="UTF-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agenda de Plantões & Produtividade</title>
   <style>
@@ -1925,58 +1924,13 @@ body[data-theme="toy_story"] .passToggle{
     </div>
   </div>
 
-  <!-- Firebase compat bridge v6 - estável para HTML único / GitHub Pages -->
-  <script>
-    window.FIREBASE_READY = false;
-    window.FIREBASE_INIT_ERROR = null;
-    window.FIREBASE_CONFIG = {
-      apiKey: "AIzaSyBEaZ3RKRqxKh9-OOoPnBKIJhrm2aTkQq8",
-      authDomain: "agenda-financeira-4a861.firebaseapp.com",
-      projectId: "agenda-financeira-4a861",
-      storageBucket: "agenda-financeira-4a861.firebasestorage.app",
-      messagingSenderId: "129226784277",
-      appId: "1:129226784277:web:839352c980797f0421981c"
-    };
-  </script>
+
+
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
   <script>
-    (function(){
-      try {
-        if (!window.firebase) throw new Error("SDK Firebase compat não carregou.");
-        const app = firebase.apps && firebase.apps.length
-          ? firebase.app()
-          : firebase.initializeApp(window.FIREBASE_CONFIG);
-
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
-        window.FirebaseAgenda = {
-          app,
-          auth,
-          db,
-          onAuthStateChanged: (callback) => auth.onAuthStateChanged(callback),
-          createUser: (email, password) => auth.createUserWithEmailAndPassword(email, password),
-          signIn: (email, password) => auth.signInWithEmailAndPassword(email, password),
-          signOut: () => auth.signOut(),
-          agendaDocRef: (uid) => db.collection("users").doc(uid).collection("agenda").doc("state"),
-          getDoc: (ref) => ref.get(),
-          setDoc: (ref, data, options) => ref.set(data, options || {}),
-          serverTimestamp: () => firebase.firestore.FieldValue.serverTimestamp()
-        };
-
-        window.FIREBASE_READY = true;
-        window.dispatchEvent(new Event("firebase-ready"));
-      } catch (err) {
-        console.error("Firebase compat init error:", err);
-        window.FIREBASE_INIT_ERROR = err;
-        window.dispatchEvent(new Event("firebase-error"));
-      }
-    })();
-  </script>
-
-<script>
   (() => {
     const LS_KEY = 'agenda_prod_funcional_recorrencia_v1';
     const LS_HISTORY = 'agenda_prod_funcional_recorrencia_history_v1';
@@ -2131,28 +2085,7 @@ body[data-theme="toy_story"] .passToggle{
 
 
     function hasFirebaseConfig(){
-      return !!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey && window.FIREBASE_CONFIG.projectId && window.FIREBASE_CONFIG.appId);
-    }
-
-    function waitForFirebaseReady(timeoutMs = 8000){
-      if (window.FIREBASE_READY && window.FirebaseAgenda) return Promise.resolve(true);
-      if (window.FIREBASE_INIT_ERROR) return Promise.reject(window.FIREBASE_INIT_ERROR);
-
-      return new Promise((resolve, reject) => {
-        const startedAt = Date.now();
-        const poll = setInterval(() => {
-          if (window.FIREBASE_READY && window.FirebaseAgenda) {
-            clearInterval(poll);
-            resolve(true);
-          } else if (window.FIREBASE_INIT_ERROR) {
-            clearInterval(poll);
-            reject(window.FIREBASE_INIT_ERROR);
-          } else if (Date.now() - startedAt > timeoutMs) {
-            clearInterval(poll);
-            reject(new Error('Tempo esgotado aguardando o Firebase carregar. Verifique F12 > Console.'));
-          }
-        }, 100);
-      });
+      return !!(FIREBASE_CONFIG && FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.projectId && FIREBASE_CONFIG.appId);
     }
 
     function updateCloudStatus(message){
@@ -2162,20 +2095,19 @@ body[data-theme="toy_story"] .passToggle{
       if (loginBtn) loginBtn.textContent = currentUser ? 'Nuvem' : 'Login';
     }
 
-    async function initFirebaseCloud(){
+    function initFirebaseCloud(){
       if (!hasFirebaseConfig()) {
         updateCloudStatus('Status: Firebase não configurado.');
         return;
       }
 
       try {
-        await waitForFirebaseReady();
-        firebaseApp = window.FirebaseAgenda.app;
-        firebaseAuth = window.FirebaseAgenda.auth;
-        firebaseDb = window.FirebaseAgenda.db;
+        firebaseApp = firebase.apps && firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG);
+        firebaseAuth = firebase.auth();
+        firebaseDb = firebase.firestore();
         cloudReady = true;
 
-        window.FirebaseAgenda.onAuthStateChanged(async user => {
+        firebaseAuth.onAuthStateChanged(async user => {
           currentUser = user || null;
           cloudLoadDone = false;
 
@@ -2194,14 +2126,14 @@ body[data-theme="toy_story"] .passToggle{
         });
       } catch (err) {
         console.error(err);
-        updateCloudStatus('Status: erro ao iniciar Firebase: ' + (err.message || err));
+        updateCloudStatus('Status: erro ao iniciar Firebase.');
         setSaveStatus('error','Erro Firebase');
       }
     }
 
     function cloudDocRef(){
-      if (!firebaseDb || !currentUser || !window.FirebaseAgenda) return null;
-      return window.FirebaseAgenda.agendaDocRef(currentUser.uid);
+      if (!firebaseDb || !currentUser) return null;
+      return firebaseDb.collection('users').doc(currentUser.uid).collection('agenda').doc('state');
     }
 
     function stateForCloud(){
@@ -2219,7 +2151,7 @@ body[data-theme="toy_story"] .passToggle{
       if (!ref) return;
 
       try {
-        const snap = await window.FirebaseAgenda.getDoc(ref);
+        const snap = await ref.get();
         const localHasData = Array.isArray(state.events) && state.events.length > 0;
 
         if (!snap.exists) {
@@ -2278,9 +2210,9 @@ body[data-theme="toy_story"] .passToggle{
       cloudSaving = true;
       try {
         setSaveStatus('saving','Salvando na nuvem...');
-        await window.FirebaseAgenda.setDoc(ref, {
+        await ref.set({
           state: stateForCloud(),
-          updatedAt: window.FirebaseAgenda.serverTimestamp(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
           userEmail: currentUser.email || ''
         }, { merge:false });
 
@@ -2297,12 +2229,7 @@ body[data-theme="toy_story"] .passToggle{
     }
 
     async function createAccount(){
-      try { await initFirebaseCloud(); } catch(e) { console.error(e); }
-      if (!window.FIREBASE_READY || !window.FirebaseAgenda) {
-        const msg = window.FIREBASE_INIT_ERROR?.message || 'Firebase não carregou. Verifique se o domínio GitHub está autorizado no Firebase Authentication.';
-        return alert('Firebase ainda não está pronto: ' + msg);
-      }
-
+      if (!firebaseAuth) return alert('Firebase ainda não está pronto.');
       const email = UI.el('loginEmail').value.trim();
       const pass = UI.el('loginPassword').value;
       const confirmPass = UI.el('loginPasswordConfirm').value;
@@ -2311,7 +2238,7 @@ body[data-theme="toy_story"] .passToggle{
       if (pass !== confirmPass) return alert('A confirmação de senha não confere.');
 
       try {
-        await window.FirebaseAgenda.createUser(email, pass);
+        await firebaseAuth.createUserWithEmailAndPassword(email, pass);
         UI.el('loginPassword').value = '';
         UI.el('loginPasswordConfirm').value = '';
         UI.close('ovLogin');
@@ -2321,18 +2248,13 @@ body[data-theme="toy_story"] .passToggle{
     }
 
     async function signIn(){
-      try { await initFirebaseCloud(); } catch(e) { console.error(e); }
-      if (!window.FIREBASE_READY || !window.FirebaseAgenda) {
-        const msg = window.FIREBASE_INIT_ERROR?.message || 'Firebase não carregou. Verifique se o domínio GitHub está autorizado no Firebase Authentication.';
-        return alert('Firebase ainda não está pronto: ' + msg);
-      }
-
+      if (!firebaseAuth) return alert('Firebase ainda não está pronto.');
       const email = UI.el('loginEmail').value.trim();
       const pass = UI.el('loginPassword').value;
       if (!email || !pass) return alert('Informe e-mail e senha.');
 
       try {
-        await window.FirebaseAgenda.signIn(email, pass);
+        await firebaseAuth.signInWithEmailAndPassword(email, pass);
         UI.close('ovLogin');
       } catch (err) {
         alert('Erro ao entrar: ' + (err.message || err));
@@ -2340,9 +2262,8 @@ body[data-theme="toy_story"] .passToggle{
     }
 
     async function signOut(){
-      try { await initFirebaseCloud(); } catch(e) {}
-      if (!window.FirebaseAgenda) return;
-      await window.FirebaseAgenda.signOut();
+      if (!firebaseAuth) return;
+      await firebaseAuth.signOut();
       setSaveStatus('saved','Salvo local');
       updateCloudStatus('Status: não conectado.');
     }
