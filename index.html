@@ -1485,12 +1485,16 @@ body[data-theme="toy_story"] .passToggle{
    AUTH / USUÁRIO LOGADO
 ========================= */
 .userDock{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-.userBadge{display:flex;flex-direction:column;gap:2px;min-width:150px;max-width:260px;padding:8px 12px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.07)}
+.userBadge{display:flex;flex-direction:column;gap:2px;min-width:150px;max-width:260px;padding:8px 12px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.07);transition:transform .15s ease, box-shadow .18s ease}
+body[data-auth="on"] .userBadge{cursor:pointer}
+body[data-auth="on"] .userBadge:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(0,0,0,.20)}
 .userBadge .userName{font-size:13px;font-weight:1000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .userBadge .userEmail{font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body[data-theme="light"] .userBadge, body[data-theme="paper"] .userBadge, body[data-theme="windows_xp"] .userBadge, body[data-theme="toy_story"] .userBadge{background:rgba(255,255,255,.86);border-color:rgba(15,23,42,.12);color:#0b1220}
 .authOnly{display:none}
 body[data-auth="on"] .authOnly{display:inline-flex}
+.accountOnly{display:none !important}
+body[data-auth="on"] .accountOnly{display:block !important}
 body[data-auth="off"] main.container{filter:blur(2px);opacity:.35;pointer-events:none;user-select:none}
 body[data-auth="off"] #loginClose{display:none}
 .accountPanel{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.05)}
@@ -1894,31 +1898,50 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
             <button class="passToggle" id="toggleLoginPasswordConfirm" type="button" title="Mostrar/ocultar confirmação">👁</button>
           </div>
         </div>
-        <div class="accountPanel">
-          <div class="lbl">Edição de cadastro</div>
-          <div class="small" style="margin-top:6px">Com usuário logado, você pode atualizar o nome exibido ou trocar a senha. Para trocar senha, informe a senha atual.</div>
-          <div class="row2" style="margin-top:10px">
-            <div>
-              <div class="lbl">Senha atual</div>
-              <input class="input" id="currentPassword" type="password" placeholder="necessária para trocar senha" autocomplete="current-password" />
-            </div>
-            <div>
-              <div class="lbl">Nova senha</div>
-              <input class="input" id="newPassword" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password" />
-            </div>
-          </div>
-          <div class="mFoot">
-            <button class="mBtn" id="btnUpdateProfile" type="button">Salvar nome</button>
-            <button class="mBtn" id="btnChangePassword" type="button">Trocar senha</button>
-            <button class="mBtn" id="btnPasswordReset" type="button">Recuperar senha por e-mail</button>
-          </div>
-        </div>
+        <div class="small">Recuperação de senha: digite seu e-mail acima e clique em “Recuperar senha”.</div>
         <div class="small" id="cloudUserStatus">Status: não conectado.</div>
         <div class="mFoot">
           <button class="mBtn" id="btnCreateAccount" type="button">Criar conta</button>
           <button class="mBtn primary" id="btnSignIn" type="button">Entrar</button>
+          <button class="mBtn" id="btnPasswordReset" type="button">Recuperar senha</button>
           <button class="mBtn" id="btnSyncLocalToCloud" type="button">Enviar dados locais para nuvem</button>
           <button class="mBtn danger" id="btnSignOut" type="button">Sair</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ov" id="ovAccount">
+    <div class="modal" style="width:min(620px,100%)">
+      <div class="mHead">
+        <h3>Minha conta</h3>
+        <button class="closeX" id="accountClose" type="button">✕</button>
+      </div>
+      <div class="form">
+        <div class="cloudHint">Esta área só fica disponível após o login. Abra clicando no nome do usuário no canto superior direito.</div>
+        <div class="accountPanel accountOnly">
+          <div class="lbl">Nome exibido</div>
+          <input class="input" id="accountName" placeholder="Seu nome" type="text" autocomplete="name" />
+          <div class="small" style="margin-top:8px">E-mail conectado: <b id="accountEmail">—</b></div>
+        </div>
+        <div class="accountPanel accountOnly">
+          <div class="lbl">Trocar senha</div>
+          <div class="small" style="margin-top:6px">Por segurança, informe a senha atual antes de definir uma nova senha.</div>
+          <div class="row2" style="margin-top:10px">
+            <div>
+              <div class="lbl">Senha atual</div>
+              <input class="input" id="accountCurrentPassword" type="password" placeholder="senha atual" autocomplete="current-password" />
+            </div>
+            <div>
+              <div class="lbl">Nova senha</div>
+              <input class="input" id="accountNewPassword" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password" />
+            </div>
+          </div>
+        </div>
+        <div class="mFoot">
+          <button class="mBtn primary" id="btnUpdateProfile" type="button">Salvar nome</button>
+          <button class="mBtn" id="btnChangePassword" type="button">Trocar senha</button>
+          <button class="mBtn danger" id="btnSignOutAccount" type="button">Logout</button>
         </div>
       </div>
     </div>
@@ -2084,6 +2107,8 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
     let cloudLoadDone = false;
     let cloudSaveTimer = null;
     let cloudSaving = false;
+    const INACTIVITY_LIMIT_MS = 20 * 60 * 1000;
+    let inactivityTimer = null;
     const Modal = { model:null };
     const Scope = { masterId:null, instanceDate:null, pendingModel:null, mode:null };
     const DelScope = { masterId:null, instanceDate:null };
@@ -2225,9 +2250,16 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       if (emailEl) emailEl.textContent = logged ? (currentUser.email || '') : 'Faça login para ver sua agenda';
       const loginName = UI.el('loginName');
       const loginEmail = UI.el('loginEmail');
+      const accountName = UI.el('accountName');
+      const accountEmail = UI.el('accountEmail');
       if (logged) {
         if (loginName) loginName.value = currentUser.displayName || '';
         if (loginEmail) loginEmail.value = currentUser.email || '';
+        if (accountName) accountName.value = currentUser.displayName || '';
+        if (accountEmail) accountEmail.textContent = currentUser.email || '';
+      } else {
+        if (accountName) accountName.value = '';
+        if (accountEmail) accountEmail.textContent = '—';
       }
     }
 
@@ -2239,6 +2271,40 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       renderAll();
       syncUserHeader();
       UI.open('ovLogin');
+    }
+
+    function resetInactivityTimer(){
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      if (!currentUser) return;
+      inactivityTimer = setTimeout(() => signOutByInactivity(), INACTIVITY_LIMIT_MS);
+    }
+
+    async function signOutByInactivity(){
+      if (!currentUser) return;
+      try {
+        if (cloudLoadDone) await saveCloudNow(false);
+        await window.FirebaseAgenda.signOut();
+      } catch (err) {
+        console.error('Erro no logout por inatividade:', err);
+      }
+      currentUser = null;
+      cloudLoadDone = false;
+      updateCloudStatus('Status: desconectado por inatividade.');
+      setSaveStatus('saved','Logout por inatividade');
+      protectLoggedOutScreen();
+      alert('Sessão encerrada automaticamente após 20 minutos de inatividade.');
+    }
+
+    function startInactivityWatch(){
+      ['mousemove','mousedown','keydown','scroll','touchstart','click'].forEach(evt => {
+        document.addEventListener(evt, resetInactivityTimer, { passive:true });
+      });
+    }
+
+    function openAccountModal(){
+      if (!currentUser) return;
+      syncUserHeader();
+      UI.open('ovAccount');
     }
 
 
@@ -2260,6 +2326,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
           cloudLoadDone = false;
 
           if (!currentUser) {
+            if (inactivityTimer) clearTimeout(inactivityTimer);
             updateCloudStatus('Status: não conectado.');
             setSaveStatus('saved','Aguardando login');
             cloudLoadDone = false;
@@ -2267,6 +2334,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
             return;
           }
 
+          resetInactivityTimer();
           updateCloudStatus(`Conectado: ${userFriendlyName()} · ${currentUser.email || ''}`);
           setSaveStatus('saving','Carregando nuvem...');
           await loadCloudForCurrentUser();
@@ -2384,7 +2452,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
         return alert('Firebase ainda não está pronto: ' + msg);
       }
 
-      const name = UI.el('loginName').value.trim();
+      const name = (UI.el('accountName')?.value || UI.el('loginName')?.value || '').trim();
       const email = UI.el('loginEmail').value.trim();
       const pass = UI.el('loginPassword').value;
       const confirmPass = UI.el('loginPasswordConfirm').value;
@@ -2435,8 +2503,10 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
         alert('Erro ao sair: ' + (err.message || err));
         return;
       }
+      if (inactivityTimer) clearTimeout(inactivityTimer);
       currentUser = null;
       cloudLoadDone = false;
+      UI.close('ovAccount');
       updateCloudStatus('Status: não conectado.');
       setSaveStatus('saved','Aguardando login');
       protectLoggedOutScreen();
@@ -2445,7 +2515,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
     async function updateProfileName(){
       try { await initFirebaseCloud(); } catch(e) {}
       if (!currentUser) return alert('Entre na sua conta antes de editar o cadastro.');
-      const name = UI.el('loginName').value.trim();
+      const name = (UI.el('accountName')?.value || UI.el('loginName')?.value || '').trim();
       if (!name) return alert('Informe um nome para exibir.');
       try {
         await window.FirebaseAgenda.updateProfile(currentUser, { displayName: name });
@@ -2462,15 +2532,15 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
     async function changePassword(){
       try { await initFirebaseCloud(); } catch(e) {}
       if (!currentUser) return alert('Entre na sua conta antes de trocar a senha.');
-      const currentPass = UI.el('currentPassword').value;
-      const newPass = UI.el('newPassword').value;
+      const currentPass = UI.el('accountCurrentPassword').value;
+      const newPass = UI.el('accountNewPassword').value;
       if (!currentPass) return alert('Informe a senha atual.');
       if (!newPass || newPass.length < 6) return alert('A nova senha precisa ter pelo menos 6 caracteres.');
       try {
         await window.FirebaseAgenda.reauthWithPassword(currentUser, currentPass);
         await window.FirebaseAgenda.updatePassword(currentUser, newPass);
-        UI.el('currentPassword').value = '';
-        UI.el('newPassword').value = '';
+        UI.el('accountCurrentPassword').value = '';
+        UI.el('accountNewPassword').value = '';
         alert('Senha alterada com sucesso.');
       } catch (err) {
         alert('Erro ao trocar senha: ' + (err.message || err));
@@ -4177,6 +4247,8 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       UI.el('saveBonusRules').addEventListener('click', () => { collectBonusRules(); save(); UI.close('ovBonusRules'); renderPayments(); renderCalendar(); renderSummary(); });
 
       UI.el('btnLogin').addEventListener('click', () => { updateCloudStatus(currentUser ? `Conectado: ${currentUser.email}` : 'Status: não conectado.'); UI.open('ovLogin'); });
+      UI.el('userBadge').addEventListener('click', openAccountModal);
+      UI.el('accountClose').addEventListener('click', () => UI.close('ovAccount'));
       UI.el('loginClose').addEventListener('click', () => UI.close('ovLogin'));
       UI.el('btnCreateAccount').addEventListener('click', createAccount);
       UI.el('btnSignIn').addEventListener('click', signIn);
@@ -4184,6 +4256,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       UI.el('toggleLoginPasswordConfirm').addEventListener('click', () => togglePasswordVisibility('loginPasswordConfirm','toggleLoginPasswordConfirm'));
       UI.el('btnSignOut').addEventListener('click', signOut);
       UI.el('btnLogoutTop').addEventListener('click', signOut);
+      UI.el('btnSignOutAccount').addEventListener('click', signOut);
       UI.el('btnUpdateProfile').addEventListener('click', updateProfileName);
       UI.el('btnChangePassword').addEventListener('click', changePassword);
       UI.el('btnPasswordReset').addEventListener('click', resetPassword);
