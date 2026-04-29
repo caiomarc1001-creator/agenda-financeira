@@ -1480,6 +1480,22 @@ body[data-theme="toy_story"] .passToggle{
   border-color:rgba(15,23,42,.14);
 }
 
+
+/* =========================
+   AUTH / USUÁRIO LOGADO
+========================= */
+.userDock{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.userBadge{display:flex;flex-direction:column;gap:2px;min-width:150px;max-width:260px;padding:8px 12px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.07)}
+.userBadge .userName{font-size:13px;font-weight:1000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.userBadge .userEmail{font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body[data-theme="light"] .userBadge, body[data-theme="paper"] .userBadge, body[data-theme="windows_xp"] .userBadge, body[data-theme="toy_story"] .userBadge{background:rgba(255,255,255,.86);border-color:rgba(15,23,42,.12);color:#0b1220}
+.authOnly{display:none}
+body[data-auth="on"] .authOnly{display:inline-flex}
+body[data-auth="off"] main.container{filter:blur(2px);opacity:.35;pointer-events:none;user-select:none}
+body[data-auth="off"] #loginClose{display:none}
+.accountPanel{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.05)}
+body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{background:rgba(15,23,42,.04);border-color:rgba(15,23,42,.12)}
+
 </style>
 </head>
 <body data-theme="senna_capacete">
@@ -1510,7 +1526,12 @@ body[data-theme="toy_story"] .passToggle{
           <button class="btn" id="btnSaveNow">Salvar agora</button>
         </div>
       </div>
-      <div class="saveDock">
+      <div class="saveDock userDock">
+        <div class="userBadge" id="userBadge" title="Usuário logado">
+          <div class="userName" id="userDisplayName">Não conectado</div>
+          <div class="userEmail" id="userDisplayEmail">Faça login para ver sua agenda</div>
+        </div>
+        <button class="btn danger authOnly" id="btnLogoutTop" type="button">Logout</button>
         <div class="statusPill saved" id="savePill"><span class="statusDot"></span><span id="saveLabel">Salvo</span></div>
       </div>
     </div>
@@ -1857,6 +1878,7 @@ body[data-theme="toy_story"] .passToggle{
         <div class="cloudHint" id="cloudHint">
           Entre com e-mail e senha para salvar sua agenda na nuvem. Cada usuário acessa apenas os próprios dados.
         </div>
+        <div><div class="lbl">Nome completo <span class="small">(usado no canto superior direito e na criação da conta)</span></div><input class="input" id="loginName" placeholder="Seu nome" type="text" autocomplete="name" /></div>
         <div><div class="lbl">E-mail</div><input class="input" id="loginEmail" placeholder="voce@exemplo.com" type="email" autocomplete="email" /></div>
         <div>
           <div class="lbl">Senha</div>
@@ -1870,6 +1892,25 @@ body[data-theme="toy_story"] .passToggle{
           <div class="passwordWrap">
             <input class="input" id="loginPasswordConfirm" placeholder="repita a senha" type="password" autocomplete="new-password" />
             <button class="passToggle" id="toggleLoginPasswordConfirm" type="button" title="Mostrar/ocultar confirmação">👁</button>
+          </div>
+        </div>
+        <div class="accountPanel">
+          <div class="lbl">Edição de cadastro</div>
+          <div class="small" style="margin-top:6px">Com usuário logado, você pode atualizar o nome exibido ou trocar a senha. Para trocar senha, informe a senha atual.</div>
+          <div class="row2" style="margin-top:10px">
+            <div>
+              <div class="lbl">Senha atual</div>
+              <input class="input" id="currentPassword" type="password" placeholder="necessária para trocar senha" autocomplete="current-password" />
+            </div>
+            <div>
+              <div class="lbl">Nova senha</div>
+              <input class="input" id="newPassword" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password" />
+            </div>
+          </div>
+          <div class="mFoot">
+            <button class="mBtn" id="btnUpdateProfile" type="button">Salvar nome</button>
+            <button class="mBtn" id="btnChangePassword" type="button">Trocar senha</button>
+            <button class="mBtn" id="btnPasswordReset" type="button">Recuperar senha por e-mail</button>
           </div>
         </div>
         <div class="small" id="cloudUserStatus">Status: não conectado.</div>
@@ -1960,6 +2001,13 @@ body[data-theme="toy_story"] .passToggle{
           createUser: (email, password) => auth.createUserWithEmailAndPassword(email, password),
           signIn: (email, password) => auth.signInWithEmailAndPassword(email, password),
           signOut: () => auth.signOut(),
+          updateProfile: (user, data) => user.updateProfile(data),
+          sendPasswordResetEmail: (email) => auth.sendPasswordResetEmail(email),
+          updatePassword: (user, password) => user.updatePassword(password),
+          reauthWithPassword: (user, password) => {
+            const credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
+            return user.reauthenticateWithCredential(credential);
+          },
           agendaDocRef: (uid) => db.collection("users").doc(uid).collection("agenda").doc("state"),
           getDoc: (ref) => ref.get(),
           setDoc: (ref, data, options) => ref.set(data, options || {}),
@@ -2025,7 +2073,7 @@ body[data-theme="toy_story"] .passToggle{
       _meta:{ updatedAt:'', updatedBy:'local' }
     };
 
-    let state = loadState();
+    let state = deepClone(DEFAULTS);
     let saveTimer = null;
     let isDirty = false;
     let firebaseApp = null;
@@ -2159,8 +2207,40 @@ body[data-theme="toy_story"] .passToggle{
       const label = UI.el('cloudUserStatus');
       if (label) label.textContent = message;
       const loginBtn = UI.el('btnLogin');
-      if (loginBtn) loginBtn.textContent = currentUser ? 'Nuvem' : 'Login';
+      if (loginBtn) loginBtn.textContent = currentUser ? 'Conta / Nuvem' : 'Login';
+      syncUserHeader();
     }
+
+    function userFriendlyName(){
+      if (!currentUser) return 'Não conectado';
+      return currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : 'Usuário');
+    }
+
+    function syncUserHeader(){
+      const logged = !!currentUser;
+      document.body.dataset.auth = logged ? 'on' : 'off';
+      const nameEl = UI.el('userDisplayName');
+      const emailEl = UI.el('userDisplayEmail');
+      if (nameEl) nameEl.textContent = logged ? userFriendlyName() : 'Não conectado';
+      if (emailEl) emailEl.textContent = logged ? (currentUser.email || '') : 'Faça login para ver sua agenda';
+      const loginName = UI.el('loginName');
+      const loginEmail = UI.el('loginEmail');
+      if (logged) {
+        if (loginName) loginName.value = currentUser.displayName || '';
+        if (loginEmail) loginEmail.value = currentUser.email || '';
+      }
+    }
+
+    function protectLoggedOutScreen(){
+      state = deepClone(DEFAULTS);
+      localStorage.removeItem(LS_KEY);
+      localStorage.removeItem(LS_HISTORY);
+      clearScope(); clearDelScope(); clearRetroDel();
+      renderAll();
+      syncUserHeader();
+      UI.open('ovLogin');
+    }
+
 
     async function initFirebaseCloud(){
       if (!hasFirebaseConfig()) {
@@ -2181,12 +2261,13 @@ body[data-theme="toy_story"] .passToggle{
 
           if (!currentUser) {
             updateCloudStatus('Status: não conectado.');
-            setSaveStatus('saved','Salvo local');
+            setSaveStatus('saved','Aguardando login');
             cloudLoadDone = false;
+            protectLoggedOutScreen();
             return;
           }
 
-          updateCloudStatus(`Conectado: ${currentUser.email}`);
+          updateCloudStatus(`Conectado: ${userFriendlyName()} · ${currentUser.email || ''}`);
           setSaveStatus('saving','Carregando nuvem...');
           await loadCloudForCurrentUser();
           cloudLoadDone = true;
@@ -2303,6 +2384,7 @@ body[data-theme="toy_story"] .passToggle{
         return alert('Firebase ainda não está pronto: ' + msg);
       }
 
+      const name = UI.el('loginName').value.trim();
       const email = UI.el('loginEmail').value.trim();
       const pass = UI.el('loginPassword').value;
       const confirmPass = UI.el('loginPasswordConfirm').value;
@@ -2311,7 +2393,11 @@ body[data-theme="toy_story"] .passToggle{
       if (pass !== confirmPass) return alert('A confirmação de senha não confere.');
 
       try {
-        await window.FirebaseAgenda.createUser(email, pass);
+        const credential = await window.FirebaseAgenda.createUser(email, pass);
+        if (name && credential.user) await window.FirebaseAgenda.updateProfile(credential.user, { displayName: name });
+        if (credential.user) await credential.user.reload();
+        currentUser = window.FirebaseAgenda.auth.currentUser || credential.user;
+        syncUserHeader();
         UI.el('loginPassword').value = '';
         UI.el('loginPasswordConfirm').value = '';
         UI.close('ovLogin');
@@ -2342,9 +2428,66 @@ body[data-theme="toy_story"] .passToggle{
     async function signOut(){
       try { await initFirebaseCloud(); } catch(e) {}
       if (!window.FirebaseAgenda) return;
-      await window.FirebaseAgenda.signOut();
-      setSaveStatus('saved','Salvo local');
+      try {
+        if (currentUser && cloudLoadDone) await saveCloudNow(false);
+        await window.FirebaseAgenda.signOut();
+      } catch (err) {
+        alert('Erro ao sair: ' + (err.message || err));
+        return;
+      }
+      currentUser = null;
+      cloudLoadDone = false;
       updateCloudStatus('Status: não conectado.');
+      setSaveStatus('saved','Aguardando login');
+      protectLoggedOutScreen();
+    }
+
+    async function updateProfileName(){
+      try { await initFirebaseCloud(); } catch(e) {}
+      if (!currentUser) return alert('Entre na sua conta antes de editar o cadastro.');
+      const name = UI.el('loginName').value.trim();
+      if (!name) return alert('Informe um nome para exibir.');
+      try {
+        await window.FirebaseAgenda.updateProfile(currentUser, { displayName: name });
+        await currentUser.reload();
+        currentUser = window.FirebaseAgenda.auth.currentUser || currentUser;
+        syncUserHeader();
+        updateCloudStatus(`Conectado: ${userFriendlyName()} · ${currentUser.email || ''}`);
+        alert('Nome atualizado com sucesso.');
+      } catch (err) {
+        alert('Erro ao atualizar cadastro: ' + (err.message || err));
+      }
+    }
+
+    async function changePassword(){
+      try { await initFirebaseCloud(); } catch(e) {}
+      if (!currentUser) return alert('Entre na sua conta antes de trocar a senha.');
+      const currentPass = UI.el('currentPassword').value;
+      const newPass = UI.el('newPassword').value;
+      if (!currentPass) return alert('Informe a senha atual.');
+      if (!newPass || newPass.length < 6) return alert('A nova senha precisa ter pelo menos 6 caracteres.');
+      try {
+        await window.FirebaseAgenda.reauthWithPassword(currentUser, currentPass);
+        await window.FirebaseAgenda.updatePassword(currentUser, newPass);
+        UI.el('currentPassword').value = '';
+        UI.el('newPassword').value = '';
+        alert('Senha alterada com sucesso.');
+      } catch (err) {
+        alert('Erro ao trocar senha: ' + (err.message || err));
+      }
+    }
+
+    async function resetPassword(){
+      try { await initFirebaseCloud(); } catch(e) {}
+      if (!window.FirebaseAgenda) return alert('Firebase ainda não está pronto.');
+      const email = (UI.el('loginEmail').value || currentUser?.email || '').trim();
+      if (!email) return alert('Digite seu e-mail no campo de login para receber a recuperação de senha.');
+      try {
+        await window.FirebaseAgenda.sendPasswordResetEmail(email);
+        alert('E-mail de recuperação enviado para: ' + email);
+      } catch (err) {
+        alert('Erro ao enviar recuperação: ' + (err.message || err));
+      }
     }
 
     function applyCustomThemeVariables(){
@@ -4040,6 +4183,10 @@ body[data-theme="toy_story"] .passToggle{
       UI.el('toggleLoginPassword').addEventListener('click', () => togglePasswordVisibility('loginPassword','toggleLoginPassword'));
       UI.el('toggleLoginPasswordConfirm').addEventListener('click', () => togglePasswordVisibility('loginPasswordConfirm','toggleLoginPasswordConfirm'));
       UI.el('btnSignOut').addEventListener('click', signOut);
+      UI.el('btnLogoutTop').addEventListener('click', signOut);
+      UI.el('btnUpdateProfile').addEventListener('click', updateProfileName);
+      UI.el('btnChangePassword').addEventListener('click', changePassword);
+      UI.el('btnPasswordReset').addEventListener('click', resetPassword);
       UI.el('btnSyncLocalToCloud').addEventListener('click', () => saveCloudNow(true));
 
       UI.el('btnExport').addEventListener('click', exportData);
@@ -4052,7 +4199,9 @@ body[data-theme="toy_story"] .passToggle{
 
     bindEvents();
     bindHamburgerAutoHide();
+    syncUserHeader();
     renderAll();
+    initFirebaseCloud();
   })();
   </script>
 </body>
