@@ -1905,7 +1905,7 @@ body.is-logging-out::before{
         <h3>Login e nuvem</h3>
         <button class="closeX" id="loginClose">✕</button>
       </div>
-      <div class="form" autocomplete="off">
+      <div class="form" autocomplete="on">
         <div class="cloudHint" id="cloudHint">
           Entre com e-mail e senha para salvar sua agenda na nuvem. Sem login, você pode testar e editar a agenda, mas nada será salvo.
         </div>
@@ -1913,7 +1913,7 @@ body.is-logging-out::before{
         <div>
           <div class="lbl">Senha</div>
           <div class="passwordWrap">
-            <input class="input" id="loginPassword" placeholder="senha" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" />
+            <input class="input" id="loginPassword" placeholder="senha" type="password" autocomplete="current-password" autocapitalize="off" spellcheck="false" readonly data-password-lock="true" />
             <button class="passToggle" id="toggleLoginPassword" type="button" title="Mostrar/ocultar senha">👁</button>
           </div>
         </div>
@@ -1928,7 +1928,7 @@ body.is-logging-out::before{
             <div>
               <div class="lbl">Confirmar senha <span class="small">(necessário apenas no cadastro)</span></div>
               <div class="passwordWrap">
-                <input class="input" id="loginPasswordConfirm" placeholder="repita a senha" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" />
+                <input class="input" id="loginPasswordConfirm" placeholder="repita a senha" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false" readonly data-password-lock="true" />
                 <button class="passToggle" id="toggleLoginPasswordConfirm" type="button" title="Mostrar/ocultar confirmação">👁</button>
               </div>
             </div>
@@ -1964,15 +1964,15 @@ body.is-logging-out::before{
           <div class="row3" style="margin-top:10px">
             <div>
               <div class="lbl">Senha atual</div>
-              <input class="input" id="accountCurrentPassword" type="password" placeholder="senha atual" autocomplete="off" autocapitalize="off" spellcheck="false" />
+              <input class="input" id="accountCurrentPassword" type="password" placeholder="senha atual" autocomplete="current-password" autocapitalize="off" spellcheck="false" readonly data-password-lock="true" />
             </div>
             <div>
               <div class="lbl">Nova senha</div>
-              <input class="input" id="accountNewPassword" type="password" placeholder="mínimo 6 caracteres" autocomplete="off" autocapitalize="off" spellcheck="false" />
+              <input class="input" id="accountNewPassword" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password" autocapitalize="off" spellcheck="false" readonly data-password-lock="true" />
             </div>
             <div>
               <div class="lbl">Confirmar nova senha</div>
-              <input class="input" id="accountNewPasswordConfirm" type="password" placeholder="repita a nova senha" autocomplete="off" autocapitalize="off" spellcheck="false" />
+              <input class="input" id="accountNewPasswordConfirm" type="password" placeholder="repita a nova senha" autocomplete="new-password" autocapitalize="off" spellcheck="false" readonly data-password-lock="true" />
             </div>
           </div>
         </div>
@@ -2315,20 +2315,53 @@ body.is-logging-out::before{
     }
 
     function clearSensitiveAuthFields(){
-      ['loginPassword','loginPasswordConfirm','accountCurrentPassword','accountNewPassword','accountNewPasswordConfirm'].forEach(id => {
+      const autocompleteMap = {
+        loginPassword: 'current-password',
+        loginPasswordConfirm: 'new-password',
+        accountCurrentPassword: 'current-password',
+        accountNewPassword: 'new-password',
+        accountNewPasswordConfirm: 'new-password'
+      };
+
+      Object.keys(autocompleteMap).forEach(id => {
         const el = UI.el(id);
         if (el) {
           el.value = '';
-          el.setAttribute('autocomplete','off');
+          el.type = 'password';
+          el.setAttribute('autocomplete', autocompleteMap[id]);
           el.setAttribute('autocapitalize','off');
           el.setAttribute('spellcheck','false');
-          el.type = 'password';
+          el.setAttribute('readonly','readonly');
+          el.dataset.passwordLock = 'true';
         }
       });
+
       const email = UI.el('loginEmail');
       if (email && !currentUser) email.value = '';
       const name = UI.el('loginName');
       if (name && !currentUser) name.value = '';
+    }
+
+    function unlockPasswordField(input){
+      if (!input) return;
+      input.removeAttribute('readonly');
+      input.dataset.passwordLock = 'false';
+    }
+
+    function preparePasswordFieldsForSafeAutofill(){
+      ['loginPassword','loginPasswordConfirm','accountCurrentPassword','accountNewPassword','accountNewPasswordConfirm'].forEach(id => {
+        const input = UI.el(id);
+        if (!input) return;
+
+        input.value = '';
+        input.type = 'password';
+        input.setAttribute('readonly','readonly');
+        input.dataset.passwordLock = 'true';
+
+        ['focus','pointerdown','mousedown','touchstart','keydown'].forEach(evt => {
+          input.addEventListener(evt, () => unlockPasswordField(input), { once:false, passive:true });
+        });
+      });
     }
 
     function clearPrivateVisualData(reason='Tela inicial / visitante'){
@@ -2401,6 +2434,7 @@ body.is-logging-out::before{
 
     function openAccountModal(){
       if (!currentUser) return;
+      clearSensitiveAuthFields();
       syncUserHeader();
       UI.open('ovAccount');
     }
@@ -4360,7 +4394,7 @@ body.is-logging-out::before{
       });
       UI.el('saveBonusRules').addEventListener('click', () => { collectBonusRules(); save(); UI.close('ovBonusRules'); renderPayments(); renderCalendar(); renderSummary(); });
 
-      const openLoginModal = () => { updateCloudStatus(currentUser ? `Conectado: ${currentUser.email}` : 'Status: não conectado.'); UI.open('ovLogin'); };
+      const openLoginModal = () => { clearSensitiveAuthFields(); updateCloudStatus(currentUser ? `Conectado: ${currentUser.email}` : 'Status: não conectado.'); UI.open('ovLogin'); };
       UI.el('btnLogin').addEventListener('click', openLoginModal);
       UI.el('btnLoginTop').addEventListener('click', openLoginModal);
       UI.el('userBadge').addEventListener('click', openAccountModal);
@@ -4387,6 +4421,7 @@ body.is-logging-out::before{
     }
 
     bindEvents();
+    preparePasswordFieldsForSafeAutofill();
     bindHamburgerAutoHide();
     clearSensitiveAuthFields();
     syncUserHeader();
