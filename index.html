@@ -2281,14 +2281,31 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       }
     }
 
-    function protectLoggedOutScreen(){
-      state = deepClone(DEFAULTS);
-      localStorage.removeItem(LS_KEY);
-      localStorage.removeItem(LS_HISTORY);
+    function protectLoggedOutScreen(reason='Modo visitante: não salva'){
+      clearTimeout(saveTimer);
+      clearTimeout(cloudSaveTimer);
+      isDirty = false;
+      cloudLoadDone = false;
+      cloudSaving = false;
+
+      const freshDefaults = deepClone(DEFAULTS);
+      const now = new Date();
+      freshDefaults.view = { y: now.getFullYear(), m: now.getMonth() };
+      freshDefaults.selDate = todayISO();
+      state = freshDefaults;
+
+      try {
+        localStorage.removeItem(LS_KEY);
+        localStorage.removeItem(LS_HISTORY);
+      } catch (err) {
+        console.warn('Não foi possível limpar o armazenamento local:', err);
+      }
+
       clearScope(); clearDelScope(); clearRetroDel();
-      renderAll();
+      document.querySelectorAll('.ov.open').forEach(ov => ov.classList.remove('open'));
       syncUserHeader();
-      setSaveStatus('saved','Modo visitante: não salva');
+      renderAll();
+      setSaveStatus('saved', reason);
     }
 
     function resetInactivityTimer(){
@@ -2346,9 +2363,8 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
           if (!currentUser) {
             if (inactivityTimer) clearTimeout(inactivityTimer);
             updateCloudStatus('Status: não conectado.');
-            setSaveStatus('saved','Aguardando login');
             cloudLoadDone = false;
-            protectLoggedOutScreen();
+            protectLoggedOutScreen('Tela inicial / visitante');
             return;
           }
 
@@ -2483,6 +2499,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
         if (name && credential.user) await window.FirebaseAgenda.updateProfile(credential.user, { displayName: name });
         if (credential.user) await credential.user.reload();
         currentUser = window.FirebaseAgenda.auth.currentUser || credential.user;
+        if (name && UI.el('userDisplayName')) UI.el('userDisplayName').textContent = name;
         syncUserHeader();
         UI.el('loginPassword').value = '';
         UI.el('loginPasswordConfirm').value = '';
@@ -2514,20 +2531,19 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
     async function signOut(){
       try { await initFirebaseCloud(); } catch(e) {}
       if (!window.FirebaseAgenda) return;
-      try {
-        if (currentUser && cloudLoadDone) await saveCloudNow(false);
-        await window.FirebaseAgenda.signOut();
-      } catch (err) {
-        alert('Erro ao sair: ' + (err.message || err));
-        return;
-      }
+
+      const wasLogged = !!currentUser;
       if (inactivityTimer) clearTimeout(inactivityTimer);
       currentUser = null;
       cloudLoadDone = false;
-      UI.close('ovAccount');
       updateCloudStatus('Status: não conectado.');
-      setSaveStatus('saved','Aguardando login');
-      protectLoggedOutScreen();
+      protectLoggedOutScreen('Tela inicial / visitante');
+
+      try {
+        if (wasLogged) await window.FirebaseAgenda.signOut();
+      } catch (err) {
+        alert('Erro ao sair: ' + (err.message || err));
+      }
     }
 
     async function updateProfileName(){
@@ -2539,8 +2555,12 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
         await window.FirebaseAgenda.updateProfile(currentUser, { displayName: name });
         await currentUser.reload();
         currentUser = window.FirebaseAgenda.auth.currentUser || currentUser;
+        const nameEl = UI.el('userDisplayName');
+        if (nameEl) nameEl.textContent = name;
+        if (UI.el('loginName')) UI.el('loginName').value = name;
+        if (UI.el('accountName')) UI.el('accountName').value = name;
         syncUserHeader();
-        updateCloudStatus(`Conectado: ${userFriendlyName()} · ${currentUser.email || ''}`);
+        updateCloudStatus(`Conectado: ${name} · ${currentUser.email || ''}`);
         alert('Nome atualizado com sucesso.');
       } catch (err) {
         alert('Erro ao atualizar cadastro: ' + (err.message || err));
