@@ -1913,7 +1913,7 @@ body.is-logging-out::before{
         <div>
           <div class="lbl">Senha</div>
           <div class="passwordWrap">
-            <input class="input" id="loginPassword" placeholder="senha" type="password" autocomplete="current-password" autocapitalize="off" spellcheck="false" readonly data-password-lock="true" />
+            <input class="input" id="loginPassword" placeholder="senha" type="password" autocomplete="off" data-autocomplete-intent="current-password" autocapitalize="off" spellcheck="false" />
             <button class="passToggle" id="toggleLoginPassword" type="button" title="Mostrar/ocultar senha">👁</button>
           </div>
         </div>
@@ -1928,7 +1928,7 @@ body.is-logging-out::before{
             <div>
               <div class="lbl">Confirmar senha <span class="small">(necessário apenas no cadastro)</span></div>
               <div class="passwordWrap">
-                <input class="input" id="loginPasswordConfirm" placeholder="repita a senha" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false" readonly data-password-lock="true" />
+                <input class="input" id="loginPasswordConfirm" placeholder="repita a senha" type="password" autocomplete="off" data-autocomplete-intent="new-password" autocapitalize="off" spellcheck="false" />
                 <button class="passToggle" id="toggleLoginPasswordConfirm" type="button" title="Mostrar/ocultar confirmação">👁</button>
               </div>
             </div>
@@ -1964,15 +1964,15 @@ body.is-logging-out::before{
           <div class="row3" style="margin-top:10px">
             <div>
               <div class="lbl">Senha atual</div>
-              <input class="input" id="accountCurrentPassword" type="password" placeholder="senha atual" autocomplete="current-password" autocapitalize="off" spellcheck="false" readonly data-password-lock="true" />
+              <input class="input" id="accountCurrentPassword" type="password" placeholder="senha atual" autocomplete="off" data-autocomplete-intent="current-password" autocapitalize="off" spellcheck="false" />
             </div>
             <div>
               <div class="lbl">Nova senha</div>
-              <input class="input" id="accountNewPassword" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password" autocapitalize="off" spellcheck="false" readonly data-password-lock="true" />
+              <input class="input" id="accountNewPassword" type="password" placeholder="mínimo 6 caracteres" autocomplete="off" data-autocomplete-intent="new-password" autocapitalize="off" spellcheck="false" />
             </div>
             <div>
               <div class="lbl">Confirmar nova senha</div>
-              <input class="input" id="accountNewPasswordConfirm" type="password" placeholder="repita a nova senha" autocomplete="new-password" autocapitalize="off" spellcheck="false" readonly data-password-lock="true" />
+              <input class="input" id="accountNewPasswordConfirm" type="password" placeholder="repita a nova senha" autocomplete="off" data-autocomplete-intent="new-password" autocapitalize="off" spellcheck="false" />
             </div>
           </div>
         </div>
@@ -2314,25 +2314,26 @@ body.is-logging-out::before{
       }
     }
 
-    function clearSensitiveAuthFields(){
-      const autocompleteMap = {
-        loginPassword: 'current-password',
-        loginPasswordConfirm: 'new-password',
-        accountCurrentPassword: 'current-password',
-        accountNewPassword: 'new-password',
-        accountNewPasswordConfirm: 'new-password'
-      };
+    const PASSWORD_AUTOCOMPLETE_MAP = {
+      loginPassword: 'current-password',
+      loginPasswordConfirm: 'new-password',
+      accountCurrentPassword: 'current-password',
+      accountNewPassword: 'new-password',
+      accountNewPasswordConfirm: 'new-password'
+    };
 
-      Object.keys(autocompleteMap).forEach(id => {
+    function clearSensitiveAuthFields(){
+      Object.keys(PASSWORD_AUTOCOMPLETE_MAP).forEach(id => {
         const el = UI.el(id);
         if (el) {
           el.value = '';
           el.type = 'password';
-          el.setAttribute('autocomplete', autocompleteMap[id]);
+          el.removeAttribute('readonly');
+          el.setAttribute('autocomplete', 'off');
+          el.setAttribute('data-autocomplete-intent', PASSWORD_AUTOCOMPLETE_MAP[id]);
           el.setAttribute('autocapitalize','off');
           el.setAttribute('spellcheck','false');
-          el.setAttribute('readonly','readonly');
-          el.dataset.passwordLock = 'true';
+          el.dataset.passwordTouched = 'false';
         }
       });
 
@@ -2344,22 +2345,26 @@ body.is-logging-out::before{
 
     function unlockPasswordField(input){
       if (!input) return;
+      const id = input.id;
       input.removeAttribute('readonly');
-      input.dataset.passwordLock = 'false';
+      input.dataset.passwordTouched = 'true';
+      input.setAttribute('autocomplete', PASSWORD_AUTOCOMPLETE_MAP[id] || input.dataset.autocompleteIntent || 'current-password');
     }
 
     function preparePasswordFieldsForSafeAutofill(){
-      ['loginPassword','loginPasswordConfirm','accountCurrentPassword','accountNewPassword','accountNewPasswordConfirm'].forEach(id => {
+      Object.keys(PASSWORD_AUTOCOMPLETE_MAP).forEach(id => {
         const input = UI.el(id);
         if (!input) return;
 
         input.value = '';
         input.type = 'password';
-        input.setAttribute('readonly','readonly');
-        input.dataset.passwordLock = 'true';
+        input.removeAttribute('readonly');
+        input.setAttribute('autocomplete','off');
+        input.setAttribute('data-autocomplete-intent', PASSWORD_AUTOCOMPLETE_MAP[id]);
+        input.dataset.passwordTouched = 'false';
 
-        ['focus','pointerdown','mousedown','touchstart','keydown'].forEach(evt => {
-          input.addEventListener(evt, () => unlockPasswordField(input), { once:false, passive:true });
+        ['focus','click','pointerdown','mousedown','touchstart','keydown'].forEach(evt => {
+          input.addEventListener(evt, () => unlockPasswordField(input), { once:false });
         });
       });
     }
@@ -2584,6 +2589,8 @@ body.is-logging-out::before{
       }
 
       const name = (UI.el('accountName')?.value || UI.el('loginName')?.value || '').trim();
+      unlockPasswordField(UI.el('loginPassword'));
+      unlockPasswordField(UI.el('loginPasswordConfirm'));
       const email = UI.el('loginEmail').value.trim();
       const pass = UI.el('loginPassword').value;
       const confirmPass = UI.el('loginPasswordConfirm').value;
@@ -2613,6 +2620,7 @@ body.is-logging-out::before{
         return alert('Firebase ainda não está pronto: ' + msg);
       }
 
+      unlockPasswordField(UI.el('loginPassword'));
       const email = UI.el('loginEmail').value.trim();
       const pass = UI.el('loginPassword').value;
       if (!email || !pass) return alert('Informe e-mail e senha.');
@@ -2676,6 +2684,9 @@ body.is-logging-out::before{
     async function changePassword(){
       try { await initFirebaseCloud(); } catch(e) {}
       if (!currentUser) return alert('Entre na sua conta antes de trocar a senha.');
+      unlockPasswordField(UI.el('accountCurrentPassword'));
+      unlockPasswordField(UI.el('accountNewPassword'));
+      unlockPasswordField(UI.el('accountNewPasswordConfirm'));
       const currentPass = UI.el('accountCurrentPassword').value;
       const newPass = UI.el('accountNewPassword').value;
       const confirmNewPass = UI.el('accountNewPasswordConfirm').value;
