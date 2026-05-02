@@ -2318,16 +2318,24 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       if (!currentUser) return;
       try {
         if (cloudLoadDone) await saveCloudNow(false);
+
+        // Marca que o reload veio de encerramento automático da sessão.
+        // Assim, ao recarregar, a tela volta 100% limpa para o modo visitante.
+        sessionStorage.setItem('agendaLogoutReason', 'inactivity');
+
         await window.FirebaseAgenda.signOut();
       } catch (err) {
         console.error('Erro no logout por inatividade:', err);
+      } finally {
+        currentUser = null;
+        cloudLoadDone = false;
+        updateCloudStatus('Status: desconectado por inatividade.');
+        setSaveStatus('saved','Logout por inatividade');
+        protectLoggedOutScreen('Sessão encerrada por inatividade');
+
+        // Reload completo para remover qualquer informação pessoal que ainda esteja em memória/tela.
+        window.location.reload();
       }
-      currentUser = null;
-      cloudLoadDone = false;
-      updateCloudStatus('Status: desconectado por inatividade.');
-      setSaveStatus('saved','Logout por inatividade');
-      protectLoggedOutScreen();
-      alert('Sessão encerrada automaticamente após 20 minutos de inatividade.');
     }
 
     function startInactivityWatch(){
@@ -2534,14 +2542,23 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
 
       const wasLogged = !!currentUser;
       if (inactivityTimer) clearTimeout(inactivityTimer);
-      currentUser = null;
-      cloudLoadDone = false;
-      updateCloudStatus('Status: não conectado.');
-      protectLoggedOutScreen('Tela inicial / visitante');
 
       try {
+        // Marca que o reload veio de logout manual.
+        // Isso impede que dados pessoais fiquem visíveis após sair.
+        sessionStorage.setItem('agendaLogoutReason', 'manual');
+
         if (wasLogged) await window.FirebaseAgenda.signOut();
+
+        currentUser = null;
+        cloudLoadDone = false;
+        updateCloudStatus('Status: não conectado.');
+        protectLoggedOutScreen('Tela inicial / visitante');
+
+        // Reload completo: limpa a interface e volta para a tela padrão do site.
+        window.location.reload();
       } catch (err) {
+        sessionStorage.removeItem('agendaLogoutReason');
         alert('Erro ao sair: ' + (err.message || err));
       }
     }
