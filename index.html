@@ -1493,10 +1493,11 @@ body[data-auth="on"] .userBadge:hover{transform:translateY(-1px);box-shadow:0 10
 body[data-theme="light"] .userBadge, body[data-theme="paper"] .userBadge, body[data-theme="windows_xp"] .userBadge, body[data-theme="toy_story"] .userBadge{background:rgba(255,255,255,.86);border-color:rgba(15,23,42,.12);color:#0b1220}
 .authOnly{display:none}
 body[data-auth="on"] .authOnly{display:inline-flex}
+.guestOnly{display:inline-flex}
+body[data-auth="on"] .guestOnly{display:none}
 .accountOnly{display:none !important}
 body[data-auth="on"] .accountOnly{display:block !important}
-body[data-auth="off"] main.container{filter:blur(2px);opacity:.35;pointer-events:none;user-select:none}
-body[data-auth="off"] #loginClose{display:none}
+body[data-auth="off"] #loginClose{display:flex}
 .accountPanel{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.05)}
 body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{background:rgba(15,23,42,.04);border-color:rgba(15,23,42,.12)}
 
@@ -1517,7 +1518,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
             <button class="btn menuItem" id="btnBonusRules">Bonificação</button>
             <button class="btn menuItem" id="btnImport">Importar</button>
             <button class="btn menuItem" id="btnExport">Exportar</button>
-            <button class="btn menuItem" id="btnLogin">Login</button>
+            <button class="btn menuItem" id="btnLogin">Cadastro/Login</button>
             <button class="btn danger menuItem" id="btnReset">Zerar</button>
             <input accept="application/json" hidden id="fileImport" type="file" />
           </div>
@@ -1531,6 +1532,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
         </div>
       </div>
       <div class="saveDock userDock">
+        <button class="btn primary guestOnly" id="btnLoginTop" type="button">Cadastro/Login</button>
         <div class="userBadge" id="userBadge" title="Usuário logado">
           <div class="userName" id="userDisplayName">Não conectado</div>
           <div class="userEmail" id="userDisplayEmail">Faça login para ver sua agenda</div>
@@ -1880,31 +1882,38 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       </div>
       <div class="form">
         <div class="cloudHint" id="cloudHint">
-          Entre com e-mail e senha para salvar sua agenda na nuvem. Cada usuário acessa apenas os próprios dados.
+          Entre com e-mail e senha para salvar sua agenda na nuvem. Sem login, você pode testar e editar a agenda, mas nada será salvo.
         </div>
-        <div><div class="lbl">Nome completo <span class="small">(usado no canto superior direito e na criação da conta)</span></div><input class="input" id="loginName" placeholder="Seu nome" type="text" autocomplete="name" /></div>
         <div><div class="lbl">E-mail</div><input class="input" id="loginEmail" placeholder="voce@exemplo.com" type="email" autocomplete="email" /></div>
         <div>
           <div class="lbl">Senha</div>
           <div class="passwordWrap">
-            <input class="input" id="loginPassword" placeholder="mínimo 6 caracteres" type="password" autocomplete="current-password" />
+            <input class="input" id="loginPassword" placeholder="senha" type="password" autocomplete="current-password" />
             <button class="passToggle" id="toggleLoginPassword" type="button" title="Mostrar/ocultar senha">👁</button>
           </div>
         </div>
-        <div>
-          <div class="lbl">Confirmar senha <span class="small">(necessário para criar conta)</span></div>
-          <div class="passwordWrap">
-            <input class="input" id="loginPasswordConfirm" placeholder="repita a senha" type="password" autocomplete="new-password" />
-            <button class="passToggle" id="toggleLoginPasswordConfirm" type="button" title="Mostrar/ocultar confirmação">👁</button>
-          </div>
-        </div>
-        <div class="small">Recuperação de senha: digite seu e-mail acima e clique em “Recuperar senha”.</div>
-        <div class="small" id="cloudUserStatus">Status: não conectado.</div>
         <div class="mFoot">
-          <button class="mBtn" id="btnCreateAccount" type="button">Criar conta</button>
           <button class="mBtn primary" id="btnSignIn" type="button">Entrar</button>
           <button class="mBtn" id="btnPasswordReset" type="button">Recuperar senha</button>
-          <button class="mBtn" id="btnSyncLocalToCloud" type="button">Enviar dados locais para nuvem</button>
+        </div>
+        <details class="accountPanel" id="registerDetails">
+          <summary class="btn" style="display:inline-flex;list-style:none">Criar cadastro</summary>
+          <div style="margin-top:12px" class="form">
+            <div><div class="lbl">Nome completo</div><input class="input" id="loginName" placeholder="Seu nome" type="text" autocomplete="name" /></div>
+            <div>
+              <div class="lbl">Confirmar senha <span class="small">(necessário apenas no cadastro)</span></div>
+              <div class="passwordWrap">
+                <input class="input" id="loginPasswordConfirm" placeholder="repita a senha" type="password" autocomplete="new-password" />
+                <button class="passToggle" id="toggleLoginPasswordConfirm" type="button" title="Mostrar/ocultar confirmação">👁</button>
+              </div>
+            </div>
+            <button class="mBtn" id="btnCreateAccount" type="button">Criar conta com os dados acima</button>
+          </div>
+        </details>
+        <div class="small">Recuperação de senha: digite seu e-mail acima e clique em “Recuperar senha”.</div>
+        <div class="small" id="cloudUserStatus">Status: não conectado.</div>
+        <div class="mFoot authOnly">
+          <button class="mBtn" id="btnSyncLocalToCloud" type="button">Enviar dados atuais para nuvem</button>
           <button class="mBtn danger" id="btnSignOut" type="button">Sair</button>
         </div>
       </div>
@@ -1927,7 +1936,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
         <div class="accountPanel accountOnly">
           <div class="lbl">Trocar senha</div>
           <div class="small" style="margin-top:6px">Por segurança, informe a senha atual antes de definir uma nova senha.</div>
-          <div class="row2" style="margin-top:10px">
+          <div class="row3" style="margin-top:10px">
             <div>
               <div class="lbl">Senha atual</div>
               <input class="input" id="accountCurrentPassword" type="password" placeholder="senha atual" autocomplete="current-password" />
@@ -1935,6 +1944,10 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
             <div>
               <div class="lbl">Nova senha</div>
               <input class="input" id="accountNewPassword" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password" />
+            </div>
+            <div>
+              <div class="lbl">Confirmar nova senha</div>
+              <input class="input" id="accountNewPasswordConfirm" type="password" placeholder="repita a nova senha" autocomplete="new-password" />
             </div>
           </div>
         </div>
@@ -2181,9 +2194,14 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
     function saveHistory(arr){ localStorage.setItem(LS_HISTORY, JSON.stringify(arr.slice(-20))); }
     function pushHistorySnapshot(){ const arr = loadHistory(); const snap = JSON.stringify(state); if (arr[arr.length - 1] === snap) return; arr.push(snap); saveHistory(arr); updateUndoButton(); }
     function setSaveStatus(kind,label){ const pill = UI.el('savePill'); pill.classList.remove('saved','dirty','saving','error'); pill.classList.add(kind); UI.el('saveLabel').textContent = label; }
-    function markDirty(){ isDirty = true; setSaveStatus('dirty','Não salvo'); clearTimeout(saveTimer); saveTimer = setTimeout(() => performSave(false), 1200); }
+    function markDirty(){ isDirty = true; setSaveStatus('dirty', currentUser ? 'Não salvo' : 'Editando sem salvar'); clearTimeout(saveTimer); saveTimer = setTimeout(() => performSave(false), 1200); }
     function performSave(forceHistory){
       clearTimeout(saveTimer);
+      if (!currentUser) {
+        isDirty = false;
+        setSaveStatus('saved','Modo visitante: não salva');
+        return;
+      }
       if (forceHistory) pushHistorySnapshot();
       state._meta.updatedAt = new Date().toISOString();
       state._meta.updatedBy = currentUser ? currentUser.uid : 'local';
@@ -2232,7 +2250,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       const label = UI.el('cloudUserStatus');
       if (label) label.textContent = message;
       const loginBtn = UI.el('btnLogin');
-      if (loginBtn) loginBtn.textContent = currentUser ? 'Conta / Nuvem' : 'Login';
+      if (loginBtn) loginBtn.textContent = currentUser ? 'Conta / Nuvem' : 'Cadastro/Login';
       syncUserHeader();
     }
 
@@ -2270,7 +2288,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       clearScope(); clearDelScope(); clearRetroDel();
       renderAll();
       syncUserHeader();
-      UI.open('ovLogin');
+      setSaveStatus('saved','Modo visitante: não salva');
     }
 
     function resetInactivityTimer(){
@@ -2534,13 +2552,16 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       if (!currentUser) return alert('Entre na sua conta antes de trocar a senha.');
       const currentPass = UI.el('accountCurrentPassword').value;
       const newPass = UI.el('accountNewPassword').value;
+      const confirmNewPass = UI.el('accountNewPasswordConfirm').value;
       if (!currentPass) return alert('Informe a senha atual.');
       if (!newPass || newPass.length < 6) return alert('A nova senha precisa ter pelo menos 6 caracteres.');
+      if (newPass !== confirmNewPass) return alert('A confirmação da nova senha não confere.');
       try {
         await window.FirebaseAgenda.reauthWithPassword(currentUser, currentPass);
         await window.FirebaseAgenda.updatePassword(currentUser, newPass);
         UI.el('accountCurrentPassword').value = '';
         UI.el('accountNewPassword').value = '';
+        UI.el('accountNewPasswordConfirm').value = '';
         alert('Senha alterada com sucesso.');
       } catch (err) {
         alert('Erro ao trocar senha: ' + (err.message || err));
@@ -4246,7 +4267,9 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       });
       UI.el('saveBonusRules').addEventListener('click', () => { collectBonusRules(); save(); UI.close('ovBonusRules'); renderPayments(); renderCalendar(); renderSummary(); });
 
-      UI.el('btnLogin').addEventListener('click', () => { updateCloudStatus(currentUser ? `Conectado: ${currentUser.email}` : 'Status: não conectado.'); UI.open('ovLogin'); });
+      const openLoginModal = () => { updateCloudStatus(currentUser ? `Conectado: ${currentUser.email}` : 'Status: não conectado.'); UI.open('ovLogin'); };
+      UI.el('btnLogin').addEventListener('click', openLoginModal);
+      UI.el('btnLoginTop').addEventListener('click', openLoginModal);
       UI.el('userBadge').addEventListener('click', openAccountModal);
       UI.el('accountClose').addEventListener('click', () => UI.close('ovAccount'));
       UI.el('loginClose').addEventListener('click', () => UI.close('ovLogin'));
