@@ -1905,15 +1905,15 @@ body.is-logging-out::before{
         <h3>Login e nuvem</h3>
         <button class="closeX" id="loginClose">✕</button>
       </div>
-      <div class="form" autocomplete="on">
+      <form class="form" id="authForm" autocomplete="on" onsubmit="return false;">
         <div class="cloudHint" id="cloudHint">
           Entre com e-mail e senha para salvar sua agenda na nuvem. Sem login, você pode testar e editar a agenda, mas nada será salvo.
         </div>
-        <div><div class="lbl">E-mail</div><input class="input" id="loginEmail" placeholder="voce@exemplo.com" type="email" autocomplete="email" /></div>
+        <div><div class="lbl">E-mail</div><input class="input" id="loginEmail" name="email" placeholder="voce@exemplo.com" type="email" autocomplete="username email" /></div>
         <div>
           <div class="lbl">Senha</div>
           <div class="passwordWrap">
-            <input class="input" id="loginPassword" placeholder="senha" type="password" autocomplete="off" data-autocomplete-intent="current-password" autocapitalize="off" spellcheck="false" />
+            <input class="input" id="loginPassword" name="current-password" placeholder="senha" type="password" autocomplete="current-password" data-autocomplete-intent="current-password" autocapitalize="off" spellcheck="false" />
             <button class="passToggle" id="toggleLoginPassword" type="button" title="Mostrar/ocultar senha">👁</button>
           </div>
         </div>
@@ -1928,7 +1928,7 @@ body.is-logging-out::before{
             <div>
               <div class="lbl">Confirmar senha <span class="small">(necessário apenas no cadastro)</span></div>
               <div class="passwordWrap">
-                <input class="input" id="loginPasswordConfirm" placeholder="repita a senha" type="password" autocomplete="off" data-autocomplete-intent="new-password" autocapitalize="off" spellcheck="false" />
+                <input class="input" id="loginPasswordConfirm" name="new-password-confirm" placeholder="repita a senha" type="password" autocomplete="new-password" data-autocomplete-intent="new-password" autocapitalize="off" spellcheck="false" />
                 <button class="passToggle" id="toggleLoginPasswordConfirm" type="button" title="Mostrar/ocultar confirmação">👁</button>
               </div>
             </div>
@@ -1941,7 +1941,7 @@ body.is-logging-out::before{
           <button class="mBtn" id="btnSyncLocalToCloud" type="button">Enviar dados atuais para nuvem</button>
           <button class="mBtn danger" id="btnSignOut" type="button">Sair</button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 
@@ -1964,15 +1964,15 @@ body.is-logging-out::before{
           <div class="row3" style="margin-top:10px">
             <div>
               <div class="lbl">Senha atual</div>
-              <input class="input" id="accountCurrentPassword" type="password" placeholder="senha atual" autocomplete="off" data-autocomplete-intent="current-password" autocapitalize="off" spellcheck="false" />
+              <input class="input" id="accountCurrentPassword" name="account-current-password" type="password" placeholder="senha atual" autocomplete="current-password" data-autocomplete-intent="current-password" autocapitalize="off" spellcheck="false" />
             </div>
             <div>
               <div class="lbl">Nova senha</div>
-              <input class="input" id="accountNewPassword" type="password" placeholder="mínimo 6 caracteres" autocomplete="off" data-autocomplete-intent="new-password" autocapitalize="off" spellcheck="false" />
+              <input class="input" id="accountNewPassword" name="account-new-password" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password" data-autocomplete-intent="new-password" autocapitalize="off" spellcheck="false" />
             </div>
             <div>
               <div class="lbl">Confirmar nova senha</div>
-              <input class="input" id="accountNewPasswordConfirm" type="password" placeholder="repita a nova senha" autocomplete="off" data-autocomplete-intent="new-password" autocapitalize="off" spellcheck="false" />
+              <input class="input" id="accountNewPasswordConfirm" name="account-new-password-confirm" type="password" placeholder="repita a nova senha" autocomplete="new-password" data-autocomplete-intent="new-password" autocapitalize="off" spellcheck="false" />
             </div>
           </div>
         </div>
@@ -2153,6 +2153,7 @@ body.is-logging-out::before{
     let cloudLoadDone = false;
     let cloudSaveTimer = null;
     let cloudSaving = false;
+    let firebaseAuthListenerStarted = false;
     const INACTIVITY_LIMIT_MS = 20 * 60 * 1000;
     let inactivityTimer = null;
     const Modal = { model:null };
@@ -2322,25 +2323,27 @@ body.is-logging-out::before{
       accountNewPasswordConfirm: 'new-password'
     };
 
-    function clearSensitiveAuthFields(){
+    function clearSensitiveAuthFields(options = {}){
+      const keepEmail = !!options.keepEmail;
+      const keepName = !!options.keepName;
+
       Object.keys(PASSWORD_AUTOCOMPLETE_MAP).forEach(id => {
         const el = UI.el(id);
-        if (el) {
-          el.value = '';
-          el.type = 'password';
-          el.removeAttribute('readonly');
-          el.setAttribute('autocomplete', 'off');
-          el.setAttribute('data-autocomplete-intent', PASSWORD_AUTOCOMPLETE_MAP[id]);
-          el.setAttribute('autocapitalize','off');
-          el.setAttribute('spellcheck','false');
-          el.dataset.passwordTouched = 'false';
-        }
+        if (!el) return;
+        el.value = '';
+        el.type = 'password';
+        el.removeAttribute('readonly');
+        el.setAttribute('autocomplete', PASSWORD_AUTOCOMPLETE_MAP[id]);
+        el.setAttribute('data-autocomplete-intent', PASSWORD_AUTOCOMPLETE_MAP[id]);
+        el.setAttribute('autocapitalize','off');
+        el.setAttribute('spellcheck','false');
+        el.dataset.passwordTouched = 'false';
       });
 
       const email = UI.el('loginEmail');
-      if (email && !currentUser) email.value = '';
+      if (email && !keepEmail && !currentUser) email.value = '';
       const name = UI.el('loginName');
-      if (name && !currentUser) name.value = '';
+      if (name && !keepName && !currentUser) name.value = '';
     }
 
     function unlockPasswordField(input){
@@ -2359,14 +2362,53 @@ body.is-logging-out::before{
         input.value = '';
         input.type = 'password';
         input.removeAttribute('readonly');
-        input.setAttribute('autocomplete','off');
+        input.setAttribute('autocomplete', PASSWORD_AUTOCOMPLETE_MAP[id]);
         input.setAttribute('data-autocomplete-intent', PASSWORD_AUTOCOMPLETE_MAP[id]);
         input.dataset.passwordTouched = 'false';
 
-        ['focus','click','pointerdown','mousedown','touchstart','keydown'].forEach(evt => {
+        ['focus','click','pointerdown','mousedown','touchstart','keydown','input'].forEach(evt => {
           input.addEventListener(evt, () => unlockPasswordField(input), { once:false });
         });
       });
+    }
+
+    function clearSilentPasswordAutofill(){
+      // Mantém o autocomplete do navegador permitido, mas apaga preenchimentos automáticos
+      // que acontecem antes do usuário clicar/tocar no campo.
+      Object.keys(PASSWORD_AUTOCOMPLETE_MAP).forEach(id => {
+        const input = UI.el(id);
+        if (!input) return;
+        if (input.dataset.passwordTouched !== 'true') {
+          input.value = '';
+          input.type = 'password';
+        }
+      });
+    }
+
+    function scheduleSilentPasswordCleanup(){
+      clearSilentPasswordAutofill();
+      setTimeout(clearSilentPasswordAutofill, 80);
+      setTimeout(clearSilentPasswordAutofill, 350);
+      setTimeout(clearSilentPasswordAutofill, 900);
+    }
+
+    function firebaseAuthErrorMessage(err){
+      const code = err?.code || '';
+      const map = {
+        'auth/invalid-email':'E-mail inválido.',
+        'auth/missing-email':'Informe o e-mail.',
+        'auth/missing-password':'Informe a senha.',
+        'auth/invalid-credential':'E-mail ou senha incorretos. Confira os dados ou use “Recuperar senha”.',
+        'auth/user-not-found':'Usuário não encontrado. Crie um cadastro ou confira o e-mail.',
+        'auth/wrong-password':'Senha incorreta. Confira a senha ou use “Recuperar senha”.',
+        'auth/email-already-in-use':'Este e-mail já possui cadastro. Use “Entrar” ou recupere a senha.',
+        'auth/weak-password':'A senha precisa ter pelo menos 6 caracteres.',
+        'auth/too-many-requests':'Muitas tentativas. Aguarde alguns minutos e tente novamente.',
+        'auth/network-request-failed':'Falha de rede. Confira a internet e tente novamente.',
+        'auth/unauthorized-domain':'Este domínio não está autorizado no Firebase Authentication. Adicione o domínio do GitHub Pages em Authentication > Settings > Authorized domains.',
+        'auth/requires-recent-login':'Por segurança, entre novamente e tente trocar a senha.'
+      };
+      return map[code] || (err?.message || String(err));
     }
 
     function clearPrivateVisualData(reason='Tela inicial / visitante'){
@@ -2458,6 +2500,9 @@ body.is-logging-out::before{
         firebaseDb = window.FirebaseAgenda.db;
         cloudReady = true;
 
+        if (firebaseAuthListenerStarted) return;
+        firebaseAuthListenerStarted = true;
+
         window.FirebaseAgenda.onAuthStateChanged(async user => {
           currentUser = user || null;
           cloudLoadDone = false;
@@ -2466,11 +2511,23 @@ body.is-logging-out::before{
             if (inactivityTimer) clearTimeout(inactivityTimer);
             updateCloudStatus('Status: não conectado.');
             cloudLoadDone = false;
-            protectLoggedOutScreen('Tela inicial / visitante');
+
+            if (sessionStorage.getItem('agendaLogoutReason') || document.body.classList.contains('is-logging-out')) {
+              protectLoggedOutScreen('Tela inicial / visitante');
+            } else {
+              syncUserHeader();
+              setSaveStatus('saved','Modo visitante: não salva');
+            }
             return;
           }
 
+          if (document.body.classList.contains('is-logging-out')) return;
+          sessionStorage.removeItem('agendaLogoutReason');
+
           resetInactivityTimer();
+          await currentUser.reload().catch(() => {});
+          currentUser = window.FirebaseAgenda.auth.currentUser || currentUser;
+          syncUserHeader();
           updateCloudStatus(`Conectado: ${userFriendlyName()} · ${currentUser.email || ''}`);
           setSaveStatus('saving','Carregando nuvem...');
           await loadCloudForCurrentUser();
@@ -2588,7 +2645,7 @@ body.is-logging-out::before{
         return alert('Firebase ainda não está pronto: ' + msg);
       }
 
-      const name = (UI.el('accountName')?.value || UI.el('loginName')?.value || '').trim();
+      const name = (UI.el('loginName')?.value || '').trim();
       unlockPasswordField(UI.el('loginPassword'));
       unlockPasswordField(UI.el('loginPasswordConfirm'));
       const email = UI.el('loginEmail').value.trim();
@@ -2609,7 +2666,7 @@ body.is-logging-out::before{
         UI.el('loginPasswordConfirm').value = '';
         UI.close('ovLogin');
       } catch (err) {
-        alert('Erro ao criar conta: ' + (err.message || err));
+        alert('Erro ao criar conta: ' + firebaseAuthErrorMessage(err));
       }
     }
 
@@ -2630,7 +2687,7 @@ body.is-logging-out::before{
         clearSensitiveAuthFields();
         UI.close('ovLogin');
       } catch (err) {
-        alert('Erro ao entrar: ' + (err.message || err));
+        alert('Erro ao entrar: ' + firebaseAuthErrorMessage(err));
       }
     }
 
@@ -2702,7 +2759,7 @@ body.is-logging-out::before{
         clearSensitiveAuthFields();
         alert('Senha alterada com sucesso.');
       } catch (err) {
-        alert('Erro ao trocar senha: ' + (err.message || err));
+        alert('Erro ao trocar senha: ' + firebaseAuthErrorMessage(err));
       }
     }
 
@@ -2715,7 +2772,7 @@ body.is-logging-out::before{
         await window.FirebaseAgenda.sendPasswordResetEmail(email);
         alert('E-mail de recuperação enviado para: ' + email);
       } catch (err) {
-        alert('Erro ao enviar recuperação: ' + (err.message || err));
+        alert('Erro ao enviar recuperação: ' + firebaseAuthErrorMessage(err));
       }
     }
 
@@ -4405,7 +4462,7 @@ body.is-logging-out::before{
       });
       UI.el('saveBonusRules').addEventListener('click', () => { collectBonusRules(); save(); UI.close('ovBonusRules'); renderPayments(); renderCalendar(); renderSummary(); });
 
-      const openLoginModal = () => { clearSensitiveAuthFields(); updateCloudStatus(currentUser ? `Conectado: ${currentUser.email}` : 'Status: não conectado.'); UI.open('ovLogin'); };
+      const openLoginModal = () => { clearSensitiveAuthFields({keepEmail:true, keepName:true}); updateCloudStatus(currentUser ? `Conectado: ${currentUser.email}` : 'Status: não conectado.'); UI.open('ovLogin'); scheduleSilentPasswordCleanup(); };
       UI.el('btnLogin').addEventListener('click', openLoginModal);
       UI.el('btnLoginTop').addEventListener('click', openLoginModal);
       UI.el('userBadge').addEventListener('click', openAccountModal);
@@ -4413,6 +4470,9 @@ body.is-logging-out::before{
       UI.el('loginClose').addEventListener('click', () => { clearSensitiveAuthFields(); UI.close('ovLogin'); });
       UI.el('btnCreateAccount').addEventListener('click', createAccount);
       UI.el('btnSignIn').addEventListener('click', signIn);
+      UI.el('authForm')?.addEventListener('submit', e => { e.preventDefault(); signIn(); });
+      UI.el('loginPassword')?.addEventListener('keydown', e => { if (e.key === 'Enter') signIn(); });
+      UI.el('loginPasswordConfirm')?.addEventListener('keydown', e => { if (e.key === 'Enter') createAccount(); });
       UI.el('toggleLoginPassword').addEventListener('click', () => togglePasswordVisibility('loginPassword','toggleLoginPassword'));
       UI.el('toggleLoginPasswordConfirm').addEventListener('click', () => togglePasswordVisibility('loginPasswordConfirm','toggleLoginPasswordConfirm'));
       UI.el('btnSignOut').addEventListener('click', signOut);
