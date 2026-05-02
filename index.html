@@ -1501,6 +1501,31 @@ body[data-auth="off"] #loginClose{display:flex}
 .accountPanel{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.05)}
 body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{background:rgba(15,23,42,.04);border-color:rgba(15,23,42,.12)}
 
+
+/* Segurança pós-logout: oculta imediatamente dados pessoais enquanto a página recarrega */
+body.is-logging-out .container,
+body.is-logging-out .mainCol,
+body.is-logging-out .sidebarCol,
+body.is-logging-out .statusPill{
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+body.is-logging-out::before{
+  content:"Sessão encerrada. Voltando para a tela inicial...";
+  position:fixed;
+  inset:0;
+  z-index:999999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:24px;
+  color:#ffffff;
+  font-weight:1000;
+  font-size:18px;
+  background:linear-gradient(180deg,rgba(5,8,18,.98),rgba(5,8,18,.96));
+}
+
 </style>
 </head>
 <body data-theme="senna_capacete">
@@ -1880,7 +1905,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
         <h3>Login e nuvem</h3>
         <button class="closeX" id="loginClose">✕</button>
       </div>
-      <div class="form">
+      <div class="form" autocomplete="off">
         <div class="cloudHint" id="cloudHint">
           Entre com e-mail e senha para salvar sua agenda na nuvem. Sem login, você pode testar e editar a agenda, mas nada será salvo.
         </div>
@@ -1888,7 +1913,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
         <div>
           <div class="lbl">Senha</div>
           <div class="passwordWrap">
-            <input class="input" id="loginPassword" placeholder="senha" type="password" autocomplete="current-password" />
+            <input class="input" id="loginPassword" placeholder="senha" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" />
             <button class="passToggle" id="toggleLoginPassword" type="button" title="Mostrar/ocultar senha">👁</button>
           </div>
         </div>
@@ -1903,7 +1928,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
             <div>
               <div class="lbl">Confirmar senha <span class="small">(necessário apenas no cadastro)</span></div>
               <div class="passwordWrap">
-                <input class="input" id="loginPasswordConfirm" placeholder="repita a senha" type="password" autocomplete="new-password" />
+                <input class="input" id="loginPasswordConfirm" placeholder="repita a senha" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" />
                 <button class="passToggle" id="toggleLoginPasswordConfirm" type="button" title="Mostrar/ocultar confirmação">👁</button>
               </div>
             </div>
@@ -1939,15 +1964,15 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
           <div class="row3" style="margin-top:10px">
             <div>
               <div class="lbl">Senha atual</div>
-              <input class="input" id="accountCurrentPassword" type="password" placeholder="senha atual" autocomplete="current-password" />
+              <input class="input" id="accountCurrentPassword" type="password" placeholder="senha atual" autocomplete="off" autocapitalize="off" spellcheck="false" />
             </div>
             <div>
               <div class="lbl">Nova senha</div>
-              <input class="input" id="accountNewPassword" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password" />
+              <input class="input" id="accountNewPassword" type="password" placeholder="mínimo 6 caracteres" autocomplete="off" autocapitalize="off" spellcheck="false" />
             </div>
             <div>
               <div class="lbl">Confirmar nova senha</div>
-              <input class="input" id="accountNewPasswordConfirm" type="password" placeholder="repita a nova senha" autocomplete="new-password" />
+              <input class="input" id="accountNewPasswordConfirm" type="password" placeholder="repita a nova senha" autocomplete="off" autocapitalize="off" spellcheck="false" />
             </div>
           </div>
         </div>
@@ -2108,6 +2133,14 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       customTheme:{ bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, presetOverrides:{} },
       _meta:{ updatedAt:'', updatedBy:'local' }
     };
+
+    if (sessionStorage.getItem('agendaForceGuestAfterLogout')) {
+      try {
+        localStorage.removeItem(LS_KEY);
+        localStorage.removeItem(LS_HISTORY);
+      } catch (err) {}
+      sessionStorage.removeItem('agendaForceGuestAfterLogout');
+    }
 
     let state = deepClone(DEFAULTS);
     let saveTimer = null;
@@ -2281,12 +2314,30 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       }
     }
 
-    function protectLoggedOutScreen(reason='Modo visitante: não salva'){
+    function clearSensitiveAuthFields(){
+      ['loginPassword','loginPasswordConfirm','accountCurrentPassword','accountNewPassword','accountNewPasswordConfirm'].forEach(id => {
+        const el = UI.el(id);
+        if (el) {
+          el.value = '';
+          el.setAttribute('autocomplete','off');
+          el.setAttribute('autocapitalize','off');
+          el.setAttribute('spellcheck','false');
+          el.type = 'password';
+        }
+      });
+      const email = UI.el('loginEmail');
+      if (email && !currentUser) email.value = '';
+      const name = UI.el('loginName');
+      if (name && !currentUser) name.value = '';
+    }
+
+    function clearPrivateVisualData(reason='Tela inicial / visitante'){
       clearTimeout(saveTimer);
       clearTimeout(cloudSaveTimer);
       isDirty = false;
       cloudLoadDone = false;
       cloudSaving = false;
+      currentUser = null;
 
       const freshDefaults = deepClone(DEFAULTS);
       const now = new Date();
@@ -2294,6 +2345,21 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       freshDefaults.selDate = todayISO();
       state = freshDefaults;
 
+      clearSensitiveAuthFields();
+      clearScope(); clearDelScope(); clearRetroDel();
+      document.querySelectorAll('.ov.open').forEach(ov => ov.classList.remove('open'));
+      syncUserHeader();
+      renderAll();
+      setSaveStatus('saved', reason);
+    }
+
+    function hardReloadAsGuest(){
+      sessionStorage.setItem('agendaForceGuestAfterLogout', String(Date.now()));
+      const cleanUrl = window.location.pathname + '?logout=' + Date.now() + window.location.hash;
+      window.location.replace(cleanUrl);
+    }
+
+    function protectLoggedOutScreen(reason='Modo visitante: não salva'){
       try {
         localStorage.removeItem(LS_KEY);
         localStorage.removeItem(LS_HISTORY);
@@ -2301,11 +2367,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
         console.warn('Não foi possível limpar o armazenamento local:', err);
       }
 
-      clearScope(); clearDelScope(); clearRetroDel();
-      document.querySelectorAll('.ov.open').forEach(ov => ov.classList.remove('open'));
-      syncUserHeader();
-      renderAll();
-      setSaveStatus('saved', reason);
+      clearPrivateVisualData(reason);
     }
 
     function resetInactivityTimer(){
@@ -2319,22 +2381,15 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       try {
         if (cloudLoadDone) await saveCloudNow(false);
 
-        // Marca que o reload veio de encerramento automático da sessão.
-        // Assim, ao recarregar, a tela volta 100% limpa para o modo visitante.
+        document.body.classList.add('is-logging-out');
         sessionStorage.setItem('agendaLogoutReason', 'inactivity');
+        protectLoggedOutScreen('Sessão encerrada por inatividade');
 
         await window.FirebaseAgenda.signOut();
       } catch (err) {
         console.error('Erro no logout por inatividade:', err);
       } finally {
-        currentUser = null;
-        cloudLoadDone = false;
-        updateCloudStatus('Status: desconectado por inatividade.');
-        setSaveStatus('saved','Logout por inatividade');
-        protectLoggedOutScreen('Sessão encerrada por inatividade');
-
-        // Reload completo para remover qualquer informação pessoal que ainda esteja em memória/tela.
-        window.location.reload();
+        hardReloadAsGuest();
       }
     }
 
@@ -2530,6 +2585,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
 
       try {
         await window.FirebaseAgenda.signIn(email, pass);
+        clearSensitiveAuthFields();
         UI.close('ovLogin');
       } catch (err) {
         alert('Erro ao entrar: ' + (err.message || err));
@@ -2544,21 +2600,20 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       if (inactivityTimer) clearTimeout(inactivityTimer);
 
       try {
-        // Marca que o reload veio de logout manual.
-        // Isso impede que dados pessoais fiquem visíveis após sair.
+        document.body.classList.add('is-logging-out');
         sessionStorage.setItem('agendaLogoutReason', 'manual');
 
-        if (wasLogged) await window.FirebaseAgenda.signOut();
-
-        currentUser = null;
-        cloudLoadDone = false;
-        updateCloudStatus('Status: não conectado.');
+        // Limpa a tela imediatamente, antes mesmo do Firebase terminar o logout.
         protectLoggedOutScreen('Tela inicial / visitante');
+        updateCloudStatus('Status: não conectado.');
 
-        // Reload completo: limpa a interface e volta para a tela padrão do site.
-        window.location.reload();
+        if (wasLogged) await window.FirebaseAgenda.signOut();
+        hardReloadAsGuest();
       } catch (err) {
+        document.body.classList.remove('is-logging-out');
         sessionStorage.removeItem('agendaLogoutReason');
+        sessionStorage.removeItem('agendaForceGuestAfterLogout');
+        clearSensitiveAuthFields();
         alert('Erro ao sair: ' + (err.message || err));
       }
     }
@@ -2599,6 +2654,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
         UI.el('accountCurrentPassword').value = '';
         UI.el('accountNewPassword').value = '';
         UI.el('accountNewPasswordConfirm').value = '';
+        clearSensitiveAuthFields();
         alert('Senha alterada com sucesso.');
       } catch (err) {
         alert('Erro ao trocar senha: ' + (err.message || err));
@@ -4308,8 +4364,8 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
       UI.el('btnLogin').addEventListener('click', openLoginModal);
       UI.el('btnLoginTop').addEventListener('click', openLoginModal);
       UI.el('userBadge').addEventListener('click', openAccountModal);
-      UI.el('accountClose').addEventListener('click', () => UI.close('ovAccount'));
-      UI.el('loginClose').addEventListener('click', () => UI.close('ovLogin'));
+      UI.el('accountClose').addEventListener('click', () => { clearSensitiveAuthFields(); UI.close('ovAccount'); });
+      UI.el('loginClose').addEventListener('click', () => { clearSensitiveAuthFields(); UI.close('ovLogin'); });
       UI.el('btnCreateAccount').addEventListener('click', createAccount);
       UI.el('btnSignIn').addEventListener('click', signIn);
       UI.el('toggleLoginPassword').addEventListener('click', () => togglePasswordVisibility('loginPassword','toggleLoginPassword'));
@@ -4332,6 +4388,7 @@ body[data-theme="light"] .accountPanel, body[data-theme="paper"] .accountPanel{b
 
     bindEvents();
     bindHamburgerAutoHide();
+    clearSensitiveAuthFields();
     syncUserHeader();
     renderAll();
     initFirebaseCloud();
