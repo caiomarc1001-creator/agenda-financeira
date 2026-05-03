@@ -1526,6 +1526,240 @@ body.is-logging-out::before{
   background:linear-gradient(180deg,rgba(5,8,18,.98),rgba(5,8,18,.96));
 }
 
+
+/* =========================================================
+   MÓDULO CIRÚRGICO — CONTROLE DE PACIENTES OPERADOS
+========================================================= */
+.surgeryStats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.surgeryMini{border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));padding:10px}
+.surgeryMini .k{font-size:11px;color:var(--mut2);font-weight:950}.surgeryMini .v{font-size:18px;font-weight:1000;margin-top:4px}
+.surgeryList{display:flex;flex-direction:column;gap:10px}
+.surgeryRow{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.025));padding:12px}
+.surgeryRowTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.surgeryPatient{font-weight:1000;font-size:14px;line-height:1.25}
+.surgeryMeta{font-size:12px;color:var(--mut);line-height:1.55;margin-top:4px}
+.payBadge{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:7px 10px;border:1px solid var(--line);font-size:12px;font-weight:1000}
+.payBadge.paid{background:rgba(57,217,138,.14);border-color:rgba(57,217,138,.34);color:var(--good)}
+.payBadge.unpaid{background:rgba(255,176,32,.12);border-color:rgba(255,176,32,.34);color:var(--warn)}
+.surgeryActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.surgeryFilterBar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+body[data-theme="light"] .payBadge.unpaid,body[data-theme="paper"] .payBadge.unpaid,body[data-theme="windows_xp"] .payBadge.unpaid,body[data-theme="toy_story"] .payBadge.unpaid{color:#9a5b00}
+body[data-theme="light"] .payBadge.paid,body[data-theme="paper"] .payBadge.paid,body[data-theme="windows_xp"] .payBadge.paid,body[data-theme="toy_story"] .payBadge.paid{color:#047857}
+@media(max-width:760px){.surgeryStats,.surgeryFilterBar{grid-template-columns:1fr}}
+
+
+
+/* =========================
+   MODO CIRURGIÃO — VERSÃO ESTÁVEL
+   Mantém o calendário vivo e usa o painel cirúrgico como foco principal.
+========================= */
+.surgeonRetrospect{display:none}
+.surgeryDayChip{background:linear-gradient(135deg,rgba(57,217,138,.24),rgba(96,165,250,.16)) !important;color:var(--txt) !important;border-color:rgba(57,217,138,.42) !important}
+body.surgeon-mode .container{grid-template-columns:minmax(340px,460px) minmax(0,1fr)}
+body.surgeon-mode .mainCol{order:1}
+body.surgeon-mode .sidebarCol{order:2}
+body.surgeon-mode .sidebarCol > .section:nth-child(1),
+body.surgeon-mode .sidebarCol > .section:nth-child(2){display:none !important}
+body.surgeon-mode .sidebarCol > .section:nth-child(3){margin-top:0;min-height:calc(100vh - 104px)}
+body.surgeon-mode #btnNewSurgery{border-color:rgba(57,217,138,.65);background:linear-gradient(135deg,rgba(57,217,138,.28),rgba(96,165,250,.16))}
+body.surgeon-mode .surgeonRetrospect{display:block}
+body.surgeon-mode{--cellH:88px}
+body.surgeon-mode .mainCalendarCard .sectionHead{min-height:auto;top:72px}
+body.surgeon-mode .month{font-size:22px}
+body.surgeon-mode .dowShell{grid-template-columns:30px 1fr 30px;gap:6px;padding:8px 8px 0}
+body.surgeon-mode .calFrame{grid-template-columns:30px minmax(0,1fr) 30px;gap:6px;padding:8px}
+body.surgeon-mode .grid,body.surgeon-mode .dowRow{gap:5px}
+body.surgeon-mode .day{padding:5px;border-radius:12px}
+body.surgeon-mode .chip{font-size:10px;padding:5px 6px}
+body.surgeon-mode .sideOut .sideLabel,body.surgeon-mode .sideOut .sideMonth{display:none}
+body.surgeon-mode .surgeryList{gap:12px}
+body.surgeon-mode #surgeryPreviewList .surgeryRow{border-color:rgba(57,217,138,.24)}
+.surgeryDateTitle{font-weight:1000;font-size:16px;line-height:1.35;margin:0 0 10px;color:var(--txt)}
+@media(max-width:1100px){body.surgeon-mode .container{grid-template-columns:1fr}body.surgeon-mode .mainCol{order:1}body.surgeon-mode .sidebarCol{order:2}}
+
+
+/* =========================================================
+   AJUSTE PROFISSIONAL — CABEÇALHO DO MODO CIRURGIÃO
+   Título + botões sempre na mesma linha, alinhados e distribuídos.
+========================================================= */
+body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead{
+  display:grid !important;
+  grid-template-columns:minmax(220px,auto) minmax(0,1fr);
+  align-items:center;
+  gap:14px;
+  padding:14px 16px;
+}
+body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead > div:first-child{
+  min-width:220px;
+}
+body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead > div:last-child{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(120px,1fr));
+  align-items:center;
+  gap:10px !important;
+  width:100%;
+  min-width:0;
+}
+body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
+  width:100%;
+  white-space:nowrap;
+  text-align:center;
+  justify-content:center;
+  min-height:38px;
+}
+@media(max-width:760px){
+  body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead{
+    grid-template-columns:1fr;
+  }
+  body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead > div:last-child{
+    grid-template-columns:repeat(3,minmax(112px,1fr));
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead > div:last-child::-webkit-scrollbar{display:none}
+}
+
+
+
+/* =========================================================
+   CORREÇÃO FINAL — MODO CIRURGIÃO: BOTÃO SALVAR ALINHADO
+   Coloca o botão “Salvar agora” no mesmo grid visual dos demais botões.
+========================================================= */
+body.surgeon-mode .headerAligned{
+  grid-template-columns:minmax(220px,280px) minmax(0,1fr) auto;
+  align-items:center;
+}
+body.surgeon-mode .toolbarCenter{
+  width:100%;
+  min-width:0;
+  justify-content:center;
+}
+body.surgeon-mode .primaryButtons{
+  display:grid !important;
+  grid-template-columns:repeat(6,minmax(118px,1fr));
+  align-items:center;
+  gap:10px;
+  width:100%;
+  max-width:940px;
+  min-width:0;
+}
+body.surgeon-mode .primaryButtons .btn,
+body.surgeon-mode #btnSaveNow{
+  width:100%;
+  min-width:0;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  white-space:nowrap;
+  padding:10px 12px;
+  line-height:1;
+}
+body.surgeon-mode #btnSaveNow{
+  border-color:rgba(57,217,138,.65);
+  background:linear-gradient(135deg,rgba(57,217,138,.28),rgba(96,165,250,.16));
+}
+body.surgeon-mode .saveDock.userDock{
+  align-self:center;
+}
+
+/* Cabeçalho do bloco Controle cirúrgico: todos os botões, inclusive ações futuras de salvar, obedecem à mesma régua. */
+body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead > div:last-child{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(130px,1fr));
+  align-items:center;
+  gap:10px !important;
+}
+body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead > div:last-child .smallBtn{
+  width:100%;
+  min-width:0;
+  height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+@media(max-width:1180px){
+  body.surgeon-mode .headerAligned{
+    grid-template-columns:1fr;
+  }
+  body.surgeon-mode .toolbarCenter{
+    justify-content:flex-start;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  body.surgeon-mode .toolbarCenter::-webkit-scrollbar{display:none}
+  body.surgeon-mode .primaryButtons{
+    width:max-content;
+    min-width:100%;
+    grid-template-columns:repeat(6,minmax(124px,1fr));
+  }
+}
+
+@media(max-width:760px){
+  body.surgeon-mode .primaryButtons{
+    grid-template-columns:repeat(6,minmax(126px,1fr));
+  }
+}
+
+
+/* =========================================================
+   MODO CIRURGIÃO — BOTÕES COM QUEBRA DE LINHA INTERNA
+   Mantém a régua/tamanho dos botões e impede o texto de ultrapassar.
+========================================================= */
+body.surgeon-mode .primaryButtons .btn,
+body.surgeon-mode #btnSaveNow{
+  white-space:normal !important;
+  overflow-wrap:anywhere !important;
+  word-break:normal !important;
+  hyphens:auto;
+  text-align:center !important;
+  line-height:1.12 !important;
+  font-size:12px !important;
+  font-weight:950 !important;
+  padding:6px 10px !important;
+  height:42px !important;
+  min-height:42px !important;
+  max-height:42px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn,
+body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead > div:last-child .smallBtn{
+  white-space:normal !important;
+  overflow-wrap:anywhere !important;
+  word-break:normal !important;
+  hyphens:auto;
+  text-align:center !important;
+  line-height:1.12 !important;
+  font-size:11.5px !important;
+  font-weight:950 !important;
+  padding:5px 8px !important;
+  height:38px !important;
+  min-height:38px !important;
+  max-height:38px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+body.surgeon-mode .primaryButtons{
+  align-items:center !important;
+}
+
+body.surgeon-mode .primaryButtons .btn span,
+body.surgeon-mode #btnSaveNow span,
+body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn span{
+  max-width:100%;
+  display:block;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  line-height:1.12;
+}
+
 </style>
 </head>
 <body data-theme="senna_capacete">
@@ -1541,6 +1775,7 @@ body.is-logging-out::before{
           <div class="hambMenu">
             <button class="btn menuItem" id="btnDayH">Altura do dia</button>
             <button class="btn menuItem" id="btnBonusRules">Bonificação</button>
+            <button class="btn menuItem" id="btnSurgeryCenter">Cirurgias</button>
             <button class="btn menuItem" id="btnImport">Importar</button>
             <button class="btn menuItem" id="btnExport">Exportar</button>
             <button class="btn menuItem" id="btnLogin">Cadastro/Login</button>
@@ -1552,6 +1787,7 @@ body.is-logging-out::before{
           <button class="btn primary" id="btnNew">Novo</button>
           <button class="btn" id="btnTheme">Tema</button>
           <button class="btn" id="btnPay">Regras de pagamento</button>
+          <button class="btn" id="btnNewSurgery">Modo Cirurgião</button>
           <button class="btn" id="btnUndo">Desfazer</button>
           <button class="btn" id="btnSaveNow">Salvar agora</button>
         </div>
@@ -1602,6 +1838,29 @@ body.is-logging-out::before{
         </div>
         <div class="padded" id="paymentsBody"><div class="payList" id="payList"></div></div>
       </section>
+
+      <section class="card section">
+        <div class="sectionHead">
+          <div>
+            <div class="ttl">Controle cirúrgico</div>
+            <div class="sub">Pacientes operados, convênios e recebimentos</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <button class="smallBtn primary" id="btnNewSurgeryRecord" type="button">Nova cirurgia</button>
+            <button class="smallBtn" id="btnOpenSurgeryCenter" type="button">Central</button>
+            <button class="smallBtn" id="btnToggleSurgeries" type="button">Recolher</button>
+          </div>
+        </div>
+        <div class="padded" id="surgeriesBody">
+          <div class="surgeryStats">
+            <div class="surgeryMini"><div class="k">Cirurgias no mês</div><div class="v" id="surgCountMonth">0</div></div>
+            <div class="surgeryMini"><div class="k">Pendentes</div><div class="v" id="surgPendingMonth">0</div></div>
+            <div class="surgeryMini"><div class="k">Recebido</div><div class="v" id="surgPaidValue">R$ 0,00</div></div>
+            <div class="surgeryMini"><div class="k">A receber</div><div class="v" id="surgUnpaidValue">R$ 0,00</div></div>
+          </div>
+          <div class="surgeryList" id="surgeryPreviewList"></div>
+        </div>
+      </section>
     </aside>
 
     <section class="mainCol">
@@ -1619,6 +1878,24 @@ body.is-logging-out::before{
           <button class="sideOut" id="sidePrev" title="Mês anterior"><span class="arrow">‹</span><span class="sideLabel">Mês anterior</span><span class="sideMonth" id="prevMonthMini"></span></button>
           <div class="grid" id="grid"></div>
           <button class="sideOut" id="sideNext" title="Próximo mês"><span class="arrow">›</span><span class="sideLabel">Próximo mês</span><span class="sideMonth" id="nextMonthMini"></span></button>
+        </div>
+      </section>
+
+      <section class="card section surgeonRetrospect" id="surgeonRetrospectCard">
+        <div class="sectionHead">
+          <div>
+            <div class="ttl">Retrospecto cirúrgico geral</div>
+            <div class="sub">Pagamentos de todos os pacientes operados</div>
+          </div>
+        </div>
+        <div class="padded">
+          <div class="surgeryStats">
+            <div class="surgeryMini"><div class="k">Total pago</div><div class="v" id="surgAllPaidValue">R$ 0,00</div></div>
+            <div class="surgeryMini"><div class="k">Total não pago</div><div class="v" id="surgAllUnpaidValue">R$ 0,00</div></div>
+            <div class="surgeryMini"><div class="k">Pacientes pagos</div><div class="v" id="surgAllPaidCount">0</div></div>
+            <div class="surgeryMini"><div class="k">Pacientes pendentes</div><div class="v" id="surgAllUnpaidCount">0</div></div>
+          </div>
+          <div class="helper">Este retrospecto aparece abaixo do calendário no Modo Cirurgião.</div>
         </div>
       </section>
     </section>
@@ -1721,6 +1998,7 @@ body.is-logging-out::before{
           </div>
         </div>
         <div class="mFoot">
+          <button class="mBtn primary" id="btnEventNewSurgery" type="button">Cadastrar cirurgia nesta data</button>
           <button class="mBtn" id="btnCopySpecificDates" type="button">Copiar p/ datas específicas</button>
           <button class="mBtn" id="btnDeleteSpecificDates" type="button">Excluir datas específicas</button>
           <button class="mBtn danger" id="evDelete">Excluir</button>
@@ -2027,6 +2305,52 @@ body.is-logging-out::before{
     </div>
   </div>
 
+  <div class="ov" id="ovSurgeryCenter">
+    <div class="modal" style="width:min(1120px,100%)">
+      <div class="mHead">
+        <h3>Controle cirúrgico · pacientes operados</h3>
+        <button class="closeX" id="surgeryClose" type="button">✕</button>
+      </div>
+      <div class="form">
+        <div class="helper">Registre cada paciente operado com hospital, convênio/particular, função na cirurgia e status visual de pagamento. Esses dados ficam dentro do mesmo arquivo da agenda e seguem o login do usuário.</div>
+        <div class="surgeryFilterBar">
+          <div><div class="lbl">Filtro por texto</div><input class="input" id="surgerySearch" placeholder="Paciente, hospital, plano, atendimento..."></div>
+          <div><div class="lbl">Status</div><select class="input" id="surgeryStatusFilter"><option value="all">Todos</option><option value="unpaid">Não pagos</option><option value="paid">Pagos</option></select></div>
+          <div><div class="lbl">Mês</div><select class="input" id="surgeryMonthFilter"><option value="current">Mês visível</option><option value="all">Todos os meses</option></select></div>
+        </div>
+
+        <div class="accountPanel">
+          <div class="row3">
+            <div><div class="lbl">Data da cirurgia</div><input class="input" id="surgDate" type="date"></div>
+            <div><div class="lbl">Nome do paciente</div><input class="input" id="surgPatient" placeholder="Nome completo"></div>
+            <div><div class="lbl">Nº atendimento</div><input class="input" id="surgAttendance" placeholder="Atendimento / guia / conta"></div>
+          </div>
+          <div style="margin-top:10px"><div class="lbl">Procedimentos realizados</div><textarea class="input" id="surgProcedures" rows="3" placeholder="Ex: colecistectomia videolaparoscópica, hernioplastia..."></textarea></div>
+          <div class="row3" style="margin-top:10px">
+            <div><div class="lbl">Particular ou convênio</div><select class="input" id="surgPaymentType"><option value="convenio">Convênio</option><option value="particular">Particular</option></select></div>
+            <div><div class="lbl">Plano de saúde</div><input class="input" id="surgHealthPlan" placeholder="Ex: Unimed, SulAmérica, Bradesco"></div>
+            <div><div class="lbl">Hospital</div><input class="input" id="surgHospital" placeholder="Hospital onde foi operado"></div>
+          </div>
+          <div class="row3" style="margin-top:10px">
+            <div><div class="lbl">Atuação</div><select class="input" id="surgRole"><option value="principal">Cirurgião principal</option><option value="auxiliar">Auxiliar</option></select></div>
+            <div><div class="lbl">Valor previsto / recebido</div><input class="input" id="surgAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
+            <div><div class="lbl">Status de pagamento</div><select class="input" id="surgPaymentStatus"><option value="unpaid">Não pago</option><option value="paid">Pago</option></select></div>
+          </div>
+          <div style="margin-top:10px"><div class="lbl">Observações</div><textarea class="input" id="surgNotes" rows="2" placeholder="Ex: aguardando faturamento, guia enviada, glosa, recurso..."></textarea></div>
+          <div class="mFoot">
+            <button class="mBtn ghost" id="surgClear" type="button">Limpar formulário</button>
+            <button class="mBtn primary" id="surgSave" type="button">Salvar paciente operado</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="themeSectionTitle">Pacientes cadastrados</div>
+          <div class="surgeryList" id="surgeryFullList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase compat bridge v6 - estável para HTML único / GitHub Pages -->
   <script>
     window.FIREBASE_READY = false;
@@ -2129,7 +2453,8 @@ body.is-logging-out::before{
       events:[],
       payRules:[],
       bonusRules:[],
-      ui:{ summaryCollapsed:false, paymentsCollapsed:false, paymentRowsCollapsed:{} },
+      surgeries:[],
+      ui:{ summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, paymentRowsCollapsed:{} },
       customTheme:{ bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, presetOverrides:{} },
       _meta:{ updatedAt:'', updatedBy:'local' }
     };
@@ -2202,7 +2527,8 @@ body.is-logging-out::before{
       s.events = Array.isArray(s.events) ? s.events : [];
       s.payRules = Array.isArray(s.payRules) ? s.payRules : [];
       s.bonusRules = Array.isArray(s.bonusRules) ? s.bonusRules : [];
-      s.ui = { summaryCollapsed:false, paymentsCollapsed:false, paymentRowsCollapsed:{}, ...(s.ui || {}) };
+      s.surgeries = Array.isArray(s.surgeries) ? s.surgeries : [];
+      s.ui = { summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, paymentRowsCollapsed:{}, ...(s.ui || {}) };
       s.ui.paymentRowsCollapsed = s.ui.paymentRowsCollapsed || {};
       s.customTheme = { bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, presetOverrides:{}, ...(s.customTheme || {}) };
       s.customTheme.presetOverrides = s.customTheme.presetOverrides || {};
@@ -3179,15 +3505,22 @@ body.is-logging-out::before{
 
     function typeLabel(t){ const map = {plantao:'Plantão', cirurgia:'Cirurgia', peq_cir:'Pequenas Cirurgias', ambulatorio:'Ambulatório', particular:'Atendimento Particular'}; return map[t] || 'Serviço'; }
 
+    function surgeriesForDate(dateISO){
+      return (state.surgeries || [])
+        .filter(s => String(s.date || '') === String(dateISO || ''))
+        .sort((a,b) => String(a.patientName || '').localeCompare(String(b.patientName || '')));
+    }
+
     function renderCalendar(){
       setMonthHeader();
       const { y, m } = state.view;
       const days = buildMonthMatrix(y,m);
       const grid = UI.el('grid');
+      if (!grid) return;
       grid.innerHTML = '';
       days.forEach(d => {
         const dISO = iso(d), inMonth = d.getMonth() === m, isToday = dISO === todayISO();
-        const list = listEventsForDate(dISO);
+        const calendarItems = state.ui?.surgeonMode ? surgeriesForDate(dISO) : listEventsForDate(dISO);
         const day = document.createElement('div');
         day.className = 'day' + (inMonth ? '' : ' other') + (isToday ? ' today' : '') + (dISO === state.selDate ? ' selected' : '');
         const top = document.createElement('div');
@@ -3195,21 +3528,44 @@ body.is-logging-out::before{
         top.innerHTML = `<div class="num">${d.getDate()}</div><div class="cnt"></div>`;
         const chips = document.createElement('div');
         chips.className = 'chips';
-        list.forEach(e => {
-          const chip = document.createElement('div');
-          chip.className = 'chip';
-          const bg = hexNorm(e.color || '#3B82F6');
-          chip.style.setProperty('--chipBg', bg);
-          chip.style.setProperty('--chipFg', bestTextColor(bg));
-          const chipName = `${e.name || '(sem nome)'}`;
-          chip.title = `${e.name} • ${formatDateBR(dISO)} • ${typeLabel(e.type)}${e.time ? ` • ${e.time}` : ''} • ${fmtMoney(eventTotal(e))}`;
-          chip.innerHTML = `<span class="chipMark"></span><span>${escapeHtml(chipName)}</span>`;
-          chip.addEventListener('click', ev => { ev.stopPropagation(); openEventFromChip(e, dISO); });
-          chips.appendChild(chip);
-        });
+
+        if (state.ui?.surgeonMode) {
+          calendarItems.forEach(surg => {
+            const chip = document.createElement('div');
+            chip.className = 'chip surgeryDayChip';
+            chip.title = `${surg.patientName || 'Paciente'} • ${formatDateBR(dISO)} • ${surg.hospital || 'Hospital não informado'} • ${surgeryPaymentLabel(surg.paymentStatus)}`;
+            chip.innerHTML = `<span class="chipMark"></span><span>${escapeHtml(surg.patientName || 'Paciente')}</span>`;
+            chip.addEventListener('click', ev => { ev.stopPropagation(); state.selDate = dISO; save(); renderCalendar(); renderSurgeryPanel(); });
+            chips.appendChild(chip);
+          });
+        } else {
+          calendarItems.forEach(e => {
+            const chip = document.createElement('div');
+            chip.className = 'chip';
+            const bg = hexNorm(e.color || '#3B82F6');
+            chip.style.setProperty('--chipBg', bg);
+            chip.style.setProperty('--chipFg', bestTextColor(bg));
+            const chipName = `${e.name || '(sem nome)'}`;
+            chip.title = `${e.name} • ${formatDateBR(dISO)} • ${typeLabel(e.type)}${e.time ? ` • ${e.time}` : ''} • ${fmtMoney(eventTotal(e))}`;
+            chip.innerHTML = `<span class="chipMark"></span><span>${escapeHtml(chipName)}</span>`;
+            chip.addEventListener('click', ev => { ev.stopPropagation(); openEventFromChip(e, dISO); });
+            chips.appendChild(chip);
+          });
+        }
         day.appendChild(top);
         day.appendChild(chips);
-        day.addEventListener('click', () => { state.selDate = dISO; save(); renderSummary(); openEventNew(dISO); renderCalendar(); });
+        day.addEventListener('click', () => {
+          state.selDate = dISO;
+          save();
+          renderSummary();
+          if (state.ui?.surgeonMode) {
+            renderCalendar();
+            renderSurgeryPanel();
+          } else {
+            openEventNew(dISO);
+            renderCalendar();
+          }
+        });
         grid.appendChild(day);
       });
     }
@@ -4333,6 +4689,14 @@ body.is-logging-out::before{
         paymentsBody.style.display = collapsed ? 'none' : '';
         btnPayments.textContent = collapsed ? 'Expandir' : 'Recolher';
       }
+
+      const surgeriesBody = UI.el('surgeriesBody');
+      const btnSurgeries = UI.el('btnToggleSurgeries');
+      if (surgeriesBody && btnSurgeries){
+        const collapsed = !!state.ui?.surgeriesCollapsed;
+        surgeriesBody.style.display = collapsed ? 'none' : '';
+        btnSurgeries.textContent = collapsed ? 'Expandir' : 'Recolher';
+      }
     }
 
     function toggleSummaryPanel(){
@@ -4349,13 +4713,246 @@ body.is-logging-out::before{
       applyCollapsiblePanels();
     }
 
+
+    /* =========================
+       CONTROLE CIRÚRGICO
+    ========================= */
+    const SurgeryForm = { editingId:null };
+
+    function surgeryPaymentLabel(status){ return status === 'paid' ? 'Pago' : 'Não pago'; }
+    function surgeryRoleLabel(role){ return role === 'auxiliar' ? 'Auxiliar' : 'Cirurgião principal'; }
+
+    function currentMonthRangeISO(){
+      const start = iso(new Date(state.view.y, state.view.m, 1));
+      const end = iso(new Date(state.view.y, state.view.m + 1, 0));
+      return { start, end };
+    }
+
+    function filteredSurgeries(){
+      const search = String(UI.el('surgerySearch')?.value || '').trim().toLowerCase();
+      const status = UI.el('surgeryStatusFilter')?.value || 'all';
+      const monthMode = UI.el('surgeryMonthFilter')?.value || 'current';
+      const { start, end } = currentMonthRangeISO();
+
+      return (state.surgeries || [])
+        .filter(s => {
+          const d = String(s.date || '');
+          if (monthMode === 'current' && (d < start || d > end)) return false;
+          if (status !== 'all' && s.paymentStatus !== status) return false;
+          if (search) {
+            const hay = [s.patientName,s.attendanceNumber,s.procedures,s.paymentType,s.healthPlan,s.hospital,s.role,s.notes].join(' ').toLowerCase();
+            if (!hay.includes(search)) return false;
+          }
+          return true;
+        })
+        .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')) || String(a.patientName || '').localeCompare(String(b.patientName || '')));
+    }
+
+    function surgeryCardHtml(s, compact=false){
+      const paid = s.paymentStatus === 'paid';
+      const amount = Number(s.amount || 0);
+      const conv = s.paymentType === 'particular' ? 'Particular' : `Convênio${s.healthPlan ? ' · ' + escapeHtml(s.healthPlan) : ''}`;
+      return `
+        <div class="surgeryRow" data-id="${escapeAttr(s.id)}">
+          <div class="surgeryRowTop">
+            <div>
+              <div class="surgeryPatient">${escapeHtml(s.patientName || 'Paciente sem nome')}</div>
+              <div class="surgeryMeta">
+                <b>${formatDateBR(s.date)}</b> • ${escapeHtml(s.hospital || 'Hospital não informado')} • ${surgeryRoleLabel(s.role)}<br>
+                Atend.: ${escapeHtml(s.attendanceNumber || '—')} • ${conv}
+                ${compact ? '' : `<br>Proced.: ${escapeHtml(s.procedures || '—')}`}
+              </div>
+            </div>
+            <div class="payBadge ${paid ? 'paid' : 'unpaid'}">${paid ? '●' : '○'} ${surgeryPaymentLabel(s.paymentStatus)}${amount ? ' · ' + fmtMoney(amount) : ''}</div>
+          </div>
+          <div class="surgeryActions">
+            <button class="smallBtn surgery-toggle-pay" data-id="${escapeAttr(s.id)}" type="button">Marcar como ${paid ? 'não pago' : 'pago'}</button>
+            <button class="smallBtn surgery-edit" data-id="${escapeAttr(s.id)}" type="button">Editar</button>
+            ${compact ? '<button class="smallBtn surgery-open" type="button">Abrir central</button>' : `<button class="smallBtn danger surgery-delete" data-id="${escapeAttr(s.id)}" type="button">Excluir</button>`}
+          </div>
+        </div>`;
+    }
+
+    function renderSurgeryRetrospect(){
+      const all = state.surgeries || [];
+      const paid = all.filter(s => s.paymentStatus === 'paid');
+      const unpaid = all.filter(s => s.paymentStatus !== 'paid');
+      const paidValue = paid.reduce((a,s) => a + Number(s.amount || 0), 0);
+      const unpaidValue = unpaid.reduce((a,s) => a + Number(s.amount || 0), 0);
+      if (UI.el('surgAllPaidValue')) UI.el('surgAllPaidValue').textContent = fmtMoney(paidValue);
+      if (UI.el('surgAllUnpaidValue')) UI.el('surgAllUnpaidValue').textContent = fmtMoney(unpaidValue);
+      if (UI.el('surgAllPaidCount')) UI.el('surgAllPaidCount').textContent = String(paid.length);
+      if (UI.el('surgAllUnpaidCount')) UI.el('surgAllUnpaidCount').textContent = String(unpaid.length);
+    }
+
+    function renderSurgeryPanel(){
+      const preview = UI.el('surgeryPreviewList');
+      const full = UI.el('surgeryFullList');
+      if (!preview) return;
+      const { start, end } = currentMonthRangeISO();
+      const monthItems = (state.surgeries || []).filter(s => String(s.date || '') >= start && String(s.date || '') <= end);
+      const paidValue = monthItems.filter(s => s.paymentStatus === 'paid').reduce((a,s) => a + Number(s.amount || 0), 0);
+      const unpaidValue = monthItems.filter(s => s.paymentStatus !== 'paid').reduce((a,s) => a + Number(s.amount || 0), 0);
+      UI.el('surgCountMonth').textContent = String(monthItems.length);
+      UI.el('surgPendingMonth').textContent = String(monthItems.filter(s => s.paymentStatus !== 'paid').length);
+      UI.el('surgPaidValue').textContent = fmtMoney(paidValue);
+      UI.el('surgUnpaidValue').textContent = fmtMoney(unpaidValue);
+      renderSurgeryRetrospect();
+
+      if (state.ui?.surgeonMode) {
+        const selected = state.selDate || todayISO();
+        const dayItems = surgeriesForDate(selected);
+        preview.innerHTML = `<div class="surgeryDateTitle">Pacientes operados em ${formatDateBR(selected)}</div>` +
+          (dayItems.length ? dayItems.map(s => surgeryCardHtml(s, false)).join('') : '<div class="helper">Nenhuma cirurgia cadastrada nesta data. Use “Nova cirurgia” para cadastrar um paciente operado nesta data.</div>');
+      } else {
+        const recent = monthItems.sort((a,b) => String(b.date || '').localeCompare(String(a.date || ''))).slice(0,3);
+        preview.innerHTML = recent.length ? recent.map(s => surgeryCardHtml(s, true)).join('') : '<div class="helper">Nenhum paciente operado cadastrado neste mês. Clique em “Modo Cirurgião” para iniciar o controle.</div>';
+      }
+      bindSurgeryListActions(preview);
+
+      if (full) {
+        const items = filteredSurgeries();
+        full.innerHTML = items.length ? items.map(s => surgeryCardHtml(s, false)).join('') : '<div class="helper">Nenhum registro encontrado para os filtros atuais.</div>';
+        bindSurgeryListActions(full);
+      }
+    }
+
+    function clearSurgeryForm(){
+      SurgeryForm.editingId = null;
+      UI.el('surgDate').value = state.selDate || todayISO();
+      UI.el('surgPatient').value = '';
+      UI.el('surgAttendance').value = '';
+      UI.el('surgProcedures').value = '';
+      UI.el('surgPaymentType').value = 'convenio';
+      UI.el('surgHealthPlan').value = '';
+      UI.el('surgHospital').value = '';
+      UI.el('surgRole').value = 'principal';
+      UI.el('surgAmount').value = '';
+      UI.el('surgPaymentStatus').value = 'unpaid';
+      UI.el('surgNotes').value = '';
+    }
+
+    function openSurgeryCenter(newForm=false){
+      if (newForm) clearSurgeryForm();
+      if (UI.el('surgeryMonthFilter')) UI.el('surgeryMonthFilter').value = 'current';
+      renderSurgeryPanel();
+      UI.open('ovSurgeryCenter');
+    }
+
+    function openSurgeryFromCalendar(dateISO){
+      state.selDate = dateISO || state.selDate || todayISO();
+      save();
+      clearSurgeryForm();
+      if (UI.el('surgDate')) UI.el('surgDate').value = state.selDate;
+      renderCalendar();
+      renderSurgeryPanel();
+      UI.open('ovSurgeryCenter');
+    }
+
+    function saveSurgery(){
+      const patientName = UI.el('surgPatient').value.trim();
+      if (!patientName) return alert('Informe o nome do paciente.');
+      const model = {
+        id: SurgeryForm.editingId || uid(),
+        date: UI.el('surgDate').value || todayISO(),
+        patientName,
+        attendanceNumber: UI.el('surgAttendance').value.trim(),
+        procedures: UI.el('surgProcedures').value.trim(),
+        paymentType: UI.el('surgPaymentType').value,
+        healthPlan: UI.el('surgPaymentType').value === 'particular' ? '' : UI.el('surgHealthPlan').value.trim(),
+        hospital: UI.el('surgHospital').value.trim(),
+        role: UI.el('surgRole').value,
+        amount: Number(UI.el('surgAmount').value || 0),
+        paymentStatus: UI.el('surgPaymentStatus').value,
+        notes: UI.el('surgNotes').value.trim(),
+        updatedAt: new Date().toISOString()
+      };
+      const idx = (state.surgeries || []).findIndex(s => s.id === model.id);
+      if (idx >= 0) state.surgeries[idx] = model; else state.surgeries.push(model);
+      save();
+      clearSurgeryForm();
+      renderSurgeryPanel();
+      renderCalendar();
+    }
+
+    function editSurgery(id){
+      const s = (state.surgeries || []).find(x => x.id === id);
+      if (!s) return;
+      SurgeryForm.editingId = id;
+      UI.el('surgDate').value = s.date || todayISO();
+      UI.el('surgPatient').value = s.patientName || '';
+      UI.el('surgAttendance').value = s.attendanceNumber || '';
+      UI.el('surgProcedures').value = s.procedures || '';
+      UI.el('surgPaymentType').value = s.paymentType || 'convenio';
+      UI.el('surgHealthPlan').value = s.healthPlan || '';
+      UI.el('surgHospital').value = s.hospital || '';
+      UI.el('surgRole').value = s.role || 'principal';
+      UI.el('surgAmount').value = Number(s.amount || 0) || '';
+      UI.el('surgPaymentStatus').value = s.paymentStatus || 'unpaid';
+      UI.el('surgNotes').value = s.notes || '';
+      UI.open('ovSurgeryCenter');
+    }
+
+    function toggleSurgeryPayment(id){
+      const s = (state.surgeries || []).find(x => x.id === id);
+      if (!s) return;
+      s.paymentStatus = s.paymentStatus === 'paid' ? 'unpaid' : 'paid';
+      s.updatedAt = new Date().toISOString();
+      save();
+      renderSurgeryPanel();
+      renderCalendar();
+    }
+
+    function deleteSurgery(id){
+      const s = (state.surgeries || []).find(x => x.id === id);
+      if (!s) return;
+      if (!confirm(`Excluir o registro cirúrgico de ${s.patientName || 'paciente'}?`)) return;
+      state.surgeries = state.surgeries.filter(x => x.id !== id);
+      save();
+      renderSurgeryPanel();
+      renderCalendar();
+    }
+
+    function bindSurgeryListActions(host){
+      host.querySelectorAll('.surgery-toggle-pay').forEach(btn => btn.addEventListener('click', () => toggleSurgeryPayment(btn.dataset.id)));
+      host.querySelectorAll('.surgery-edit').forEach(btn => btn.addEventListener('click', () => editSurgery(btn.dataset.id)));
+      host.querySelectorAll('.surgery-delete').forEach(btn => btn.addEventListener('click', () => deleteSurgery(btn.dataset.id)));
+      host.querySelectorAll('.surgery-open').forEach(btn => btn.addEventListener('click', () => openSurgeryCenter(false)));
+    }
+
+    function toggleSurgeriesPanel(){
+      state.ui.surgeriesCollapsed = !state.ui.surgeriesCollapsed;
+      save();
+      applyCollapsiblePanels();
+    }
+
+    function applySurgeonMode(){
+      document.body.classList.toggle('surgeon-mode', !!state.ui?.surgeonMode);
+      const btn = UI.el('btnNewSurgery');
+      if (btn) btn.textContent = state.ui?.surgeonMode ? 'Sair do Modo Cirurgião' : 'Modo Cirurgião';
+    }
+
+    function toggleSurgeonMode(){
+      state.ui = state.ui || {};
+      state.ui.surgeonMode = !state.ui.surgeonMode;
+      if (state.ui.surgeonMode) {
+        state.ui.surgeriesCollapsed = false;
+        state.selDate = state.selDate || todayISO();
+      }
+      save();
+      applySurgeonMode();
+      renderAll();
+    }
+
     function renderAll(){
       applyTheme();
+      applySurgeonMode();
       applyCellH();
       renderDow();
       renderCalendar();
       renderSummary();
       renderPayments();
+      renderSurgeryPanel();
       updateUndoButton();
       applyCollapsiblePanels();
       UI.el('dayHRange').value = String(state.cellH || 128);
@@ -4389,6 +4986,16 @@ body.is-logging-out::before{
       UI.el('btnNew').addEventListener('click', () => openEventNew(state.selDate || todayISO()));
       UI.el('btnUndo').addEventListener('click', undoLast);
       UI.el('btnSaveNow').addEventListener('click', () => performSave(true));
+      UI.el('btnNewSurgery').addEventListener('click', toggleSurgeonMode);
+      UI.el('btnSurgeryCenter').addEventListener('click', () => openSurgeryCenter(false));
+      UI.el('btnOpenSurgeryCenter').addEventListener('click', () => openSurgeryCenter(false));
+      UI.el('btnNewSurgeryRecord').addEventListener('click', () => openSurgeryFromCalendar(state.selDate || todayISO()));
+      UI.el('btnEventNewSurgery').addEventListener('click', () => { const d = UI.el('evDate')?.value || state.selDate || todayISO(); UI.close('ovEvent'); openSurgeryFromCalendar(d); });
+      UI.el('btnToggleSurgeries').addEventListener('click', toggleSurgeriesPanel);
+      UI.el('surgeryClose').addEventListener('click', () => UI.close('ovSurgeryCenter'));
+      UI.el('surgSave').addEventListener('click', saveSurgery);
+      UI.el('surgClear').addEventListener('click', clearSurgeryForm);
+      ['surgerySearch','surgeryStatusFilter','surgeryMonthFilter'].forEach(id => UI.el(id).addEventListener('input', renderSurgeryPanel));
       UI.el('btnToggleSummary').addEventListener('click', toggleSummaryPanel);
       UI.el('btnTogglePayments').addEventListener('click', togglePaymentsPanel);
       UI.el('sidePrev').addEventListener('click', () => { state.view = monthAdd(state.view.y, state.view.m, -1); save(); renderAll(); });
