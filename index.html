@@ -1462,14 +1462,14 @@ body[data-manual-buttons="on"] .mBtn,
 body[data-manual-buttons="on"] .smallBtn,
 body[data-manual-buttons="on"] .hambMenu .btn,
 body[data-manual-buttons="on"] .closeX{
-  background: var(--custom-button-bg) !important;
+  background: linear-gradient(135deg, var(--custom-button-bg-1), var(--custom-button-bg-2)) !important;
   color: var(--custom-button-text) !important;
   border-color: var(--custom-button-border) !important;
   text-shadow:none !important;
 }
 body[data-manual-buttons="on"] .btn.primary,
 body[data-manual-buttons="on"] .mBtn.primary{
-  background: var(--custom-button-bg) !important;
+  background: linear-gradient(135deg, var(--custom-button-bg-1), var(--custom-button-bg-2)) !important;
   color: var(--custom-button-text) !important;
   box-shadow:0 12px 26px var(--custom-button-shadow) !important;
 }
@@ -1479,6 +1479,20 @@ body[data-manual-buttons="on"] .hambBtn .hambLines::after{
   background: var(--custom-button-text) !important;
 }
 
+
+/* ===== COR DE DESTAQUE MANUAL EM QUALQUER TEMA ===== */
+body[data-manual-accent="on"] .btn.primary,
+body[data-manual-accent="on"] .mBtn.primary{
+  border-color: color-mix(in srgb, var(--acc) 58%, white 12%) !important;
+}
+body[data-manual-accent="on"] .day.selected{
+  border-color: color-mix(in srgb, var(--acc) 70%, white 10%) !important;
+  box-shadow:0 0 0 2px color-mix(in srgb, var(--acc) 35%, transparent) inset !important;
+}
+body[data-manual-accent="on"] .input:focus{
+  border-color: color-mix(in srgb, var(--acc) 70%, white 10%) !important;
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--acc) 18%, transparent) !important;
+}
 
 /* ===== CAMPOS DE SENHA COM VISUALIZAÇÃO ===== */
 .passwordWrap{
@@ -3829,20 +3843,23 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
             <div><div class="lbl">Linhas / bordas</div><input class="input" id="customLine" type="color" value="#5b7fc9"></div>
             <div><div class="lbl">Texto</div><input class="input" id="customTxt" type="color" value="#f5f7fb"></div>
             <div><div class="lbl">Texto secundário</div><input class="input" id="customMut" type="color" value="#b8c4de"></div>
-            <div><div class="lbl">Destaque</div><input class="input" id="customAcc" type="color" value="#3b82f6"></div>
+            <div><div class="lbl">Destaque geral</div><input class="input" id="customAcc" type="color" value="#3b82f6"></div>
             <div><div class="lbl">Valor / positivo</div><input class="input" id="customGood" type="color" value="#39d98a"></div>
             <div><div class="lbl">Cor do mês</div><input class="input" id="customMonth" type="color" value="#f5f7fb"></div>
             <div><div class="lbl">Fonte das janelas</div><input class="input" id="customModalText" type="color" value="#10233f"></div>
-            <div><div class="lbl">Cor dos botões</div><input class="input" id="customButtonBg" type="color" value="#3b82f6"></div>
+            <div><div class="lbl">Botões degradê 1</div><input class="input" id="customButtonBg1" type="color" value="#3b82f6"></div>
+            <div><div class="lbl">Botões degradê 2</div><input class="input" id="customButtonBg2" type="color" value="#8b5cf6"></div>
             <div><div class="lbl">Texto dos botões</div><input class="input" id="customButtonText" type="color" value="#ffffff"></div>
           </div>
         </div>
         <div class="mFoot">
+          <button class="mBtn" id="btnApplyAccentColor" type="button">Aplicar destaque</button>
           <button class="mBtn" id="btnApplyTextColors" type="button">Aplicar só cores de texto</button>
-          <button class="mBtn" id="btnApplyButtonColors" type="button">Aplicar cores dos botões</button>
+          <button class="mBtn" id="btnApplyButtonColors" type="button">Aplicar degradê dos botões</button>
           <button class="mBtn" id="btnSavePresetEdit" type="button">Salvar edição no tema atual</button>
           <button class="mBtn" id="btnResetCurrentPreset" type="button">Reverter tema atual</button>
           <button class="mBtn" id="btnResetTextColors" type="button">Desativar cores manuais</button>
+          <button class="mBtn" id="btnResetAccentColor" type="button">Desativar destaque manual</button>
           <button class="mBtn" id="btnResetButtonColors" type="button">Desativar botões manuais</button>
           <button class="mBtn" id="btnApplyCustomTheme" type="button">Aplicar tema personalizado</button>
           <button class="mBtn ghost" id="themeSelectorCancel" type="button">Fechar</button>
@@ -4001,7 +4018,7 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       bonusRules:[],
       surgeries:[],
       ui:{ summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, paymentRowsCollapsed:{} },
-      customTheme:{ bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, presetOverrides:{} },
+      customTheme:{ bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, presetOverrides:{} },
       _meta:{ updatedAt:'', updatedBy:'local' }
     };
 
@@ -4076,7 +4093,9 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       s.surgeries = Array.isArray(s.surgeries) ? s.surgeries : [];
       s.ui = { summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, paymentRowsCollapsed:{}, ...(s.ui || {}) };
       s.ui.paymentRowsCollapsed = s.ui.paymentRowsCollapsed || {};
-      s.customTheme = { bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, presetOverrides:{}, ...(s.customTheme || {}) };
+      s.customTheme = { bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, presetOverrides:{}, ...(s.customTheme || {}) };
+      s.customTheme.buttonBg1 = s.customTheme.buttonBg1 || s.customTheme.buttonBg || '#3b82f6';
+      s.customTheme.buttonBg2 = s.customTheme.buttonBg2 || s.customTheme.buttonBg || '#8b5cf6';
       s.customTheme.presetOverrides = s.customTheme.presetOverrides || {};
       s.events = s.events.map(e => {
         const item = { ...e };
@@ -4678,6 +4697,11 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       const override = ((t.presetOverrides || {})[themeKey]) || {};
       const root = document.documentElement;
 
+      const manualAccentOn = !!override.manualAccentColor;
+      document.body.setAttribute('data-manual-accent', manualAccentOn ? 'on' : 'off');
+      if (manualAccentOn) document.body.style.setProperty('--acc', override.acc || t.acc || '#3b82f6');
+      else document.body.style.removeProperty('--acc');
+
       const manualTextOn = !!override.manualTextColors;
       document.body.setAttribute('data-manual-colors', manualTextOn ? 'on' : 'off');
       if (manualTextOn) {
@@ -4693,14 +4717,16 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       const manualButtonOn = !!override.manualButtonColors;
       document.body.setAttribute('data-manual-buttons', manualButtonOn ? 'on' : 'off');
       if (manualButtonOn) {
-        const buttonBg = override.buttonBg || '#3b82f6';
+        const buttonBg1 = override.buttonBg1 || override.buttonBg || '#3b82f6';
+        const buttonBg2 = override.buttonBg2 || override.buttonBg || '#8b5cf6';
         const buttonText = override.buttonText || '#ffffff';
-        root.style.setProperty('--custom-button-bg', buttonBg);
+        root.style.setProperty('--custom-button-bg-1', buttonBg1);
+        root.style.setProperty('--custom-button-bg-2', buttonBg2);
         root.style.setProperty('--custom-button-text', buttonText);
         root.style.setProperty('--custom-button-border', hexToRgba(buttonText, 0.24));
-        root.style.setProperty('--custom-button-shadow', hexToRgba(buttonBg, 0.24));
+        root.style.setProperty('--custom-button-shadow', hexToRgba(buttonBg1, 0.24));
       } else {
-        ['--custom-button-bg','--custom-button-text','--custom-button-border','--custom-button-shadow'].forEach(v => root.style.removeProperty(v));
+        ['--custom-button-bg-1','--custom-button-bg-2','--custom-button-text','--custom-button-border','--custom-button-shadow'].forEach(v => root.style.removeProperty(v));
       }
     }
     function applyCellH(){ document.documentElement.style.setProperty('--cellH', `${state.cellH || 128}px`); }
@@ -4737,13 +4763,14 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       UI.el('customLine').value = t.line || '#5b7fc9';
       UI.el('customTxt').value = t.txt || '#f5f7fb';
       UI.el('customMut').value = t.mut || '#b8c4de';
-      UI.el('customAcc').value = t.acc || '#3b82f6';
+      UI.el('customAcc').value = override.acc || t.acc || '#3b82f6';
       UI.el('customGood').value = t.good || '#39d98a';
 
       UI.el('customMonth').value = override.month || '#0b1220';
       UI.el('customModalText').value = override.modalText || '#0b1220';
-      UI.el('customButtonBg').value = override.buttonBg || '#3b82f6';
-      UI.el('customButtonText').value = override.buttonText || '#ffffff';
+      UI.el('customButtonBg1').value = override.buttonBg1 || override.buttonBg || t.buttonBg1 || t.buttonBg || '#3b82f6';
+      UI.el('customButtonBg2').value = override.buttonBg2 || override.buttonBg || t.buttonBg2 || t.buttonBg || '#8b5cf6';
+      UI.el('customButtonText').value = override.buttonText || t.buttonText || '#ffffff';
     }
     function openThemeSelector(){
       renderThemeGrid();
@@ -4771,18 +4798,24 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
         month:'#0b1220',
         modalText:'#0b1220',
         buttonBg:'#3b82f6',
-        buttonText:'#ffffff',
+        buttonBg1:UI.el('customButtonBg1').value,
+        buttonBg2:UI.el('customButtonBg2').value,
+        buttonText:UI.el('customButtonText').value,
         manualTextColors:false,
         manualButtonColors:false,
+        manualAccentColor:false,
         presetOverrides: previousOverrides
       };
 
       state.theme = 'custom';
       state.customTheme.presetOverrides.custom = {
+        acc: UI.el('customAcc').value,
         month: UI.el('customMonth').value,
         modalText: UI.el('customModalText').value,
-        buttonBg: UI.el('customButtonBg').value,
+        buttonBg1: UI.el('customButtonBg1').value,
+        buttonBg2: UI.el('customButtonBg2').value,
         buttonText: UI.el('customButtonText').value,
+        manualAccentColor: true,
         manualTextColors: true,
         manualButtonColors: true
       };
@@ -4798,6 +4831,25 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       state.customTheme.presetOverrides = state.customTheme.presetOverrides || {};
       state.customTheme.presetOverrides[key] = state.customTheme.presetOverrides[key] || {};
       return state.customTheme.presetOverrides[key];
+    }
+
+    function applyOnlyAccentColorFromInputs(){
+      const o = ensureCurrentThemeOverride();
+      o.acc = UI.el('customAcc').value;
+      o.manualAccentColor = true;
+      save();
+      applyTheme();
+      renderThemeGrid();
+    }
+
+    function disableManualAccentColor(){
+      const o = ensureCurrentThemeOverride();
+      delete o.acc;
+      o.manualAccentColor = false;
+      save();
+      renderAll();
+      loadCustomThemeInputs();
+      renderThemeGrid();
     }
 
     function applyOnlyTextColorsFromInputs(){
@@ -4823,7 +4875,8 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
 
     function applyOnlyButtonColorsFromInputs(){
       const o = ensureCurrentThemeOverride();
-      o.buttonBg = UI.el('customButtonBg').value;
+      o.buttonBg1 = UI.el('customButtonBg1').value;
+      o.buttonBg2 = UI.el('customButtonBg2').value;
       o.buttonText = UI.el('customButtonText').value;
       o.manualButtonColors = true;
       save();
@@ -4834,6 +4887,8 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
     function disableManualButtonColors(){
       const o = ensureCurrentThemeOverride();
       delete o.buttonBg;
+      delete o.buttonBg1;
+      delete o.buttonBg2;
       delete o.buttonText;
       o.manualButtonColors = false;
       save();
@@ -4844,10 +4899,13 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
 
     function saveCurrentPresetEdit(){
       const o = ensureCurrentThemeOverride();
+      o.acc = UI.el('customAcc').value;
       o.month = UI.el('customMonth').value;
       o.modalText = UI.el('customModalText').value;
-      o.buttonBg = UI.el('customButtonBg').value;
+      o.buttonBg1 = UI.el('customButtonBg1').value;
+      o.buttonBg2 = UI.el('customButtonBg2').value;
       o.buttonText = UI.el('customButtonText').value;
+      o.manualAccentColor = true;
       o.manualTextColors = true;
       o.manualButtonColors = true;
       save();
@@ -6582,14 +6640,17 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       UI.el('themeSelectorClose').addEventListener('click', () => UI.close('ovThemeSelector'));
       UI.el('themeSelectorCancel').addEventListener('click', () => UI.close('ovThemeSelector'));
       UI.el('btnApplyCustomTheme').addEventListener('click', applyCustomThemeFromInputs);
+      UI.el('btnApplyAccentColor').addEventListener('click', applyOnlyAccentColorFromInputs);
       UI.el('btnApplyTextColors').addEventListener('click', applyOnlyTextColorsFromInputs);
       UI.el('btnApplyButtonColors').addEventListener('click', applyOnlyButtonColorsFromInputs);
       UI.el('btnSavePresetEdit').addEventListener('click', saveCurrentPresetEdit);
       UI.el('btnResetCurrentPreset').addEventListener('click', resetCurrentPresetEdit);
       UI.el('btnResetTextColors').addEventListener('click', disableManualTextColors);
+      UI.el('btnResetAccentColor').addEventListener('click', disableManualAccentColor);
       UI.el('btnResetButtonColors').addEventListener('click', disableManualButtonColors);
+      UI.el('customAcc').addEventListener('input', applyOnlyAccentColorFromInputs);
       ['customMonth','customModalText'].forEach(id => UI.el(id).addEventListener('input', applyOnlyTextColorsFromInputs));
-      ['customButtonBg','customButtonText'].forEach(id => UI.el(id).addEventListener('input', applyOnlyButtonColorsFromInputs));
+      ['customButtonBg1','customButtonBg2','customButtonText'].forEach(id => UI.el(id).addEventListener('input', applyOnlyButtonColorsFromInputs));
       UI.el('btnNew').addEventListener('click', () => openEventNew(state.selDate || todayISO()));
       UI.el('btnUndo').addEventListener('click', undoLast);
       UI.el('btnSaveNow').addEventListener('click', () => performSave(true));
