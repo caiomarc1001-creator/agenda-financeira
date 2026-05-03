@@ -3183,6 +3183,127 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
     align-items:start !important;
   }
 }
+
+
+/* =========================================================
+   AJUSTE FINAL — MODO CIRURGIÃO EM TABLET/CELULAR
+   Objetivo: no Modo Cirurgião, somente até 1100px, o calendário deixa
+   de ser coluna estreita e volta a ocupar 100% da largura útil.
+   Mantém o ganho de tela obtido com swipe e sem botões laterais.
+========================================================= */
+@media (max-width: 1100px){
+  body.surgeon-mode .container{
+    grid-template-columns:1fr !important;
+    width:100% !important;
+    max-width:100% !important;
+    align-items:start !important;
+  }
+
+  body.surgeon-mode .mainCol{
+    order:1 !important;
+    width:100% !important;
+    max-width:100% !important;
+  }
+
+  body.surgeon-mode .sidebarCol{
+    order:2 !important;
+    width:100% !important;
+    max-width:100% !important;
+  }
+
+  body.surgeon-mode .mainCalendarCard{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+  }
+
+  body.surgeon-mode .mainCalendarCard .sectionHead{
+    position:relative !important;
+    top:auto !important;
+    min-height:auto !important;
+  }
+
+  body.surgeon-mode .month{
+    font-size:28px !important;
+  }
+
+  body.surgeon-mode .dowShell,
+  body.surgeon-mode .calFrame{
+    grid-template-columns:minmax(0,1fr) !important;
+    gap:0 !important;
+    padding-left:8px !important;
+    padding-right:8px !important;
+  }
+
+  body.surgeon-mode .calFrame{
+    padding-top:8px !important;
+    padding-bottom:10px !important;
+  }
+
+  body.surgeon-mode .dowShell > div:first-child,
+  body.surgeon-mode .dowShell > div:last-child,
+  body.surgeon-mode .sideOut{
+    display:none !important;
+  }
+
+  body.surgeon-mode .dowRow,
+  body.surgeon-mode .grid{
+    width:100% !important;
+    gap:4px !important;
+  }
+
+  body.surgeon-mode .day{
+    aspect-ratio:1 / 1 !important;
+    height:auto !important;
+    min-height:0 !important;
+    padding:5px !important;
+    border-radius:10px !important;
+  }
+
+  body.surgeon-mode .day .num{
+    font-size:11px !important;
+  }
+
+  body.surgeon-mode .chip{
+    font-size:7.8px !important;
+    line-height:1.05 !important;
+    padding:2px 3px !important;
+    border-radius:6px !important;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1100px){
+  body.surgeon-mode .container{
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+
+  body.surgeon-mode .dowShell,
+  body.surgeon-mode .calFrame{
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+
+  body.surgeon-mode .dowRow,
+  body.surgeon-mode .grid{
+    gap:5px !important;
+  }
+
+  body.surgeon-mode .day{
+    padding:6px !important;
+    border-radius:12px !important;
+  }
+
+  body.surgeon-mode .day .num{
+    font-size:12px !important;
+  }
+
+  body.surgeon-mode .chip{
+    font-size:8.6px !important;
+    padding:3px 4px !important;
+  }
+}
+
 </style>
 </head>
 <body data-theme="senna_capacete">
