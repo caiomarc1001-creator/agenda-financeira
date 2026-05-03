@@ -3087,6 +3087,102 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
   .dow{font-size:8px !important;}
 }
 
+
+
+/* =========================
+   GESTOS MOBILE/TABLET — CALENDÁRIO MAIOR E SEM BOTÕES LATERAIS
+   Em telas menores, o mês muda por deslize horizontal.
+========================= */
+@media (max-width: 1100px){
+  .mainCalendarCard{
+    touch-action: pan-y;
+  }
+  .mainCalendarCard .calFrame{
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+  .mainCalendarCard .dowShell{
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+  .mainCalendarCard .dowShell > div:first-child,
+  .mainCalendarCard .dowShell > div:last-child,
+  .mainCalendarCard .sideOut{
+    display:none !important;
+  }
+  .mainCalendarCard .grid{
+    width:100%;
+  }
+  .swipeMonthHint{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    margin:0 16px 10px;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:rgba(255,255,255,.06);
+    color:var(--mut);
+    font-size:12px;
+    font-weight:950;
+    text-align:center;
+  }
+}
+
+@media (min-width: 1101px){
+  .swipeMonthHint{display:none !important;}
+}
+
+
+
+/* =========================================================
+   AJUSTE FINAL SOLICITADO — DESKTOP/PC APENAS
+   1) Calendário 25% menor somente no PC.
+   2) Restaura a função "Altura do dia" no PC.
+   3) Remove fixação do calendário no Modo Cirurgião para evitar sobreposição
+      com o retrospecto cirúrgico ao rolar a página.
+========================================================= */
+@media (min-width: 1101px){
+  /* No PC, as células deixam de ser quadradas forçadas.
+     A altura volta a obedecer a variável --cellH, permitindo que o controle
+     "Altura do dia" funcione novamente. O multiplicador 0.75 deixa o
+     calendário 25% menor no desktop, sem mexer em celular/tablet. */
+  .mainCalendarCard .day{
+    aspect-ratio:auto !important;
+    height:calc(var(--cellH) * .75) !important;
+    min-height:0 !important;
+    max-height:none !important;
+  }
+
+  .mainCalendarCard .sideOut{
+    min-height:calc((var(--cellH) * .75) * 6 + 42px) !important;
+    height:100% !important;
+  }
+
+  .mainCalendarCard .grid,
+  .mainCalendarCard .dowRow{
+    gap:6px !important;
+  }
+
+  .mainCalendarCard .dowShell,
+  .mainCalendarCard .calFrame{
+    gap:8px !important;
+  }
+
+  /* Modo Cirurgião no PC: calendário continua à esquerda, mas não fica preso
+     durante a rolagem. Isso impede que o retrospecto cirúrgico passe por cima. */
+  body.surgeon-mode .mainCalendarCard{
+    position:relative !important;
+    top:auto !important;
+  }
+
+  body.surgeon-mode .sidebarCol > .section:nth-child(3){
+    min-height:auto !important;
+  }
+
+  body.surgeon-mode .container{
+    align-items:start !important;
+  }
+}
 </style>
 </head>
 <body data-theme="senna_capacete">
@@ -3200,6 +3296,8 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
             </div>
           </div>
         </div>
+
+        <div class="swipeMonthHint" aria-hidden="true">↔ Deslize no calendário para trocar o mês</div>
         <div class="dowShell"><div></div><div class="dowRow" id="dowRow"></div><div></div></div>
         <div class="calFrame">
           <button class="sideOut" id="sidePrev" title="Mês anterior"><span class="arrow">‹</span><span class="sideLabel">Mês anterior</span><span class="sideMonth" id="prevMonthMini"></span></button>
@@ -6297,6 +6395,67 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       btn.title = visible ? 'Mostrar senha' : 'Ocultar senha';
     }
 
+
+    function isTouchCalendarMode(){
+      return window.matchMedia && window.matchMedia('(max-width: 1100px)').matches;
+    }
+
+    function changeMonthBySwipe(delta){
+      if (!delta) return;
+      state.view = monthAdd(state.view.y, state.view.m, delta);
+      save();
+      renderAll();
+    }
+
+    function bindCalendarSwipe(){
+      const card = document.querySelector('.mainCalendarCard');
+      if (!card || card.dataset.swipeBound === '1') return;
+      card.dataset.swipeBound = '1';
+
+      let startX = 0;
+      let startY = 0;
+      let startTime = 0;
+      let tracking = false;
+
+      card.addEventListener('touchstart', e => {
+        if (!isTouchCalendarMode()) return;
+        if (!e.touches || e.touches.length !== 1) return;
+        const t = e.touches[0];
+        startX = t.clientX;
+        startY = t.clientY;
+        startTime = Date.now();
+        tracking = true;
+      }, { passive:true });
+
+      card.addEventListener('touchmove', e => {
+        if (!tracking || !isTouchCalendarMode() || !e.touches || e.touches.length !== 1) return;
+        const t = e.touches[0];
+        const dx = t.clientX - startX;
+        const dy = t.clientY - startY;
+        if (Math.abs(dx) > 18 && Math.abs(dx) > Math.abs(dy) * 1.35) {
+          e.preventDefault();
+        }
+      }, { passive:false });
+
+      card.addEventListener('touchend', e => {
+        if (!tracking || !isTouchCalendarMode()) return;
+        tracking = false;
+        const t = (e.changedTouches && e.changedTouches[0]) || null;
+        if (!t) return;
+        const dx = t.clientX - startX;
+        const dy = t.clientY - startY;
+        const elapsed = Date.now() - startTime;
+        const horizontal = Math.abs(dx) >= 55 && Math.abs(dx) > Math.abs(dy) * 1.45;
+        const fastEnough = elapsed < 700;
+        if (!horizontal || !fastEnough) return;
+
+        // dedo para esquerda = próximo mês; dedo para direita = mês anterior
+        changeMonthBySwipe(dx < 0 ? 1 : -1);
+      }, { passive:true });
+
+      card.addEventListener('touchcancel', () => { tracking = false; }, { passive:true });
+    }
+
     function bindEvents(){
       UI.el('btnTheme').addEventListener('click', toggleTheme);
       UI.el('themeSelectorClose').addEventListener('click', () => UI.close('ovThemeSelector'));
@@ -6327,6 +6486,7 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       UI.el('btnTogglePayments').addEventListener('click', togglePaymentsPanel);
       UI.el('sidePrev').addEventListener('click', () => { state.view = monthAdd(state.view.y, state.view.m, -1); save(); renderAll(); });
       UI.el('sideNext').addEventListener('click', () => { state.view = monthAdd(state.view.y, state.view.m, 1); save(); renderAll(); });
+      bindCalendarSwipe();
 
       UI.el('evClose').addEventListener('click', () => UI.close('ovEvent'));
       UI.el('evCancel').addEventListener('click', () => { clearScope(); UI.close('ovEvent'); });
