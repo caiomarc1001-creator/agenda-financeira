@@ -3976,6 +3976,7 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
   (() => {
     const LS_KEY = 'agenda_prod_funcional_recorrencia_v1';
     const LS_HISTORY = 'agenda_prod_funcional_recorrencia_history_v1';
+    const LS_BACKUP = 'agenda_prod_funcional_recorrencia_backup_v1';
     const THEMES = ['senna_mclaren','senna_capacete','tesla','windows_xp','toy_story','sexta_13','game_of_thrones','sonic','resident_evil_2','dark','light','ocean','violet','gold','graphite','paper','emerald','custom'];
     const PRESET_THEMES = [
       { key:'senna_mclaren', name:'Ayrton Senna · McLaren', desc:'Preto, vermelho e dourado executivo.', sw:['#111111','#d61f26','#d4af37'] },
@@ -4024,13 +4025,14 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
 
     if (sessionStorage.getItem('agendaForceGuestAfterLogout')) {
       try {
+        saveLocalBackup('logout-auto-reload');
         localStorage.removeItem(LS_KEY);
         localStorage.removeItem(LS_HISTORY);
       } catch (err) {}
       sessionStorage.removeItem('agendaForceGuestAfterLogout');
     }
 
-    let state = deepClone(DEFAULTS);
+    let state = loadState();
     let saveTimer = null;
     let isDirty = false;
     let firebaseApp = null;
@@ -4114,7 +4116,58 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       return s;
     }
     function loadState(){ try { const raw = localStorage.getItem(LS_KEY); return raw ? normalizeState(JSON.parse(raw)) : deepClone(DEFAULTS); } catch { return deepClone(DEFAULTS); } }
-    function saveLocal(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+    function readStoredState(key){
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        const candidate = parsed && parsed.state ? parsed.state : parsed;
+        return normalizeState(candidate);
+      } catch (err) {
+        console.warn('Não foi possível ler dados locais:', key, err);
+        return null;
+      }
+    }
+    function countStateItems(candidate){
+      const s = normalizeState(candidate || {});
+      return {
+        events: Array.isArray(s.events) ? s.events.length : 0,
+        surgeries: Array.isArray(s.surgeries) ? s.surgeries.length : 0,
+        payRules: Array.isArray(s.payRules) ? s.payRules.length : 0,
+        bonusRules: Array.isArray(s.bonusRules) ? s.bonusRules.length : 0
+      };
+    }
+    function stateDataScore(candidate){
+      const c = countStateItems(candidate);
+      return c.events + c.surgeries + c.payRules + c.bonusRules;
+    }
+    function hasMeaningfulData(candidate){ return stateDataScore(candidate) > 0; }
+    function stateSummaryText(candidate){
+      const c = countStateItems(candidate);
+      return `${c.events} evento(s), ${c.surgeries} cirurgia(s), ${c.payRules} regra(s) de pagamento e ${c.bonusRules} bonificação(ões)`;
+    }
+    function getBestLocalRecoveryState(){
+      const primary = readStoredState(LS_KEY);
+      const backup = readStoredState(LS_BACKUP);
+      const primaryScore = stateDataScore(primary);
+      const backupScore = stateDataScore(backup);
+      if (backupScore > primaryScore) return backup;
+      return primary || backup || null;
+    }
+    function saveLocalBackup(reason='backup'){
+      try {
+        const source = readStoredState(LS_KEY) || state;
+        if (!hasMeaningfulData(source)) return;
+        localStorage.setItem(LS_BACKUP, JSON.stringify({
+          state: normalizeState(source),
+          savedAt: new Date().toISOString(),
+          reason
+        }));
+      } catch (err) {
+        console.warn('Não foi possível criar backup local:', err);
+      }
+    }
+    function saveLocal(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); saveLocalBackup('autosave'); }
     function loadHistory(){ try { return JSON.parse(localStorage.getItem(LS_HISTORY) || '[]'); } catch { return []; } }
     function saveHistory(arr){ localStorage.setItem(LS_HISTORY, JSON.stringify(arr.slice(-20))); }
     function pushHistorySnapshot(){ const arr = loadHistory(); const snap = JSON.stringify(state); if (arr[arr.length - 1] === snap) return; arr.push(snap); saveHistory(arr); updateUndoButton(); }
@@ -4332,6 +4385,7 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
 
     function protectLoggedOutScreen(reason='Modo visitante: não salva'){
       try {
+        saveLocalBackup('logout-protection');
         localStorage.removeItem(LS_KEY);
         localStorage.removeItem(LS_HISTORY);
       } catch (err) {
@@ -4453,28 +4507,52 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
 
       try {
         const snap = await window.FirebaseAgenda.getDoc(ref);
-        const localHasData = Array.isArray(state.events) && state.events.length > 0;
+        const localRecoveryState = getBestLocalRecoveryState();
+        const localHasData = hasMeaningfulData(localRecoveryState);
 
         if (!snap.exists) {
           if (localHasData) {
-            await saveCloudNow(true);
-            alert('Seus dados locais foram enviados para a nuvem deste usuário.');
+            const useLocal = confirm(
+              'Sua conta ainda não tem dados salvos na nuvem, mas encontrei dados neste navegador.\n\n' +
+              `Dados encontrados: ${stateSummaryText(localRecoveryState)}.\n\n` +
+              'Clique em OK para ENVIAR esses dados locais para sua conta.\n' +
+              'Clique em Cancelar para iniciar esta conta vazia.'
+            );
+
+            if (useLocal) {
+              state = normalizeState(localRecoveryState);
+              saveLocal();
+              await saveCloudNow(true);
+            } else {
+              state = deepClone(DEFAULTS);
+              saveLocal();
+            }
           }
+          clearScope();
+          clearDelScope();
+          clearRetroDel();
           renderAll();
           return;
         }
 
         const remoteState = normalizeState(snap.data().state || {});
-        const remoteHasData = Array.isArray(remoteState.events) && remoteState.events.length > 0;
+        const remoteHasData = hasMeaningfulData(remoteState);
 
         if (localHasData && remoteHasData) {
+          const localScore = stateDataScore(localRecoveryState);
+          const remoteScore = stateDataScore(remoteState);
           const useLocal = confirm(
-            'Este usuário já tem dados na nuvem.\\n\\n' +
-            'Clique em OK para ENVIAR os dados atuais deste navegador para a nuvem.\\n' +
-            'Clique em Cancelar para CARREGAR os dados já salvos na nuvem.'
+            'Encontrei dados neste navegador e também dados na nuvem da sua conta.\n\n' +
+            `Neste navegador: ${stateSummaryText(localRecoveryState)}.\n` +
+            `Na nuvem: ${stateSummaryText(remoteState)}.\n\n` +
+            'Clique em OK para ENVIAR os dados deste navegador para a nuvem.\n' +
+            'Clique em Cancelar para CARREGAR os dados já salvos na nuvem.\n\n' +
+            (localScore > remoteScore ? 'Sugestão: os dados locais parecem mais completos.' : 'Sugestão: os dados da nuvem parecem tão completos quanto ou mais completos.')
           );
 
           if (useLocal) {
+            state = normalizeState(localRecoveryState);
+            saveLocal();
             await saveCloudNow(true);
           } else {
             state = remoteState;
@@ -4484,7 +4562,20 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
           state = remoteState;
           saveLocal();
         } else if (localHasData) {
-          await saveCloudNow(true);
+          const useLocal = confirm(
+            'A nuvem desta conta está vazia, mas há dados neste navegador.\n\n' +
+            `Dados encontrados: ${stateSummaryText(localRecoveryState)}.\n\n` +
+            'Clique em OK para recuperar/enviar estes dados para a nuvem.\n' +
+            'Clique em Cancelar para manter a conta vazia.'
+          );
+          if (useLocal) {
+            state = normalizeState(localRecoveryState);
+            saveLocal();
+            await saveCloudNow(true);
+          } else {
+            state = deepClone(DEFAULTS);
+            saveLocal();
+          }
         }
 
         clearScope();
@@ -4493,7 +4584,7 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
         renderAll();
       } catch (err) {
         console.error(err);
-        alert('Erro ao carregar dados da nuvem. Verifique Authentication, Firestore e regras.');
+        alert('Erro ao carregar dados da nuvem. Verifique Authentication, Firestore e regras. Para segurança, seus dados locais não foram sobrescritos.');
         setSaveStatus('error','Erro na nuvem');
       }
     }
