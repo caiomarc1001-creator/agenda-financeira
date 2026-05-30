@@ -4023,9 +4023,27 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       _meta:{ updatedAt:'', updatedBy:'local' }
     };
 
+    function backupRawLocalStorageBeforeState(reason='early-backup'){
+      try {
+        const raw = localStorage.getItem(LS_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        const candidate = parsed && parsed.state ? parsed.state : parsed;
+        const score =
+          (Array.isArray(candidate.events) ? candidate.events.length : 0) +
+          (Array.isArray(candidate.surgeries) ? candidate.surgeries.length : 0) +
+          (Array.isArray(candidate.payRules) ? candidate.payRules.length : 0) +
+          (Array.isArray(candidate.bonusRules) ? candidate.bonusRules.length : 0);
+        if (score <= 0) return;
+        localStorage.setItem(LS_BACKUP, JSON.stringify({ state: candidate, savedAt: new Date().toISOString(), reason }));
+      } catch (err) {
+        console.warn('Não foi possível criar backup inicial:', err);
+      }
+    }
+
     if (sessionStorage.getItem('agendaForceGuestAfterLogout')) {
       try {
-        saveLocalBackup('logout-auto-reload');
+        backupRawLocalStorageBeforeState('logout-auto-reload');
         localStorage.removeItem(LS_KEY);
         localStorage.removeItem(LS_HISTORY);
       } catch (err) {}
@@ -4189,6 +4207,8 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       if (currentUser && cloudLoadDone) {
         setSaveStatus('saving','Salvando na nuvem...');
         scheduleCloudSave(250);
+      } else if (currentUser && !cloudLoadDone) {
+        setSaveStatus('error','Nuvem sem permissão');
       } else {
         setSaveStatus('saving','Salvando local...');
         setTimeout(() => setSaveStatus('saved','Salvo local'), 220);
@@ -4475,9 +4495,13 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
           syncUserHeader();
           updateCloudStatus(`Conectado: ${userFriendlyName()} · ${currentUser.email || ''}`);
           setSaveStatus('saving','Carregando nuvem...');
-          await loadCloudForCurrentUser();
-          cloudLoadDone = true;
-          setSaveStatus('saved','Nuvem conectada');
+          const loadedOk = await loadCloudForCurrentUser();
+          cloudLoadDone = !!loadedOk;
+          if (cloudLoadDone) {
+            setSaveStatus('saved','Nuvem conectada');
+          } else {
+            setSaveStatus('error','Nuvem sem permissão');
+          }
         });
       } catch (err) {
         console.error(err);
@@ -4501,9 +4525,23 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       return clean;
     }
 
+    function firebasePermissionHelp(err, action='acessar') {
+      const code = err?.code || '';
+      const message = err?.message || String(err || '');
+      if (code === 'permission-denied' || /Missing or insufficient permissions/i.test(message)) {
+        return (
+          `Erro ao ${action} a nuvem: o Firebase recusou a operação por falta de permissão.\n\n` +
+          'Isso normalmente é regra do Firestore. No Firebase Console, vá em Firestore Database > Rules e permita o caminho:\n' +
+          'users/{uid}/agenda/state apenas quando request.auth.uid == uid.\n\n' +
+          'Seus dados locais NÃO foram apagados. Evite salvar até ajustar as regras.'
+        );
+      }
+      return `Erro ao ${action} dados da nuvem: ${message}\n\nSeus dados locais NÃO foram apagados.`;
+    }
+
     async function loadCloudForCurrentUser(){
       const ref = cloudDocRef();
-      if (!ref) return;
+      if (!ref) return false;
 
       try {
         const snap = await window.FirebaseAgenda.getDoc(ref);
@@ -4532,7 +4570,7 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
           clearDelScope();
           clearRetroDel();
           renderAll();
-          return;
+          return true;
         }
 
         const remoteState = normalizeState(snap.data().state || {});
@@ -4582,10 +4620,14 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
         clearDelScope();
         clearRetroDel();
         renderAll();
+        return true;
       } catch (err) {
         console.error(err);
-        alert('Erro ao carregar dados da nuvem. Verifique Authentication, Firestore e regras. Para segurança, seus dados locais não foram sobrescritos.');
-        setSaveStatus('error','Erro na nuvem');
+        const msg = firebasePermissionHelp(err, 'carregar');
+        alert(msg);
+        updateCloudStatus('Nuvem conectada ao login, mas sem permissão de leitura/gravação. Ajuste as regras do Firestore.');
+        setSaveStatus('error','Nuvem sem permissão');
+        return false;
       }
     }
 
@@ -4613,8 +4655,10 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
         if (showAlert) alert('Dados enviados para a nuvem com sucesso.');
       } catch (err) {
         console.error(err);
+        cloudLoadDone = false;
         setSaveStatus('error','Erro ao salvar nuvem');
-        if (showAlert) alert('Erro ao enviar para a nuvem. Verifique Firestore e regras.');
+        updateCloudStatus('Login ativo, mas a nuvem recusou o salvamento. Verifique regras do Firestore.');
+        if (showAlert) alert(firebasePermissionHelp(err, 'salvar'));
       } finally {
         cloudSaving = false;
       }
