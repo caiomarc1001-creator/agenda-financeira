@@ -4554,8 +4554,10 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
           - Não perguntamos mais se deseja enviar dados locais para a nuvem.
           - Ao fazer login, sempre carregamos o que estiver salvo na nuvem.
         */
-        if (snap.exists()) {
-          const remoteState = normalizeState(snap.data().state || {});
+        const cloudExists = (typeof snap.exists === 'function') ? snap.exists() : !!snap.exists;
+        if (cloudExists) {
+          const remoteData = (typeof snap.data === 'function') ? snap.data() : (snap.data || {});
+          const remoteState = normalizeState((remoteData && remoteData.state) || {});
           state = remoteState;
           saveLocal();
         } else {
