@@ -3318,6 +3318,24 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
   }
 }
 
+
+/* =========================
+   BACKUPS VERSIONADOS — UI
+========================= */
+.backupToolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.backupMetaGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:12px}
+.backupMetaBox{border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));padding:12px}
+.backupMetaBox .k{font-size:11px;color:var(--mut2);font-weight:950;text-transform:uppercase;letter-spacing:.4px}
+.backupMetaBox .v{margin-top:5px;font-size:16px;font-weight:1000;color:var(--txt)}
+.backupList{display:flex;flex-direction:column;gap:10px;max-height:48vh;overflow:auto;padding-right:4px;-webkit-overflow-scrolling:touch}
+.backupItem{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.025));padding:12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
+.backupTitle{font-weight:1000;line-height:1.35}
+.backupInfo{font-size:12px;color:var(--mut);line-height:1.55;margin-top:4px}
+.backupActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.backupWarn{border:1px dashed rgba(255,176,32,.50);background:rgba(255,176,32,.10);border-radius:14px;padding:10px;font-size:12px;line-height:1.6;color:var(--txt)}
+@media(max-width:680px){.backupItem{grid-template-columns:1fr}.backupActions{justify-content:flex-start}.backupList{max-height:55vh}}
+body[data-theme="light"] .backupMetaBox .v,body[data-theme="paper"] .backupMetaBox .v,body[data-theme="windows_xp"] .backupMetaBox .v,body[data-theme="toy_story"] .backupMetaBox .v{color:#0b1220}
+
 </style>
 </head>
 <body data-theme="senna_capacete">
@@ -3336,6 +3354,7 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
             <button class="btn menuItem" id="btnSurgeryCenter">Cirurgias</button>
             <button class="btn menuItem" id="btnImport">Importar</button>
             <button class="btn menuItem" id="btnExport">Exportar</button>
+            <button class="btn menuItem" id="btnBackupCenter">Backups</button>
             <button class="btn menuItem" id="btnLogin">Cadastro/Login</button>
             <button class="btn danger menuItem" id="btnReset">Zerar</button>
             <input accept="application/json" hidden id="fileImport" type="file" />
@@ -3914,6 +3933,35 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
     </div>
   </div>
 
+
+  <div class="ov" id="ovBackupCenter">
+    <div class="modal" style="width:min(1040px,100%)">
+      <div class="mHead">
+        <h3>Backups versionados · segurança dos dados</h3>
+        <button class="closeX" id="backupClose" type="button">✕</button>
+      </div>
+      <div class="form">
+        <div class="backupWarn">
+          Backups salvos somente na nuvem, em Firestore, no caminho seguro do seu usuário. O arquivo JSON continua disponível como exportação manual para guardar fora do app.
+          O calendário e os valores visíveis permanecem preservados.
+        </div>
+        <div class="backupMetaGrid">
+          <div class="backupMetaBox"><div class="k">Eventos</div><div class="v" id="backupEventsCount">0</div></div>
+          <div class="backupMetaBox"><div class="k">Cirurgias</div><div class="v" id="backupSurgeriesCount">0</div></div>
+          <div class="backupMetaBox"><div class="k">Regras</div><div class="v" id="backupRulesCount">0</div></div>
+          <div class="backupMetaBox"><div class="k">Último backup</div><div class="v" id="backupLastAt">—</div></div>
+        </div>
+        <div class="backupToolbar">
+          <button class="mBtn primary" id="btnCreateBackupNow" type="button">Criar backup na nuvem</button>
+          <button class="mBtn" id="btnExportBackupPack" type="button">Baixar JSON</button>
+          <button class="mBtn" id="btnRefreshBackups" type="button">Atualizar lista</button>
+        </div>
+        <div class="themeSectionTitle">Backups disponíveis</div>
+        <div class="backupList" id="backupList"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase compat bridge v6 - estável para HTML único / GitHub Pages -->
   <script>
     window.FIREBASE_READY = false;
@@ -3977,6 +4025,8 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
     const LS_KEY = 'agenda_prod_funcional_recorrencia_v1';
     const LS_HISTORY = 'agenda_prod_funcional_recorrencia_history_v1';
     const LS_BACKUP = 'agenda_prod_funcional_recorrencia_backup_v1';
+    const LS_VERSIONED_BACKUPS = 'agenda_prod_funcional_recorrencia_versioned_backups_v1';
+    const MAX_VERSIONED_BACKUPS = 30;
     const THEMES = ['senna_mclaren','senna_capacete','tesla','windows_xp','toy_story','sexta_13','game_of_thrones','sonic','resident_evil_2','dark','light','ocean','violet','gold','graphite','paper','emerald','custom'];
     const PRESET_THEMES = [
       { key:'senna_mclaren', name:'Ayrton Senna · McLaren', desc:'Preto, vermelho e dourado executivo.', sw:['#111111','#d61f26','#d4af37'] },
@@ -4060,6 +4110,7 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
     let cloudReady = false;
     let cloudLoadDone = false;
     let cloudSaveTimer = null;
+    let cloudBackupsCache = [];
     let cloudSaving = false;
     let firebaseAuthListenerStarted = false;
     const INACTIVITY_LIMIT_MS = 20 * 60 * 1000;
@@ -4498,6 +4549,7 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
           const loadedOk = await loadCloudForCurrentUser();
           cloudLoadDone = !!loadedOk;
           if (cloudLoadDone) {
+            maybeCreateDailyBackup('auto-diario-login');
             setSaveStatus('saved','Nuvem conectada');
           } else {
             setSaveStatus('error','Nuvem sem permissão');
@@ -4669,6 +4721,7 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
     }
 
     async function signOut(){
+      await createVersionedBackup('antes-do-logout', { silent:true, cloud:true });
       try { await initFirebaseCloud(); } catch(e) {}
       if (!window.FirebaseAgenda) return;
 
@@ -6339,27 +6392,222 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       URL.revokeObjectURL(url);
     }
     function exportData(){ downloadJson(`agenda_backup_${Date.now()}.json`, state); }
+
+    function backupHumanDate(isoValue){
+      try { return new Date(isoValue).toLocaleString('pt-BR'); } catch { return isoValue || '—'; }
+    }
+
+    function backupSummaryObject(candidate=state){
+      const c = countStateItems(candidate);
+      return { events:c.events, surgeries:c.surgeries, payRules:c.payRules, bonusRules:c.bonusRules, score:c.events+c.surgeries+c.payRules+c.bonusRules };
+    }
+
+    function backupDeviceType(){
+      return window.matchMedia && window.matchMedia('(max-width: 1024px)').matches ? 'mobile_tablet' : 'desktop';
+    }
+
+    function makeBackupObject(reason='manual'){
+      const savedAt = new Date().toISOString();
+      const cleanState = normalizeState(state);
+      return {
+        id:'backup_' + savedAt.replace(/[^0-9]/g,'') + '_' + Math.random().toString(16).slice(2,8),
+        savedAt,
+        reason,
+        device: backupDeviceType(),
+        appVersion:'cloud-backup-v1',
+        userEmail: currentUser?.email || '',
+        summary: backupSummaryObject(cleanState),
+        state: cleanState
+      };
+    }
+
+    function cloudBackupsCollectionRef(){
+      if (!currentUser || !firebaseDb) return null;
+      return firebaseDb.collection('users').doc(currentUser.uid).collection('backups');
+    }
+
+    async function saveCloudBackupDoc(backup){
+      if (!currentUser || !firebaseDb || !window.FirebaseAgenda) return false;
+      try {
+        const ref = cloudBackupsCollectionRef().doc(backup.id);
+        await window.FirebaseAgenda.setDoc(ref, {
+          ...backup,
+          createdAt: window.FirebaseAgenda.serverTimestamp(),
+          userUid: currentUser.uid,
+          userEmail: currentUser.email || ''
+        }, { merge:false });
+        return true;
+      } catch (err) {
+        console.error('Backup em nuvem não foi criado:', err);
+        return false;
+      }
+    }
+
+    async function fetchCloudBackups(limit=50){
+      if (!currentUser || !firebaseDb) {
+        cloudBackupsCache = [];
+        return [];
+      }
+      try {
+        const snap = await cloudBackupsCollectionRef().orderBy('savedAt','desc').limit(limit).get();
+        const arr = [];
+        snap.forEach(doc => {
+          const data = doc.data ? doc.data() : {};
+          arr.push({ id: data.id || doc.id, ...data });
+        });
+        cloudBackupsCache = arr;
+        return arr;
+      } catch (err) {
+        console.error('Erro ao carregar backups da nuvem:', err);
+        alert('Não foi possível carregar os backups da nuvem. Verifique as regras do Firestore para users/{uid}/backups/{backupId}.');
+        cloudBackupsCache = [];
+        return [];
+      }
+    }
+
+    async function pruneAutomaticCloudBackups(maxAuto=30){
+      if (!currentUser || !firebaseDb) return;
+      try {
+        const snap = await cloudBackupsCollectionRef().orderBy('savedAt','desc').limit(100).get();
+        const automatic = [];
+        snap.forEach(doc => {
+          const data = doc.data ? doc.data() : {};
+          const reason = String(data.reason || '');
+          if (reason.includes('auto') || reason.includes('diario')) automatic.push({ doc, data });
+        });
+        const excess = automatic.slice(maxAuto);
+        for (const item of excess) await item.doc.ref.delete();
+      } catch (err) {
+        console.warn('Não foi possível limpar backups automáticos antigos:', err);
+      }
+    }
+
+    async function createVersionedBackup(reason='manual', options={}){
+      const { silent=false, cloud=true } = options || {};
+      if (!currentUser || !cloudLoadDone) {
+        if (!silent) alert('Entre na conta e aguarde a nuvem carregar antes de criar backup.');
+        return null;
+      }
+      const backup = makeBackupObject(reason);
+      const ok = cloud ? await saveCloudBackupDoc(backup) : false;
+      if (!ok) {
+        if (!silent) alert('Não foi possível criar o backup na nuvem. Nada foi salvo localmente.');
+        return null;
+      }
+      cloudBackupsCache.unshift(backup);
+      await pruneAutomaticCloudBackups(MAX_VERSIONED_BACKUPS);
+      if (!silent) {
+        await renderBackupCenter();
+        alert('Backup criado na nuvem com sucesso.');
+      }
+      return backup;
+    }
+
+    async function maybeCreateDailyBackup(reason='auto-diario'){
+      if (!currentUser || !cloudLoadDone || !hasMeaningfulData(state)) return;
+      const backups = await fetchCloudBackups(50);
+      const today = new Date().toISOString().slice(0,10);
+      const hasToday = backups.some(b => String(b.savedAt || '').slice(0,10) === today && String(b.reason || '').includes('auto'));
+      if (!hasToday) await createVersionedBackup(reason, { silent:true, cloud:true });
+    }
+
+    async function renderBackupCenter(){
+      const list = UI.el('backupList');
+      if (!list) return;
+      const summary = backupSummaryObject(state);
+      UI.el('backupEventsCount').textContent = String(summary.events);
+      UI.el('backupSurgeriesCount').textContent = String(summary.surgeries);
+      UI.el('backupRulesCount').textContent = String(summary.payRules + summary.bonusRules);
+
+      if (!currentUser || !cloudLoadDone) {
+        UI.el('backupLastAt').textContent = '—';
+        list.innerHTML = '<div class="helper">Entre na sua conta e aguarde a mensagem <b>Nuvem conectada</b> para visualizar e criar backups.</div>';
+        return;
+      }
+
+      list.innerHTML = '<div class="helper">Carregando backups da nuvem...</div>';
+      const backups = await fetchCloudBackups(50);
+      UI.el('backupLastAt').textContent = backups[0] ? backupHumanDate(backups[0].savedAt) : '—';
+      if (!backups.length) {
+        list.innerHTML = '<div class="helper">Nenhum backup na nuvem ainda. Clique em <b>Criar backup na nuvem</b> antes de fazer alterações importantes.</div>';
+        return;
+      }
+      list.innerHTML = backups.map(b => {
+        const s = b.summary || backupSummaryObject(b.state || {});
+        return `
+          <div class="backupItem" data-backup-id="${escapeAttr(b.id)}">
+            <div>
+              <div class="backupTitle">${escapeHtml(backupHumanDate(b.savedAt))}</div>
+              <div class="backupInfo">Motivo: ${escapeHtml(b.reason || 'manual')} · Dispositivo: ${escapeHtml(b.device || '—')}<br>${s.events || 0} evento(s), ${s.surgeries || 0} cirurgia(s), ${(s.payRules || 0) + (s.bonusRules || 0)} regra(s)</div>
+            </div>
+            <div class="backupActions">
+              <button class="smallBtn" type="button" onclick="window.exportBackupById('${escapeAttr(b.id)}')">Baixar JSON</button>
+              <button class="smallBtn primary" type="button" onclick="window.restoreBackupById('${escapeAttr(b.id)}')">Restaurar</button>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    async function openBackupCenter(){ UI.open('ovBackupCenter'); await renderBackupCenter(); }
+
+    async function exportBackupPack(){
+      const backups = currentUser && cloudLoadDone ? await fetchCloudBackups(50) : [];
+      downloadJson(`agenda_backups_nuvem_${Date.now()}.json`, { exportedAt:new Date().toISOString(), currentState:state, backups });
+    }
+
+    window.exportBackupById = async function(id){
+      const backups = cloudBackupsCache.length ? cloudBackupsCache : await fetchCloudBackups(50);
+      const backup = backups.find(b => b.id === id);
+      if (!backup) return alert('Backup não encontrado na nuvem.');
+      downloadJson(`agenda_backup_${String(backup.savedAt || Date.now()).replace(/[^0-9]/g,'')}.json`, backup);
+    };
+
+    window.restoreBackupById = async function(id){
+      const backups = cloudBackupsCache.length ? cloudBackupsCache : await fetchCloudBackups(50);
+      const backup = backups.find(b => b.id === id);
+      if (!backup || !backup.state) return alert('Backup inválido ou não encontrado na nuvem.');
+      const ok = confirm(`Restaurar o backup de ${backupHumanDate(backup.savedAt)}?
+
+Antes de restaurar, o sistema criará um backup de segurança na nuvem com o estado atual.`);
+      if (!ok) return;
+      const safety = await createVersionedBackup('antes-de-restaurar-backup', { silent:true, cloud:true });
+      if (!safety) return alert('Restauração cancelada: não foi possível criar o backup de segurança na nuvem.');
+      pushHistorySnapshot();
+      state = normalizeState(backup.state);
+      saveLocal();
+      if (currentUser && cloudLoadDone) await saveCloudNow(false);
+      clearScope(); clearDelScope(); clearRetroDel();
+      renderAll();
+      await renderBackupCenter();
+      setSaveStatus('saved','Backup restaurado e sincronizado');
+      alert('Backup restaurado com sucesso.');
+    };
+
     function importData(file){
       const reader = new FileReader();
-      reader.onload = () => {
+      reader.onload = async () => {
         try {
           const data = JSON.parse(reader.result);
+          if (currentUser && cloudLoadDone) {
+            const safety = await createVersionedBackup('antes-de-importar-json', { silent:true, cloud:true });
+            if (!safety) return alert('Importação cancelada: não foi possível criar backup de segurança na nuvem.');
+          }
           pushHistorySnapshot();
-          state = normalizeState(data);
+          state = normalizeState(data.state || data);
           saveLocal();
-          if (currentUser && cloudLoadDone) saveCloudNow(false);
+          if (currentUser && cloudLoadDone) await saveCloudNow(false);
           clearScope();
           clearDelScope();
           clearRetroDel();
           renderAll();
-          alert('Importação concluída.');
+          alert('Importação concluída e sincronizada.');
         } catch {
           alert('Arquivo JSON inválido.');
         }
       };
       reader.readAsText(file);
     }
-    function resetAll(){ if (!confirm('Tem certeza que deseja zerar os dados deste navegador?')) return; pushHistorySnapshot(); state = deepClone(DEFAULTS); saveLocal(); if (currentUser && cloudLoadDone) saveCloudNow(false); clearScope(); clearDelScope(); renderAll(); setSaveStatus('saved', currentUser ? 'Zerado e sincronizado' : 'Zerado local'); }
+    async function resetAll(){ if (!confirm('Tem certeza que deseja zerar os dados da agenda?')) return; if (currentUser && cloudLoadDone) { const safety = await createVersionedBackup('antes-de-zerar', { silent:true, cloud:true }); if (!safety) return alert('Ação cancelada: não foi possível criar backup de segurança na nuvem.'); } pushHistorySnapshot(); state = deepClone(DEFAULTS); saveLocal(); if (currentUser && cloudLoadDone) saveCloudNow(false); clearScope(); clearDelScope(); renderAll(); setSaveStatus('saved', currentUser ? 'Zerado e sincronizado' : 'Zerado'); }
 
 
     function applyCollapsiblePanels(){
@@ -6846,6 +7094,11 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
       UI.el('btnSyncLocalToCloud').addEventListener('click', () => saveCloudNow(true));
 
       UI.el('btnExport').addEventListener('click', exportData);
+      UI.el('btnBackupCenter').addEventListener('click', openBackupCenter);
+      UI.el('backupClose').addEventListener('click', () => UI.close('ovBackupCenter'));
+      UI.el('btnCreateBackupNow').addEventListener('click', () => createVersionedBackup('manual', { silent:false, cloud:true }));
+      UI.el('btnExportBackupPack').addEventListener('click', exportBackupPack);
+      UI.el('btnRefreshBackups').addEventListener('click', () => renderBackupCenter());
       UI.el('btnImport').addEventListener('click', () => UI.el('fileImport').click());
       UI.el('fileImport').addEventListener('change', e => { const file = e.target.files?.[0]; if (file) importData(file); e.target.value = ''; });
       UI.el('btnReset').addEventListener('click', resetAll);
