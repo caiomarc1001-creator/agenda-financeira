@@ -1,0 +1,11 @@
+{
+  "name": "Agenda Financeira Médica",
+  "short_name": "Agenda Financeira",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#070b14",
+  "theme_color": "#070b14",
+  "lang": "pt-BR",
+  "description": "Agenda financeira para plantões, cirurgias e produtividade médica.",
+  "icons": []
+}
