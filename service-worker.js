@@ -1,11 +1,13 @@
 // Agenda Financeira v3.0 - service worker conservador
 // Não faz cache agressivo do index para evitar versões antigas no celular.
-const CACHE_NAME = "agenda-financeira-v3-assets";
+const CACHE_NAME = "agenda-financeira-v3-1-assets";
 const ASSETS = [
   "./css/main.css",
+  "./css/dashboard.css",
   "./js/firebase-config.js",
   "./js/firebase-bridge.js",
   "./js/app.js",
+  "./js/dashboard.js",
   "./manifest.json"
 ];
 
