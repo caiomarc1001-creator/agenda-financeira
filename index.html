@@ -4022,10 +4022,7 @@ body[data-theme="light"] .backupMetaBox .v,body[data-theme="paper"] .backupMetaB
 
 <script>
   (() => {
-    const LS_KEY = 'agenda_prod_funcional_recorrencia_v1';
-    const LS_HISTORY = 'agenda_prod_funcional_recorrencia_history_v1';
-    const LS_BACKUP = 'agenda_prod_funcional_recorrencia_backup_v1';
-    const LS_VERSIONED_BACKUPS = 'agenda_prod_funcional_recorrencia_versioned_backups_v1';
+    const MEMORY_HISTORY_LIMIT = 20;
     const MAX_VERSIONED_BACKUPS = 30;
     const THEMES = ['senna_mclaren','senna_capacete','tesla','windows_xp','toy_story','sexta_13','game_of_thrones','sonic','resident_evil_2','dark','light','ocean','violet','gold','graphite','paper','emerald','custom'];
     const PRESET_THEMES = [
@@ -4073,34 +4070,15 @@ body[data-theme="light"] .backupMetaBox .v,body[data-theme="paper"] .backupMetaB
       _meta:{ updatedAt:'', updatedBy:'local' }
     };
 
-    function backupRawLocalStorageBeforeState(reason='early-backup'){
-      try {
-        const raw = localStorage.getItem(LS_KEY);
-        if (!raw) return;
-        const parsed = JSON.parse(raw);
-        const candidate = parsed && parsed.state ? parsed.state : parsed;
-        const score =
-          (Array.isArray(candidate.events) ? candidate.events.length : 0) +
-          (Array.isArray(candidate.surgeries) ? candidate.surgeries.length : 0) +
-          (Array.isArray(candidate.payRules) ? candidate.payRules.length : 0) +
-          (Array.isArray(candidate.bonusRules) ? candidate.bonusRules.length : 0);
-        if (score <= 0) return;
-        localStorage.setItem(LS_BACKUP, JSON.stringify({ state: candidate, savedAt: new Date().toISOString(), reason }));
-      } catch (err) {
-        console.warn('Não foi possível criar backup inicial:', err);
+    function prepareGuestSessionAfterLogout(){
+      if (sessionStorage.getItem('agendaForceGuestAfterLogout')) {
+        sessionStorage.removeItem('agendaForceGuestAfterLogout');
       }
     }
 
-    if (sessionStorage.getItem('agendaForceGuestAfterLogout')) {
-      try {
-        backupRawLocalStorageBeforeState('logout-auto-reload');
-        localStorage.removeItem(LS_KEY);
-        localStorage.removeItem(LS_HISTORY);
-      } catch (err) {}
-      sessionStorage.removeItem('agendaForceGuestAfterLogout');
-    }
+    prepareGuestSessionAfterLogout();
 
-    let state = loadState();
+    let state = deepClone(DEFAULTS);
     let saveTimer = null;
     let isDirty = false;
     let firebaseApp = null;
@@ -4184,18 +4162,13 @@ body[data-theme="light"] .backupMetaBox .v,body[data-theme="paper"] .backupMetaB
       });
       return s;
     }
-    function loadState(){ try { const raw = localStorage.getItem(LS_KEY); return raw ? normalizeState(JSON.parse(raw)) : deepClone(DEFAULTS); } catch { return deepClone(DEFAULTS); } }
-    function readStoredState(key){
-      try {
-        const raw = localStorage.getItem(key);
-        if (!raw) return null;
-        const parsed = JSON.parse(raw);
-        const candidate = parsed && parsed.state ? parsed.state : parsed;
-        return normalizeState(candidate);
-      } catch (err) {
-        console.warn('Não foi possível ler dados locais:', key, err);
-        return null;
-      }
+    let memoryHistory = [];
+
+    function loadState(){
+      return deepClone(DEFAULTS);
+    }
+    function readStoredState(){
+      return null;
     }
     function countStateItems(candidate){
       const s = normalizeState(candidate || {});
@@ -4215,59 +4188,52 @@ body[data-theme="light"] .backupMetaBox .v,body[data-theme="paper"] .backupMetaB
       const c = countStateItems(candidate);
       return `${c.events} evento(s), ${c.surgeries} cirurgia(s), ${c.payRules} regra(s) de pagamento e ${c.bonusRules} bonificação(ões)`;
     }
-    function getBestLocalRecoveryState(){
-      const primary = readStoredState(LS_KEY);
-      const backup = readStoredState(LS_BACKUP);
-      const primaryScore = stateDataScore(primary);
-      const backupScore = stateDataScore(backup);
-      if (backupScore > primaryScore) return backup;
-      return primary || backup || null;
+    function getBestLocalRecoveryState(){ return null; }
+    function saveLocalBackup(){ return null; }
+    function saveLocal(){ return true; }
+    function loadHistory(){ return memoryHistory.slice(); }
+    function saveHistory(arr){ memoryHistory = Array.isArray(arr) ? arr.slice(-MEMORY_HISTORY_LIMIT) : []; }
+    function pushHistorySnapshot(){
+      const snap = JSON.stringify(state);
+      if (memoryHistory[memoryHistory.length - 1] === snap) return;
+      memoryHistory.push(snap);
+      saveHistory(memoryHistory);
+      updateUndoButton();
     }
-    function saveLocalBackup(reason='backup'){
-      try {
-        const source = readStoredState(LS_KEY) || state;
-        if (!hasMeaningfulData(source)) return;
-        localStorage.setItem(LS_BACKUP, JSON.stringify({
-          state: normalizeState(source),
-          savedAt: new Date().toISOString(),
-          reason
-        }));
-      } catch (err) {
-        console.warn('Não foi possível criar backup local:', err);
-      }
-    }
-    function saveLocal(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); saveLocalBackup('autosave'); }
-    function loadHistory(){ try { return JSON.parse(localStorage.getItem(LS_HISTORY) || '[]'); } catch { return []; } }
-    function saveHistory(arr){ localStorage.setItem(LS_HISTORY, JSON.stringify(arr.slice(-20))); }
-    function pushHistorySnapshot(){ const arr = loadHistory(); const snap = JSON.stringify(state); if (arr[arr.length - 1] === snap) return; arr.push(snap); saveHistory(arr); updateUndoButton(); }
     function setSaveStatus(kind,label){ const pill = UI.el('savePill'); pill.classList.remove('saved','dirty','saving','error'); pill.classList.add(kind); UI.el('saveLabel').textContent = label; }
-    function markDirty(){ isDirty = true; setSaveStatus('dirty', currentUser ? 'Não salvo' : 'Editando sem salvar'); clearTimeout(saveTimer); saveTimer = setTimeout(() => performSave(false), 1200); }
+    function markDirty(){ isDirty = true; setSaveStatus('dirty', currentUser ? 'Não salvo' : 'Entre para salvar na nuvem'); clearTimeout(saveTimer); saveTimer = setTimeout(() => performSave(false), 1200); }
     function performSave(forceHistory){
       clearTimeout(saveTimer);
       if (!currentUser) {
         isDirty = false;
-        setSaveStatus('saved','Modo visitante: não salva');
+        setSaveStatus('error','Sem login: não salva');
+        return;
+      }
+      if (!cloudLoadDone) {
+        setSaveStatus('saving','Aguardando nuvem...');
+        scheduleCloudSave(900);
         return;
       }
       if (forceHistory) pushHistorySnapshot();
       state._meta.updatedAt = new Date().toISOString();
-      state._meta.updatedBy = currentUser ? currentUser.uid : 'local';
-      saveLocal();
+      state._meta.updatedBy = currentUser ? currentUser.uid : 'cloud';
       isDirty = false;
-
-      if (currentUser && cloudLoadDone) {
-        setSaveStatus('saving','Salvando na nuvem...');
-        scheduleCloudSave(250);
-      } else if (currentUser && !cloudLoadDone) {
-        setSaveStatus('error','Nuvem sem permissão');
-      } else {
-        setSaveStatus('saving','Salvando local...');
-        setTimeout(() => setSaveStatus('saved','Salvo local'), 220);
-      }
+      setSaveStatus('saving','Salvando na nuvem...');
+      scheduleCloudSave(250);
     }
-    function save(){ saveLocal(); markDirty(); }
+    function save(){ markDirty(); }
     function updateUndoButton(){ UI.el('btnUndo').disabled = loadHistory().length === 0; }
-    function undoLast(){ const arr = loadHistory(); if (!arr.length) return alert('Nada para desfazer.'); const last = arr.pop(); saveHistory(arr); state = normalizeState(JSON.parse(last)); saveLocal(); clearScope(); clearDelScope(); renderAll(); setSaveStatus('saved','Desfeito'); }
+    function undoLast(){
+      const arr = loadHistory();
+      if (!arr.length) return alert('Nada para desfazer nesta sessão.');
+      const last = arr.pop();
+      saveHistory(arr);
+      state = normalizeState(JSON.parse(last));
+      clearScope(); clearDelScope(); renderAll();
+      if (currentUser && cloudLoadDone) saveCloudNow(false);
+      setSaveStatus('saved','Desfeito e sincronizado');
+    }
+
 
 
     function hasFirebaseConfig(){
@@ -4455,14 +4421,7 @@ body[data-theme="light"] .backupMetaBox .v,body[data-theme="paper"] .backupMetaB
     }
 
     function protectLoggedOutScreen(reason='Modo visitante: não salva'){
-      try {
-        saveLocalBackup('logout-protection');
-        localStorage.removeItem(LS_KEY);
-        localStorage.removeItem(LS_HISTORY);
-      } catch (err) {
-        console.warn('Não foi possível limpar o armazenamento local:', err);
-      }
-
+      memoryHistory = [];
       clearPrivateVisualData(reason);
     }
 
@@ -4602,7 +4561,7 @@ body[data-theme="light"] .backupMetaBox .v,body[data-theme="paper"] .backupMetaB
         /*
           PADRÃO DEFINITIVO DE SINCRONIZAÇÃO:
           - A nuvem é sempre a fonte principal da verdade.
-          - O navegador/localStorage serve apenas como espelho local/cache.
+          - O navegador não é usado como fonte de dados. A nuvem é soberana.
           - Não perguntamos mais se deseja enviar dados locais para a nuvem.
           - Ao fazer login, sempre carregamos o que estiver salvo na nuvem.
         */
@@ -4611,10 +4570,8 @@ body[data-theme="light"] .backupMetaBox .v,body[data-theme="paper"] .backupMetaB
           const remoteData = (typeof snap.data === 'function') ? snap.data() : (snap.data || {});
           const remoteState = normalizeState((remoteData && remoteData.state) || {});
           state = remoteState;
-          saveLocal();
         } else {
           state = deepClone(DEFAULTS);
-          saveLocal();
         }
 
         clearScope();
@@ -4653,7 +4610,6 @@ body[data-theme="light"] .backupMetaBox .v,body[data-theme="paper"] .backupMetaB
           userEmail: currentUser.email || ''
         }, { merge:false });
 
-        saveLocal();
         setSaveStatus('saved','Salvo na nuvem');
         if (showAlert) alert('Dados enviados para a nuvem com sucesso.');
       } catch (err) {
@@ -6574,7 +6530,6 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       if (!safety) return alert('Restauração cancelada: não foi possível criar o backup de segurança na nuvem.');
       pushHistorySnapshot();
       state = normalizeState(backup.state);
-      saveLocal();
       if (currentUser && cloudLoadDone) await saveCloudNow(false);
       clearScope(); clearDelScope(); clearRetroDel();
       renderAll();
@@ -6594,7 +6549,6 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
           }
           pushHistorySnapshot();
           state = normalizeState(data.state || data);
-          saveLocal();
           if (currentUser && cloudLoadDone) await saveCloudNow(false);
           clearScope();
           clearDelScope();
@@ -6607,7 +6561,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       };
       reader.readAsText(file);
     }
-    async function resetAll(){ if (!confirm('Tem certeza que deseja zerar os dados da agenda?')) return; if (currentUser && cloudLoadDone) { const safety = await createVersionedBackup('antes-de-zerar', { silent:true, cloud:true }); if (!safety) return alert('Ação cancelada: não foi possível criar backup de segurança na nuvem.'); } pushHistorySnapshot(); state = deepClone(DEFAULTS); saveLocal(); if (currentUser && cloudLoadDone) saveCloudNow(false); clearScope(); clearDelScope(); renderAll(); setSaveStatus('saved', currentUser ? 'Zerado e sincronizado' : 'Zerado'); }
+    async function resetAll(){ if (!confirm('Tem certeza que deseja zerar os dados da agenda?')) return; if (currentUser && cloudLoadDone) { const safety = await createVersionedBackup('antes-de-zerar', { silent:true, cloud:true }); if (!safety) return alert('Ação cancelada: não foi possível criar backup de segurança na nuvem.'); } pushHistorySnapshot(); state = deepClone(DEFAULTS); if (currentUser && cloudLoadDone) saveCloudNow(false); clearScope(); clearDelScope(); renderAll(); setSaveStatus('saved', currentUser ? 'Zerado e sincronizado' : 'Zerado'); }
 
 
     function applyCollapsiblePanels(){
