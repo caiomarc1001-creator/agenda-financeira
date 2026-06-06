@@ -3336,6 +3336,201 @@ body.surgeon-mode .sidebarCol > .section:nth-child(3) .sectionHead .smallBtn{
 @media(max-width:680px){.backupItem{grid-template-columns:1fr}.backupActions{justify-content:flex-start}.backupList{max-height:55vh}}
 body[data-theme="light"] .backupMetaBox .v,body[data-theme="paper"] .backupMetaBox .v,body[data-theme="windows_xp"] .backupMetaBox .v,body[data-theme="toy_story"] .backupMetaBox .v{color:#0b1220}
 
+
+/* =========================
+   DASHBOARD ADMINISTRATIVO — SPRINT 1
+   Herda temas, botões, cards e responsividade do projeto
+========================= */
+.dashboardHero{
+  display:grid;
+  grid-template-columns:minmax(0,1.2fr) minmax(240px,.8fr);
+  gap:12px;
+  align-items:stretch;
+}
+.dashboardPanel{
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));
+  padding:14px;
+  box-shadow:0 14px 38px rgba(0,0,0,.18);
+}
+.dashboardPanel .dashEyebrow{
+  font-size:11px;
+  color:var(--mut2);
+  font-weight:1000;
+  text-transform:uppercase;
+  letter-spacing:.45px;
+}
+.dashboardPanel .dashTitle{
+  margin-top:6px;
+  font-size:24px;
+  font-weight:1000;
+  line-height:1.12;
+  color:var(--txt);
+}
+.dashboardPanel .dashSub{
+  margin-top:8px;
+  font-size:12px;
+  color:var(--mut);
+  line-height:1.55;
+  font-weight:850;
+}
+.dashboardStatusLine{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.dashboardGrid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+}
+.dashboardCard{
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.025));
+  padding:14px;
+  min-height:118px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  box-shadow:0 14px 34px rgba(0,0,0,.16);
+}
+.dashboardCard .k{
+  font-size:11px;
+  color:var(--mut2);
+  font-weight:1000;
+  text-transform:uppercase;
+  letter-spacing:.42px;
+}
+.dashboardCard .v{
+  margin-top:8px;
+  font-size:24px;
+  line-height:1.05;
+  font-weight:1000;
+  color:var(--txt);
+  overflow-wrap:anywhere;
+}
+.dashboardCard .s{
+  margin-top:8px;
+  font-size:12px;
+  line-height:1.45;
+  color:var(--mut);
+  font-weight:850;
+}
+.dashboardCard.good{border-color:rgba(57,217,138,.35)}
+.dashboardCard.warn{border-color:rgba(255,176,32,.38)}
+.dashboardCard.bad{border-color:rgba(255,93,93,.35)}
+.dashboardSplit{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.dashboardList{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.dashboardRow{
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+  padding:12px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+}
+.dashboardRow .name{
+  font-size:13px;
+  font-weight:1000;
+  color:var(--txt);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.dashboardRow .meta{
+  margin-top:4px;
+  font-size:11px;
+  color:var(--mut2);
+  font-weight:850;
+}
+.dashboardRow .amount{
+  font-size:13px;
+  font-weight:1000;
+  color:var(--txt);
+  text-align:right;
+}
+.dashboardBar{
+  height:8px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  overflow:hidden;
+  margin-top:8px;
+  border:1px solid var(--line);
+}
+.dashboardBar > span{
+  display:block;
+  height:100%;
+  width:var(--w,0%);
+  border-radius:999px;
+  background:linear-gradient(135deg,var(--acc),rgba(255,255,255,.42));
+}
+.dashboardMiniGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.dashboardMini{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:10px;
+  background:rgba(255,255,255,.045);
+}
+.dashboardMini .k{font-size:10px;color:var(--mut2);font-weight:1000;text-transform:uppercase;letter-spacing:.35px}
+.dashboardMini .v{font-size:16px;font-weight:1000;margin-top:4px;color:var(--txt)}
+.dashboardFooterNote{
+  font-size:12px;
+  color:var(--mut);
+  line-height:1.6;
+}
+body[data-theme="light"] .dashboardPanel .dashTitle,
+body[data-theme="paper"] .dashboardPanel .dashTitle,
+body[data-theme="windows_xp"] .dashboardPanel .dashTitle,
+body[data-theme="toy_story"] .dashboardPanel .dashTitle,
+body[data-theme="light"] .dashboardCard .v,
+body[data-theme="paper"] .dashboardCard .v,
+body[data-theme="windows_xp"] .dashboardCard .v,
+body[data-theme="toy_story"] .dashboardCard .v,
+body[data-theme="light"] .dashboardRow .name,
+body[data-theme="paper"] .dashboardRow .name,
+body[data-theme="windows_xp"] .dashboardRow .name,
+body[data-theme="toy_story"] .dashboardRow .name,
+body[data-theme="light"] .dashboardRow .amount,
+body[data-theme="paper"] .dashboardRow .amount,
+body[data-theme="windows_xp"] .dashboardRow .amount,
+body[data-theme="toy_story"] .dashboardRow .amount,
+body[data-theme="light"] .dashboardMini .v,
+body[data-theme="paper"] .dashboardMini .v,
+body[data-theme="windows_xp"] .dashboardMini .v,
+body[data-theme="toy_story"] .dashboardMini .v{color:#0b1220 !important}
+@media(max-width:980px){
+  .dashboardHero{grid-template-columns:1fr}
+  .dashboardGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dashboardSplit{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+  .dashboardGrid{grid-template-columns:1fr}
+  .dashboardMiniGrid{grid-template-columns:1fr 1fr}
+  .dashboardPanel .dashTitle{font-size:21px}
+  .dashboardCard{min-height:104px;padding:12px}
+  .dashboardCard .v{font-size:22px}
+  .dashboardRow{grid-template-columns:1fr}
+  .dashboardRow .amount{text-align:left}
+}
+
 </style>
 </head>
 <body data-theme="senna_capacete">
@@ -3355,6 +3550,7 @@ body[data-theme="light"] .backupMetaBox .v,body[data-theme="paper"] .backupMetaB
             <button class="btn menuItem" id="btnImport">Importar</button>
             <button class="btn menuItem" id="btnExport">Exportar</button>
             <button class="btn menuItem" id="btnBackupCenter">Backups</button>
+            <button class="btn menuItem" id="btnDashboardCenter">Dashboard</button>
             <button class="btn menuItem" id="btnLogin">Cadastro/Login</button>
             <button class="btn danger menuItem" id="btnReset">Zerar</button>
             <input accept="application/json" hidden id="fileImport" type="file" />
@@ -3928,6 +4124,57 @@ body[data-theme="light"] .backupMetaBox .v,body[data-theme="paper"] .backupMetaB
         <div>
           <div class="themeSectionTitle">Pacientes cadastrados</div>
           <div class="surgeryList" id="surgeryFullList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ov" id="ovDashboardCenter">
+    <div class="modal" style="width:min(1120px,100%)">
+      <div class="mHead">
+        <h3>Dashboard administrativo</h3>
+        <button class="closeX" id="dashboardClose" type="button">✕</button>
+      </div>
+      <div class="form">
+        <div class="dashboardHero">
+          <div class="dashboardPanel">
+            <div class="dashEyebrow">Agenda Financeira</div>
+            <div class="dashTitle" id="dashMonthTitle">Dashboard</div>
+            <div class="dashSub">Visão administrativa do mês visível, usando os dados atuais da nuvem sem alterar o calendário principal.</div>
+            <div class="dashboardStatusLine">
+              <span class="statusPill saved"><span class="statusDot"></span><span id="dashCloudStatus">Nuvem</span></span>
+              <span class="note" id="dashUserLabel">Usuário</span>
+            </div>
+          </div>
+          <div class="dashboardPanel">
+            <div class="dashEyebrow">Sincronização</div>
+            <div class="dashboardMiniGrid" style="margin-top:10px">
+              <div class="dashboardMini"><div class="k">Última atualização</div><div class="v" id="dashLastSync">—</div></div>
+              <div class="dashboardMini"><div class="k">Último backup</div><div class="v" id="dashLastBackup">—</div></div>
+              <div class="dashboardMini"><div class="k">Backups</div><div class="v" id="dashBackupCount">0</div></div>
+              <div class="dashboardMini"><div class="k">Tema</div><div class="v" id="dashTheme">—</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboardGrid" id="dashboardCards"></div>
+
+        <div class="dashboardSplit">
+          <div class="dashboardPanel">
+            <div class="dashEyebrow">Hospitais / instituições</div>
+            <div class="dashSub">Ranking pelo valor previsto/recebido no mês visível.</div>
+            <div class="dashboardList" id="dashHospitals" style="margin-top:12px"></div>
+          </div>
+          <div class="dashboardPanel">
+            <div class="dashEyebrow">Convênios / particulares</div>
+            <div class="dashSub">Distribuição dos pacientes cirúrgicos cadastrados.</div>
+            <div class="dashboardList" id="dashPlans" style="margin-top:12px"></div>
+          </div>
+        </div>
+
+        <div class="dashboardFooterNote">
+          Este painel é apenas informativo. Ele não altera eventos, cirurgias, pagamentos, backups ou configurações.
         </div>
       </div>
     </div>
@@ -6923,6 +7170,148 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       card.addEventListener('touchcancel', () => { tracking = false; }, { passive:true });
     }
 
+
+    function monthBoundsFromView(){
+      const y = state.view.y, m = state.view.m;
+      return { from: iso(new Date(y,m,1)), to: iso(new Date(y,m+1,0)) };
+    }
+
+    function isDateInVisibleMonth(dateISO){
+      const { from, to } = monthBoundsFromView();
+      const d = String(dateISO || '');
+      return d >= from && d <= to;
+    }
+
+    function monthNameLong(y,m){
+      return new Date(y,m,1).toLocaleDateString('pt-BR',{month:'long', year:'numeric'}).replace(/^./, c => c.toUpperCase());
+    }
+
+    function sumEventsVisibleMonth(){
+      const { from, to } = monthBoundsFromView();
+      let count = 0, total = 0, hours = 0;
+      for (let d = parseISO(from); iso(d) <= to; d.setDate(d.getDate()+1)) {
+        const ds = iso(d);
+        listEventsForDate(ds).forEach(e => {
+          count += 1;
+          total += eventTotal(e);
+          hours += eventHours(e);
+        });
+      }
+      return { count, total, hours };
+    }
+
+    function visibleMonthSurgeries(){
+      return (state.surgeries || []).filter(s => isDateInVisibleMonth(s.date));
+    }
+
+    function surgeryAmountValue(s){
+      return Number(s?.amount || s?.value || s?.total || 0) || 0;
+    }
+
+    function getSurgeryHospitalName(s){
+      return String(s?.hospital || 'Sem hospital').trim() || 'Sem hospital';
+    }
+
+    function getSurgeryPlanName(s){
+      const type = String(s?.paymentType || '').toLowerCase();
+      if (type === 'particular') return 'Particular';
+      return String(s?.healthPlan || s?.plan || 'Convênio não informado').trim() || 'Convênio não informado';
+    }
+
+    function groupDashboardRows(items, nameFn){
+      const map = new Map();
+      items.forEach(item => {
+        const name = nameFn(item);
+        const prev = map.get(name) || { name, count:0, total:0, paid:0, unpaid:0 };
+        const amount = surgeryAmountValue(item);
+        prev.count += 1;
+        prev.total += amount;
+        if (String(item.paymentStatus || item.status || '').toLowerCase() === 'paid') prev.paid += amount;
+        else prev.unpaid += amount;
+        map.set(name, prev);
+      });
+      return [...map.values()].sort((a,b) => b.total - a.total || b.count - a.count || a.name.localeCompare(b.name));
+    }
+
+    function renderDashboardRows(hostId, rows, emptyText){
+      const host = UI.el(hostId);
+      if (!host) return;
+      if (!rows.length){
+        host.innerHTML = `<div class="helper">${escapeHtml(emptyText)}</div>`;
+        return;
+      }
+      const max = Math.max(...rows.map(r => Number(r.total || 0)), 1);
+      host.innerHTML = rows.slice(0,8).map(r => {
+        const pct = Math.max(4, Math.round((Number(r.total || 0) / max) * 100));
+        return `
+          <div class="dashboardRow">
+            <div>
+              <div class="name">${escapeHtml(r.name)}</div>
+              <div class="meta">${r.count} registro(s) · Pago ${fmtMoney(r.paid)} · Pendente ${fmtMoney(r.unpaid)}</div>
+              <div class="dashboardBar"><span style="--w:${pct}%"></span></div>
+            </div>
+            <div class="amount">${fmtMoney(r.total)}</div>
+          </div>`;
+      }).join('');
+    }
+
+    async function renderDashboardCenter(){
+      const events = sumEventsVisibleMonth();
+      const surgeries = visibleMonthSurgeries();
+      const surgeryTotal = surgeries.reduce((acc,s) => acc + surgeryAmountValue(s), 0);
+      const surgeryPaid = surgeries.filter(s => String(s.paymentStatus || s.status || '').toLowerCase() === 'paid').reduce((acc,s) => acc + surgeryAmountValue(s), 0);
+      const surgeryUnpaid = surgeryTotal - surgeryPaid;
+      const receber = events.total + surgeryUnpaid;
+      const recebido = surgeryPaid;
+      const pendente = surgeryUnpaid;
+      const hospitals = groupDashboardRows(surgeries, getSurgeryHospitalName);
+      const plans = groupDashboardRows(surgeries, getSurgeryPlanName);
+
+      UI.el('dashMonthTitle').textContent = monthNameLong(state.view.y, state.view.m);
+      UI.el('dashCloudStatus').textContent = currentUser && cloudLoadDone ? 'Nuvem conectada' : (currentUser ? 'Carregando nuvem' : 'Sem login');
+      UI.el('dashUserLabel').textContent = currentUser ? (currentUser.displayName || currentUser.email || 'Usuário logado') : 'Visitante';
+      UI.el('dashTheme').textContent = String(state.theme || '—');
+      UI.el('dashLastSync').textContent = state._meta?.updatedAt ? new Date(state._meta.updatedAt).toLocaleString('pt-BR') : '—';
+
+      let backups = cloudBackupsCache || [];
+      if (currentUser && cloudLoadDone) {
+        try { backups = await fetchCloudBackups(50); } catch(e) { backups = cloudBackupsCache || []; }
+      }
+      UI.el('dashBackupCount').textContent = String(backups.length || 0);
+      UI.el('dashLastBackup').textContent = backups[0]?.savedAt ? backupHumanDate(backups[0].savedAt) : '—';
+
+      const cards = [
+        { k:'Eventos no mês', v:String(events.count), s:`${fmtHours(events.hours)} · ${fmtMoney(events.total)}` },
+        { k:'Cirurgias no mês', v:String(surgeries.length), s:`Total previsto/recebido ${fmtMoney(surgeryTotal)}` },
+        { k:'A receber', v:fmtMoney(receber), s:'Eventos do mês + cirurgias pendentes', cls:'warn' },
+        { k:'Recebido', v:fmtMoney(recebido), s:'Cirurgias marcadas como pagas', cls:'good' },
+        { k:'Pendente cirúrgico', v:fmtMoney(pendente), s:`${surgeries.filter(s => String(s.paymentStatus || s.status || '').toLowerCase() !== 'paid').length} paciente(s) pendente(s)`, cls: pendente > 0 ? 'bad' : 'good' },
+        { k:'Hospitais', v:String(hospitals.length), s:'Hospitais com cirurgias no mês' },
+        { k:'Convênios/Particular', v:String(plans.length), s:'Planos e particulares cadastrados' },
+        { k:'Backups na nuvem', v:String(backups.length || 0), s:backups[0]?.savedAt ? `Último: ${backupHumanDate(backups[0].savedAt)}` : 'Nenhum backup listado' }
+      ];
+      UI.el('dashboardCards').innerHTML = cards.map(c => `
+        <div class="dashboardCard ${escapeAttr(c.cls || '')}">
+          <div>
+            <div class="k">${escapeHtml(c.k)}</div>
+            <div class="v">${escapeHtml(c.v)}</div>
+          </div>
+          <div class="s">${escapeHtml(c.s)}</div>
+        </div>`).join('');
+
+      renderDashboardRows('dashHospitals', hospitals, 'Nenhuma cirurgia cadastrada neste mês.');
+      renderDashboardRows('dashPlans', plans, 'Nenhum convênio ou particular cadastrado neste mês.');
+    }
+
+    async function openDashboardCenter(){
+      UI.open('ovDashboardCenter');
+      try { await renderDashboardCenter(); }
+      catch(err){
+        console.error('Erro ao montar dashboard:', err);
+        alert('Não foi possível montar o dashboard. O calendário e seus dados não foram alterados.');
+      }
+    }
+
     function bindEvents(){
       UI.el('btnTheme').addEventListener('click', toggleTheme);
       UI.el('themeSelectorClose').addEventListener('click', () => UI.close('ovThemeSelector'));
@@ -7049,6 +7438,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
 
       UI.el('btnExport').addEventListener('click', exportData);
       UI.el('btnBackupCenter').addEventListener('click', openBackupCenter);
+      UI.el('btnDashboardCenter').addEventListener('click', openDashboardCenter);
+      UI.el('dashboardClose').addEventListener('click', () => UI.close('ovDashboardCenter'));
       UI.el('backupClose').addEventListener('click', () => UI.close('ovBackupCenter'));
       UI.el('btnCreateBackupNow').addEventListener('click', () => createVersionedBackup('manual', { silent:false, cloud:true }));
       UI.el('btnExportBackupPack').addEventListener('click', exportBackupPack);
