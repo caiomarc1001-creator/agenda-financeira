@@ -3705,6 +3705,40 @@ body[data-theme="light"] .dashboardChartValue,
 body[data-theme="paper"] .dashboardChartValue,
 body[data-theme="windows_xp"] .dashboardChartValue,
 body[data-theme="toy_story"] .dashboardChartValue{color:#0b1220 !important}
+
+.dashboardPeriodBar{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+.dashboardPeriodBar .smallBtn{
+  min-height:40px;
+  min-width:44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.dashboardMonthSelect{
+  width:auto;
+  min-width:210px;
+  max-width:100%;
+  padding:10px 12px;
+  font-size:13px;
+}
+.dashboardPeriodHint{
+  margin-top:9px;
+  font-size:12px;
+  font-weight:900;
+  color:var(--mut);
+  line-height:1.45;
+}
+body[data-theme="light"] .dashboardPeriodHint,
+body[data-theme="paper"] .dashboardPeriodHint,
+body[data-theme="windows_xp"] .dashboardPeriodHint,
+body[data-theme="toy_story"] .dashboardPeriodHint{color:#334155 !important}
+
 @media(max-width:980px){
   .dashboardCharts{grid-template-columns:1fr}
   .dashboardDonutWrap{grid-template-columns:170px minmax(0,1fr)}
@@ -3717,6 +3751,9 @@ body[data-theme="toy_story"] .dashboardChartValue{color:#0b1220 !important}
   .dashboardLegend{width:100%}
   .dashboardChartRow{grid-template-columns:1fr;gap:8px}
   .dashboardChartValue{text-align:left}
+  .dashboardPeriodBar{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:8px}
+  .dashboardPeriodBar .dashboardMonthSelect{min-width:0;width:100%}
+  .dashboardPeriodBar #dashUseCalendarMonth{grid-column:1 / -1;width:100%}
 }
 
 </style>
@@ -4329,7 +4366,14 @@ body[data-theme="toy_story"] .dashboardChartValue{color:#0b1220 !important}
           <div class="dashboardPanel">
             <div class="dashEyebrow">Agenda Financeira</div>
             <div class="dashTitle" id="dashMonthTitle">Dashboard</div>
-            <div class="dashSub">Visão administrativa do mês visível, com recebíveis calculados pelas regras de pagamento cadastradas.</div>
+            <div class="dashSub">Visão administrativa por mês, com recebíveis calculados pelas regras de pagamento cadastradas.</div>
+            <div class="dashboardPeriodBar" aria-label="Selecionar mês do dashboard">
+              <button class="smallBtn" id="dashPrevMonth" type="button" title="Mês anterior">‹</button>
+              <select class="input dashboardMonthSelect" id="dashMonthSelect" aria-label="Mês do dashboard"></select>
+              <button class="smallBtn" id="dashNextMonth" type="button" title="Próximo mês">›</button>
+              <button class="smallBtn" id="dashUseCalendarMonth" type="button">Usar mês do calendário</button>
+            </div>
+            <div class="dashboardPeriodHint" id="dashPeriodHint">Dashboard calculado pelo mês selecionado.</div>
             <div class="dashboardStatusLine">
               <span class="statusPill saved"><span class="statusDot"></span><span id="dashCloudStatus">Nuvem</span></span>
               <span class="note" id="dashUserLabel">Usuário</span>
@@ -4540,6 +4584,7 @@ body[data-theme="toy_story"] .dashboardChartValue{color:#0b1220 !important}
     let cloudLoadDone = false;
     let cloudSaveTimer = null;
     let cloudBackupsCache = [];
+    let dashboardView = null;
     let cloudSaving = false;
     let firebaseAuthListenerStarted = false;
     const INACTIVITY_LIMIT_MS = 20 * 60 * 1000;
@@ -7375,6 +7420,52 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     }
 
 
+    function ensureDashboardView(){
+      if (!dashboardView) dashboardView = { y: state.view.y, m: state.view.m };
+      return dashboardView;
+    }
+
+    function dashboardMonthBounds(){
+      const v = ensureDashboardView();
+      return { from: iso(new Date(v.y, v.m, 1)), to: iso(new Date(v.y, v.m + 1, 0)) };
+    }
+
+    function dashboardMonthLabel(){
+      const v = ensureDashboardView();
+      return monthNameLong(v.y, v.m);
+    }
+
+    function syncDashboardMonthSelect(){
+      const sel = UI.el('dashMonthSelect');
+      if (!sel) return;
+      const v = ensureDashboardView();
+      const currentValue = `${v.y}-${String(v.m + 1).padStart(2,'0')}`;
+      const base = new Date(v.y, v.m, 1);
+      const options = [];
+      for (let i = -36; i <= 24; i++) {
+        const d = new Date(base.getFullYear(), base.getMonth() + i, 1);
+        const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}`;
+        options.push(`<option value="${value}"${value === currentValue ? ' selected' : ''}>${monthNameLong(d.getFullYear(), d.getMonth())}</option>`);
+      }
+      sel.innerHTML = options.join('');
+    }
+
+    function setDashboardMonth(y, m){
+      dashboardView = { y:Number(y), m:Number(m) };
+      syncDashboardMonthSelect();
+      renderDashboardCenter();
+    }
+
+    function shiftDashboardMonth(delta){
+      const v = ensureDashboardView();
+      const next = monthAdd(v.y, v.m, delta);
+      setDashboardMonth(next.y, next.m);
+    }
+
+    function useCalendarMonthOnDashboard(){
+      setDashboardMonth(state.view.y, state.view.m);
+    }
+
     function monthBoundsFromView(){
       const y = state.view.y, m = state.view.m;
       return { from: iso(new Date(y,m,1)), to: iso(new Date(y,m+1,0)) };
@@ -7391,7 +7482,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     }
 
     function sumEventsVisibleMonth(){
-      const { from, to } = monthBoundsFromView();
+      const { from, to } = dashboardMonthBounds();
       let count = 0, total = 0, hours = 0;
       for (let d = parseISO(from); iso(d) <= to; d.setDate(d.getDate()+1)) {
         const ds = iso(d);
@@ -7405,7 +7496,11 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     }
 
     function visibleMonthSurgeries(){
-      return (state.surgeries || []).filter(s => isDateInVisibleMonth(s.date));
+      const { from, to } = dashboardMonthBounds();
+      return (state.surgeries || []).filter(s => {
+        const d = String(s.date || '');
+        return d >= from && d <= to;
+      });
     }
 
     function surgeryAmountValue(s){
@@ -7575,7 +7670,10 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const plans = groupDashboardRows(surgeries, getSurgeryPlanName);
       const receivableRows = receivablesByRules.rows;
 
-      UI.el('dashMonthTitle').textContent = monthNameLong(state.view.y, state.view.m);
+      syncDashboardMonthSelect();
+      UI.el('dashMonthTitle').textContent = dashboardMonthLabel();
+      const hint = UI.el('dashPeriodHint');
+      if (hint) hint.textContent = `Indicadores recalculados para ${dashboardMonthLabel()}. Use as setas ou o seletor para trocar o mês sem alterar o calendário principal.`;
       UI.el('dashCloudStatus').textContent = currentUser && cloudLoadDone ? 'Nuvem conectada' : (currentUser ? 'Carregando nuvem' : 'Sem login');
       UI.el('dashUserLabel').textContent = currentUser ? (currentUser.displayName || currentUser.email || 'Usuário logado') : 'Visitante';
       UI.el('dashTheme').textContent = String(state.theme || '—');
@@ -7615,6 +7713,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
 
     async function openDashboardCenter(){
       UI.open('ovDashboardCenter');
+      if (!dashboardView) dashboardView = { y: state.view.y, m: state.view.m };
       try { await renderDashboardCenter(); }
       catch(err){
         console.error('Erro ao montar dashboard:', err);
@@ -7750,6 +7849,17 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('btnBackupCenter').addEventListener('click', openBackupCenter);
       UI.el('btnDashboardCenter').addEventListener('click', openDashboardCenter);
       UI.el('dashboardClose').addEventListener('click', () => UI.close('ovDashboardCenter'));
+      const dashPrev = UI.el('dashPrevMonth');
+      const dashNext = UI.el('dashNextMonth');
+      const dashUseCalendar = UI.el('dashUseCalendarMonth');
+      const dashSelect = UI.el('dashMonthSelect');
+      if (dashPrev) dashPrev.addEventListener('click', () => shiftDashboardMonth(-1));
+      if (dashNext) dashNext.addEventListener('click', () => shiftDashboardMonth(1));
+      if (dashUseCalendar) dashUseCalendar.addEventListener('click', useCalendarMonthOnDashboard);
+      if (dashSelect) dashSelect.addEventListener('change', e => {
+        const [y, mm] = String(e.target.value || '').split('-').map(Number);
+        if (Number.isFinite(y) && Number.isFinite(mm)) setDashboardMonth(y, mm - 1);
+      });
       UI.el('backupClose').addEventListener('click', () => UI.close('ovBackupCenter'));
       UI.el('btnCreateBackupNow').addEventListener('click', () => createVersionedBackup('manual', { silent:false, cloud:true }));
       UI.el('btnExportBackupPack').addEventListener('click', exportBackupPack);
