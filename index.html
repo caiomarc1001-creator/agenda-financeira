@@ -4141,7 +4141,7 @@ body[data-theme="toy_story"] .dashboardMini .v{color:#0b1220 !important}
           <div class="dashboardPanel">
             <div class="dashEyebrow">Agenda Financeira</div>
             <div class="dashTitle" id="dashMonthTitle">Dashboard</div>
-            <div class="dashSub">Visão administrativa do mês visível, usando os dados atuais da nuvem sem alterar o calendário principal.</div>
+            <div class="dashSub">Visão administrativa do mês visível, com recebíveis calculados pelas regras de pagamento cadastradas.</div>
             <div class="dashboardStatusLine">
               <span class="statusPill saved"><span class="statusDot"></span><span id="dashCloudStatus">Nuvem</span></span>
               <span class="note" id="dashUserLabel">Usuário</span>
@@ -4162,8 +4162,8 @@ body[data-theme="toy_story"] .dashboardMini .v{color:#0b1220 !important}
 
         <div class="dashboardSplit">
           <div class="dashboardPanel">
-            <div class="dashEyebrow">Hospitais / instituições</div>
-            <div class="dashSub">Ranking pelo valor previsto/recebido no mês visível.</div>
+            <div class="dashEyebrow">Recebíveis por regras</div>
+            <div class="dashSub">Ranking das instituições pelo mês de pagamento, respeitando competência e data de pagamento.</div>
             <div class="dashboardList" id="dashHospitals" style="margin-top:12px"></div>
           </div>
           <div class="dashboardPanel">
@@ -7233,6 +7233,61 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       return [...map.values()].sort((a,b) => b.total - a.total || b.count - a.count || a.name.localeCompare(b.name));
     }
 
+    function dashboardPaymentReceivablesForVisibleMonth(){
+      const payY = state.view.y, payM = state.view.m;
+      const rows = [];
+      let total = 0;
+      let hours = 0;
+      let count = 0;
+      let rulesWithValue = 0;
+
+      if (!Array.isArray(state.payRules) || !state.payRules.length) {
+        return { total:0, hours:0, count:0, rulesWithValue:0, rows:[], hasRules:false };
+      }
+
+      for (const rule of state.payRules) {
+        const name = String(rule.name || '').trim();
+        if (!name) continue;
+
+        const { from, to } = competenceRangeForPayMonth(rule, payY, payM);
+        const payDate = paymentDateFor(rule, payY, payM);
+        const items = listOccurrencesBetween(from, to)
+          .filter(o => String(o.name || '').trim() === name)
+          .map(o => ({
+            date: o.startDate,
+            name: o.name || 'Sem nome',
+            type: typeLabel(o.type),
+            time: o.time || '—',
+            hours: Number(o.hours || 0),
+            total: eventTotal(o)
+          }));
+
+        const rowTotal = items.reduce((acc, item) => acc + Number(item.total || 0), 0);
+        const rowHours = items.reduce((acc, item) => acc + Number(item.hours || 0), 0);
+        const rowCount = items.length;
+        if (rowTotal <= 0) continue;
+
+        total += rowTotal;
+        hours += rowHours;
+        count += rowCount;
+        rulesWithValue += 1;
+        rows.push({
+          name,
+          count: rowCount,
+          total: rowTotal,
+          paid: 0,
+          unpaid: rowTotal,
+          hours: rowHours,
+          from,
+          to,
+          payDate
+        });
+      }
+
+      rows.sort((a,b) => b.total - a.total || b.count - a.count || a.name.localeCompare(b.name));
+      return { total, hours, count, rulesWithValue, rows, hasRules:true };
+    }
+
     function renderDashboardRows(hostId, rows, emptyText){
       const host = UI.el(hostId);
       if (!host) return;
@@ -7257,15 +7312,18 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
 
     async function renderDashboardCenter(){
       const events = sumEventsVisibleMonth();
+      const receivablesByRules = dashboardPaymentReceivablesForVisibleMonth();
       const surgeries = visibleMonthSurgeries();
       const surgeryTotal = surgeries.reduce((acc,s) => acc + surgeryAmountValue(s), 0);
       const surgeryPaid = surgeries.filter(s => String(s.paymentStatus || s.status || '').toLowerCase() === 'paid').reduce((acc,s) => acc + surgeryAmountValue(s), 0);
       const surgeryUnpaid = surgeryTotal - surgeryPaid;
-      const receber = events.total + surgeryUnpaid;
+      const receber = receivablesByRules.total;
       const recebido = surgeryPaid;
       const pendente = surgeryUnpaid;
+      const totalAberto = receber + pendente;
       const hospitals = groupDashboardRows(surgeries, getSurgeryHospitalName);
       const plans = groupDashboardRows(surgeries, getSurgeryPlanName);
+      const receivableRows = receivablesByRules.rows;
 
       UI.el('dashMonthTitle').textContent = monthNameLong(state.view.y, state.view.m);
       UI.el('dashCloudStatus').textContent = currentUser && cloudLoadDone ? 'Nuvem conectada' : (currentUser ? 'Carregando nuvem' : 'Sem login');
@@ -7281,12 +7339,12 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('dashLastBackup').textContent = backups[0]?.savedAt ? backupHumanDate(backups[0].savedAt) : '—';
 
       const cards = [
-        { k:'Eventos no mês', v:String(events.count), s:`${fmtHours(events.hours)} · ${fmtMoney(events.total)}` },
-        { k:'Cirurgias no mês', v:String(surgeries.length), s:`Total previsto/recebido ${fmtMoney(surgeryTotal)}` },
-        { k:'A receber', v:fmtMoney(receber), s:'Eventos do mês + cirurgias pendentes', cls:'warn' },
-        { k:'Recebido', v:fmtMoney(recebido), s:'Cirurgias marcadas como pagas', cls:'good' },
+        { k:'Eventos no mês', v:String(events.count), s:`Produção executada: ${fmtHours(events.hours)} · ${fmtMoney(events.total)}` },
+        { k:'Recebíveis por regras', v:fmtMoney(receber), s: receivablesByRules.hasRules ? `${receivablesByRules.count} evento(s) · ${receivablesByRules.rulesWithValue} regra(s) no mês de pagamento` : 'Cadastre regras de pagamento para calcular', cls:'warn' },
+        { k:'Total em aberto', v:fmtMoney(totalAberto), s:'Recebíveis por regras + cirurgias não pagas', cls: totalAberto > 0 ? 'warn' : 'good' },
+        { k:'Cirurgias no mês', v:String(surgeries.length), s:`Total cadastrado ${fmtMoney(surgeryTotal)}` },
+        { k:'Recebido cirúrgico', v:fmtMoney(recebido), s:'Cirurgias marcadas como pagas', cls:'good' },
         { k:'Pendente cirúrgico', v:fmtMoney(pendente), s:`${surgeries.filter(s => String(s.paymentStatus || s.status || '').toLowerCase() !== 'paid').length} paciente(s) pendente(s)`, cls: pendente > 0 ? 'bad' : 'good' },
-        { k:'Hospitais', v:String(hospitals.length), s:'Hospitais com cirurgias no mês' },
         { k:'Convênios/Particular', v:String(plans.length), s:'Planos e particulares cadastrados' },
         { k:'Backups na nuvem', v:String(backups.length || 0), s:backups[0]?.savedAt ? `Último: ${backupHumanDate(backups[0].savedAt)}` : 'Nenhum backup listado' }
       ];
@@ -7299,7 +7357,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
           <div class="s">${escapeHtml(c.s)}</div>
         </div>`).join('');
 
-      renderDashboardRows('dashHospitals', hospitals, 'Nenhuma cirurgia cadastrada neste mês.');
+      renderDashboardRows('dashHospitals', receivableRows, 'Nenhum valor a receber neste mês conforme as regras de pagamento cadastradas.');
       renderDashboardRows('dashPlans', plans, 'Nenhum convênio ou particular cadastrado neste mês.');
     }
 
