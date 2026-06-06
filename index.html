@@ -3531,6 +3531,194 @@ body[data-theme="toy_story"] .dashboardMini .v{color:#0b1220 !important}
   .dashboardRow .amount{text-align:left}
 }
 
+
+
+/* =========================
+   DASHBOARD — TEMA, DESTAQUES E GRÁFICOS
+========================= */
+.dashboardModal{
+  background:linear-gradient(180deg,var(--card),rgba(0,0,0,.10)) !important;
+  border-color:color-mix(in srgb, var(--acc) 48%, var(--line)) !important;
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--acc) 22%, transparent), var(--shadow) !important;
+}
+.dashboardModal .mHead{
+  position:sticky;
+  top:0;
+  z-index:5;
+  background:linear-gradient(180deg,var(--card),color-mix(in srgb, var(--card) 78%, transparent));
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  margin:-16px -16px 12px;
+  padding:14px 16px 12px;
+  border-radius:20px 20px 0 0;
+}
+.dashboardPanel{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(520px 240px at 10% 0%, color-mix(in srgb, var(--acc) 18%, transparent), transparent 60%),
+    linear-gradient(180deg,color-mix(in srgb, var(--card) 92%, white 5%), color-mix(in srgb, var(--card) 78%, transparent));
+  border-color:color-mix(in srgb, var(--acc) 22%, var(--line));
+}
+.dashboardPanel::before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb, var(--acc) 70%, white 8%),transparent);
+  opacity:.75;
+}
+.dashboardCard{
+  position:relative;
+  overflow:hidden;
+  min-height:132px;
+  background:
+    radial-gradient(300px 150px at 0% 0%, color-mix(in srgb, var(--acc) 20%, transparent), transparent 60%),
+    linear-gradient(180deg,color-mix(in srgb, var(--card) 92%, white 6%), color-mix(in srgb, var(--card) 76%, transparent));
+  border-color:color-mix(in srgb, var(--acc) 24%, var(--line));
+}
+.dashboardCard::after{
+  content:"";
+  position:absolute;
+  right:-22px;
+  top:-28px;
+  width:96px;
+  height:96px;
+  border-radius:999px;
+  background:color-mix(in srgb, var(--acc) 18%, transparent);
+  filter:blur(.2px);
+}
+.dashboardCard.good{border-color:color-mix(in srgb, var(--good) 55%, var(--line))}
+.dashboardCard.warn{border-color:color-mix(in srgb, var(--warn) 58%, var(--line))}
+.dashboardCard.bad{border-color:color-mix(in srgb, var(--bad) 58%, var(--line))}
+.dashboardCard .dashboardIcon{
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid color-mix(in srgb, var(--acc) 28%, var(--line));
+  background:linear-gradient(135deg,color-mix(in srgb, var(--acc) 28%, transparent),rgba(255,255,255,.05));
+  font-size:17px;
+  margin-bottom:10px;
+}
+.dashboardCard .v{
+  font-size:28px;
+  letter-spacing:-.5px;
+  text-shadow:0 8px 26px rgba(0,0,0,.18);
+}
+.dashboardCard.good .dashboardIcon{border-color:color-mix(in srgb, var(--good) 55%, var(--line));background:color-mix(in srgb, var(--good) 18%, transparent)}
+.dashboardCard.warn .dashboardIcon{border-color:color-mix(in srgb, var(--warn) 55%, var(--line));background:color-mix(in srgb, var(--warn) 18%, transparent)}
+.dashboardCard.bad .dashboardIcon{border-color:color-mix(in srgb, var(--bad) 55%, var(--line));background:color-mix(in srgb, var(--bad) 18%, transparent)}
+.dashboardCharts{
+  display:grid;
+  grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);
+  gap:12px;
+}
+.dashboardChartPanel{min-height:260px}
+.dashboardDonutWrap{
+  display:grid;
+  grid-template-columns:180px minmax(0,1fr);
+  gap:16px;
+  align-items:center;
+  margin-top:14px;
+}
+.dashboardDonut{
+  width:170px;
+  height:170px;
+  border-radius:50%;
+  background:conic-gradient(var(--good) 0deg, var(--good) var(--paidDeg, 0deg), var(--warn) var(--paidDeg, 0deg), var(--warn) var(--receivableDeg, 0deg), var(--bad) var(--receivableDeg, 0deg), var(--bad) 360deg);
+  position:relative;
+  box-shadow:0 18px 42px rgba(0,0,0,.24), inset 0 0 0 1px var(--line);
+}
+.dashboardDonut::after{
+  content:attr(data-center);
+  position:absolute;
+  inset:28px;
+  border-radius:50%;
+  background:linear-gradient(180deg,var(--card),color-mix(in srgb, var(--card) 84%, black 8%));
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:12px;
+  font-size:13px;
+  line-height:1.25;
+  font-weight:1000;
+  color:var(--txt);
+  white-space:pre-line;
+}
+.dashboardLegend{display:flex;flex-direction:column;gap:10px}
+.dashboardLegendItem{
+  display:grid;
+  grid-template-columns:12px minmax(0,1fr) auto;
+  gap:9px;
+  align-items:center;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:10px;
+  background:rgba(255,255,255,.045);
+}
+.dashboardLegendDot{width:12px;height:12px;border-radius:999px;background:var(--dot)}
+.dashboardLegendName{font-size:12px;font-weight:1000;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dashboardLegendValue{font-size:12px;font-weight:1000;color:var(--txt);text-align:right}
+.dashboardBarChart{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.dashboardChartRow{
+  display:grid;
+  grid-template-columns:minmax(96px,.32fr) minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:10px;
+  background:rgba(255,255,255,.045);
+}
+.dashboardChartLabel{font-size:12px;font-weight:1000;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dashboardChartTrack{height:14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line);overflow:hidden}
+.dashboardChartFill{height:100%;width:var(--w,0%);border-radius:999px;background:linear-gradient(135deg,var(--acc),color-mix(in srgb, var(--acc) 52%, white));box-shadow:0 0 18px color-mix(in srgb, var(--acc) 28%, transparent)}
+.dashboardChartValue{font-size:12px;font-weight:1000;color:var(--txt);text-align:right;white-space:nowrap}
+body[data-theme="light"] .dashboardModal,
+body[data-theme="paper"] .dashboardModal,
+body[data-theme="windows_xp"] .dashboardModal,
+body[data-theme="toy_story"] .dashboardModal{
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(241,245,249,.95)) !important;
+}
+body[data-theme="light"] .dashboardDonut::after,
+body[data-theme="paper"] .dashboardDonut::after,
+body[data-theme="windows_xp"] .dashboardDonut::after,
+body[data-theme="toy_story"] .dashboardDonut::after{color:#0b1220;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,250,252,.94))}
+body[data-theme="light"] .dashboardLegendName,
+body[data-theme="paper"] .dashboardLegendName,
+body[data-theme="windows_xp"] .dashboardLegendName,
+body[data-theme="toy_story"] .dashboardLegendName,
+body[data-theme="light"] .dashboardLegendValue,
+body[data-theme="paper"] .dashboardLegendValue,
+body[data-theme="windows_xp"] .dashboardLegendValue,
+body[data-theme="toy_story"] .dashboardLegendValue,
+body[data-theme="light"] .dashboardChartLabel,
+body[data-theme="paper"] .dashboardChartLabel,
+body[data-theme="windows_xp"] .dashboardChartLabel,
+body[data-theme="toy_story"] .dashboardChartLabel,
+body[data-theme="light"] .dashboardChartValue,
+body[data-theme="paper"] .dashboardChartValue,
+body[data-theme="windows_xp"] .dashboardChartValue,
+body[data-theme="toy_story"] .dashboardChartValue{color:#0b1220 !important}
+@media(max-width:980px){
+  .dashboardCharts{grid-template-columns:1fr}
+  .dashboardDonutWrap{grid-template-columns:170px minmax(0,1fr)}
+}
+@media(max-width:680px){
+  .dashboardModal{padding:14px !important}
+  .dashboardCard{min-height:126px}
+  .dashboardCard .v{font-size:25px}
+  .dashboardDonutWrap{grid-template-columns:1fr;justify-items:center}
+  .dashboardLegend{width:100%}
+  .dashboardChartRow{grid-template-columns:1fr;gap:8px}
+  .dashboardChartValue{text-align:left}
+}
+
 </style>
 </head>
 <body data-theme="senna_capacete">
@@ -4131,7 +4319,7 @@ body[data-theme="toy_story"] .dashboardMini .v{color:#0b1220 !important}
 
 
   <div class="ov" id="ovDashboardCenter">
-    <div class="modal" style="width:min(1120px,100%)">
+    <div class="modal dashboardModal" style="width:min(1120px,100%)">
       <div class="mHead">
         <h3>Dashboard administrativo</h3>
         <button class="closeX" id="dashboardClose" type="button">✕</button>
@@ -4159,6 +4347,22 @@ body[data-theme="toy_story"] .dashboardMini .v{color:#0b1220 !important}
         </div>
 
         <div class="dashboardGrid" id="dashboardCards"></div>
+
+        <div class="dashboardCharts">
+          <div class="dashboardPanel dashboardChartPanel">
+            <div class="dashEyebrow">Composição financeira</div>
+            <div class="dashSub">Comparativo visual entre recebido cirúrgico, recebíveis por regras e pendências cirúrgicas.</div>
+            <div class="dashboardDonutWrap">
+              <div class="dashboardDonut" id="dashFinanceDonut" aria-label="Gráfico financeiro"></div>
+              <div class="dashboardLegend" id="dashFinanceLegend"></div>
+            </div>
+          </div>
+          <div class="dashboardPanel dashboardChartPanel">
+            <div class="dashEyebrow">Ranking visual de recebíveis</div>
+            <div class="dashSub">Valores previstos conforme as regras de pagamento cadastradas.</div>
+            <div class="dashboardBarChart" id="dashReceivableChart"></div>
+          </div>
+        </div>
 
         <div class="dashboardSplit">
           <div class="dashboardPanel">
@@ -7288,6 +7492,52 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       return { total, hours, count, rulesWithValue, rows, hasRules:true };
     }
 
+
+    function renderDashboardCharts({ receber, recebido, pendente, rows }){
+      const donut = UI.el('dashFinanceDonut');
+      const legend = UI.el('dashFinanceLegend');
+      const chart = UI.el('dashReceivableChart');
+      if (!donut || !legend || !chart) return;
+
+      const values = [
+        { name:'Recebido cirúrgico', value:Number(recebido || 0), color:'var(--good)' },
+        { name:'Recebíveis por regras', value:Number(receber || 0), color:'var(--warn)' },
+        { name:'Pendente cirúrgico', value:Number(pendente || 0), color:'var(--bad)' }
+      ];
+      const total = values.reduce((acc,item) => acc + Math.max(0,item.value), 0);
+      let paidDeg = 0, receivableDeg = 0;
+      if (total > 0){
+        paidDeg = Math.round((Math.max(0, values[0].value) / total) * 360);
+        receivableDeg = paidDeg + Math.round((Math.max(0, values[1].value) / total) * 360);
+      }
+      donut.style.setProperty('--paidDeg', `${paidDeg}deg`);
+      donut.style.setProperty('--receivableDeg', `${receivableDeg}deg`);
+      donut.setAttribute('data-center', total > 0 ? `Total\n${fmtMoney(total)}` : 'Sem\nvalores');
+
+      legend.innerHTML = values.map(item => `
+        <div class="dashboardLegendItem">
+          <span class="dashboardLegendDot" style="--dot:${item.color}"></span>
+          <span class="dashboardLegendName">${escapeHtml(item.name)}</span>
+          <span class="dashboardLegendValue">${escapeHtml(fmtMoney(item.value))}</span>
+        </div>`).join('');
+
+      const topRows = (rows || []).slice(0,6);
+      if (!topRows.length){
+        chart.innerHTML = `<div class="helper">Nenhum recebível calculado pelas regras de pagamento para este mês.</div>`;
+        return;
+      }
+      const max = Math.max(...topRows.map(r => Number(r.total || 0)), 1);
+      chart.innerHTML = topRows.map(r => {
+        const pct = Math.max(5, Math.round((Number(r.total || 0) / max) * 100));
+        return `
+          <div class="dashboardChartRow">
+            <div class="dashboardChartLabel">${escapeHtml(r.name)}</div>
+            <div class="dashboardChartTrack"><div class="dashboardChartFill" style="--w:${pct}%"></div></div>
+            <div class="dashboardChartValue">${escapeHtml(fmtMoney(r.total))}</div>
+          </div>`;
+      }).join('');
+    }
+
     function renderDashboardRows(hostId, rows, emptyText){
       const host = UI.el(hostId);
       if (!host) return;
@@ -7339,24 +7589,26 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('dashLastBackup').textContent = backups[0]?.savedAt ? backupHumanDate(backups[0].savedAt) : '—';
 
       const cards = [
-        { k:'Eventos no mês', v:String(events.count), s:`Produção executada: ${fmtHours(events.hours)} · ${fmtMoney(events.total)}` },
-        { k:'Recebíveis por regras', v:fmtMoney(receber), s: receivablesByRules.hasRules ? `${receivablesByRules.count} evento(s) · ${receivablesByRules.rulesWithValue} regra(s) no mês de pagamento` : 'Cadastre regras de pagamento para calcular', cls:'warn' },
-        { k:'Total em aberto', v:fmtMoney(totalAberto), s:'Recebíveis por regras + cirurgias não pagas', cls: totalAberto > 0 ? 'warn' : 'good' },
-        { k:'Cirurgias no mês', v:String(surgeries.length), s:`Total cadastrado ${fmtMoney(surgeryTotal)}` },
-        { k:'Recebido cirúrgico', v:fmtMoney(recebido), s:'Cirurgias marcadas como pagas', cls:'good' },
-        { k:'Pendente cirúrgico', v:fmtMoney(pendente), s:`${surgeries.filter(s => String(s.paymentStatus || s.status || '').toLowerCase() !== 'paid').length} paciente(s) pendente(s)`, cls: pendente > 0 ? 'bad' : 'good' },
-        { k:'Convênios/Particular', v:String(plans.length), s:'Planos e particulares cadastrados' },
-        { k:'Backups na nuvem', v:String(backups.length || 0), s:backups[0]?.savedAt ? `Último: ${backupHumanDate(backups[0].savedAt)}` : 'Nenhum backup listado' }
+        { icon:'📅', k:'Eventos no mês', v:String(events.count), s:`Produção executada: ${fmtHours(events.hours)} · ${fmtMoney(events.total)}` },
+        { icon:'📌', k:'Recebíveis por regras', v:fmtMoney(receber), s: receivablesByRules.hasRules ? `${receivablesByRules.count} evento(s) · ${receivablesByRules.rulesWithValue} regra(s) no mês de pagamento` : 'Cadastre regras de pagamento para calcular', cls:'warn' },
+        { icon:'⚠️', k:'Total em aberto', v:fmtMoney(totalAberto), s:'Recebíveis por regras + cirurgias não pagas', cls: totalAberto > 0 ? 'warn' : 'good' },
+        { icon:'🏥', k:'Cirurgias no mês', v:String(surgeries.length), s:`Total cadastrado ${fmtMoney(surgeryTotal)}` },
+        { icon:'✅', k:'Recebido cirúrgico', v:fmtMoney(recebido), s:'Cirurgias marcadas como pagas', cls:'good' },
+        { icon:'⏳', k:'Pendente cirúrgico', v:fmtMoney(pendente), s:`${surgeries.filter(s => String(s.paymentStatus || s.status || '').toLowerCase() !== 'paid').length} paciente(s) pendente(s)`, cls: pendente > 0 ? 'bad' : 'good' },
+        { icon:'💳', k:'Convênios/Particular', v:String(plans.length), s:'Planos e particulares cadastrados' },
+        { icon:'☁️', k:'Backups na nuvem', v:String(backups.length || 0), s:backups[0]?.savedAt ? `Último: ${backupHumanDate(backups[0].savedAt)}` : 'Nenhum backup listado' }
       ];
       UI.el('dashboardCards').innerHTML = cards.map(c => `
         <div class="dashboardCard ${escapeAttr(c.cls || '')}">
           <div>
+            <div class="dashboardIcon">${escapeHtml(c.icon || '•')}</div>
             <div class="k">${escapeHtml(c.k)}</div>
             <div class="v">${escapeHtml(c.v)}</div>
           </div>
           <div class="s">${escapeHtml(c.s)}</div>
         </div>`).join('');
 
+      renderDashboardCharts({ receber, recebido, pendente, rows: receivableRows });
       renderDashboardRows('dashHospitals', receivableRows, 'Nenhum valor a receber neste mês conforme as regras de pagamento cadastradas.');
       renderDashboardRows('dashPlans', plans, 'Nenhum convênio ou particular cadastrado neste mês.');
     }
