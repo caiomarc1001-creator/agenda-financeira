@@ -10350,5 +10350,149 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     initFirebaseCloud();
   })();
   </script>
+
+
+<!-- =========================================================
+     CORREÇÃO DEFINITIVA — MENU HAMBÚRGUER SEM CORTE
+     Coloca o menu em position:fixed e calcula a posição real
+     do botão, impedindo que header/calendário/sidebar escondam o dropdown.
+========================================================= -->
+<style id="hamburger-front-fix-final">
+  .hdr{
+    overflow:visible !important;
+    z-index:2147483000 !important;
+    isolation:isolate !important;
+  }
+  .headerAligned,
+  .toolbarCenter,
+  .primaryButtons,
+  .hambWrap{
+    overflow:visible !important;
+  }
+  .hambWrap{
+    position:relative !important;
+    z-index:2147483100 !important;
+  }
+  .hambBtn{
+    position:relative !important;
+    z-index:2147483200 !important;
+  }
+  .hambWrap[open] .hambMenu{
+    display:flex !important;
+    position:fixed !important;
+    top:var(--hamb-menu-top, 78px) !important;
+    left:var(--hamb-menu-left, 16px) !important;
+    right:auto !important;
+    bottom:auto !important;
+    width:min(300px, calc(100vw - 24px)) !important;
+    min-width:min(260px, calc(100vw - 24px)) !important;
+    max-width:calc(100vw - 24px) !important;
+    max-height:calc(100dvh - var(--hamb-menu-top, 78px) - 16px) !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    z-index:2147483647 !important;
+    pointer-events:auto !important;
+    transform:none !important;
+    clip-path:none !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(244,248,255,.97)) !important;
+    border:2px solid rgba(7,18,37,.28) !important;
+    box-shadow:0 24px 70px rgba(0,0,0,.40), 0 0 0 9999px rgba(0,0,0,.06) !important;
+  }
+  .hambWrap[open] .hambMenu .btn,
+  .hambWrap[open] .hambMenu .menuItem{
+    position:relative !important;
+    z-index:2147483647 !important;
+    color:#071225 !important;
+  }
+  body[data-theme="dark"] .hambWrap[open] .hambMenu,
+  body[data-theme="ocean"] .hambWrap[open] .hambMenu,
+  body[data-theme="violet"] .hambWrap[open] .hambMenu,
+  body[data-theme="gold"] .hambWrap[open] .hambMenu,
+  body[data-theme="graphite"] .hambWrap[open] .hambMenu,
+  body[data-theme="emerald"] .hambWrap[open] .hambMenu,
+  body[data-theme="tesla"] .hambWrap[open] .hambMenu,
+  body[data-theme="sexta_13"] .hambWrap[open] .hambMenu,
+  body[data-theme="game_of_thrones"] .hambWrap[open] .hambMenu,
+  body[data-theme="sonic"] .hambWrap[open] .hambMenu,
+  body[data-theme="resident_evil_2"] .hambWrap[open] .hambMenu,
+  body[data-theme="senna_mclaren"] .hambWrap[open] .hambMenu,
+  body[data-theme="senna_capacete"] .hambWrap[open] .hambMenu{
+    background:linear-gradient(180deg,rgba(14,20,38,.99),rgba(9,14,28,.98)) !important;
+    border-color:rgba(255,255,255,.22) !important;
+  }
+  body[data-theme="dark"] .hambWrap[open] .hambMenu .btn,
+  body[data-theme="ocean"] .hambWrap[open] .hambMenu .btn,
+  body[data-theme="violet"] .hambWrap[open] .hambMenu .btn,
+  body[data-theme="gold"] .hambWrap[open] .hambMenu .btn,
+  body[data-theme="graphite"] .hambWrap[open] .hambMenu .btn,
+  body[data-theme="emerald"] .hambWrap[open] .hambMenu .btn,
+  body[data-theme="tesla"] .hambWrap[open] .hambMenu .btn,
+  body[data-theme="sexta_13"] .hambWrap[open] .hambMenu .btn,
+  body[data-theme="game_of_thrones"] .hambWrap[open] .hambMenu .btn,
+  body[data-theme="sonic"] .hambWrap[open] .hambMenu .btn,
+  body[data-theme="resident_evil_2"] .hambWrap[open] .hambMenu .btn,
+  body[data-theme="senna_mclaren"] .hambWrap[open] .hambMenu .btn,
+  body[data-theme="senna_capacete"] .hambWrap[open] .hambMenu .btn{
+    color:#fff !important;
+  }
+  .mainCalendarCard,
+  .mainCalendarCard .sectionHead,
+  .container,
+  .sidebarCol,
+  .mainCol,
+  .card,
+  .calendarWrap,
+  .calFrame,
+  .grid{
+    z-index:auto !important;
+  }
+</style>
+<script id="hamburger-front-fix-final-js">
+(function(){
+  function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
+  function positionHamburgerMenu(){
+    var wrap = document.querySelector('.hambWrap[open]');
+    if(!wrap) return;
+    var btn = wrap.querySelector('.hambBtn') || wrap.querySelector('summary') || wrap;
+    var menu = wrap.querySelector('.hambMenu');
+    if(!menu) return;
+    var r = btn.getBoundingClientRect();
+    var menuWidth = Math.min(300, window.innerWidth - 24);
+    var left = clamp(r.left, 12, window.innerWidth - menuWidth - 12);
+    var top = clamp(r.bottom + 8, 8, window.innerHeight - 80);
+    document.documentElement.style.setProperty('--hamb-menu-left', left + 'px');
+    document.documentElement.style.setProperty('--hamb-menu-top', top + 'px');
+  }
+  function bindHamburgerMenu(){
+    document.querySelectorAll('.hambWrap').forEach(function(wrap){
+      if(wrap.dataset.frontFixBound === '1') return;
+      wrap.dataset.frontFixBound = '1';
+      wrap.addEventListener('toggle', function(){
+        if(wrap.open){
+          setTimeout(positionHamburgerMenu, 0);
+          setTimeout(positionHamburgerMenu, 80);
+        }
+      });
+      wrap.addEventListener('click', function(){
+        setTimeout(positionHamburgerMenu, 0);
+      }, true);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    bindHamburgerMenu();
+    positionHamburgerMenu();
+  });
+  window.addEventListener('resize', positionHamburgerMenu, {passive:true});
+  window.addEventListener('scroll', positionHamburgerMenu, {passive:true});
+  document.addEventListener('click', function(e){
+    if(e.target.closest && e.target.closest('.hambWrap')) setTimeout(positionHamburgerMenu, 0);
+  }, true);
+  var mo = new MutationObserver(function(){ bindHamburgerMenu(); positionHamburgerMenu(); });
+  mo.observe(document.documentElement, {childList:true, subtree:true, attributes:true, attributeFilter:['open','class','style']});
+})();
+</script>
+
 </body>
 </html>
