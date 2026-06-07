@@ -4783,6 +4783,141 @@ body[data-theme="light"] .hideOpt,body[data-theme="paper"] .hideOpt,body[data-th
 @keyframes menuSlideHint{0%,100%{transform:translateY(0);opacity:.58}50%{transform:translateY(5px);opacity:1}}
 @keyframes menuSlideArrow{0%,100%{transform:translateY(-2px);opacity:.55}50%{transform:translateY(5px);opacity:1}}
 
+
+
+/* =========================================================
+   CORREÇÃO FINAL — HEADER MAIS ALTA E NOME SEM CORTE
+   Sem imagens novas. Apenas ajuste estrutural do topo.
+========================================================= */
+.hdr{
+  min-height:86px !important;
+  padding:16px 18px 28px 18px !important;
+  overflow:visible !important;
+}
+.headerAligned{
+  width:100% !important;
+  max-width:none !important;
+  margin-left:0 !important;
+  margin-right:0 !important;
+  grid-template-columns:minmax(290px,360px) minmax(0,1fr) auto !important;
+  align-items:center !important;
+  gap:16px !important;
+}
+.compactBrand{
+  min-width:290px !important;
+  padding-left:8px !important;
+  overflow:visible !important;
+}
+.compactBrand h1{
+  font-size:20px !important;
+  line-height:1.12 !important;
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  max-width:350px !important;
+}
+.toolbarCenter{
+  min-width:0 !important;
+  justify-content:center !important;
+  overflow:visible !important;
+}
+.primaryButtons{
+  gap:10px !important;
+  align-items:center !important;
+}
+.primaryButtons .btn{
+  min-height:48px !important;
+  padding:11px 18px !important;
+}
+.hambBtn{
+  width:50px !important;
+  height:50px !important;
+  min-width:50px !important;
+  min-height:50px !important;
+}
+.saveDock.userDock{
+  min-width:130px !important;
+  justify-content:flex-end !important;
+}
+body[data-theme="senna_brasil"] .hdr::before{
+  height:25px !important;
+}
+body[data-theme="senna_brasil"] .hdr::after{
+  top:-9px !important;
+  height:148px !important;
+}
+body[data-theme="senna_brasil"] .compactBrand{
+  padding-left:10px !important;
+}
+body[data-theme="senna_brasil"] .compactBrand h1{
+  color:#071225 !important;
+  text-shadow:none !important;
+}
+
+@media(max-width:1180px){
+  .hdr{
+    min-height:112px !important;
+    padding:14px 14px 30px 14px !important;
+  }
+  .headerAligned{
+    grid-template-columns:minmax(260px,320px) minmax(0,1fr) !important;
+    grid-template-areas:
+      "brand dock"
+      "toolbar toolbar" !important;
+    row-gap:12px !important;
+  }
+  .compactBrand{grid-area:brand;min-width:260px !important;padding-left:6px !important;}
+  .compactBrand h1{font-size:18px !important;max-width:320px !important;}
+  .toolbarCenter{grid-area:toolbar;justify-content:center !important;width:100% !important;}
+  .saveDock.userDock{grid-area:dock;justify-content:flex-end !important;}
+}
+@media(max-width:760px){
+  .hdr{
+    min-height:128px !important;
+    padding:14px 12px 31px 12px !important;
+  }
+  .headerAligned{
+    grid-template-columns:1fr auto !important;
+    grid-template-areas:
+      "brand dock"
+      "toolbar toolbar" !important;
+    gap:10px 10px !important;
+  }
+  .compactBrand{
+    min-width:0 !important;
+    width:100% !important;
+    padding-left:4px !important;
+  }
+  .compactBrand h1{
+    font-size:17px !important;
+    max-width:none !important;
+    word-break:normal !important;
+  }
+  .toolbarCenter{
+    justify-content:flex-start !important;
+    overflow-x:auto !important;
+    padding-bottom:2px !important;
+    -webkit-overflow-scrolling:touch !important;
+  }
+  .primaryButtons{
+    flex-wrap:nowrap !important;
+    justify-content:flex-start !important;
+  }
+  .primaryButtons .btn{
+    flex:0 0 auto !important;
+    min-height:46px !important;
+    padding:10px 16px !important;
+  }
+  .hambWrap{flex:0 0 auto !important;}
+  .hambWrap::after{top:15px !important;}
+  .hambWrap::before{top:13px !important;}
+  body[data-theme="senna_brasil"] .hdr::before{height:25px !important;}
+}
+@media(max-width:420px){
+  .compactBrand h1{font-size:15px !important;line-height:1.15 !important;}
+  .hdr{min-height:126px !important;}
+}
+
 </style>
 </head>
 <body data-theme="senna_brasil">
