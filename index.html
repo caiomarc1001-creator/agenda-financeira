@@ -136,6 +136,10 @@
     .chip{border-radius:10px;padding:6px 10px;font-size:11px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:8px;background:var(--chipBg);color:var(--chipFg);border:1px solid rgba(255,255,255,.14)}
     .chipMark{width:10px;height:10px;border-radius:4px;background:rgba(0,0,0,.22)}
     .payList{display:flex;flex-direction:column;gap:10px}.payRow{border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));padding:12px}
+    .payRow.payable{border-color:rgba(255,93,93,.42);background:linear-gradient(180deg,rgba(255,93,93,.16),rgba(255,93,93,.055))}
+    .payRow.payable .b,.payableTotal{color:var(--bad)!important}
+    .financeModeBadge{display:inline-flex;align-items:center;justify-content:center;padding:8px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;font-weight:1000;background:rgba(255,255,255,.06)}
+    .financeModeBadge.payable{border-color:rgba(255,93,93,.45);background:rgba(255,93,93,.14);color:#ffd6d6}
     .payRowTop{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.payRowTop .a,.payRowTop .b{font-weight:950}.small{font-size:12px;color:var(--mut);margin-top:4px;line-height:1.5}
     /* =========================
        MODAIS — SAFE AREA MOBILE/TABLET
@@ -4614,6 +4618,152 @@ body[data-theme="senna_brasil"] .modal .input{
   body[data-theme="senna_brasil"] .hdr::after{display:none !important;}
 }
 
+
+
+/* =========================================================
+   AJUSTE DIRETO — LOGIN INICIAL: X E OLHO SEM DISTORÇÃO
+   Mantém o layout atual, apenas corrige alinhamento e desenho
+========================================================= */
+#ovLogin .modal{
+  position:relative;
+}
+#ovLogin .mHead{
+  min-height:44px;
+  padding-right:58px;
+}
+#loginClose{
+  position:absolute;
+  top:14px;
+  right:14px;
+  width:38px;
+  height:38px;
+  min-width:38px;
+  min-height:38px;
+  padding:0 !important;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:0 !important;
+  line-height:1;
+  color:transparent !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.055));
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 10px 24px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.08);
+  z-index:5;
+}
+#loginClose::before,
+#loginClose::after{
+  content:"";
+  position:absolute;
+  width:17px;
+  height:2px;
+  border-radius:999px;
+  background:currentColor;
+  left:50%;
+  top:50%;
+  transform-origin:center;
+  color:#f8fbff;
+}
+#loginClose::before{transform:translate(-50%,-50%) rotate(45deg)}
+#loginClose::after{transform:translate(-50%,-50%) rotate(-45deg)}
+
+.passwordWrap .input{
+  padding-right:62px !important;
+}
+.passToggle{
+  right:12px;
+  top:50%;
+  width:38px;
+  height:38px;
+  min-width:38px;
+  min-height:38px;
+  padding:0 !important;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:0 !important;
+  line-height:1;
+  color:transparent !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.055));
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 8px 18px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.07);
+}
+.passToggle::before{
+  content:"";
+  width:18px;
+  height:12px;
+  border:2px solid #f8fbff;
+  border-radius:70% 70% 70% 70% / 85% 85% 85% 85%;
+  transform:rotate(-1deg);
+  opacity:.94;
+}
+.passToggle::after{
+  content:"";
+  position:absolute;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#f8fbff;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 0 2px rgba(248,251,255,.10);
+}
+body[data-theme="light"] #loginClose,
+body[data-theme="paper"] #loginClose,
+body[data-theme="windows_xp"] #loginClose,
+body[data-theme="toy_story"] #loginClose,
+body[data-theme="light"] .passToggle,
+body[data-theme="paper"] .passToggle,
+body[data-theme="windows_xp"] .passToggle,
+body[data-theme="toy_story"] .passToggle{
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(241,245,249,.92));
+  border-color:rgba(15,23,42,.16);
+  box-shadow:0 8px 18px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.70);
+}
+body[data-theme="light"] #loginClose::before,
+body[data-theme="light"] #loginClose::after,
+body[data-theme="paper"] #loginClose::before,
+body[data-theme="paper"] #loginClose::after,
+body[data-theme="windows_xp"] #loginClose::before,
+body[data-theme="windows_xp"] #loginClose::after,
+body[data-theme="toy_story"] #loginClose::before,
+body[data-theme="toy_story"] #loginClose::after{
+  color:#0b1220;
+}
+body[data-theme="light"] .passToggle::before,
+body[data-theme="paper"] .passToggle::before,
+body[data-theme="windows_xp"] .passToggle::before,
+body[data-theme="toy_story"] .passToggle::before{
+  border-color:#0b1220;
+}
+body[data-theme="light"] .passToggle::after,
+body[data-theme="paper"] .passToggle::after,
+body[data-theme="windows_xp"] .passToggle::after,
+body[data-theme="toy_story"] .passToggle::after{
+  background:#0b1220;
+}
+@media(max-width:680px){
+  #loginClose{
+    top:12px;
+    right:12px;
+    width:36px;
+    height:36px;
+    min-width:36px;
+    min-height:36px;
+  }
+  .passToggle{
+    right:10px;
+    width:36px;
+    height:36px;
+    min-width:36px;
+    min-height:36px;
+  }
+  .passwordWrap .input{padding-right:58px !important;}
+}
+
 </style>
 </head>
 <body data-theme="senna_brasil">
@@ -4696,6 +4846,24 @@ body[data-theme="senna_brasil"] .modal .input{
           </div>
         </div>
         <div class="padded" id="paymentsBody"><div class="payList" id="payList"></div></div>
+      </section>
+
+      <section class="card section" id="payablesSection">
+        <div class="sectionHead">
+          <div>
+            <div class="ttl">Contas a pagar</div>
+            <div class="sub">Eventos marcados como despesa no mês visível</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+            <div class="sub"><b>Total:</b> <span id="payableSum" class="payableTotal" style="font-weight:950">R$ 0,00</span></div>
+            <button class="smallBtn" id="btnToggleNetBalance" type="button">Abater no saldo</button>
+            <button class="smallBtn" id="btnTogglePayables" type="button">Recolher</button>
+          </div>
+        </div>
+        <div class="padded" id="payablesBody">
+          <div class="helper" id="netBalanceBox" style="display:none;margin-bottom:10px"></div>
+          <div class="payList" id="payablesList"></div>
+        </div>
       </section>
 
       <section class="card section">
@@ -4872,6 +5040,19 @@ body[data-theme="senna_brasil"] .modal .input{
           <div>
             <div class="lbl">Cor do evento</div>
             <button class="smallBtn" id="btnPickColor" type="button" data-color="#3B82F6">Escolher cor</button>
+          </div>
+        </div>
+        <div class="row2">
+          <div>
+            <div class="lbl">Natureza financeira</div>
+            <select class="input" id="evFinanceKind">
+              <option value="receivable">A receber</option>
+              <option value="payable">A pagar</option>
+            </select>
+          </div>
+          <div>
+            <div class="lbl">Identificação</div>
+            <div class="financeModeBadge" id="evFinanceBadge">A receber</div>
           </div>
         </div>
         <div class="row3">
@@ -6790,7 +6971,7 @@ body[data-theme="senna_brasil"] .modal .input{
       let count = 0, total = 0, hours = 0;
       for (let d = parseISO(from); iso(d) <= to; d.setDate(d.getDate()+1)) {
         const list = listEventsForDate(iso(d));
-        list.forEach(e => { count += 1; total += eventTotal(e); hours += eventHours(e); });
+        list.forEach(e => { count += 1; if ((e.financeKind || e.transactionKind || 'receivable') !== 'payable') total += eventTotal(e); hours += eventHours(e); });
       }
       UI.el('sumCount').textContent = String(count);
       UI.el('sumTotal').textContent = fmtMoney(total);
@@ -6907,6 +7088,7 @@ body[data-theme="senna_brasil"] .modal .input{
 
         const items = listOccurrencesBetween(from, to)
           .filter(o => String(o.name || '').trim() === name)
+          .filter(o => (o.financeKind || o.transactionKind || 'receivable') !== 'payable')
           .map(o => ({
             date: o.startDate,
             name: o.name || 'Sem nome',
@@ -6969,10 +7151,75 @@ body[data-theme="senna_brasil"] .modal .input{
       sumEl.textContent = fmtMoney(grand);
     }
 
+    function togglePayablesPanel(){
+      state.ui = state.ui || {};
+      state.ui.payablesCollapsed = !state.ui.payablesCollapsed;
+      save();
+      applyCollapsiblePanels();
+    }
+
+    function toggleNetBalance(){
+      state.ui = state.ui || {};
+      state.ui.showNetBalance = !state.ui.showNetBalance;
+      save();
+      renderPayables();
+      applyCollapsiblePanels();
+    }
+
+    function renderPayables(){
+      const host = UI.el('payablesList');
+      const sumEl = UI.el('payableSum');
+      const netBox = UI.el('netBalanceBox');
+      if (!host || !sumEl) return;
+      host.innerHTML = '';
+      const y = state.view.y, m = state.view.m;
+      const from = iso(new Date(y,m,1));
+      const to = iso(new Date(y,m+1,0));
+      const items = listOccurrencesBetween(from, to)
+        .filter(o => (o.financeKind || o.transactionKind || 'receivable') === 'payable')
+        .map(o => ({ date:o.startDate, name:o.name || 'Conta a pagar', type:typeLabel(o.type), time:o.time || '—', hours:Number(o.hours || 0), total:eventTotal(o), note:o.note || '' }))
+        .sort((a,b) => String(a.date).localeCompare(String(b.date)) || String(a.name).localeCompare(String(b.name)));
+      const total = items.reduce((acc,item) => acc + Number(item.total || 0), 0);
+      sumEl.textContent = fmtMoney(total);
+      if (!items.length){
+        host.innerHTML = '<div class="helper">Nenhuma conta a pagar cadastrada neste mês. Ao criar um evento, marque “Natureza financeira: A pagar”.</div>';
+      } else {
+        items.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'payRow payable';
+          div.innerHTML = `
+            <div class="payRowTop">
+              <div class="a">${escapeHtml(item.name)}</div>
+              <div class="b">${fmtMoney(item.total)}</div>
+            </div>
+            <div class="small">
+              <b>Vencimento/Data:</b> ${formatDateBR(item.date)} •
+              <b>Tipo:</b> ${escapeHtml(item.type)} •
+              <b>Horário:</b> ${escapeHtml(item.time)} •
+              <b>Horas:</b> ${fmtHours(item.hours)}
+              ${item.note ? `<br><b>Obs.:</b> ${escapeHtml(item.note)}` : ''}
+            </div>
+          `;
+          host.appendChild(div);
+        });
+      }
+      if (netBox){
+        const show = !!state.ui?.showNetBalance;
+        netBox.style.display = show ? '' : 'none';
+        const receivableText = (UI.el('paySum') && UI.el('paySum').textContent) ? UI.el('paySum').textContent : fmtMoney(0);
+        const receivableNumber = listOccurrencesBetween(from, to)
+          .filter(o => (o.financeKind || o.transactionKind || 'receivable') !== 'payable')
+          .reduce((acc,o) => acc + eventTotal(o), 0);
+        netBox.innerHTML = `<b>Saldo líquido opcional:</b> ${fmtMoney(receivableNumber - total)} <br><span style="color:var(--mut)">Receitas do calendário menos contas a pagar. Esse botão é apenas visual e não altera os valores a receber por regras.</span>`;
+      }
+      const btn = UI.el('btnToggleNetBalance');
+      if (btn) btn.textContent = state.ui?.showNetBalance ? 'Ocultar saldo' : 'Abater no saldo';
+    }
+
     function defaultEvent(dateISO){
       return {
         id:uid(), name:'', startDate:dateISO || todayISO(), time:'', type:'plantao', color:'#3B82F6',
-        rate:0, hours:0, note:'',
+        rate:0, hours:0, note:'', financeKind:'receivable',
         rec:'none', endDate:'', exceptions:[],
         isOverride:false, seriesId:'', dateISO:'',
         retroMode:'none', retroSingleDate:'', retroStartDate:'', retroEndDate:'', retroInfoDate:''
@@ -6989,6 +7236,8 @@ body[data-theme="senna_brasil"] .modal .input{
       UI.el('evRate').value = m.rate || '';
       UI.el('evHours').value = m.hours || '';
       UI.el('evNote').value = m.note || '';
+      UI.el('evFinanceKind').value = (m.financeKind || m.transactionKind || 'receivable') === 'payable' ? 'payable' : 'receivable';
+      updateFinanceBadge();
       UI.el('evRec').value = m.rec || 'none';
       UI.el('evEnd').value = m.endDate || '';
       UI.el('evRetroMode').value = m.retroMode || 'none';
@@ -7013,6 +7262,8 @@ body[data-theme="senna_brasil"] .modal .input{
       m.rec = UI.el('evRec').value || 'none';
       m.endDate = m.rec !== 'none' ? (UI.el('evEnd').value || '') : '';
       m.note = String(UI.el('evNote').value || '').trim();
+      m.financeKind = UI.el('evFinanceKind').value === 'payable' ? 'payable' : 'receivable';
+      m.transactionKind = m.financeKind;
       m.retroMode = UI.el('evRetroMode').value || 'none';
       m.retroSingleDate = UI.el('evRetroSingleDate').value || '';
       m.retroStartDate = UI.el('evRetroStartDate').value || '';
@@ -7026,6 +7277,15 @@ body[data-theme="senna_brasil"] .modal .input{
       UI.el('retroSingleRow').style.display = mode === 'single' ? '' : 'none';
       UI.el('retroPeriodRow').style.display = mode === 'period' ? 'grid' : 'none';
       UI.el('retroInfoRow').style.display = mode === 'info' ? '' : 'none';
+    }
+
+    function updateFinanceBadge(){
+      const isPayable = UI.el('evFinanceKind') && UI.el('evFinanceKind').value === 'payable';
+      const badge = UI.el('evFinanceBadge');
+      if (badge){
+        badge.textContent = isPayable ? 'A pagar' : 'A receber';
+        badge.classList.toggle('payable', isPayable);
+      }
     }
 
     function updateChipPreview(){
@@ -7403,6 +7663,8 @@ body[data-theme="senna_brasil"] .modal .input{
             rate: model.rate,
             hours: model.hours,
             note: model.note,
+            financeKind: model.financeKind || model.transactionKind || 'receivable',
+            transactionKind: model.financeKind || model.transactionKind || 'receivable',
             rec: 'none',
             endDate: '',
             exceptions: [],
@@ -8083,6 +8345,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const paymentsBody = UI.el('paymentsBody');
       const btnSummary = UI.el('btnToggleSummary');
       const btnPayments = UI.el('btnTogglePayments');
+      const payablesBody = UI.el('payablesBody');
+      const btnPayables = UI.el('btnTogglePayables');
 
       if (summaryBody && btnSummary){
         const collapsed = !!state.ui?.summaryCollapsed;
@@ -8094,6 +8358,12 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         const collapsed = !!state.ui?.paymentsCollapsed;
         paymentsBody.style.display = collapsed ? 'none' : '';
         btnPayments.textContent = collapsed ? 'Expandir' : 'Recolher';
+      }
+
+      if (payablesBody && btnPayables){
+        const collapsed = !!state.ui?.payablesCollapsed;
+        payablesBody.style.display = collapsed ? 'none' : '';
+        btnPayables.textContent = collapsed ? 'Expandir' : 'Recolher';
       }
 
       const surgeriesBody = UI.el('surgeriesBody');
@@ -8758,6 +9028,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       renderCalendar();
       renderSummary();
       renderPayments();
+      renderPayables();
       renderSurgeryPanel();
       renderCRMPanel();
       updateUndoButton();
@@ -8972,6 +9243,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         const payDate = paymentDateFor(rule, payY, payM);
         const items = listOccurrencesBetween(from, to)
           .filter(o => String(o.name || '').trim() === name)
+          .filter(o => (o.financeKind || o.transactionKind || 'receivable') !== 'payable')
           .map(o => ({
             date: o.startDate,
             name: o.name || 'Sem nome',
@@ -9191,6 +9463,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       ['surgerySearch','surgeryStatusFilter','surgeryMonthFilter'].forEach(id => UI.el(id).addEventListener('input', renderSurgeryPanel));
       UI.el('btnToggleSummary').addEventListener('click', toggleSummaryPanel);
       UI.el('btnTogglePayments').addEventListener('click', togglePaymentsPanel);
+      UI.el('btnTogglePayables').addEventListener('click', togglePayablesPanel);
+      UI.el('btnToggleNetBalance').addEventListener('click', toggleNetBalance);
       UI.el('sidePrev').addEventListener('click', () => { state.view = monthAdd(state.view.y, state.view.m, -1); save(); renderAll(); });
       UI.el('sideNext').addEventListener('click', () => { state.view = monthAdd(state.view.y, state.view.m, 1); save(); renderAll(); });
       bindCalendarSwipe();
@@ -9202,9 +9476,10 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('btnCopySpecificDates').addEventListener('click', () => openSpecificDatesModal('copy'));
       UI.el('btnDeleteSpecificDates').addEventListener('click', () => openSpecificDatesModal('delete'));
       ['evName','evTime','evRate','evHours','evNote'].forEach(id => UI.el(id).addEventListener('input', updateEventTotalPreview));
-      ['evType','evDate','evEnd','evRec','evRetroMode','evRetroSingleDate','evRetroStartDate','evRetroEndDate','evRetroInfoDate'].forEach(id => UI.el(id).addEventListener('change', () => {
+      ['evType','evDate','evEnd','evRec','evFinanceKind','evRetroMode','evRetroSingleDate','evRetroStartDate','evRetroEndDate','evRetroInfoDate'].forEach(id => UI.el(id).addEventListener('change', () => {
         if (id === 'evRec') UI.el('recEndRow').style.display = UI.el('evRec').value !== 'none' ? '' : 'none';
         if (id === 'evRetroMode') updateRetroUi();
+        if (id === 'evFinanceKind') updateFinanceBadge();
         updateEventTotalPreview();
       }));
 
