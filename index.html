@@ -4375,6 +4375,396 @@ body[data-theme="nasa"] .crmDueCard{
   transform:rotate(-18deg);
   border-radius:999px;
 }
+
+/* =========================================================
+   SPRINT VISUAL — SENNA BRASIL: HEADER + LOGIN PREMIUM
+   - Header sem degradê escuro lateral.
+   - Carro F1 estilo McLaren no topo.
+   - Login com painel premium e legibilidade corrigida.
+========================================================= */
+body[data-theme="senna_brasil"]{
+  --bg0:#f8f5e8;
+  --bg1:#ffd700;
+  --card:rgba(255,255,255,.92);
+  --line:rgba(11,29,107,.18);
+  --txt:#061225;
+  --mut:rgba(6,18,37,.74);
+  --mut2:rgba(6,18,37,.55);
+  --acc:#009739;
+  --good:#009739;
+  --warn:#ffd700;
+  --bad:#d61f26;
+  background:
+    linear-gradient(180deg,#ffd700 0 96px,#009739 96px 112px,#ffffff 112px 118px,#0b1d6b 118px 132px,#f8f5e8 132px 100%) !important;
+}
+
+body[data-theme="senna_brasil"] .hdr{
+  min-height:118px;
+  padding:22px 24px 20px;
+  background:
+    linear-gradient(180deg,#ffd700 0%,#ffd700 72%,#009739 72% 80%,#ffffff 80% 84%,#0b1d6b 84% 100%) !important;
+  border-bottom:3px solid #ffffff !important;
+  box-shadow:0 12px 30px rgba(11,29,107,.18) !important;
+  backdrop-filter:none !important;
+  overflow:hidden;
+}
+
+body[data-theme="senna_brasil"] .hdr::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  height:12px;
+  background:#ffd700;
+  pointer-events:none;
+}
+
+body[data-theme="senna_brasil"] .hdr::after{
+  content:"";
+  position:absolute;
+  right:26px;
+  top:16px;
+  width:min(360px,24vw);
+  height:74px;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 18% 74%,#050505 0 10px,transparent 11px),
+    radial-gradient(circle at 80% 74%,#050505 0 10px,transparent 11px),
+    linear-gradient(90deg,transparent 0 8%,#d61f26 8% 22%,#ffffff 22% 72%,#111827 72% 86%,transparent 86%),
+    linear-gradient(90deg,transparent 0 2%,#111 2% 10%,transparent 10% 88%,#111 88% 96%,transparent 96%);
+  border-radius:40px 12px 12px 40px;
+  filter:drop-shadow(0 12px 18px rgba(0,0,0,.28));
+  transform:skewX(-10deg);
+  z-index:0;
+}
+
+body[data-theme="senna_brasil"] .headerAligned{
+  position:relative;
+  z-index:2;
+  grid-template-columns:minmax(230px,280px) minmax(0,1fr) minmax(230px,auto) !important;
+}
+
+body[data-theme="senna_brasil"] .compactBrand h1{
+  color:#061225 !important;
+  text-shadow:none !important;
+  font-size:clamp(18px,1.5vw,24px);
+  text-transform:uppercase;
+  letter-spacing:.02em;
+}
+
+body[data-theme="senna_brasil"] .compactBrand p{
+  color:rgba(6,18,37,.72) !important;
+  font-weight:900;
+}
+
+body[data-theme="senna_brasil"] .btn,
+body[data-theme="senna_brasil"] .hambBtn,
+body[data-theme="senna_brasil"] .statusPill,
+body[data-theme="senna_brasil"] .userBadge{
+  color:#061225 !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.74)) !important;
+  border-color:rgba(11,29,107,.13) !important;
+  box-shadow:0 10px 22px rgba(11,29,107,.10) !important;
+}
+
+body[data-theme="senna_brasil"] .btn.primary,
+body[data-theme="senna_brasil"] .btn.modeActive,
+body[data-theme="senna_brasil"] #btnSurgeon.modeActive,
+body[data-theme="senna_brasil"] #btnPatientCRM.modeActive,
+body[data-theme="senna_brasil"] #btnCRMMode.modeActive{
+  background:linear-gradient(135deg,#009739,#006f2b) !important;
+  color:#fff !important;
+  border-color:rgba(255,255,255,.36) !important;
+  box-shadow:0 0 0 2px rgba(0,151,57,.20),0 12px 26px rgba(0,151,57,.28) !important;
+}
+
+body[data-theme="senna_brasil"] .hambBtn .hambLines,
+body[data-theme="senna_brasil"] .hambBtn .hambLines::before,
+body[data-theme="senna_brasil"] .hambBtn .hambLines::after{
+  background:#061225 !important;
+}
+
+body[data-theme="senna_brasil"] .userBadge{
+  background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.20)) !important;
+  backdrop-filter:blur(8px);
+}
+
+/* Login premium Senna */
+body[data-theme="senna_brasil"] #ovLogin{
+  background:rgba(0,0,0,.74) !important;
+  backdrop-filter:blur(8px) !important;
+}
+
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced{
+  width:min(1500px,calc(100vw - 36px)) !important;
+  max-height:calc(100dvh - 60px) !important;
+  display:grid;
+  grid-template-columns:minmax(360px,520px) minmax(420px,1fr);
+  gap:24px;
+  align-items:stretch;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  padding:0 !important;
+  overflow:visible !important;
+}
+
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced .mHead{
+  position:absolute;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  opacity:0;
+}
+
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced #authForm{
+  grid-column:1;
+  border:1.5px solid rgba(255,215,0,.72);
+  border-radius:22px;
+  padding:34px;
+  background:
+    radial-gradient(360px 240px at 10% 0%,rgba(0,151,57,.15),transparent 60%),
+    linear-gradient(180deg,rgba(2,8,18,.95),rgba(2,8,18,.86)) !important;
+  box-shadow:0 24px 70px rgba(0,0,0,.44);
+  color:#fff !important;
+}
+
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced #authForm::before{
+  content:"🔒  Login e nuvem";
+  display:block;
+  font-size:clamp(25px,2.2vw,36px);
+  line-height:1.1;
+  font-weight:1000;
+  color:#ffffff;
+  margin:0 0 22px;
+  text-shadow:0 2px 18px rgba(0,0,0,.32);
+}
+
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced .cloudHint{
+  color:rgba(255,255,255,.88) !important;
+  background:transparent !important;
+  border:0 !important;
+  padding:0 !important;
+  margin-bottom:10px;
+}
+
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced .lbl{
+  color:#ffffff !important;
+  font-size:15px;
+  margin-bottom:8px;
+}
+
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced .input{
+  min-height:58px;
+  border-radius:12px;
+  background:rgba(0,0,0,.22) !important;
+  border-color:rgba(255,255,255,.30) !important;
+  color:#ffffff !important;
+  font-size:16px;
+}
+
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced .input::placeholder{
+  color:rgba(255,255,255,.42) !important;
+}
+
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced .mFoot{
+  border-top:0 !important;
+}
+
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced #btnSignIn{
+  width:100%;
+  min-height:56px;
+  background:linear-gradient(135deg,#ffd700,#ffbd00) !important;
+  color:#061225 !important;
+  border:0 !important;
+  font-size:17px;
+  font-weight:1000;
+  box-shadow:0 16px 34px rgba(255,215,0,.22) !important;
+}
+
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced #btnPasswordReset,
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced #registerDetails summary,
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced .mBtn:not(#btnSignIn){
+  color:#fff !important;
+  background:rgba(255,255,255,.06) !important;
+  border-color:rgba(255,255,255,.20) !important;
+}
+
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced .small,
+body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced #cloudUserStatus{
+  color:rgba(255,255,255,.78) !important;
+}
+
+.sennaLoginPromo{
+  display:flex;
+  position:relative;
+  min-height:620px;
+  border:1.5px solid rgba(0,151,57,.72);
+  border-radius:22px;
+  padding:clamp(28px,4vw,58px);
+  overflow:hidden;
+  background:
+    radial-gradient(560px 360px at 84% 45%,rgba(255,215,0,.20),transparent 62%),
+    radial-gradient(460px 260px at 78% 30%,rgba(0,151,57,.20),transparent 68%),
+    linear-gradient(135deg,#03130b,#020817 62%,#06140b);
+  color:#fff;
+  box-shadow:0 24px 70px rgba(0,0,0,.42);
+}
+
+.sennaLoginPromo::before{
+  content:"";
+  position:absolute;
+  right:-8%;
+  top:6%;
+  width:52%;
+  height:82%;
+  background:
+    radial-gradient(circle at 52% 44%,#07101b 0 23%,transparent 24%),
+    linear-gradient(180deg,#ffd700 0 38%,#009739 38% 53%,#0b1d6b 53% 66%,#ffd700 66% 100%);
+  border-radius:50%;
+  filter:drop-shadow(0 22px 34px rgba(0,0,0,.45));
+  opacity:.94;
+  transform:rotate(-12deg);
+}
+
+.sennaLoginPromo::after{
+  content:"";
+  position:absolute;
+  right:16%;
+  bottom:4%;
+  width:54%;
+  height:42%;
+  background:
+    linear-gradient(115deg,transparent 0 12%,rgba(255,215,0,.95) 12% 16%,rgba(0,151,57,.82) 16% 20%,transparent 20%),
+    linear-gradient(145deg,transparent 0 22%,rgba(255,215,0,.55) 22% 27%,rgba(0,151,57,.42) 27% 32%,transparent 32%);
+  filter:blur(.2px);
+  opacity:.72;
+  transform:skewX(-18deg);
+}
+
+.sennaLoginPromoInner{
+  position:relative;
+  z-index:2;
+  max-width:680px;
+}
+
+.sennaLoginPromo h2{
+  font-size:clamp(28px,3vw,48px);
+  line-height:1.08;
+  font-weight:1000;
+  letter-spacing:-.03em;
+  margin-bottom:24px;
+  color:#ffffff;
+  text-shadow:0 3px 24px rgba(0,0,0,.35);
+}
+
+.sennaLoginPromo h2 span{
+  color:#ffd700;
+  display:block;
+}
+
+.sennaFeatureGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:22px 28px;
+  margin-top:30px;
+  max-width:620px;
+}
+
+.sennaFeature{
+  display:grid;
+  grid-template-columns:40px 1fr;
+  gap:12px;
+  align-items:start;
+}
+
+.sennaFeature .ico{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#00c853;
+  border:1px solid rgba(0,200,83,.40);
+  background:rgba(0,151,57,.10);
+  font-size:22px;
+}
+
+.sennaFeature b{
+  display:block;
+  color:#fff;
+  font-size:17px;
+  margin-bottom:5px;
+}
+
+.sennaFeature p{
+  color:rgba(255,255,255,.76);
+  line-height:1.45;
+  font-size:14px;
+}
+
+.sennaQuote{
+  position:absolute;
+  right:8%;
+  bottom:8%;
+  z-index:3;
+  max-width:280px;
+  color:#fff;
+  font-size:18px;
+  line-height:1.35;
+  text-shadow:0 3px 18px rgba(0,0,0,.44);
+}
+.sennaQuote b{
+  display:block;
+  color:#ffd700;
+  margin-top:8px;
+}
+
+body[data-theme="senna_brasil"] .themePreview_senna_brasil{
+  background:
+    linear-gradient(180deg,#ffd700 0 58%,#009739 58% 67%,#ffffff 67% 72%,#0b1d6b 72% 84%,#ffd700 84% 100%) !important;
+}
+
+body[data-theme="senna_brasil"] .themePreview_senna_brasil::after,
+.themePreview_senna_brasil::after{
+  content:"" !important;
+  position:absolute !important;
+  right:6px !important;
+  top:10px !important;
+  width:120px !important;
+  height:44px !important;
+  border-radius:30px 10px 10px 30px !important;
+  background:
+    radial-gradient(circle at 18% 83%,#050505 0 8px,transparent 9px),
+    radial-gradient(circle at 78% 83%,#050505 0 8px,transparent 9px),
+    linear-gradient(90deg,transparent 0 7%,#d61f26 7% 23%,#ffffff 23% 72%,#111827 72% 84%,transparent 84%) !important;
+  box-shadow:none !important;
+  transform:skewX(-10deg) !important;
+  filter:drop-shadow(0 6px 7px rgba(0,0,0,.28));
+}
+
+@media(max-width:1180px){
+  body[data-theme="senna_brasil"] .hdr::after{opacity:.22;right:6px;width:260px;}
+  body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced{
+    grid-template-columns:1fr !important;
+    overflow:auto !important;
+  }
+  .sennaLoginPromo{min-height:auto;}
+  .sennaLoginPromo::before{opacity:.18;}
+  .sennaQuote{position:relative;right:auto;bottom:auto;margin-top:22px;}
+}
+
+@media(max-width:680px){
+  body[data-theme="senna_brasil"] .hdr{padding:14px 10px 16px;min-height:auto;}
+  body[data-theme="senna_brasil"] .hdr::after{display:none;}
+  .sennaFeatureGrid{grid-template-columns:1fr;}
+  body[data-theme="senna_brasil"] #ovLogin .modal.sennaLoginEnhanced #authForm,
+  .sennaLoginPromo{padding:22px;}
+}
+
 </style>
 </head>
 <body data-theme="senna_capacete">
@@ -9080,5 +9470,55 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     initFirebaseCloud();
   })();
   </script>
+
+<script>
+/* =========================================================
+   SPRINT VISUAL — Senna Brasil Login/Topo
+========================================================= */
+(function(){
+  function enhanceSennaLogin(){
+    const modal = document.querySelector('#ovLogin .modal');
+    const form = document.getElementById('authForm');
+    if(!modal || !form) return;
+    modal.classList.add('sennaLoginEnhanced');
+    const signIn = document.getElementById('btnSignIn');
+    if(signIn && !signIn.dataset.sennaText){
+      signIn.dataset.sennaText = '1';
+      signIn.textContent = '☁  Entrar e sincronizar';
+    }
+    if(!modal.querySelector('.sennaLoginPromo')){
+      const promo = document.createElement('div');
+      promo.className = 'sennaLoginPromo';
+      promo.innerHTML = `
+        <div class="sennaLoginPromoInner">
+          <h2>A agenda definitiva para <span>médicos e cirurgiões</span></h2>
+          <div style="width:280px;max-width:70%;height:4px;border-radius:999px;background:linear-gradient(90deg,#009739 0 32%,#ffd700 32% 64%,#0b1d6b 64% 100%);margin:0 0 30px;"></div>
+          <div class="sennaFeatureGrid">
+            <div class="sennaFeature"><div class="ico">📅</div><div><b>Agenda inteligente</b><p>Visualize plantões, consultas e compromissos com clareza.</p></div></div>
+            <div class="sennaFeature"><div class="ico">👥</div><div><b>Pacientes & Leads</b><p>Gerencie relacionamento, histórico e conversão.</p></div></div>
+            <div class="sennaFeature"><div class="ico">💲</div><div><b>Financeiro</b><p>Controle recebimentos, pagamentos e fluxo de caixa.</p></div></div>
+            <div class="sennaFeature"><div class="ico">🩺</div><div><b>Modo Cirurgião</b><p>Dashboard cirúrgico com acompanhamento de casos.</p></div></div>
+            <div class="sennaFeature"><div class="ico">📊</div><div><b>Relatórios avançados</b><p>Indicadores visuais para decisões estratégicas.</p></div></div>
+            <div class="sennaFeature"><div class="ico">🛡</div><div><b>Segurança Total</b><p>Dados protegidos com nuvem, login e backup.</p></div></div>
+          </div>
+        </div>
+        <div class="sennaQuote">"Seja rápido,<br>mas não se apresse."<b>Ayrton Senna</b></div>
+      `;
+      modal.appendChild(promo);
+    }
+  }
+  function run(){
+    enhanceSennaLogin();
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', run);
+  }else{
+    run();
+  }
+  const obs = new MutationObserver(run);
+  obs.observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
 </body>
 </html>
