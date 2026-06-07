@@ -10842,3 +10842,207 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
 
 </body>
 </html>
+<!-- =========================================================
+     CORREÇÃO FINAL — MENU HAMBÚRGUER PORTAL
+     O menu não depende mais da header nem do calendário.
+     Ele é desenhado em uma camada própria, alinhado ao botão.
+========================================================= -->
+<style id="hamburger-portal-final-css">
+  #hamburgerPortalMenu{
+    position:fixed !important;
+    left:var(--hamb-portal-left, 16px) !important;
+    top:var(--hamb-portal-top, 96px) !important;
+    width:min(330px, calc(100vw - 24px)) !important;
+    max-width:calc(100vw - 24px) !important;
+    max-height:calc(100dvh - var(--hamb-portal-top, 96px) - 14px) !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    display:none !important;
+    flex-direction:column !important;
+    gap:8px !important;
+    padding:12px !important;
+    border-radius:18px !important;
+    z-index:2147483647 !important;
+    box-sizing:border-box !important;
+    transform:none !important;
+    clip-path:none !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    pointer-events:auto !important;
+    background:linear-gradient(180deg,rgba(255,255,255,.99),rgba(255,250,220,.98)) !important;
+    border:2px solid rgba(7,18,37,.24) !important;
+    box-shadow:0 28px 80px rgba(0,0,0,.44) !important;
+  }
+  #hamburgerPortalMenu.open{display:flex !important;}
+  #hamburgerPortalMenu .btn,
+  #hamburgerPortalMenu .menuItem{
+    width:100% !important;
+    min-height:46px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    white-space:normal !important;
+    line-height:1.15 !important;
+    color:#071225 !important;
+    -webkit-text-fill-color:#071225 !important;
+    background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,246,190,.92)) !important;
+    border:1px solid rgba(7,18,37,.18) !important;
+    border-radius:999px !important;
+    font-weight:1000 !important;
+    text-shadow:none !important;
+  }
+  body[data-theme="dark"] #hamburgerPortalMenu,
+  body[data-theme="ocean"] #hamburgerPortalMenu,
+  body[data-theme="violet"] #hamburgerPortalMenu,
+  body[data-theme="gold"] #hamburgerPortalMenu,
+  body[data-theme="graphite"] #hamburgerPortalMenu,
+  body[data-theme="emerald"] #hamburgerPortalMenu,
+  body[data-theme="tesla"] #hamburgerPortalMenu,
+  body[data-theme="sexta_13"] #hamburgerPortalMenu,
+  body[data-theme="game_of_thrones"] #hamburgerPortalMenu,
+  body[data-theme="sonic"] #hamburgerPortalMenu,
+  body[data-theme="resident_evil_2"] #hamburgerPortalMenu,
+  body[data-theme="senna_mclaren"] #hamburgerPortalMenu,
+  body[data-theme="senna_capacete"] #hamburgerPortalMenu{
+    background:linear-gradient(180deg,rgba(14,20,38,.995),rgba(8,13,26,.985)) !important;
+    border-color:rgba(255,255,255,.22) !important;
+  }
+  body[data-theme="dark"] #hamburgerPortalMenu .btn,
+  body[data-theme="ocean"] #hamburgerPortalMenu .btn,
+  body[data-theme="violet"] #hamburgerPortalMenu .btn,
+  body[data-theme="gold"] #hamburgerPortalMenu .btn,
+  body[data-theme="graphite"] #hamburgerPortalMenu .btn,
+  body[data-theme="emerald"] #hamburgerPortalMenu .btn,
+  body[data-theme="tesla"] #hamburgerPortalMenu .btn,
+  body[data-theme="sexta_13"] #hamburgerPortalMenu .btn,
+  body[data-theme="game_of_thrones"] #hamburgerPortalMenu .btn,
+  body[data-theme="sonic"] #hamburgerPortalMenu .btn,
+  body[data-theme="resident_evil_2"] #hamburgerPortalMenu .btn,
+  body[data-theme="senna_mclaren"] #hamburgerPortalMenu .btn,
+  body[data-theme="senna_capacete"] #hamburgerPortalMenu .btn{
+    color:#fff !important;
+    -webkit-text-fill-color:#fff !important;
+    background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.05)) !important;
+    border-color:rgba(255,255,255,.16) !important;
+  }
+  .hambWrap > .hambMenu{display:none !important;}
+  .hambWrap[open] > .hambMenu{display:none !important;}
+  .hambWrap{overflow:visible !important;}
+  .hambBtn{position:relative !important;z-index:1000 !important;}
+  @media(max-width:760px){
+    #hamburgerPortalMenu::after{
+      content:'deslize para ver mais botões';
+      position:sticky;
+      bottom:0;
+      display:block;
+      text-align:center;
+      padding:9px 10px;
+      margin:8px 0 0;
+      border-radius:999px;
+      background:linear-gradient(180deg,rgba(96,165,250,.22),rgba(96,165,250,.10));
+      border:1px solid rgba(96,165,250,.26);
+      font-size:11px;
+      font-weight:1000;
+      animation:menuSlideHint 1.4s ease-in-out infinite;
+      color:currentColor;
+    }
+  }
+</style>
+<script id="hamburger-portal-final-js">
+(function(){
+  function ready(fn){ if(document.readyState !== 'loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
+  function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
+  function closePortal(){
+    var portal = document.getElementById('hamburgerPortalMenu');
+    if(portal) portal.classList.remove('open');
+    var wrap = document.getElementById('hambWrap') || document.querySelector('.hambWrap');
+    if(wrap) wrap.removeAttribute('open');
+  }
+  function ensurePortal(){
+    var portal = document.getElementById('hamburgerPortalMenu');
+    if(!portal){
+      portal = document.createElement('div');
+      portal.id = 'hamburgerPortalMenu';
+      portal.setAttribute('role','menu');
+      document.body.appendChild(portal);
+    }
+    return portal;
+  }
+  function fillPortal(){
+    var original = document.querySelector('.hambWrap > .hambMenu');
+    var portal = ensurePortal();
+    if(!original) return portal;
+    portal.innerHTML = '';
+    Array.prototype.forEach.call(original.children, function(child){
+      if(child.tagName && child.tagName.toLowerCase() === 'input') return;
+      var clone = child.cloneNode(true);
+      if(clone.id){
+        clone.setAttribute('data-original-id', clone.id);
+        clone.removeAttribute('id');
+      }
+      portal.appendChild(clone);
+    });
+    return portal;
+  }
+  function positionPortal(){
+    var btn = document.querySelector('#hambWrap .hambBtn, .hambWrap .hambBtn');
+    var portal = ensurePortal();
+    if(!btn || !portal) return;
+    var r = btn.getBoundingClientRect();
+    var width = Math.min(330, window.innerWidth - 24);
+    var left = clamp(r.left, 12, Math.max(12, window.innerWidth - width - 12));
+    var top = clamp(r.bottom + 10, 12, Math.max(12, window.innerHeight - 96));
+    document.documentElement.style.setProperty('--hamb-portal-left', Math.round(left) + 'px');
+    document.documentElement.style.setProperty('--hamb-portal-top', Math.round(top) + 'px');
+  }
+  function openPortal(){
+    var portal = fillPortal();
+    positionPortal();
+    portal.classList.add('open');
+    var wrap = document.getElementById('hambWrap') || document.querySelector('.hambWrap');
+    if(wrap) wrap.removeAttribute('open');
+    requestAnimationFrame(positionPortal);
+    setTimeout(positionPortal, 80);
+  }
+  function togglePortal(){
+    var portal = ensurePortal();
+    if(portal.classList.contains('open')) closePortal();
+    else openPortal();
+  }
+  ready(function(){
+    var wrap = document.getElementById('hambWrap') || document.querySelector('.hambWrap');
+    var summary = document.querySelector('#hambWrap > summary, .hambWrap > summary');
+    if(summary){
+      summary.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        togglePortal();
+      }, true);
+    }
+    if(wrap){
+      wrap.addEventListener('toggle', function(){
+        if(wrap.open){
+          wrap.removeAttribute('open');
+          openPortal();
+        }
+      }, true);
+    }
+    document.addEventListener('click', function(e){
+      var portal = document.getElementById('hamburgerPortalMenu');
+      if(!portal || !portal.classList.contains('open')) return;
+      var item = e.target.closest && e.target.closest('#hamburgerPortalMenu [data-original-id]');
+      if(item){
+        var original = document.getElementById(item.getAttribute('data-original-id'));
+        closePortal();
+        if(original) setTimeout(function(){ original.click(); }, 0);
+        return;
+      }
+      if(e.target.closest && (e.target.closest('#hamburgerPortalMenu') || e.target.closest('#hambWrap'))) return;
+      closePortal();
+    }, true);
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closePortal(); });
+    window.addEventListener('resize', positionPortal, {passive:true});
+    window.addEventListener('scroll', positionPortal, {passive:true});
+  });
+})();
+</script>
