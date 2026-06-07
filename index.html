@@ -1589,11 +1589,24 @@ body.is-logging-out::before{
 .payBadge{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:7px 10px;border:1px solid var(--line);font-size:12px;font-weight:1000}
 .payBadge.paid{background:rgba(57,217,138,.14);border-color:rgba(57,217,138,.34);color:var(--good)}
 .payBadge.unpaid{background:rgba(255,176,32,.12);border-color:rgba(255,176,32,.34);color:var(--warn)}
+.payBadge.expected{background:rgba(96,165,250,.13);border-color:rgba(96,165,250,.36);color:var(--acc)}
+.payBadge.billed{background:rgba(167,139,250,.13);border-color:rgba(167,139,250,.36);color:#c4b5fd}
+.payBadge.overdue{background:rgba(255,93,93,.14);border-color:rgba(255,93,93,.38);color:var(--bad)}
+.payBadge.denied{background:rgba(148,163,184,.14);border-color:rgba(148,163,184,.38);color:var(--mut)}
+.surgeryFinanceGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+.surgeryTimeline{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px}
+.surgeryTimeline span{font-size:11px;font-weight:950;color:var(--mut);border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:999px;padding:5px 8px}
+.surgeryMoneyLine{margin-top:7px;display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--mut);font-weight:900}
+.surgeryMoneyLine b{color:var(--txt)}
 .surgeryActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .surgeryFilterBar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 body[data-theme="light"] .payBadge.unpaid,body[data-theme="paper"] .payBadge.unpaid,body[data-theme="windows_xp"] .payBadge.unpaid,body[data-theme="toy_story"] .payBadge.unpaid{color:#9a5b00}
 body[data-theme="light"] .payBadge.paid,body[data-theme="paper"] .payBadge.paid,body[data-theme="windows_xp"] .payBadge.paid,body[data-theme="toy_story"] .payBadge.paid{color:#047857}
-@media(max-width:760px){.surgeryStats,.surgeryFilterBar{grid-template-columns:1fr}}
+body[data-theme="light"] .payBadge.expected,body[data-theme="paper"] .payBadge.expected,body[data-theme="windows_xp"] .payBadge.expected,body[data-theme="toy_story"] .payBadge.expected{color:#1d4ed8}
+body[data-theme="light"] .payBadge.billed,body[data-theme="paper"] .payBadge.billed,body[data-theme="windows_xp"] .payBadge.billed,body[data-theme="toy_story"] .payBadge.billed{color:#6d28d9}
+body[data-theme="light"] .payBadge.overdue,body[data-theme="paper"] .payBadge.overdue,body[data-theme="windows_xp"] .payBadge.overdue,body[data-theme="toy_story"] .payBadge.overdue{color:#b91c1c}
+body[data-theme="light"] .payBadge.denied,body[data-theme="paper"] .payBadge.denied,body[data-theme="windows_xp"] .payBadge.denied,body[data-theme="toy_story"] .payBadge.denied{color:#475569}
+@media(max-width:760px){.surgeryStats,.surgeryFilterBar,.surgeryFinanceGrid{grid-template-columns:1fr}}
 
 
 
@@ -3756,6 +3769,54 @@ body[data-theme="toy_story"] .dashboardPeriodHint{color:#334155 !important}
   .dashboardPeriodBar #dashUseCalendarMonth{grid-column:1 / -1;width:100%}
 }
 
+
+
+/* =========================
+   PACIENTES & LEADS — CRM MÉDICO
+========================= */
+.crmHero{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;align-items:stretch}
+.crmPanel{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.035));padding:14px;box-shadow:0 14px 36px rgba(0,0,0,.18)}
+.crmTitle{font-size:24px;font-weight:1000;letter-spacing:.2px;color:var(--txt)}
+.crmSub{font-size:12px;color:var(--mut);line-height:1.6;margin-top:6px}
+.crmStats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.crmStat{border:1px solid var(--line);border-radius:16px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.03))}
+.crmStat .k{font-size:11px;color:var(--mut2);font-weight:1000;text-transform:uppercase;letter-spacing:.3px}
+.crmStat .v{font-size:20px;font-weight:1000;margin-top:6px;color:var(--txt)}
+.crmTabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.crmTab{border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.03));color:var(--txt);font-weight:1000;font-size:12px}
+.crmTab.active{border-color:rgba(96,165,250,.55);background:linear-gradient(135deg,rgba(96,165,250,.28),rgba(139,92,246,.18))}
+.crmToolbar{display:grid;grid-template-columns:1fr 180px 180px;gap:10px;margin-top:12px}
+.crmFormGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.crmFormGrid2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
+.crmList{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px;max-height:55vh;overflow:auto;padding-right:2px}
+.crmCard{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.025));padding:14px;box-shadow:0 10px 24px rgba(0,0,0,.14)}
+.crmCardTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.crmName{font-size:16px;font-weight:1000;color:var(--txt)}
+.crmMeta{font-size:12px;color:var(--mut);line-height:1.55;margin-top:4px}
+.crmBadgeRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.crmBadge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:7px 10px;background:rgba(255,255,255,.06);font-size:11px;font-weight:1000;color:var(--txt)}
+.crmBadge.good{border-color:rgba(57,217,138,.38);background:rgba(57,217,138,.12)}
+.crmBadge.warn{border-color:rgba(255,176,32,.42);background:rgba(255,176,32,.13)}
+.crmBadge.bad{border-color:rgba(255,93,93,.42);background:rgba(255,93,93,.12)}
+.crmTimeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.crmTimeBox{border:1px solid var(--line);border-radius:14px;padding:10px;background:rgba(255,255,255,.045)}
+.crmTimeBox .k{font-size:10px;color:var(--mut2);font-weight:1000;text-transform:uppercase;letter-spacing:.3px}
+.crmTimeBox .v{font-size:12px;color:var(--txt);font-weight:950;margin-top:5px;line-height:1.35}
+.crmActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.crmEmpty{border:1px dashed var(--line);border-radius:16px;padding:16px;color:var(--mut);font-weight:900;text-align:center;background:rgba(255,255,255,.035)}
+body[data-theme="light"] .crmPanel, body[data-theme="paper"] .crmPanel,
+body[data-theme="light"] .crmCard, body[data-theme="paper"] .crmCard,
+body[data-theme="light"] .crmStat, body[data-theme="paper"] .crmStat,
+body[data-theme="light"] .crmTimeBox, body[data-theme="paper"] .crmTimeBox{background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(248,250,252,.90))}
+body[data-theme="light"] .crmTitle, body[data-theme="paper"] .crmTitle,
+body[data-theme="light"] .crmName, body[data-theme="paper"] .crmName,
+body[data-theme="light"] .crmBadge, body[data-theme="paper"] .crmBadge,
+body[data-theme="light"] .crmTimeBox .v, body[data-theme="paper"] .crmTimeBox .v{color:#0b1220}
+body[data-theme="light"] .crmSub, body[data-theme="paper"] .crmSub,
+body[data-theme="light"] .crmMeta, body[data-theme="paper"] .crmMeta{color:#334155}
+@media(max-width:980px){.crmHero{grid-template-columns:1fr}.crmToolbar{grid-template-columns:1fr}.crmFormGrid{grid-template-columns:1fr 1fr}.crmTimeline{grid-template-columns:1fr 1fr}.crmStats{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){.crmFormGrid,.crmFormGrid2,.crmTimeline,.crmStats{grid-template-columns:1fr}.crmTitle{font-size:20px}.crmList{max-height:60vh}.crmCard{padding:12px}}
+
 </style>
 </head>
 <body data-theme="senna_capacete">
@@ -3776,6 +3837,7 @@ body[data-theme="toy_story"] .dashboardPeriodHint{color:#334155 !important}
             <button class="btn menuItem" id="btnExport">Exportar</button>
             <button class="btn menuItem" id="btnBackupCenter">Backups</button>
             <button class="btn menuItem" id="btnDashboardCenter">Dashboard</button>
+            <button class="btn menuItem" id="btnPatientCRM">Pacientes & Leads</button>
             <button class="btn menuItem" id="btnLogin">Cadastro/Login</button>
             <button class="btn danger menuItem" id="btnReset">Zerar</button>
             <input accept="application/json" hidden id="fileImport" type="file" />
@@ -4318,7 +4380,7 @@ body[data-theme="toy_story"] .dashboardPeriodHint{color:#334155 !important}
         <div class="helper">Registre cada paciente operado com hospital, convênio/particular, função na cirurgia e status visual de pagamento. Esses dados ficam dentro do mesmo arquivo da agenda e seguem o login do usuário.</div>
         <div class="surgeryFilterBar">
           <div><div class="lbl">Filtro por texto</div><input class="input" id="surgerySearch" placeholder="Paciente, hospital, plano, atendimento..."></div>
-          <div><div class="lbl">Status</div><select class="input" id="surgeryStatusFilter"><option value="all">Todos</option><option value="unpaid">Não pagos</option><option value="paid">Pagos</option></select></div>
+          <div><div class="lbl">Status</div><select class="input" id="surgeryStatusFilter"><option value="all">Todos</option><option value="unpaid">Não pagos</option><option value="expected">Previstos</option><option value="billed">Faturados</option><option value="overdue">Pendentes</option><option value="denied">Glosados</option><option value="paid">Pagos</option></select></div>
           <div><div class="lbl">Mês</div><select class="input" id="surgeryMonthFilter"><option value="current">Mês visível</option><option value="all">Todos os meses</option></select></div>
         </div>
 
@@ -4336,8 +4398,18 @@ body[data-theme="toy_story"] .dashboardPeriodHint{color:#334155 !important}
           </div>
           <div class="row3" style="margin-top:10px">
             <div><div class="lbl">Atuação</div><select class="input" id="surgRole"><option value="principal">Cirurgião principal</option><option value="auxiliar">Auxiliar</option></select></div>
-            <div><div class="lbl">Valor previsto / recebido</div><input class="input" id="surgAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
-            <div><div class="lbl">Status de pagamento</div><select class="input" id="surgPaymentStatus"><option value="unpaid">Não pago</option><option value="paid">Pago</option></select></div>
+            <div><div class="lbl">Status financeiro</div><select class="input" id="surgPaymentStatus"><option value="unpaid">Não pago</option><option value="expected">Previsto</option><option value="billed">Faturado</option><option value="overdue">Pendente</option><option value="denied">Glosado</option><option value="paid">Pago</option></select></div>
+            <div><div class="lbl">Valor previsto</div><input class="input" id="surgAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
+          </div>
+          <div class="surgeryFinanceGrid">
+            <div><div class="lbl">Valor recebido</div><input class="input" id="surgReceivedAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
+            <div><div class="lbl">Valor glosado</div><input class="input" id="surgDeniedAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
+            <div><div class="lbl">Data faturamento</div><input class="input" id="surgBillingDate" type="date"></div>
+            <div><div class="lbl">Previsão pagamento</div><input class="input" id="surgExpectedPayDate" type="date"></div>
+          </div>
+          <div class="row2" style="margin-top:10px">
+            <div><div class="lbl">Data pagamento efetivo</div><input class="input" id="surgPaidDate" type="date"></div>
+            <div><div class="lbl">Observações financeiras</div><input class="input" id="surgFinanceNote" placeholder="Ex: recurso, glosa parcial, previsão do convênio..."></div>
           </div>
           <div style="margin-top:10px"><div class="lbl">Observações</div><textarea class="input" id="surgNotes" rows="2" placeholder="Ex: aguardando faturamento, guia enviada, glosa, recurso..."></textarea></div>
           <div class="mFoot">
@@ -4349,6 +4421,77 @@ body[data-theme="toy_story"] .dashboardPeriodHint{color:#334155 !important}
         <div>
           <div class="themeSectionTitle">Pacientes cadastrados</div>
           <div class="surgeryList" id="surgeryFullList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ov" id="ovPatientCRM">
+    <div class="modal" style="width:min(1180px,100%)">
+      <div class="mHead">
+        <h3>Pacientes & Leads · relacionamento comercial</h3>
+        <button class="closeX" id="crmClose" type="button">✕</button>
+      </div>
+      <div class="form">
+        <div class="crmHero">
+          <div class="crmPanel">
+            <div class="crmTitle">Central de pacientes e leads</div>
+            <div class="crmSub">Cadastro completo de pacientes convertidos, origem do lead, médico responsável, pacote contratado, valores pagos, lembretes de retorno e recontato comercial.</div>
+            <div class="crmStats">
+              <div class="crmStat"><div class="k">Pacientes</div><div class="v" id="crmStatPatients">0</div></div>
+              <div class="crmStat"><div class="k">Leads abertos</div><div class="v" id="crmStatLeads">0</div></div>
+              <div class="crmStat"><div class="k">Alertas hoje</div><div class="v" id="crmStatDue">0</div></div>
+              <div class="crmStat"><div class="k">Valor recebido</div><div class="v" id="crmStatPaid">R$ 0,00</div></div>
+            </div>
+            <div class="crmTabs">
+              <button class="crmTab active" id="crmTabPatients" type="button">Pacientes convertidos</button>
+              <button class="crmTab" id="crmTabLeads" type="button">Leads não convertidos</button>
+            </div>
+          </div>
+          <div class="crmPanel">
+            <div class="themeSectionTitle">Pesquisa e filtros</div>
+            <div class="crmToolbar">
+              <div><div class="lbl">Pesquisar</div><input class="input" id="crmSearch" placeholder="Nome, telefone, origem, médico, procedimento..."></div>
+              <div><div class="lbl">Origem</div><input class="input" id="crmFilterOrigin" placeholder="Instagram, Google, indicação..."></div>
+              <div><div class="lbl">Médico</div><input class="input" id="crmFilterDoctor" placeholder="Responsável"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accountPanel">
+          <div class="themeSectionTitle" id="crmFormTitle">Cadastrar paciente convertido</div>
+          <div class="crmFormGrid">
+            <div><div class="lbl">Nome completo</div><input class="input" id="crmName" placeholder="Nome do paciente / lead"></div>
+            <div><div class="lbl">Telefone / WhatsApp</div><input class="input" id="crmPhone" placeholder="(00) 00000-0000"></div>
+            <div><div class="lbl">E-mail</div><input class="input" id="crmEmail" placeholder="email@exemplo.com"></div>
+          </div>
+          <div class="crmFormGrid" style="margin-top:10px">
+            <div><div class="lbl">Origem do lead</div><input class="input" id="crmOrigin" placeholder="Google Ads, Instagram, indicação..."></div>
+            <div><div class="lbl">Médico responsável</div><input class="input" id="crmDoctor" placeholder="Dr(a). responsável"></div>
+            <div><div class="lbl">Status</div><select class="input" id="crmStatus"><option value="patient">Paciente convertido</option><option value="lead">Lead não convertido</option></select></div>
+          </div>
+          <div style="margin-top:10px"><div class="lbl">Procedimentos realizados / interesse principal</div><textarea class="input" id="crmProcedures" rows="2" placeholder="Ex: protocolo de emagrecimento, cirurgia, acompanhamento clínico..."></textarea></div>
+          <div class="crmFormGrid" style="margin-top:10px">
+            <div><div class="lbl">Pacote adquirido</div><input class="input" id="crmPackage" placeholder="Semestral, trimestral, mensal..."></div>
+            <div><div class="lbl">Meses fechados</div><input class="input" id="crmPackageMonths" type="number" min="0" step="1" placeholder="Ex: 3, 6, 12"></div>
+            <div><div class="lbl">Início do pacote</div><input class="input" id="crmPackageStart" type="date"></div>
+          </div>
+          <div class="crmFormGrid" style="margin-top:10px">
+            <div><div class="lbl">Valor pago</div><input class="input" id="crmAmountPaid" type="number" min="0" step="0.01" placeholder="0,00"></div>
+            <div><div class="lbl">Próxima consulta / recontato</div><input class="input" id="crmNextContact" type="date"></div>
+            <div><div class="lbl">Lembrar quantos dias antes</div><input class="input" id="crmReminderDays" type="number" min="0" step="1" value="7"></div>
+          </div>
+          <div style="margin-top:10px"><div class="lbl">Observações</div><textarea class="input" id="crmNotes" rows="3" placeholder="Observações clínicas, comerciais, motivos de não conversão, próximos passos..."></textarea></div>
+          <div class="mFoot">
+            <button class="mBtn ghost" id="crmClear" type="button">Limpar</button>
+            <button class="mBtn primary" id="crmSave" type="button">Salvar cadastro</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="themeSectionTitle">Lista</div>
+          <div class="crmList" id="crmList"></div>
         </div>
       </div>
     </div>
@@ -4560,6 +4703,7 @@ body[data-theme="toy_story"] .dashboardPeriodHint{color:#334155 !important}
       payRules:[],
       bonusRules:[],
       surgeries:[],
+      crm:[],
       ui:{ summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, paymentRowsCollapsed:{} },
       customTheme:{ bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, presetOverrides:{} },
       _meta:{ updatedAt:'', updatedBy:'local' }
@@ -4636,6 +4780,7 @@ body[data-theme="toy_story"] .dashboardPeriodHint{color:#334155 !important}
       s.payRules = Array.isArray(s.payRules) ? s.payRules : [];
       s.bonusRules = Array.isArray(s.bonusRules) ? s.bonusRules : [];
       s.surgeries = Array.isArray(s.surgeries) ? s.surgeries : [];
+      s.crm = Array.isArray(s.crm) ? s.crm : [];
       s.ui = { summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, paymentRowsCollapsed:{}, ...(s.ui || {}) };
       s.ui.paymentRowsCollapsed = s.ui.paymentRowsCollapsed || {};
       s.customTheme = { bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, presetOverrides:{}, ...(s.customTheme || {}) };
@@ -7107,7 +7252,17 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     ========================= */
     const SurgeryForm = { editingId:null };
 
-    function surgeryPaymentLabel(status){ return status === 'paid' ? 'Pago' : 'Não pago'; }
+    function surgeryPaymentLabel(status){
+      const map = { paid:'Pago', unpaid:'Não pago', expected:'Previsto', billed:'Faturado', overdue:'Pendente', denied:'Glosado' };
+      return map[status] || 'Não pago';
+    }
+    function surgeryPaymentIcon(status){
+      const map = { paid:'●', unpaid:'○', expected:'◌', billed:'◐', overdue:'!', denied:'×' };
+      return map[status] || '○';
+    }
+    function surgeryPaymentClass(status){
+      return ['paid','unpaid','expected','billed','overdue','denied'].includes(status) ? status : 'unpaid';
+    }
     function surgeryRoleLabel(role){ return role === 'auxiliar' ? 'Auxiliar' : 'Cirurgião principal'; }
 
     function currentMonthRangeISO(){
@@ -7128,7 +7283,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
           if (monthMode === 'current' && (d < start || d > end)) return false;
           if (status !== 'all' && s.paymentStatus !== status) return false;
           if (search) {
-            const hay = [s.patientName,s.attendanceNumber,s.procedures,s.paymentType,s.healthPlan,s.hospital,s.role,s.notes].join(' ').toLowerCase();
+            const hay = [s.patientName,s.attendanceNumber,s.procedures,s.paymentType,s.healthPlan,s.hospital,s.role,s.paymentStatus,s.financeNote,s.notes].join(' ').toLowerCase();
             if (!hay.includes(search)) return false;
           }
           return true;
@@ -7137,9 +7292,19 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     }
 
     function surgeryCardHtml(s, compact=false){
-      const paid = s.paymentStatus === 'paid';
+      const status = surgeryPaymentClass(s.paymentStatus || 'unpaid');
+      const paid = status === 'paid';
       const amount = Number(s.amount || 0);
+      const received = Number(s.receivedAmount || (paid ? amount : 0) || 0);
+      const denied = Number(s.deniedAmount || 0);
+      const diff = Math.max(0, amount - received - denied);
       const conv = s.paymentType === 'particular' ? 'Particular' : `Convênio${s.healthPlan ? ' · ' + escapeHtml(s.healthPlan) : ''}`;
+      const timeline = [
+        s.date ? `Cirurgia: ${formatDateBR(s.date)}` : '',
+        s.billingDate ? `Faturado: ${formatDateBR(s.billingDate)}` : '',
+        s.expectedPayDate ? `Previsto: ${formatDateBR(s.expectedPayDate)}` : '',
+        s.paidDate ? `Pago: ${formatDateBR(s.paidDate)}` : ''
+      ].filter(Boolean).map(x => `<span>${escapeHtml(x)}</span>`).join('');
       return `
         <div class="surgeryRow" data-id="${escapeAttr(s.id)}">
           <div class="surgeryRowTop">
@@ -7151,8 +7316,16 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
                 ${compact ? '' : `<br>Proced.: ${escapeHtml(s.procedures || '—')}`}
               </div>
             </div>
-            <div class="payBadge ${paid ? 'paid' : 'unpaid'}">${paid ? '●' : '○'} ${surgeryPaymentLabel(s.paymentStatus)}${amount ? ' · ' + fmtMoney(amount) : ''}</div>
+            <div class="payBadge ${status}">${surgeryPaymentIcon(status)} ${surgeryPaymentLabel(status)}${amount ? ' · ' + fmtMoney(amount) : ''}</div>
           </div>
+          <div class="surgeryMoneyLine">
+            <span>Previsto: <b>${fmtMoney(amount)}</b></span>
+            <span>Recebido: <b>${fmtMoney(received)}</b></span>
+            ${denied ? `<span>Glosa: <b>${fmtMoney(denied)}</b></span>` : ''}
+            ${diff ? `<span>Diferença: <b>${fmtMoney(diff)}</b></span>` : ''}
+          </div>
+          ${timeline ? `<div class="surgeryTimeline">${timeline}</div>` : ''}
+          ${(!compact && s.financeNote) ? `<div class="small"><b>Financeiro:</b> ${escapeHtml(s.financeNote)}</div>` : ''}
           <div class="surgeryActions">
             <button class="smallBtn surgery-toggle-pay" data-id="${escapeAttr(s.id)}" type="button">Marcar como ${paid ? 'não pago' : 'pago'}</button>
             <button class="smallBtn surgery-edit" data-id="${escapeAttr(s.id)}" type="button">Editar</button>
@@ -7165,8 +7338,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const all = state.surgeries || [];
       const paid = all.filter(s => s.paymentStatus === 'paid');
       const unpaid = all.filter(s => s.paymentStatus !== 'paid');
-      const paidValue = paid.reduce((a,s) => a + Number(s.amount || 0), 0);
-      const unpaidValue = unpaid.reduce((a,s) => a + Number(s.amount || 0), 0);
+      const paidValue = paid.reduce((a,s) => a + Number(s.receivedAmount || s.amount || 0), 0);
+      const unpaidValue = unpaid.reduce((a,s) => a + Math.max(0, Number(s.amount || 0) - Number(s.receivedAmount || 0) - Number(s.deniedAmount || 0)), 0);
       if (UI.el('surgAllPaidValue')) UI.el('surgAllPaidValue').textContent = fmtMoney(paidValue);
       if (UI.el('surgAllUnpaidValue')) UI.el('surgAllUnpaidValue').textContent = fmtMoney(unpaidValue);
       if (UI.el('surgAllPaidCount')) UI.el('surgAllPaidCount').textContent = String(paid.length);
@@ -7179,8 +7352,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       if (!preview) return;
       const { start, end } = currentMonthRangeISO();
       const monthItems = (state.surgeries || []).filter(s => String(s.date || '') >= start && String(s.date || '') <= end);
-      const paidValue = monthItems.filter(s => s.paymentStatus === 'paid').reduce((a,s) => a + Number(s.amount || 0), 0);
-      const unpaidValue = monthItems.filter(s => s.paymentStatus !== 'paid').reduce((a,s) => a + Number(s.amount || 0), 0);
+      const paidValue = monthItems.filter(s => s.paymentStatus === 'paid').reduce((a,s) => a + Number(s.receivedAmount || s.amount || 0), 0);
+      const unpaidValue = monthItems.filter(s => s.paymentStatus !== 'paid').reduce((a,s) => a + Math.max(0, Number(s.amount || 0) - Number(s.receivedAmount || 0) - Number(s.deniedAmount || 0)), 0);
       UI.el('surgCountMonth').textContent = String(monthItems.length);
       UI.el('surgPendingMonth').textContent = String(monthItems.filter(s => s.paymentStatus !== 'paid').length);
       UI.el('surgPaidValue').textContent = fmtMoney(paidValue);
@@ -7216,7 +7389,13 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('surgHospital').value = '';
       UI.el('surgRole').value = 'principal';
       UI.el('surgAmount').value = '';
+      UI.el('surgReceivedAmount').value = '';
+      UI.el('surgDeniedAmount').value = '';
+      UI.el('surgBillingDate').value = '';
+      UI.el('surgExpectedPayDate').value = '';
+      UI.el('surgPaidDate').value = '';
       UI.el('surgPaymentStatus').value = 'unpaid';
+      UI.el('surgFinanceNote').value = '';
       UI.el('surgNotes').value = '';
     }
 
@@ -7251,7 +7430,13 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         hospital: UI.el('surgHospital').value.trim(),
         role: UI.el('surgRole').value,
         amount: Number(UI.el('surgAmount').value || 0),
+        receivedAmount: Number(UI.el('surgReceivedAmount').value || 0),
+        deniedAmount: Number(UI.el('surgDeniedAmount').value || 0),
+        billingDate: UI.el('surgBillingDate').value || '',
+        expectedPayDate: UI.el('surgExpectedPayDate').value || '',
+        paidDate: UI.el('surgPaidDate').value || '',
         paymentStatus: UI.el('surgPaymentStatus').value,
+        financeNote: UI.el('surgFinanceNote').value.trim(),
         notes: UI.el('surgNotes').value.trim(),
         updatedAt: new Date().toISOString()
       };
@@ -7276,7 +7461,13 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('surgHospital').value = s.hospital || '';
       UI.el('surgRole').value = s.role || 'principal';
       UI.el('surgAmount').value = Number(s.amount || 0) || '';
+      UI.el('surgReceivedAmount').value = Number(s.receivedAmount || 0) || '';
+      UI.el('surgDeniedAmount').value = Number(s.deniedAmount || 0) || '';
+      UI.el('surgBillingDate').value = s.billingDate || '';
+      UI.el('surgExpectedPayDate').value = s.expectedPayDate || '';
+      UI.el('surgPaidDate').value = s.paidDate || '';
       UI.el('surgPaymentStatus').value = s.paymentStatus || 'unpaid';
+      UI.el('surgFinanceNote').value = s.financeNote || '';
       UI.el('surgNotes').value = s.notes || '';
       UI.open('ovSurgeryCenter');
     }
@@ -7284,7 +7475,14 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     function toggleSurgeryPayment(id){
       const s = (state.surgeries || []).find(x => x.id === id);
       if (!s) return;
-      s.paymentStatus = s.paymentStatus === 'paid' ? 'unpaid' : 'paid';
+      if (s.paymentStatus === 'paid') {
+        s.paymentStatus = 'unpaid';
+        s.paidDate = '';
+      } else {
+        s.paymentStatus = 'paid';
+        s.receivedAmount = Number(s.receivedAmount || 0) || Number(s.amount || 0) || 0;
+        s.paidDate = s.paidDate || todayISO();
+      }
       s.updatedAt = new Date().toISOString();
       save();
       renderSurgeryPanel();
@@ -7341,6 +7539,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       renderSummary();
       renderPayments();
       renderSurgeryPanel();
+      renderCRMPanel();
       updateUndoButton();
       applyCollapsiblePanels();
       UI.el('dayHRange').value = String(state.cellH || 128);
@@ -7525,7 +7724,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         const amount = surgeryAmountValue(item);
         prev.count += 1;
         prev.total += amount;
-        if (String(item.paymentStatus || item.status || '').toLowerCase() === 'paid') prev.paid += amount;
+        if (String(item.paymentStatus || item.status || '').toLowerCase() === 'paid') prev.paid += surgeryReceivedValue(item);
         else prev.unpaid += amount;
         map.set(name, prev);
       });
@@ -7661,7 +7860,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const receivablesByRules = dashboardPaymentReceivablesForVisibleMonth();
       const surgeries = visibleMonthSurgeries();
       const surgeryTotal = surgeries.reduce((acc,s) => acc + surgeryAmountValue(s), 0);
-      const surgeryPaid = surgeries.filter(s => String(s.paymentStatus || s.status || '').toLowerCase() === 'paid').reduce((acc,s) => acc + surgeryAmountValue(s), 0);
+      const surgeryPaid = surgeries.filter(s => String(s.paymentStatus || s.status || '').toLowerCase() === 'paid').reduce((acc,s) => acc + surgeryReceivedValue(s), 0);
       const surgeryUnpaid = surgeryTotal - surgeryPaid;
       const receber = receivablesByRules.total;
       const recebido = surgeryPaid;
@@ -7710,6 +7909,230 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       renderDashboardCharts({ receber, recebido, pendente, rows: receivableRows });
       renderDashboardRows('dashHospitals', receivableRows, 'Nenhum valor a receber neste mês conforme as regras de pagamento cadastradas.');
       renderDashboardRows('dashPlans', plans, 'Nenhum convênio ou particular cadastrado neste mês.');
+    }
+
+
+    const CRMForm = { editingId:null, tab:'patient' };
+
+    function addMonthsISO(dateISO, months){
+      if (!dateISO || !months) return '';
+      const d = parseISO(dateISO);
+      d.setMonth(d.getMonth() + Number(months || 0));
+      return isoDate(d);
+    }
+
+    function daysBetweenISO(fromISO, toISO){
+      if (!toISO) return null;
+      const a = parseISO(fromISO || todayISO()); a.setHours(0,0,0,0);
+      const b = parseISO(toISO); b.setHours(0,0,0,0);
+      return Math.round((b - a) / 86400000);
+    }
+
+    function crmStatusText(type){ return type === 'lead' ? 'Lead não convertido' : 'Paciente convertido'; }
+
+    function crmAlertClass(days){
+      if (days === null || !Number.isFinite(days)) return '';
+      if (days < 0) return 'bad';
+      if (days <= 3) return 'warn';
+      return 'good';
+    }
+
+    function crmAlertText(item){
+      const today = todayISO();
+      const target = item.nextContact || '';
+      if (!target) return 'Sem lembrete';
+      const days = daysBetweenISO(today, target);
+      const remind = Number(item.reminderDays || 0);
+      if (days < 0) return `Atrasado há ${Math.abs(days)} dia(s)`;
+      if (days === 0) return 'Alerta hoje';
+      if (days <= remind) return `Avisar em ${days} dia(s)`;
+      return `${days} dia(s) até retorno`;
+    }
+
+    function crmPackageText(item){
+      if ((item.type || 'patient') === 'lead') return 'Ainda não convertido';
+      const end = addMonthsISO(item.packageStart, Number(item.packageMonths || 0));
+      if (!end) return item.packageName || 'Sem pacote definido';
+      const days = daysBetweenISO(todayISO(), end);
+      if (days < 0) return `Pacote encerrado há ${Math.abs(days)} dia(s)`;
+      return `${item.packageName || 'Pacote'} · faltam ${days} dia(s)`;
+    }
+
+    function clearCRMForm(type){
+      CRMForm.editingId = null;
+      if (type) CRMForm.tab = type;
+      UI.el('crmFormTitle').textContent = CRMForm.tab === 'lead' ? 'Cadastrar lead não convertido' : 'Cadastrar paciente convertido';
+      UI.el('crmName').value = '';
+      UI.el('crmPhone').value = '';
+      UI.el('crmEmail').value = '';
+      UI.el('crmOrigin').value = '';
+      UI.el('crmDoctor').value = '';
+      UI.el('crmStatus').value = CRMForm.tab === 'lead' ? 'lead' : 'patient';
+      UI.el('crmProcedures').value = '';
+      UI.el('crmPackage').value = '';
+      UI.el('crmPackageMonths').value = '';
+      UI.el('crmPackageStart').value = '';
+      UI.el('crmAmountPaid').value = '';
+      UI.el('crmNextContact').value = '';
+      UI.el('crmReminderDays').value = '7';
+      UI.el('crmNotes').value = '';
+    }
+
+    function setCRMTab(type){
+      CRMForm.tab = type === 'lead' ? 'lead' : 'patient';
+      UI.el('crmTabPatients').classList.toggle('active', CRMForm.tab === 'patient');
+      UI.el('crmTabLeads').classList.toggle('active', CRMForm.tab === 'lead');
+      UI.el('crmStatus').value = CRMForm.tab;
+      UI.el('crmFormTitle').textContent = CRMForm.tab === 'lead' ? 'Cadastrar lead não convertido' : 'Cadastrar paciente convertido';
+      renderCRMPanel();
+    }
+
+    function openPatientCRM(type='patient'){
+      setCRMTab(type);
+      clearCRMForm(type);
+      renderCRMPanel();
+      UI.open('ovPatientCRM');
+    }
+
+    function saveCRMEntry(){
+      const name = UI.el('crmName').value.trim();
+      if (!name) return alert('Informe o nome.');
+      const type = UI.el('crmStatus').value === 'lead' ? 'lead' : 'patient';
+      const model = {
+        id: CRMForm.editingId || uid(),
+        type,
+        name,
+        phone: UI.el('crmPhone').value.trim(),
+        email: UI.el('crmEmail').value.trim(),
+        origin: UI.el('crmOrigin').value.trim(),
+        doctor: UI.el('crmDoctor').value.trim(),
+        procedures: UI.el('crmProcedures').value.trim(),
+        packageName: UI.el('crmPackage').value.trim(),
+        packageMonths: Number(UI.el('crmPackageMonths').value || 0),
+        packageStart: UI.el('crmPackageStart').value || '',
+        amountPaid: Number(UI.el('crmAmountPaid').value || 0),
+        nextContact: UI.el('crmNextContact').value || '',
+        reminderDays: Number(UI.el('crmReminderDays').value || 0),
+        notes: UI.el('crmNotes').value.trim(),
+        updatedAt: new Date().toISOString()
+      };
+      state.crm = Array.isArray(state.crm) ? state.crm : [];
+      const idx = state.crm.findIndex(x => x.id === model.id);
+      if (idx >= 0) state.crm[idx] = model; else state.crm.push(model);
+      CRMForm.tab = type;
+      save();
+      clearCRMForm(type);
+      renderCRMPanel();
+    }
+
+    function editCRMEntry(id){
+      const item = (state.crm || []).find(x => x.id === id);
+      if (!item) return;
+      CRMForm.editingId = id;
+      CRMForm.tab = item.type === 'lead' ? 'lead' : 'patient';
+      setCRMTab(CRMForm.tab);
+      UI.el('crmFormTitle').textContent = 'Editando: ' + (item.name || 'cadastro');
+      UI.el('crmName').value = item.name || '';
+      UI.el('crmPhone').value = item.phone || '';
+      UI.el('crmEmail').value = item.email || '';
+      UI.el('crmOrigin').value = item.origin || '';
+      UI.el('crmDoctor').value = item.doctor || '';
+      UI.el('crmStatus').value = CRMForm.tab;
+      UI.el('crmProcedures').value = item.procedures || '';
+      UI.el('crmPackage').value = item.packageName || '';
+      UI.el('crmPackageMonths').value = item.packageMonths || '';
+      UI.el('crmPackageStart').value = item.packageStart || '';
+      UI.el('crmAmountPaid').value = item.amountPaid || '';
+      UI.el('crmNextContact').value = item.nextContact || '';
+      UI.el('crmReminderDays').value = item.reminderDays ?? 7;
+      UI.el('crmNotes').value = item.notes || '';
+    }
+
+    function deleteCRMEntry(id){
+      const item = (state.crm || []).find(x => x.id === id);
+      if (!item) return;
+      if (!confirm(`Excluir cadastro de ${item.name}?`)) return;
+      state.crm = (state.crm || []).filter(x => x.id !== id);
+      save();
+      clearCRMForm(CRMForm.tab);
+      renderCRMPanel();
+    }
+
+    function convertLeadToPatient(id){
+      const item = (state.crm || []).find(x => x.id === id);
+      if (!item) return;
+      item.type = 'patient';
+      item.updatedAt = new Date().toISOString();
+      save();
+      setCRMTab('patient');
+      renderCRMPanel();
+    }
+
+    function crmCardHtml(item){
+      const type = item.type === 'lead' ? 'lead' : 'patient';
+      const alertDays = item.nextContact ? daysBetweenISO(todayISO(), item.nextContact) : null;
+      const cls = crmAlertClass(alertDays);
+      const packageEnd = addMonthsISO(item.packageStart, Number(item.packageMonths || 0));
+      return `
+        <div class="crmCard">
+          <div class="crmCardTop">
+            <div>
+              <div class="crmName">${escapeHtml(item.name || 'Sem nome')}</div>
+              <div class="crmMeta">${escapeHtml(item.phone || 'Sem telefone')} · ${escapeHtml(item.email || 'Sem e-mail')}</div>
+              <div class="crmMeta">Origem: <b>${escapeHtml(item.origin || '-')}</b> · Médico: <b>${escapeHtml(item.doctor || '-')}</b></div>
+            </div>
+            <span class="crmBadge ${type === 'patient' ? 'good' : 'warn'}">${type === 'patient' ? '✅' : '📞'} ${crmStatusText(type)}</span>
+          </div>
+          <div class="crmBadgeRow">
+            <span class="crmBadge ${cls}">⏰ ${escapeHtml(crmAlertText(item))}</span>
+            <span class="crmBadge">💰 ${fmtMoney(Number(item.amountPaid || 0))}</span>
+            <span class="crmBadge">📦 ${escapeHtml(crmPackageText(item))}</span>
+          </div>
+          <div class="crmTimeline">
+            <div class="crmTimeBox"><div class="k">Próxima ação</div><div class="v">${item.nextContact ? formatDateBR(item.nextContact) : '-'}</div></div>
+            <div class="crmTimeBox"><div class="k">Lembrete</div><div class="v">${Number(item.reminderDays || 0)} dia(s) antes</div></div>
+            <div class="crmTimeBox"><div class="k">Início pacote</div><div class="v">${item.packageStart ? formatDateBR(item.packageStart) : '-'}</div></div>
+            <div class="crmTimeBox"><div class="k">Fim pacote</div><div class="v">${packageEnd ? formatDateBR(packageEnd) : '-'}</div></div>
+          </div>
+          ${item.procedures ? `<div class="crmMeta" style="margin-top:10px"><b>Procedimentos/interesse:</b> ${escapeHtml(item.procedures)}</div>` : ''}
+          ${item.notes ? `<div class="crmMeta" style="margin-top:8px"><b>Observações:</b> ${escapeHtml(item.notes)}</div>` : ''}
+          <div class="crmActions">
+            <button class="smallBtn" type="button" onclick="editCRMEntry('${item.id}')">Editar</button>
+            ${type === 'lead' ? `<button class="smallBtn" type="button" onclick="convertLeadToPatient('${item.id}')">Converter em paciente</button>` : ''}
+            <button class="smallBtn danger" type="button" onclick="deleteCRMEntry('${item.id}')">Excluir</button>
+          </div>
+        </div>`;
+    }
+
+    function renderCRMPanel(){
+      const list = UI.el('crmList');
+      if (!list) return;
+      const items = Array.isArray(state.crm) ? state.crm : [];
+      const today = todayISO();
+      const search = (UI.el('crmSearch')?.value || '').toLowerCase().trim();
+      const origin = (UI.el('crmFilterOrigin')?.value || '').toLowerCase().trim();
+      const doctor = (UI.el('crmFilterDoctor')?.value || '').toLowerCase().trim();
+      const patients = items.filter(x => (x.type || 'patient') === 'patient');
+      const leads = items.filter(x => x.type === 'lead');
+      const due = items.filter(x => x.nextContact && daysBetweenISO(today, x.nextContact) <= Number(x.reminderDays || 0));
+      const totalPaid = patients.reduce((a,x) => a + Number(x.amountPaid || 0), 0);
+      UI.el('crmStatPatients').textContent = String(patients.length);
+      UI.el('crmStatLeads').textContent = String(leads.length);
+      UI.el('crmStatDue').textContent = String(due.length);
+      UI.el('crmStatPaid').textContent = fmtMoney(totalPaid);
+      let filtered = items.filter(x => (x.type || 'patient') === CRMForm.tab);
+      filtered = filtered.filter(x => {
+        const hay = [x.name,x.phone,x.email,x.origin,x.doctor,x.procedures,x.packageName,x.notes].join(' ').toLowerCase();
+        if (search && !hay.includes(search)) return false;
+        if (origin && !String(x.origin || '').toLowerCase().includes(origin)) return false;
+        if (doctor && !String(x.doctor || '').toLowerCase().includes(doctor)) return false;
+        return true;
+      }).sort((a,b) => {
+        const ad = a.nextContact || '9999-99-99';
+        const bd = b.nextContact || '9999-99-99';
+        return ad.localeCompare(bd) || String(a.name || '').localeCompare(String(b.name || ''));
+      });
+      list.innerHTML = filtered.length ? filtered.map(crmCardHtml).join('') : '<div class="crmEmpty">Nenhum cadastro encontrado neste filtro.</div>';
     }
 
     async function openDashboardCenter(){
@@ -7849,6 +8272,16 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('btnExport').addEventListener('click', exportData);
       UI.el('btnBackupCenter').addEventListener('click', openBackupCenter);
       UI.el('btnDashboardCenter').addEventListener('click', openDashboardCenter);
+
+      UI.el('btnPatientCRM').addEventListener('click', () => openPatientCRM('patient'));
+      UI.el('crmClose').addEventListener('click', () => UI.close('ovPatientCRM'));
+      UI.el('crmTabPatients').addEventListener('click', () => setCRMTab('patient'));
+      UI.el('crmTabLeads').addEventListener('click', () => setCRMTab('lead'));
+      UI.el('crmSave').addEventListener('click', saveCRMEntry);
+      UI.el('crmClear').addEventListener('click', () => clearCRMForm(CRMForm.tab));
+      ['crmSearch','crmFilterOrigin','crmFilterDoctor'].forEach(id => UI.el(id).addEventListener('input', renderCRMPanel));
+      UI.el('crmStatus').addEventListener('change', e => setCRMTab(e.target.value === 'lead' ? 'lead' : 'patient'));
+
       UI.el('dashboardClose').addEventListener('click', () => UI.close('ovDashboardCenter'));
       const dashPrev = UI.el('dashPrevMonth');
       const dashNext = UI.el('dashNextMonth');
