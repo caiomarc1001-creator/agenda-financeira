@@ -11,6 +11,7 @@
       --txt:#f2f6ff;--mut:rgba(242,246,255,.72);--mut2:rgba(242,246,255,.56);
       --acc:#60a5fa;--good:#39d98a;--warn:#ffb020;--bad:#ff5d5d;--shadow:0 16px 60px rgba(0,0,0,.45);
       --cellH:128px;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
+      --crm-alert-color:#ff5d5d;--crm-alert-soft:rgba(255,93,93,.26);--crm-alert-strong:rgba(255,93,93,.62);--crm-alert-glow:rgba(255,93,93,.32);
     }
     body[data-theme="light"]{--bg0:#eef3ff;--bg1:#cfdcff;--card:rgba(255,255,255,.94);--line:rgba(10,20,40,.10);--txt:#0f1a2e;--mut:rgba(15,26,46,.72);--mut2:rgba(15,26,46,.56);--shadow:0 14px 40px rgba(40,50,70,.14)}
     body[data-theme="ocean"]{--bg0:#06131f;--bg1:#0a2940;--card:rgba(10,30,50,.88);--line:rgba(125,211,252,.16);--txt:#ecfeff;--mut:rgba(236,254,255,.76);--mut2:rgba(236,254,255,.58);--acc:#38bdf8}
@@ -3998,6 +3999,84 @@ body[data-theme="toy_story"] .crmCommercialMini .v{color:#0b1220 !important}
   .primaryButtons{gap:8px !important}
 }
 
+
+
+/* =========================================================
+   SPRINT CRM — DESTAQUE EDITÁVEL + BOTÕES DE MODO ATIVO
+   - Alertas comerciais usam cor editável no seletor de temas.
+   - Botões de modo ficam verdes quando o modo está ativo.
+========================================================= */
+.crmAlertTile.bad,
+.crmCard.overdue{
+  border-color:var(--crm-alert-strong) !important;
+  background:
+    radial-gradient(900px 180px at 0% 0%, var(--crm-alert-soft), transparent 62%),
+    linear-gradient(135deg,var(--crm-alert-soft),rgba(255,255,255,.055)) !important;
+  box-shadow:
+    0 18px 44px rgba(0,0,0,.30),
+    0 0 0 2px var(--crm-alert-soft),
+    0 0 24px var(--crm-alert-glow) !important;
+}
+.crmAlertTile.bad .big,
+.crmCard.overdue .crmName{
+  text-shadow:0 0 18px var(--crm-alert-glow);
+}
+.crmGlobalAlertStrip.on{
+  position:relative;
+}
+.crmGlobalAlertStrip.on::before{
+  content:"";
+  position:absolute;
+  inset:-5px;
+  border-radius:22px;
+  background:radial-gradient(ellipse at center,var(--crm-alert-soft),transparent 70%);
+  opacity:.85;
+  pointer-events:none;
+  filter:blur(7px);
+  z-index:-1;
+}
+.crmAlertTile.bad{
+  animation:crmPulseBadStrong 1.18s ease-in-out infinite !important;
+}
+@keyframes crmPulseBadStrong{
+  0%,100%{transform:translateY(0) scale(1);box-shadow:0 16px 36px rgba(0,0,0,.24),0 0 0 0 var(--crm-alert-glow)}
+  50%{transform:translateY(-1px) scale(1.012);box-shadow:0 20px 46px rgba(0,0,0,.32),0 0 0 6px var(--crm-alert-soft)}
+}
+.btn.modeActive,
+body.surgeon-mode #btnNewSurgery,
+body.crm-mode #btnCRMMode,
+body.crm-mode #btnPatientCRM{
+  border-color:rgba(57,217,138,.85) !important;
+  background:
+    radial-gradient(420px 90px at 15% 0%, rgba(57,217,138,.34), transparent 70%),
+    linear-gradient(135deg,rgba(57,217,138,.42),rgba(34,197,94,.22)) !important;
+  color:var(--txt) !important;
+  box-shadow:
+    0 0 0 2px rgba(57,217,138,.18),
+    0 12px 28px rgba(57,217,138,.18) !important;
+}
+body[data-theme="light"] .btn.modeActive,
+body[data-theme="paper"] .btn.modeActive,
+body[data-theme="windows_xp"] .btn.modeActive,
+body[data-theme="toy_story"] .btn.modeActive,
+body[data-theme="light"].surgeon-mode #btnNewSurgery,
+body[data-theme="paper"].surgeon-mode #btnNewSurgery,
+body[data-theme="windows_xp"].surgeon-mode #btnNewSurgery,
+body[data-theme="toy_story"].surgeon-mode #btnNewSurgery,
+body[data-theme="light"].crm-mode #btnCRMMode,
+body[data-theme="paper"].crm-mode #btnCRMMode,
+body[data-theme="windows_xp"].crm-mode #btnCRMMode,
+body[data-theme="toy_story"].crm-mode #btnCRMMode,
+body[data-theme="light"].crm-mode #btnPatientCRM,
+body[data-theme="paper"].crm-mode #btnPatientCRM,
+body[data-theme="windows_xp"].crm-mode #btnPatientCRM,
+body[data-theme="toy_story"].crm-mode #btnPatientCRM{
+  color:#052e16 !important;
+}
+@media (prefers-reduced-motion: reduce){
+  .crmAlertTile.bad{animation:none !important;}
+}
+
 </style>
 </head>
 <body data-theme="senna_capacete">
@@ -4610,6 +4689,8 @@ body[data-theme="toy_story"] .crmCommercialMini .v{color:#0b1220 !important}
             <div><div class="lbl">Texto</div><input class="input" id="customTxt" type="color" value="#f5f7fb"></div>
             <div><div class="lbl">Texto secundário</div><input class="input" id="customMut" type="color" value="#b8c4de"></div>
             <div><div class="lbl">Destaque geral</div><input class="input" id="customAcc" type="color" value="#3b82f6"></div>
+            <div><div class="lbl">Destaque dos alertas</div><input class="input" id="customAlertColor" type="color" value="#ff5d5d"></div>
+            <div><div class="lbl">Força do alerta</div><select class="input" id="customAlertIntensity"><option value="1">Normal</option><option value="1.35" selected>Forte</option><option value="1.7">Máximo</option></select></div>
             <div><div class="lbl">Valor / positivo</div><input class="input" id="customGood" type="color" value="#39d98a"></div>
             <div><div class="lbl">Cor do mês</div><input class="input" id="customMonth" type="color" value="#f5f7fb"></div>
             <div><div class="lbl">Fonte das janelas</div><input class="input" id="customModalText" type="color" value="#10233f"></div>
@@ -4620,6 +4701,7 @@ body[data-theme="toy_story"] .crmCommercialMini .v{color:#0b1220 !important}
         </div>
         <div class="mFoot">
           <button class="mBtn" id="btnApplyAccentColor" type="button">Aplicar destaque</button>
+          <button class="mBtn" id="btnApplyAlertHighlight" type="button">Aplicar alertas comerciais</button>
           <button class="mBtn" id="btnApplyTextColors" type="button">Aplicar só cores de texto</button>
           <button class="mBtn" id="btnApplyButtonColors" type="button">Aplicar degradê dos botões</button>
           <button class="mBtn" id="btnSavePresetEdit" type="button">Salvar edição no tema atual</button>
@@ -4898,7 +4980,7 @@ body[data-theme="toy_story"] .crmCommercialMini .v{color:#0b1220 !important}
       surgeries:[],
       crm:[],
       ui:{ summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, paymentRowsCollapsed:{} },
-      customTheme:{ bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, presetOverrides:{} },
+      customTheme:{ bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', alertColor:'#ff5d5d', alertIntensity:1.35, manualTextColors:false, manualButtonColors:false, manualAccentColor:false, manualAlertHighlight:false, presetOverrides:{} },
       _meta:{ updatedAt:'', updatedBy:'local' }
     };
 
@@ -4976,7 +5058,7 @@ body[data-theme="toy_story"] .crmCommercialMini .v{color:#0b1220 !important}
       s.crm = Array.isArray(s.crm) ? s.crm : [];
       s.ui = { summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, paymentRowsCollapsed:{}, ...(s.ui || {}) };
       s.ui.paymentRowsCollapsed = s.ui.paymentRowsCollapsed || {};
-      s.customTheme = { bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, presetOverrides:{}, ...(s.customTheme || {}) };
+      s.customTheme = { bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', alertColor:'#ff5d5d', alertIntensity:1.35, manualTextColors:false, manualButtonColors:false, manualAccentColor:false, manualAlertHighlight:false, presetOverrides:{}, ...(s.customTheme || {}) };
       s.customTheme.buttonBg1 = s.customTheme.buttonBg1 || s.customTheme.buttonBg || '#3b82f6';
       s.customTheme.buttonBg2 = s.customTheme.buttonBg2 || s.customTheme.buttonBg || '#8b5cf6';
       s.customTheme.presetOverrides = s.customTheme.presetOverrides || {};
@@ -5634,6 +5716,12 @@ body[data-theme="toy_story"] .crmCommercialMini .v{color:#0b1220 !important}
       const t = state.customTheme || {};
       const override = ((t.presetOverrides || {})[themeKey]) || {};
       const root = document.documentElement;
+      const alertColor = override.alertColor || t.alertColor || '#ff5d5d';
+      const alertIntensity = Math.max(1, Math.min(1.7, Number(override.alertIntensity || t.alertIntensity || 1.35)));
+      root.style.setProperty('--crm-alert-color', alertColor);
+      root.style.setProperty('--crm-alert-soft', hexToRgba(alertColor, Math.min(.42, .20 * alertIntensity)));
+      root.style.setProperty('--crm-alert-strong', hexToRgba(alertColor, Math.min(.88, .46 * alertIntensity)));
+      root.style.setProperty('--crm-alert-glow', hexToRgba(alertColor, Math.min(.60, .26 * alertIntensity)));
 
       const manualAccentOn = !!override.manualAccentColor;
       document.body.setAttribute('data-manual-accent', manualAccentOn ? 'on' : 'off');
@@ -5703,6 +5791,8 @@ body[data-theme="toy_story"] .crmCommercialMini .v{color:#0b1220 !important}
       UI.el('customMut').value = t.mut || '#b8c4de';
       UI.el('customAcc').value = override.acc || t.acc || '#3b82f6';
       UI.el('customGood').value = t.good || '#39d98a';
+      if (UI.el('customAlertColor')) UI.el('customAlertColor').value = override.alertColor || t.alertColor || '#ff5d5d';
+      if (UI.el('customAlertIntensity')) UI.el('customAlertIntensity').value = String(override.alertIntensity || t.alertIntensity || 1.35);
 
       UI.el('customMonth').value = override.month || '#0b1220';
       UI.el('customModalText').value = override.modalText || '#0b1220';
@@ -5739,6 +5829,8 @@ body[data-theme="toy_story"] .crmCommercialMini .v{color:#0b1220 !important}
         buttonBg1:UI.el('customButtonBg1').value,
         buttonBg2:UI.el('customButtonBg2').value,
         buttonText:UI.el('customButtonText').value,
+        alertColor:UI.el('customAlertColor')?.value || '#ff5d5d',
+        alertIntensity:Number(UI.el('customAlertIntensity')?.value || 1.35),
         manualTextColors:false,
         manualButtonColors:false,
         manualAccentColor:false,
@@ -5753,6 +5845,8 @@ body[data-theme="toy_story"] .crmCommercialMini .v{color:#0b1220 !important}
         buttonBg1: UI.el('customButtonBg1').value,
         buttonBg2: UI.el('customButtonBg2').value,
         buttonText: UI.el('customButtonText').value,
+        alertColor: UI.el('customAlertColor')?.value || '#ff5d5d',
+        alertIntensity: Number(UI.el('customAlertIntensity')?.value || 1.35),
         manualAccentColor: true,
         manualTextColors: true,
         manualButtonColors: true
@@ -5777,6 +5871,17 @@ body[data-theme="toy_story"] .crmCommercialMini .v{color:#0b1220 !important}
       o.manualAccentColor = true;
       save();
       applyTheme();
+      renderThemeGrid();
+    }
+
+    function applyAlertHighlightFromInputs(){
+      const o = ensureCurrentThemeOverride();
+      o.alertColor = UI.el('customAlertColor')?.value || '#ff5d5d';
+      o.alertIntensity = Number(UI.el('customAlertIntensity')?.value || 1.35);
+      o.manualAlertHighlight = true;
+      save();
+      applyTheme();
+      renderCRMAlerts?.();
       renderThemeGrid();
     }
 
@@ -5843,7 +5948,10 @@ body[data-theme="toy_story"] .crmCommercialMini .v{color:#0b1220 !important}
       o.buttonBg1 = UI.el('customButtonBg1').value;
       o.buttonBg2 = UI.el('customButtonBg2').value;
       o.buttonText = UI.el('customButtonText').value;
+      o.alertColor = UI.el('customAlertColor')?.value || '#ff5d5d';
+      o.alertIntensity = Number(UI.el('customAlertIntensity')?.value || 1.35);
       o.manualAccentColor = true;
+      o.manualAlertHighlight = true;
       o.manualTextColors = true;
       o.manualButtonColors = true;
       save();
@@ -7715,9 +7823,14 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     }
 
     function applySurgeonMode(){
-      document.body.classList.toggle('surgeon-mode', !!state.ui?.surgeonMode);
+      const on = !!state.ui?.surgeonMode;
+      document.body.classList.toggle('surgeon-mode', on);
       const btn = UI.el('btnNewSurgery');
-      if (btn) btn.textContent = state.ui?.surgeonMode ? 'Sair do Modo Cirurgião' : 'Modo Cirurgião';
+      if (btn) {
+        btn.textContent = on ? 'Sair do Modo Cirurgião' : 'Modo Cirurgião';
+        btn.classList.toggle('modeActive', on);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      }
     }
 
     function toggleSurgeonMode(){
@@ -7809,8 +7922,18 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     function applyCRMMode(){
       const on = !!state.ui?.crmMode;
       document.body.classList.toggle('crm-mode', on);
-      const b1 = UI.el('btnPatientCRM'); if (b1) b1.textContent = on ? 'Sair de Pacientes & Leads' : 'Pacientes & Leads';
-      const b2 = UI.el('btnCRMMode'); if (b2) b2.textContent = on ? 'Sair Pacientes & Leads' : 'Pacientes & Leads';
+      const b1 = UI.el('btnPatientCRM');
+      if (b1) {
+        b1.textContent = on ? 'Sair de Pacientes & Leads' : 'Pacientes & Leads';
+        b1.classList.toggle('modeActive', on);
+        b1.setAttribute('aria-pressed', on ? 'true' : 'false');
+      }
+      const b2 = UI.el('btnCRMMode');
+      if (b2) {
+        b2.textContent = on ? 'Sair Pacientes & Leads' : 'Pacientes & Leads';
+        b2.classList.toggle('modeActive', on);
+        b2.setAttribute('aria-pressed', on ? 'true' : 'false');
+      }
     }
     function toggleCRMMode(force){
       state.ui = state.ui || {};
@@ -8461,6 +8584,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('themeSelectorCancel').addEventListener('click', () => UI.close('ovThemeSelector'));
       UI.el('btnApplyCustomTheme').addEventListener('click', applyCustomThemeFromInputs);
       UI.el('btnApplyAccentColor').addEventListener('click', applyOnlyAccentColorFromInputs);
+      UI.el('btnApplyAlertHighlight')?.addEventListener('click', applyAlertHighlightFromInputs);
       UI.el('btnApplyTextColors').addEventListener('click', applyOnlyTextColorsFromInputs);
       UI.el('btnApplyButtonColors').addEventListener('click', applyOnlyButtonColorsFromInputs);
       UI.el('btnSavePresetEdit').addEventListener('click', saveCurrentPresetEdit);
@@ -8469,6 +8593,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('btnResetAccentColor').addEventListener('click', disableManualAccentColor);
       UI.el('btnResetButtonColors').addEventListener('click', disableManualButtonColors);
       UI.el('customAcc').addEventListener('input', applyOnlyAccentColorFromInputs);
+      ['customAlertColor','customAlertIntensity'].forEach(id => UI.el(id)?.addEventListener('input', applyAlertHighlightFromInputs));
       ['customMonth','customModalText'].forEach(id => UI.el(id).addEventListener('input', applyOnlyTextColorsFromInputs));
       ['customButtonBg1','customButtonBg2','customButtonText'].forEach(id => UI.el(id).addEventListener('input', applyOnlyButtonColorsFromInputs));
       UI.el('btnNew').addEventListener('click', () => openEventNew(state.selDate || todayISO()));
