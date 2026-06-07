@@ -5061,6 +5061,131 @@ body[data-theme="senna_mclaren"] .crmCard{
   border-color:rgba(7,18,37,.14) !important;
 }
 
+
+
+/* =========================================================
+   CORREÇÃO FINAL REFEITA — SENNA BRASIL / SENNA MCLAREN
+   Fontes pretas em TODAS as janelas, CRM/pacientes e login.
+   Este bloco fica no final do CSS para vencer regras anteriores.
+========================================================= */
+body[data-theme="senna_brasil"] .modal,
+body[data-theme="senna_brasil"] .modal :where(h1,h2,h3,h4,h5,h6,p,span,div,label,summary,details,small,strong,b,em),
+body[data-theme="senna_brasil"] #ovLogin,
+body[data-theme="senna_brasil"] #ovLogin :where(h1,h2,h3,h4,h5,h6,p,span,div,label,summary,details,small,strong,b,em),
+body[data-theme="senna_brasil"] #crmPageCard,
+body[data-theme="senna_brasil"] #crmPageCard :where(h1,h2,h3,h4,h5,h6,p,span,div,label,summary,details,small,strong,b,em),
+body[data-theme="senna_brasil"] .crmPanel,
+body[data-theme="senna_brasil"] .crmPanel :where(h1,h2,h3,h4,h5,h6,p,span,div,label,summary,details,small,strong,b,em),
+body[data-theme="senna_brasil"] .crmFormPanel,
+body[data-theme="senna_brasil"] .crmFormPanel :where(h1,h2,h3,h4,h5,h6,p,span,div,label,summary,details,small,strong,b,em),
+body[data-theme="senna_mclaren"] .modal,
+body[data-theme="senna_mclaren"] .modal :where(h1,h2,h3,h4,h5,h6,p,span,div,label,summary,details,small,strong,b,em),
+body[data-theme="senna_mclaren"] #ovLogin,
+body[data-theme="senna_mclaren"] #ovLogin :where(h1,h2,h3,h4,h5,h6,p,span,div,label,summary,details,small,strong,b,em),
+body[data-theme="senna_mclaren"] #crmPageCard,
+body[data-theme="senna_mclaren"] #crmPageCard :where(h1,h2,h3,h4,h5,h6,p,span,div,label,summary,details,small,strong,b,em),
+body[data-theme="senna_mclaren"] .crmPanel,
+body[data-theme="senna_mclaren"] .crmPanel :where(h1,h2,h3,h4,h5,h6,p,span,div,label,summary,details,small,strong,b,em),
+body[data-theme="senna_mclaren"] .crmFormPanel,
+body[data-theme="senna_mclaren"] .crmFormPanel :where(h1,h2,h3,h4,h5,h6,p,span,div,label,summary,details,small,strong,b,em){
+  color:#071225 !important;
+  -webkit-text-fill-color:#071225 !important;
+  text-shadow:none !important;
+}
+
+body[data-theme="senna_brasil"] .lbl,
+body[data-theme="senna_brasil"] label,
+body[data-theme="senna_brasil"] .fieldLabel,
+body[data-theme="senna_brasil"] .formLabel,
+body[data-theme="senna_brasil"] .crmTitle,
+body[data-theme="senna_brasil"] .crmSub,
+body[data-theme="senna_brasil"] .crmName,
+body[data-theme="senna_brasil"] .crmMeta,
+body[data-theme="senna_brasil"] .crmBadge,
+body[data-theme="senna_brasil"] .crmStat .k,
+body[data-theme="senna_brasil"] .crmStat .v,
+body[data-theme="senna_brasil"] .crmTimeBox .k,
+body[data-theme="senna_brasil"] .crmTimeBox .v,
+body[data-theme="senna_mclaren"] .lbl,
+body[data-theme="senna_mclaren"] label,
+body[data-theme="senna_mclaren"] .fieldLabel,
+body[data-theme="senna_mclaren"] .formLabel,
+body[data-theme="senna_mclaren"] .crmTitle,
+body[data-theme="senna_mclaren"] .crmSub,
+body[data-theme="senna_mclaren"] .crmName,
+body[data-theme="senna_mclaren"] .crmMeta,
+body[data-theme="senna_mclaren"] .crmBadge,
+body[data-theme="senna_mclaren"] .crmStat .k,
+body[data-theme="senna_mclaren"] .crmStat .v,
+body[data-theme="senna_mclaren"] .crmTimeBox .k,
+body[data-theme="senna_mclaren"] .crmTimeBox .v{
+  color:#071225 !important;
+  -webkit-text-fill-color:#071225 !important;
+  text-shadow:none !important;
+}
+
+body[data-theme="senna_brasil"] :where(.modal,#ovLogin,#crmPageCard,.crmPanel,.crmFormPanel) :where(input,select,textarea,.input),
+body[data-theme="senna_mclaren"] :where(.modal,#ovLogin,#crmPageCard,.crmPanel,.crmFormPanel) :where(input,select,textarea,.input){
+  color:#071225 !important;
+  -webkit-text-fill-color:#071225 !important;
+  background:rgba(255,255,255,.98) !important;
+  border-color:rgba(7,18,37,.24) !important;
+  caret-color:#071225 !important;
+  text-shadow:none !important;
+}
+
+body[data-theme="senna_brasil"] :where(.modal,#ovLogin,#crmPageCard,.crmPanel,.crmFormPanel) :where(input,textarea,.input)::placeholder,
+body[data-theme="senna_mclaren"] :where(.modal,#ovLogin,#crmPageCard,.crmPanel,.crmFormPanel) :where(input,textarea,.input)::placeholder{
+  color:rgba(7,18,37,.52) !important;
+  -webkit-text-fill-color:rgba(7,18,37,.52) !important;
+  opacity:1 !important;
+}
+
+body[data-theme="senna_brasil"] :where(.modal,#ovLogin,#crmPageCard,.crmPanel,.crmFormPanel) select option,
+body[data-theme="senna_mclaren"] :where(.modal,#ovLogin,#crmPageCard,.crmPanel,.crmFormPanel) select option{
+  color:#071225 !important;
+  -webkit-text-fill-color:#071225 !important;
+  background:#ffffff !important;
+}
+
+body[data-theme="senna_brasil"] :where(.modal,#ovLogin,#crmPageCard,.crmPanel,.crmFormPanel) :where(.helper,.cloudHint,.small,.crmEmpty,.themeDesc),
+body[data-theme="senna_mclaren"] :where(.modal,#ovLogin,#crmPageCard,.crmPanel,.crmFormPanel) :where(.helper,.cloudHint,.small,.crmEmpty,.themeDesc){
+  color:#071225 !important;
+  -webkit-text-fill-color:#071225 !important;
+  background:rgba(255,255,255,.54) !important;
+  border-color:rgba(7,18,37,.18) !important;
+}
+
+body[data-theme="senna_brasil"] :where(#loginClose,.closeX,.passToggle),
+body[data-theme="senna_mclaren"] :where(#loginClose,.closeX,.passToggle){
+  color:#071225 !important;
+  -webkit-text-fill-color:#071225 !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(241,245,249,.92)) !important;
+  border-color:rgba(7,18,37,.22) !important;
+}
+body[data-theme="senna_brasil"] :where(#loginClose,.closeX)::before,
+body[data-theme="senna_brasil"] :where(#loginClose,.closeX)::after,
+body[data-theme="senna_mclaren"] :where(#loginClose,.closeX)::before,
+body[data-theme="senna_mclaren"] :where(#loginClose,.closeX)::after{
+  background:#071225 !important;
+}
+body[data-theme="senna_brasil"] .passToggle::before,
+body[data-theme="senna_mclaren"] .passToggle::before{border-color:#071225 !important;}
+body[data-theme="senna_brasil"] .passToggle::after,
+body[data-theme="senna_mclaren"] .passToggle::after{background:#071225 !important;}
+
+body[data-theme="senna_brasil"] :where(.modal,#ovLogin,#crmPageCard,.crmPanel,.crmFormPanel) :where(.btn.primary,.mBtn.primary,.smallBtn.primary,.crmCreateBtn),
+body[data-theme="senna_mclaren"] :where(.modal,#ovLogin,#crmPageCard,.crmPanel,.crmFormPanel) :where(.btn.primary,.mBtn.primary,.smallBtn.primary,.crmCreateBtn){
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+}
+
+body[data-theme="senna_brasil"] :where(.modal,#ovLogin,#crmPageCard,.crmPanel,.crmFormPanel) :where(.btn:not(.primary):not(.danger),.mBtn:not(.primary):not(.danger),.smallBtn:not(.primary):not(.danger)),
+body[data-theme="senna_mclaren"] :where(.modal,#ovLogin,#crmPageCard,.crmPanel,.crmFormPanel) :where(.btn:not(.primary):not(.danger),.mBtn:not(.primary):not(.danger),.smallBtn:not(.primary):not(.danger)){
+  color:#071225 !important;
+  -webkit-text-fill-color:#071225 !important;
+}
+
 </style>
 </head>
 <body data-theme="senna_brasil">
