@@ -4088,6 +4088,293 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
   .crmAlertTile.bad{animation:none !important;}
 }
 
+
+
+/* =========================================================
+   TEMAS NOVOS — AYRTON SENNA DO BRASIL + NASA
+   Substitui visualmente Senna McLaren e Senna Capacete.
+========================================================= */
+body[data-theme="senna_brasil"]{
+  --bg0:#fff7c2;
+  --bg1:#ffd700;
+  --card:rgba(255,255,255,.92);
+  --line:rgba(11,29,107,.18);
+  --txt:#071225;
+  --mut:rgba(7,18,37,.76);
+  --mut2:rgba(7,18,37,.56);
+  --acc:#009739;
+  --good:#009739;
+  --warn:#ffd700;
+  --bad:#d61f26;
+  --shadow:0 18px 46px rgba(11,29,107,.16);
+  background:
+    linear-gradient(180deg,rgba(255,215,0,.96),rgba(255,246,179,.72) 18%, rgba(255,255,255,.94) 38%, rgba(255,255,255,.98)),
+    radial-gradient(900px 380px at 82% 0%, rgba(0,151,57,.18), transparent 62%);
+}
+body[data-theme="senna_brasil"]::before{
+  content:"";
+  position:fixed;
+  left:0;right:0;top:0;
+  height:96px;
+  z-index:0;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg,#ffd700 0 52%, #009739 52% 60%, #ffffff 60% 64%, #0b1d6b 64% 78%, transparent 78%),
+    linear-gradient(110deg,transparent 0 62%, rgba(255,255,255,.92) 62% 78%, transparent 78%);
+  opacity:.98;
+}
+body[data-theme="senna_brasil"] .hdr{
+  background:
+    linear-gradient(180deg,rgba(255,215,0,.94),rgba(255,215,0,.78)),
+    linear-gradient(90deg,#009739 0 16%, #ffd700 16% 76%, #0b1d6b 76% 100%);
+  border-bottom:4px solid #0b1d6b;
+  box-shadow:0 10px 28px rgba(11,29,107,.20);
+  color:#071225;
+}
+body[data-theme="senna_brasil"] .hdr::before{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:-8px;height:8px;
+  background:linear-gradient(90deg,#009739 0 42%,#ffffff 42% 46%,#0b1d6b 46% 100%);
+  pointer-events:none;
+}
+body[data-theme="senna_brasil"] .compactBrand h1,
+body[data-theme="senna_brasil"] .compactBrand p,
+body[data-theme="senna_brasil"] .btn,
+body[data-theme="senna_brasil"] .statusPill{
+  color:#071225 !important;
+  text-shadow:none !important;
+}
+body[data-theme="senna_brasil"] .card,
+body[data-theme="senna_brasil"] .modal,
+body[data-theme="senna_brasil"] .payRow,
+body[data-theme="senna_brasil"] .sumBox,
+body[data-theme="senna_brasil"] .themeCard{
+  background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,249,218,.88)) !important;
+  border-color:rgba(11,29,107,.16) !important;
+  color:#071225 !important;
+  box-shadow:0 18px 44px rgba(11,29,107,.12) !important;
+}
+body[data-theme="senna_brasil"] .btn,
+body[data-theme="senna_brasil"] .mBtn,
+body[data-theme="senna_brasil"] .smallBtn,
+body[data-theme="senna_brasil"] .dow,
+body[data-theme="senna_brasil"] .sideOut{
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,244,184,.90)) !important;
+  border-color:rgba(11,29,107,.20) !important;
+  color:#071225 !important;
+}
+body[data-theme="senna_brasil"] .btn.primary,
+body[data-theme="senna_brasil"] .mBtn.primary,
+body[data-theme="senna_brasil"] .smallBtn.primary,
+body[data-theme="senna_brasil"] .btn.modeActive{
+  background:linear-gradient(135deg,#009739,#006b2c) !important;
+  color:#fff !important;
+  border-color:rgba(0,151,57,.40) !important;
+  box-shadow:0 12px 28px rgba(0,151,57,.22) !important;
+}
+body[data-theme="senna_brasil"] .month,
+body[data-theme="senna_brasil"] .sectionHead .ttl,
+body[data-theme="senna_brasil"] .mHead h3,
+body[data-theme="senna_brasil"] .themeTitle{
+  color:#071225 !important;
+  text-shadow:none !important;
+}
+body[data-theme="senna_brasil"] .sectionHead .sub,
+body[data-theme="senna_brasil"] .small,
+body[data-theme="senna_brasil"] .themeDesc,
+body[data-theme="senna_brasil"] .sumBox .lbl{
+  color:rgba(7,18,37,.70) !important;
+}
+body[data-theme="senna_brasil"] .mainCalendarCard .sectionHead{
+  background:linear-gradient(180deg,#0b1220,#111827) !important;
+  border-bottom:5px solid #ffd700 !important;
+}
+body[data-theme="senna_brasil"] .mainCalendarCard .month{
+  color:#ffffff !important;
+  text-shadow:0 4px 18px rgba(0,0,0,.35) !important;
+}
+body[data-theme="senna_brasil"] .day{
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,248,210,.92)) !important;
+  border-color:rgba(0,151,57,.24) !important;
+}
+body[data-theme="senna_brasil"] .day.today{
+  border-color:#009739 !important;
+  box-shadow:0 0 0 3px rgba(0,151,57,.22) inset,0 0 0 2px rgba(255,215,0,.60),0 0 28px rgba(0,151,57,.22) !important;
+  background:linear-gradient(180deg,rgba(255,215,0,.30),rgba(255,255,255,.96)) !important;
+}
+body[data-theme="senna_brasil"] .day.today .num{color:#009739 !important;text-shadow:none !important;}
+body[data-theme="senna_brasil"] .input,
+body[data-theme="senna_brasil"] textarea,
+body[data-theme="senna_brasil"] select{
+  background:rgba(255,255,255,.92) !important;
+  color:#071225 !important;
+  border-color:rgba(11,29,107,.18) !important;
+}
+body[data-theme="senna_brasil"] .hambMenu{
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,248,210,.96)) !important;
+  border-color:rgba(11,29,107,.18) !important;
+}
+body[data-theme="senna_brasil"] .hambBtn .hambLines,
+body[data-theme="senna_brasil"] .hambBtn .hambLines::before,
+body[data-theme="senna_brasil"] .hambBtn .hambLines::after{background:#071225 !important;}
+body[data-theme="senna_brasil"] .crmAlertBar,
+body[data-theme="senna_brasil"] .crmDueCard{
+  border-color:#009739 !important;
+  box-shadow:0 0 0 2px rgba(255,215,0,.32),0 0 26px rgba(0,151,57,.20) !important;
+}
+
+body[data-theme="nasa"]{
+  --bg0:#020817;
+  --bg1:#0b1f3a;
+  --card:rgba(10,24,48,.88);
+  --line:rgba(148,163,184,.18);
+  --txt:#f8fbff;
+  --mut:rgba(248,251,255,.76);
+  --mut2:rgba(248,251,255,.56);
+  --acc:#fc3d21;
+  --good:#5eead4;
+  --warn:#facc15;
+  --bad:#fc3d21;
+  --shadow:0 20px 60px rgba(0,0,0,.52);
+  background:
+    radial-gradient(900px 500px at 20% 0%,rgba(30,58,138,.38),transparent 58%),
+    radial-gradient(700px 420px at 84% 6%,rgba(252,61,33,.18),transparent 56%),
+    radial-gradient(circle at 18% 30%,rgba(255,255,255,.15) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 74% 22%,rgba(255,255,255,.12) 0 1px,transparent 1.5px),
+    linear-gradient(180deg,#0b1f3a,#020817 70%);
+}
+body[data-theme="nasa"] .hdr{
+  background:
+    linear-gradient(180deg,rgba(6,18,38,.96),rgba(6,18,38,.72)),
+    radial-gradient(450px 90px at 80% 0%,rgba(252,61,33,.25),transparent 70%);
+  border-bottom:2px solid rgba(252,61,33,.72);
+  box-shadow:0 14px 36px rgba(0,0,0,.36);
+}
+body[data-theme="nasa"] .hdr::after{
+  content:"NASA";
+  position:absolute;
+  right:22px;top:50%;
+  transform:translateY(-50%);
+  font-weight:1000;
+  letter-spacing:.18em;
+  color:rgba(255,255,255,.07);
+  font-size:52px;
+  pointer-events:none;
+}
+body[data-theme="nasa"] .card,
+body[data-theme="nasa"] .modal,
+body[data-theme="nasa"] .payRow,
+body[data-theme="nasa"] .sumBox,
+body[data-theme="nasa"] .themeCard{
+  background:linear-gradient(180deg,rgba(15,35,68,.92),rgba(6,18,38,.86)) !important;
+  border-color:rgba(148,163,184,.18) !important;
+  box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 22px 60px rgba(0,0,0,.46) !important;
+}
+body[data-theme="nasa"] .btn,
+body[data-theme="nasa"] .mBtn,
+body[data-theme="nasa"] .smallBtn,
+body[data-theme="nasa"] .statusPill,
+body[data-theme="nasa"] .dow,
+body[data-theme="nasa"] .sideOut{
+  background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.035)) !important;
+  border-color:rgba(148,163,184,.18) !important;
+  color:#f8fbff !important;
+}
+body[data-theme="nasa"] .btn.primary,
+body[data-theme="nasa"] .mBtn.primary,
+body[data-theme="nasa"] .smallBtn.primary,
+body[data-theme="nasa"] .btn.modeActive{
+  background:linear-gradient(135deg,#fc3d21,#9d1f12) !important;
+  border-color:rgba(252,61,33,.60) !important;
+  color:#ffffff !important;
+  box-shadow:0 12px 30px rgba(252,61,33,.22) !important;
+}
+body[data-theme="nasa"] .month,
+body[data-theme="nasa"] .sectionHead .ttl,
+body[data-theme="nasa"] .mHead h3,
+body[data-theme="nasa"] .themeTitle{
+  color:#f8fbff !important;
+  text-shadow:0 0 18px rgba(96,165,250,.22) !important;
+}
+body[data-theme="nasa"] .mainCalendarCard .sectionHead{
+  background:linear-gradient(180deg,rgba(4,10,22,.98),rgba(9,18,36,.94)) !important;
+  border-bottom:2px solid rgba(252,61,33,.70) !important;
+}
+body[data-theme="nasa"] .day{
+  background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.025)) !important;
+  border-color:rgba(148,163,184,.16) !important;
+}
+body[data-theme="nasa"] .day.today{
+  border-color:#fc3d21 !important;
+  box-shadow:0 0 0 3px rgba(252,61,33,.22) inset,0 0 26px rgba(252,61,33,.20),0 0 40px rgba(96,165,250,.12) !important;
+  background:linear-gradient(180deg,rgba(252,61,33,.16),rgba(255,255,255,.04)) !important;
+}
+body[data-theme="nasa"] .input,
+body[data-theme="nasa"] textarea,
+body[data-theme="nasa"] select{
+  background:rgba(3,12,28,.80) !important;
+  color:#f8fbff !important;
+  border-color:rgba(148,163,184,.22) !important;
+}
+body[data-theme="nasa"] .hambMenu{
+  background:linear-gradient(180deg,rgba(11,31,58,.98),rgba(2,8,23,.98)) !important;
+  border-color:rgba(148,163,184,.18) !important;
+}
+body[data-theme="nasa"] .crmAlertBar,
+body[data-theme="nasa"] .crmDueCard{
+  border-color:#fc3d21 !important;
+  box-shadow:0 0 0 2px rgba(252,61,33,.22),0 0 28px rgba(252,61,33,.18) !important;
+}
+
+.themePreview{
+  height:76px;
+  border-radius:12px;
+  margin-bottom:12px;
+  border:1px solid rgba(255,255,255,.18);
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 12px 24px rgba(0,0,0,.16) inset;
+}
+.themePreview_senna_brasil{
+  background:
+    linear-gradient(180deg,#ffd700 0 52%,#009739 52% 61%,#ffffff 61% 65%,#0b1d6b 65% 79%,#ffd700 79% 100%);
+}
+.themePreview_senna_brasil::after{
+  content:"";
+  position:absolute;
+  right:10px;top:16px;
+  width:92px;height:36px;
+  border-radius:22px 8px 8px 22px;
+  background:linear-gradient(90deg,#d61f26 0 28%,#ffffff 28% 78%,#111827 78% 100%);
+  box-shadow:-28px 12px 0 -10px #111, 28px 12px 0 -10px #111;
+  transform:skewX(-12deg);
+}
+.themePreview_nasa{
+  background:
+    radial-gradient(circle at 22% 28%,rgba(255,255,255,.78) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 72% 22%,rgba(255,255,255,.55) 0 1px,transparent 1.5px),
+    radial-gradient(90px 55px at 78% 74%,rgba(252,61,33,.25),transparent 64%),
+    linear-gradient(135deg,#061226,#0b1f3a 58%,#020817);
+}
+.themePreview_nasa::after{
+  content:"NASA";
+  position:absolute;
+  left:18px;top:22px;
+  color:#fff;
+  font-size:21px;
+  font-weight:1000;
+  letter-spacing:.08em;
+  text-shadow:0 0 12px rgba(255,255,255,.26);
+}
+.themePreview_nasa::before{
+  content:"";
+  position:absolute;
+  left:16px;top:34px;width:88px;height:3px;
+  background:#fc3d21;
+  transform:rotate(-18deg);
+  border-radius:999px;
+}
 </style>
 </head>
 <body data-theme="senna_capacete">
@@ -4950,10 +5237,11 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
   (() => {
     const MEMORY_HISTORY_LIMIT = 20;
     const MAX_VERSIONED_BACKUPS = 30;
-    const THEMES = ['senna_mclaren','senna_capacete','tesla','windows_xp','toy_story','sexta_13','game_of_thrones','sonic','resident_evil_2','dark','light','ocean','violet','gold','graphite','paper','emerald','custom'];
+    const THEMES = ['senna_brasil','nasa','tesla','windows_xp','toy_story','sexta_13','game_of_thrones','sonic','resident_evil_2','dark','light','ocean','violet','gold','graphite','paper','emerald','custom'];
+    const THEME_ALIASES = { senna_mclaren:'senna_brasil', senna_capacete:'nasa' };
     const PRESET_THEMES = [
-      { key:'senna_mclaren', name:'Ayrton Senna · McLaren', desc:'Preto, vermelho e dourado executivo.', sw:['#111111','#d61f26','#d4af37'] },
-      { key:'senna_capacete', name:'Ayrton Senna · Capacete', desc:'Amarelo dominante, verde vibrante e azul icônicos do capacete.', sw:['#ffe100','#00ff88','#1d4ed8'] },
+      { key:'senna_brasil', name:'Ayrton Senna do Brasil', desc:'Amarelo velocidade, faixa verde, faixa azul e visual inspirado no carro da imagem.', sw:['#FFD700','#009739','#0B1D6B'], preview:'senna_brasil' },
+      { key:'nasa', name:'NASA', desc:'Azul espacial, branco técnico e vermelho NASA em estilo centro de controle.', sw:['#0B1F3A','#FFFFFF','#FC3D21'], preview:'nasa' },
       { key:'tesla', name:'Tesla', desc:'Minimalismo preto, branco e vermelho.', sw:['#111111','#e82127','#f3f4f6'] },
       { key:'windows_xp', name:'Windows XP', desc:'Nostalgia premium com azul e verde clássico.', sw:['#2d7de0','#7ddc4b','#f4f9ff'] },
       { key:'toy_story', name:'Toy Story', desc:'Azul céu, amarelo e vermelho lúdicos.', sw:['#2f78d6','#ffd230','#ef4444'] },
@@ -4983,7 +5271,7 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
     };
 
     const DEFAULTS = {
-      theme:'senna_capacete',
+      theme:'senna_brasil',
       cellH:128,
       view:(() => { const d = new Date(); return { y:d.getFullYear(), m:d.getMonth() }; })(),
       selDate:todayISO(),
@@ -5062,8 +5350,14 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
       return String(raw || '')
         .replace(/\b(\d{2})[\/\.-](\d{2})[\/\.-](\d{4})\b/g, '$3-$2-$1');
     }
+    function normalizeThemeKey(key){
+      key = String(key || '').trim();
+      key = THEME_ALIASES[key] || key;
+      return THEMES.includes(key) ? key : 'senna_brasil';
+    }
     function normalizeState(obj){
       const s = { ...deepClone(DEFAULTS), ...(obj || {}) };
+      s.theme = normalizeThemeKey(s.theme);
       s.events = Array.isArray(s.events) ? s.events : [];
       s.payRules = Array.isArray(s.payRules) ? s.payRules : [];
       s.bonusRules = Array.isArray(s.bonusRules) ? s.bonusRules : [];
@@ -5720,7 +6014,8 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
       ['--bg0','--bg1','--card','--line','--txt','--mut','--mut2','--acc','--good'].forEach(v => root.style.removeProperty(v));
     }
     function applyTheme(){
-      const themeKey = state.theme || 'dark';
+      const themeKey = normalizeThemeKey(state.theme || 'dark');
+      state.theme = themeKey;
       document.body.setAttribute('data-theme', themeKey);
 
       if (themeKey === 'custom') applyCustomThemeVariables();
@@ -5783,7 +6078,9 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
       PRESET_THEMES.forEach(theme => {
         const card = document.createElement('div');
         card.className = 'themeCard' + ((state.theme || 'dark') === theme.key ? ' active' : '');
+        const preview = theme.preview ? `<div class="themePreview themePreview_${theme.preview}"><span></span></div>` : '';
         card.innerHTML = `
+          ${preview}
           <div class="themeTitle">${theme.name}</div>
           <div class="themeSwatches">${theme.sw.map(c => `<span class="themeSw" style="background:${c}"></span>`).join('')}</div>
           <div class="themeDesc">${theme.desc}</div>
@@ -5821,7 +6118,7 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
       UI.open('ovThemeSelector');
     }
     function setThemePreset(key){
-      state.theme = key;
+      state.theme = normalizeThemeKey(key);
       save();
       renderAll();
       loadCustomThemeInputs();
