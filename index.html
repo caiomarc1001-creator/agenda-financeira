@@ -7533,7 +7533,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     }
 
     function dashboardPaymentReceivablesForVisibleMonth(){
-      const payY = state.view.y, payM = state.view.m;
+      const v = ensureDashboardView();
+      const payY = Number(v.y), payM = Number(v.m);
       const rows = [];
       let total = 0;
       let hours = 0;
@@ -7688,12 +7689,12 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
 
       const cards = [
         { icon:'📅', k:'Eventos no mês', v:String(events.count), s:`Produção executada: ${fmtHours(events.hours)} · ${fmtMoney(events.total)}` },
-        { icon:'📌', k:'Recebíveis por regras', v:fmtMoney(receber), s: receivablesByRules.hasRules ? `${receivablesByRules.count} evento(s) · ${receivablesByRules.rulesWithValue} regra(s) no mês de pagamento` : 'Cadastre regras de pagamento para calcular', cls:'warn' },
+        { icon:'📌', k:'Recebíveis por regras', v:fmtMoney(receber), s: receivablesByRules.hasRules ? `${receivablesByRules.count} evento(s) · ${receivablesByRules.rulesWithValue} regra(s) em ${dashboardMonthLabel()}` : 'Cadastre regras de pagamento para calcular', cls:'warn' },
         { icon:'⚠️', k:'Total em aberto', v:fmtMoney(totalAberto), s:'Recebíveis por regras + cirurgias não pagas', cls: totalAberto > 0 ? 'warn' : 'good' },
         { icon:'🏥', k:'Cirurgias no mês', v:String(surgeries.length), s:`Total cadastrado ${fmtMoney(surgeryTotal)}` },
         { icon:'✅', k:'Recebido cirúrgico', v:fmtMoney(recebido), s:'Cirurgias marcadas como pagas', cls:'good' },
         { icon:'⏳', k:'Pendente cirúrgico', v:fmtMoney(pendente), s:`${surgeries.filter(s => String(s.paymentStatus || s.status || '').toLowerCase() !== 'paid').length} paciente(s) pendente(s)`, cls: pendente > 0 ? 'bad' : 'good' },
-        { icon:'💳', k:'Convênios/Particular', v:String(plans.length), s:'Planos e particulares cadastrados' },
+        { icon:'💳', k:'Convênios/Particular', v:String(plans.length), s:`Planos e particulares cadastrados em ${dashboardMonthLabel()}` },
         { icon:'☁️', k:'Backups na nuvem', v:String(backups.length || 0), s:backups[0]?.savedAt ? `Último: ${backupHumanDate(backups[0].savedAt)}` : 'Nenhum backup listado' }
       ];
       UI.el('dashboardCards').innerHTML = cards.map(c => `
