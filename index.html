@@ -4793,6 +4793,7 @@ body[data-theme="toy_story"] .passToggle::after{
         <div class="primaryButtons">
           <button class="btn primary" id="btnNew">Novo</button>
           <button class="btn" id="btnTheme">Tema</button>
+          <button class="btn" id="btnToggleCalendarEvents" type="button">Ocultar eventos</button>
           <button class="btn" id="btnPay">Regras de pagamento</button>
           <button class="btn" id="btnNewSurgery">Modo Cirurgião</button>
           <button class="btn" id="btnCRMMode">Pacientes & Leads</button>
@@ -5276,10 +5277,16 @@ body[data-theme="toy_story"] .passToggle::after{
         <h3>Regras de pagamento</h3>
         <button class="closeX" id="payClose">✕</button>
       </div>
-      <div class="helper">As regras ficam cadastradas para uso futuro. Nesta versão funcional, o resumo financeiro do mês usa os valores lançados nos próprios eventos.</div>
+      <div class="helper">Cadastre regras separadas para <b>valores a receber</b> e para <b>contas a pagar</b>. Cada regra usa instituição/local, data de pagamento/vencimento e período de competência.</div>
+      <div class="themeSectionTitle" style="margin-top:14px">Regras de recebimento</div>
       <div id="rulesHost" style="margin-top:12px"></div>
       <div class="mFoot">
-        <button class="mBtn" id="addRule">+ Adicionar</button>
+        <button class="mBtn" id="addRule">+ Adicionar regra de recebimento</button>
+      </div>
+      <div class="themeSectionTitle" style="margin-top:18px;color:var(--bad)">Regras de contas a pagar</div>
+      <div id="payableRulesHost" style="margin-top:12px"></div>
+      <div class="mFoot">
+        <button class="mBtn danger" id="addPayableRule" type="button">+ Adicionar regra de conta</button>
         <button class="mBtn primary" id="saveRules">Salvar regras</button>
       </div>
     </div>
@@ -5697,10 +5704,11 @@ body[data-theme="toy_story"] .passToggle::after{
       selDate:todayISO(),
       events:[],
       payRules:[],
+      payableRules:[],
       bonusRules:[],
       surgeries:[],
       crm:[],
-      ui:{ summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, paymentRowsCollapsed:{} },
+      ui:{ summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, hideCalendarEvents:false, paymentRowsCollapsed:{}, payableRowsCollapsed:{} },
       customTheme:{ bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', alertColor:'#ff5d5d', alertIntensity:1.35, crmFormBg:'#22304f', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, manualAlertHighlight:false, presetOverrides:{} },
       _meta:{ updatedAt:'', updatedBy:'local' }
     };
@@ -5780,11 +5788,13 @@ body[data-theme="toy_story"] .passToggle::after{
       s.theme = normalizeThemeKey(s.theme);
       s.events = Array.isArray(s.events) ? s.events : [];
       s.payRules = Array.isArray(s.payRules) ? s.payRules : [];
+      s.payableRules = Array.isArray(s.payableRules) ? s.payableRules : [];
       s.bonusRules = Array.isArray(s.bonusRules) ? s.bonusRules : [];
       s.surgeries = Array.isArray(s.surgeries) ? s.surgeries : [];
       s.crm = Array.isArray(s.crm) ? s.crm : [];
-      s.ui = { summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, paymentRowsCollapsed:{}, ...(s.ui || {}) };
+      s.ui = { summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, hideCalendarEvents:false, paymentRowsCollapsed:{}, payableRowsCollapsed:{}, ...(s.ui || {}) };
       s.ui.paymentRowsCollapsed = s.ui.paymentRowsCollapsed || {};
+      s.ui.payableRowsCollapsed = s.ui.payableRowsCollapsed || {};
       s.customTheme = { bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', alertColor:'#ff5d5d', alertIntensity:1.35, crmFormBg:'#22304f', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, manualAlertHighlight:false, presetOverrides:{}, ...(s.customTheme || {}) };
       s.customTheme.buttonBg1 = s.customTheme.buttonBg1 || s.customTheme.buttonBg || '#3b82f6';
       s.customTheme.buttonBg2 = s.customTheme.buttonBg2 || s.customTheme.buttonBg || '#8b5cf6';
@@ -5818,7 +5828,7 @@ body[data-theme="toy_story"] .passToggle::after{
       return {
         events: Array.isArray(s.events) ? s.events.length : 0,
         surgeries: Array.isArray(s.surgeries) ? s.surgeries.length : 0,
-        payRules: Array.isArray(s.payRules) ? s.payRules.length : 0,
+        payRules: (Array.isArray(s.payRules) ? s.payRules.length : 0) + (Array.isArray(s.payableRules) ? s.payableRules.length : 0),
         bonusRules: Array.isArray(s.bonusRules) ? s.bonusRules.length : 0,
         crm: Array.isArray(s.crm) ? s.crm.length : 0
       };
@@ -6932,7 +6942,7 @@ body[data-theme="toy_story"] .passToggle::after{
             chip.addEventListener('click', ev => { ev.stopPropagation(); state.selDate = dISO; save(); renderCalendar(); renderSurgeryPanel(); });
             chips.appendChild(chip);
           });
-        } else {
+        } else if (!state.ui?.hideCalendarEvents) {
           calendarItems.forEach(e => {
             const chip = document.createElement('div');
             chip.className = 'chip';
@@ -7064,6 +7074,34 @@ body[data-theme="toy_story"] .passToggle::after{
       applyCollapsiblePanels();
     }
 
+
+    function togglePayableRuleRow(key){
+      state.ui = state.ui || {};
+      state.ui.payableRowsCollapsed = state.ui.payableRowsCollapsed || {};
+      state.ui.payableRowsCollapsed[key] = !state.ui.payableRowsCollapsed[key];
+      save();
+      renderPayables();
+      applyCollapsiblePanels();
+    }
+
+    function buildRuleFinancialRows(rules, kind, payY, payM){
+      const rows = [];
+      for (const rule of (rules || [])){
+        const name = String(rule.name || '').trim();
+        if (!name) continue;
+        const { from, to } = competenceRangeForPayMonth(rule, payY, payM);
+        const payDate = paymentDateFor(rule, payY, payM);
+        const items = listOccurrencesBetween(from, to)
+          .filter(o => String(o.name || '').trim() === name)
+          .filter(o => (o.financeKind || o.transactionKind || 'receivable') === kind)
+          .map(o => ({ date:o.startDate, name:o.name || '', type:typeLabel(o.type), time:o.time || '—', hours:eventHours(o), total:eventTotal(o), note:o.note || '' }));
+        const total = items.reduce((acc,item) => acc + Number(item.total || 0), 0);
+        const hours = items.reduce((acc,item) => acc + Number(item.hours || 0), 0);
+        if (items.length) rows.push({ rule, name, from, to, payDate, items, total, hours, count:items.length });
+      }
+      return rows;
+    }
+
     function renderPayments(){
       const host = UI.el('payList');
       const sumEl = UI.el('paySum');
@@ -7175,42 +7213,87 @@ body[data-theme="toy_story"] .passToggle::after{
       const y = state.view.y, m = state.view.m;
       const from = iso(new Date(y,m,1));
       const to = iso(new Date(y,m+1,0));
-      const items = listOccurrencesBetween(from, to)
-        .filter(o => (o.financeKind || o.transactionKind || 'receivable') === 'payable')
-        .map(o => ({ date:o.startDate, name:o.name || 'Conta a pagar', type:typeLabel(o.type), time:o.time || '—', hours:Number(o.hours || 0), total:eventTotal(o), note:o.note || '' }))
-        .sort((a,b) => String(a.date).localeCompare(String(b.date)) || String(a.name).localeCompare(String(b.name)));
-      const total = items.reduce((acc,item) => acc + Number(item.total || 0), 0);
-      sumEl.textContent = fmtMoney(total);
-      if (!items.length){
-        host.innerHTML = '<div class="helper">Nenhuma conta a pagar cadastrada neste mês. Ao criar um evento, marque “Natureza financeira: A pagar”.</div>';
-      } else {
-        items.forEach(item => {
+      let total = 0;
+
+      const hasRules = Array.isArray(state.payableRules) && state.payableRules.some(r => String(r.name || '').trim());
+      if (hasRules){
+        const rows = buildRuleFinancialRows(state.payableRules, 'payable', y, m);
+        rows.forEach(row => {
+          total += Number(row.total || 0);
+          const rowKey = `payable:${row.name}:${row.payDate}:${row.from}:${row.to}`;
+          const collapsed = !!(state.ui && state.ui.payableRowsCollapsed && state.ui.payableRowsCollapsed[rowKey]);
+          const itemsHtml = row.items.map(item => `
+            <div class="small" style="padding:8px 0;border-top:1px dashed var(--line)">
+              <b>${formatDateBR(item.date)}</b> • ${escapeHtml(item.type)} • ${escapeHtml(item.time)} • ${fmtHours(item.hours)} • ${fmtMoney(item.total)}${item.note ? ` • ${escapeHtml(item.note)}` : ''}
+            </div>
+          `).join('');
           const div = document.createElement('div');
           div.className = 'payRow payable';
           div.innerHTML = `
             <div class="payRowTop">
-              <div class="a">${escapeHtml(item.name)}</div>
-              <div class="b">${fmtMoney(item.total)}</div>
+              <div class="a">${escapeHtml(row.name)}</div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <button class="smallBtn payable-row-toggle" data-key="${escapeAttr(rowKey)}" type="button">${collapsed ? 'Expandir' : 'Recolher'}</button>
+                <div class="b">${fmtMoney(row.total)}</div>
+              </div>
             </div>
             <div class="small">
-              <b>Vencimento/Data:</b> ${formatDateBR(item.date)} •
-              <b>Tipo:</b> ${escapeHtml(item.type)} •
-              <b>Horário:</b> ${escapeHtml(item.time)} •
-              <b>Horas:</b> ${fmtHours(item.hours)}
-              ${item.note ? `<br><b>Obs.:</b> ${escapeHtml(item.note)}` : ''}
+              <b>Vencimento:</b> ${formatDateBR(row.payDate)} •
+              <b>Competência:</b> ${formatDateBR(row.from)} → ${formatDateBR(row.to)} •
+              <b>Contas:</b> ${row.count} •
+              <b>Horas:</b> ${fmtHours(row.hours)}
+            </div>
+            <div class="payable-row-body" style="display:${collapsed ? 'none' : 'block'};margin-top:6px">
+              ${itemsHtml}
             </div>
           `;
           host.appendChild(div);
         });
+        if (!rows.length){
+          host.innerHTML = '<div class="helper">Nenhuma conta a pagar para este mês conforme as regras cadastradas. Confira a instituição/local, a competência e os eventos marcados como “A pagar”.</div>';
+        }
+        host.querySelectorAll('.payable-row-toggle').forEach(btn => {
+          btn.addEventListener('click', () => togglePayableRuleRow(btn.dataset.key || ''));
+        });
+      } else {
+        const items = listOccurrencesBetween(from, to)
+          .filter(o => (o.financeKind || o.transactionKind || 'receivable') === 'payable')
+          .map(o => ({ date:o.startDate, name:o.name || 'Conta a pagar', type:typeLabel(o.type), time:o.time || '—', hours:Number(o.hours || 0), total:eventTotal(o), note:o.note || '' }))
+          .sort((a,b) => String(a.date).localeCompare(String(b.date)) || String(a.name).localeCompare(String(b.name)));
+        total = items.reduce((acc,item) => acc + Number(item.total || 0), 0);
+        if (!items.length){
+          host.innerHTML = '<div class="helper">Nenhuma conta a pagar cadastrada neste mês. Ao criar um evento, marque “Natureza financeira: A pagar”. Para vencimentos por competência, cadastre uma regra de conta em “Regras de pagamento”.</div>';
+        } else {
+          items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'payRow payable';
+            div.innerHTML = `
+              <div class="payRowTop">
+                <div class="a">${escapeHtml(item.name)}</div>
+                <div class="b">${fmtMoney(item.total)}</div>
+              </div>
+              <div class="small">
+                <b>Vencimento/Data:</b> ${formatDateBR(item.date)} •
+                <b>Tipo:</b> ${escapeHtml(item.type)} •
+                <b>Horário:</b> ${escapeHtml(item.time)} •
+                <b>Horas:</b> ${fmtHours(item.hours)}
+                ${item.note ? `<br><b>Obs.:</b> ${escapeHtml(item.note)}` : ''}
+              </div>
+            `;
+            host.appendChild(div);
+          });
+        }
       }
+
+      sumEl.textContent = fmtMoney(total);
       if (netBox){
         const show = !!state.ui?.showNetBalance;
         netBox.style.display = show ? '' : 'none';
-        const receivableText = (UI.el('paySum') && UI.el('paySum').textContent) ? UI.el('paySum').textContent : fmtMoney(0);
-        const receivableNumber = listOccurrencesBetween(from, to)
-          .filter(o => (o.financeKind || o.transactionKind || 'receivable') !== 'payable')
-          .reduce((acc,o) => acc + eventTotal(o), 0);
-        netBox.innerHTML = `<b>Saldo líquido opcional:</b> ${fmtMoney(receivableNumber - total)} <br><span style="color:var(--mut)">Receitas do calendário menos contas a pagar. Esse botão é apenas visual e não altera os valores a receber por regras.</span>`;
+        const receivableRows = buildRuleFinancialRows(state.payRules || [], 'receivable', y, m);
+        const receivableNumber = receivableRows.length
+          ? receivableRows.reduce((acc,row) => acc + Number(row.total || 0), 0)
+          : listOccurrencesBetween(from, to).filter(o => (o.financeKind || o.transactionKind || 'receivable') !== 'payable').reduce((acc,o) => acc + eventTotal(o), 0);
+        netBox.innerHTML = `<b>Saldo líquido opcional:</b> ${fmtMoney(receivableNumber - total)} <br><span style="color:var(--mut)">Receitas menos contas a pagar. Esse botão é apenas visual e não altera os valores a receber por regras.</span>`;
       }
       const btn = UI.el('btnToggleNetBalance');
       if (btn) btn.textContent = state.ui?.showNetBalance ? 'Ocultar saldo' : 'Abater no saldo';
@@ -8028,6 +8111,57 @@ body[data-theme="toy_story"] .passToggle::after{
     }
 
 
+    function renderPayableRulesEditor(){
+      const host = UI.el('payableRulesHost');
+      if (!host) return;
+      host.innerHTML = '';
+      state.payableRules = Array.isArray(state.payableRules) ? state.payableRules : [];
+      if (!state.payableRules.length){
+        host.innerHTML = '<div class="helper">Nenhuma regra de conta a pagar cadastrada ainda.</div>';
+        return;
+      }
+      for (const r of state.payableRules) {
+        const card = ruleCard(r);
+        const title = card.querySelector('.payRowTop .a');
+        if (title) title.textContent = 'Conta / Instituição';
+        card.classList.add('payable');
+        card.querySelector('button')?.addEventListener('click', () => {}, { once:true });
+        host.appendChild(card);
+      }
+      // Ajusta os botões remover para a lista de contas, pois ruleCard remove da lista de recebimentos.
+      [...host.querySelectorAll('.payRow')].forEach((card, i) => {
+        const btn = card.querySelector('button');
+        if (btn){
+          const clone = btn.cloneNode(true);
+          btn.replaceWith(clone);
+          clone.addEventListener('click', () => {
+            const id = state.payableRules[i]?.id;
+            state.payableRules = state.payableRules.filter(x => x.id !== id);
+            renderPayableRulesEditor();
+          });
+        }
+      });
+    }
+
+    function collectPayableRules(){
+      const host = UI.el('payableRulesHost');
+      if (!host) return;
+      const cards = [...host.querySelectorAll('.payRow')];
+      const ids = (state.payableRules || []).map(r => r.id);
+      state.payableRules = cards.map((card, i) => {
+        const get = key => card.querySelector(`[data-k="${key}"]`);
+        return {
+          id: ids[i] || uid(),
+          name: String(get('name')?.value || '').trim(),
+          payType: String(get('payType')?.value || 'day'),
+          payDay: clamp(parseInt(get('payDay')?.value || 18,10),1,31),
+          compStart: clamp(parseInt(get('compStart')?.value || 1,10),1,31),
+          compEnd: clamp(parseInt(get('compEnd')?.value || 31,10),1,31),
+        };
+      }).filter(r => r.name);
+    }
+
+
     function renderBonusRulesEditor(){
       const host = UI.el('bonusRulesHost');
       host.innerHTML = '';
@@ -8339,6 +8473,24 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     }
     async function resetAll(){ if (!confirm('Tem certeza que deseja zerar os dados da agenda?')) return; if (currentUser && cloudLoadDone) { const safety = await createVersionedBackup('antes-de-zerar', { silent:true, cloud:true }); if (!safety) return alert('Ação cancelada: não foi possível criar backup de segurança na nuvem.'); } pushHistorySnapshot(); state = deepClone(DEFAULTS); if (currentUser && cloudLoadDone) saveCloudNow(false); clearScope(); clearDelScope(); renderAll(); setSaveStatus('saved', currentUser ? 'Zerado e sincronizado' : 'Zerado'); }
 
+
+
+    function toggleCalendarEventsVisibility(){
+      state.ui = state.ui || {};
+      state.ui.hideCalendarEvents = !state.ui.hideCalendarEvents;
+      save();
+      updateCalendarEventsToggleButton();
+      renderCalendar();
+    }
+
+    function updateCalendarEventsToggleButton(){
+      const btn = UI.el('btnToggleCalendarEvents');
+      if (!btn) return;
+      const hidden = !!state.ui?.hideCalendarEvents;
+      btn.textContent = hidden ? 'Mostrar eventos' : 'Ocultar eventos';
+      btn.classList.toggle('danger', hidden);
+      btn.title = hidden ? 'Os eventos estão ocultos apenas no calendário. A barra lateral continua calculando tudo.' : 'Oculta os chips de eventos no calendário sem mexer na barra lateral.';
+    }
 
     function applyCollapsiblePanels(){
       const summaryBody = UI.el('summaryBody');
@@ -9026,6 +9178,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       applyCellH();
       renderDow();
       renderCalendar();
+      updateCalendarEventsToggleButton();
       renderSummary();
       renderPayments();
       renderPayables();
@@ -9415,6 +9568,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
 
     function bindEvents(){
       UI.el('btnTheme').addEventListener('click', toggleTheme);
+      UI.el('btnToggleCalendarEvents')?.addEventListener('click', toggleCalendarEventsVisibility);
       UI.el('themeSelectorClose').addEventListener('click', () => UI.close('ovThemeSelector'));
       UI.el('themeSelectorCancel').addEventListener('click', () => UI.close('ovThemeSelector'));
       UI.el('btnApplyCustomTheme').addEventListener('click', applyCustomThemeFromInputs);
@@ -9525,10 +9679,11 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('dayHOk').addEventListener('click', () => UI.close('ovDayH'));
       UI.el('dayHRange').addEventListener('input', e => { state.cellH = Number(e.target.value || 128); UI.el('dayHVal').textContent = `${state.cellH}px`; applyCellH(); save(); renderCalendar(); });
 
-      UI.el('btnPay').addEventListener('click', () => { renderRulesEditor(); UI.open('ovPay'); });
+      UI.el('btnPay').addEventListener('click', () => { renderRulesEditor(); renderPayableRulesEditor(); UI.open('ovPay'); });
       UI.el('payClose').addEventListener('click', () => UI.close('ovPay'));
       UI.el('addRule').addEventListener('click', () => { state.payRules.push({ id:uid(), name:'', payType:'day', payDay:18, compStart:1, compEnd:31 }); renderRulesEditor(); });
-      UI.el('saveRules').addEventListener('click', () => { collectRules(); save(); UI.close('ovPay'); renderPayments(); });
+      UI.el('addPayableRule')?.addEventListener('click', () => { state.payableRules = Array.isArray(state.payableRules) ? state.payableRules : []; state.payableRules.push({ id:uid(), name:'', payType:'day', payDay:18, compStart:1, compEnd:31 }); renderPayableRulesEditor(); });
+      UI.el('saveRules').addEventListener('click', () => { collectRules(); collectPayableRules(); save(); UI.close('ovPay'); renderPayments(); renderPayables(); });
 
       UI.el('btnBonusRules').addEventListener('click', () => { renderBonusRulesEditor(); UI.open('ovBonusRules'); });
       UI.el('bonusRulesClose').addEventListener('click', () => UI.close('ovBonusRules'));
