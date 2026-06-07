@@ -10494,5 +10494,351 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
 })();
 </script>
 
+
+
+<!-- =========================================================
+     CORREÇÃO MESTRE — HAMBÚRGUER FLUTUANTE REAL + LOGIN SEGURO
+     Objetivo:
+     1) O menu sai fisicamente da header ao abrir, então não pode ser cortado.
+     2) O login fica sempre acima de tudo e com topo preservado.
+     3) Não altera regras, calendário, CRM ou Firebase.
+========================================================= -->
+<style id="master-hamburger-login-fix-css">
+  :root{
+    --master-menu-left:12px;
+    --master-menu-top:84px;
+  }
+
+  .hdr,
+  .headerAligned,
+  .toolbarCenter,
+  .hambWrap{
+    overflow:visible !important;
+  }
+
+  .hambWrap{
+    position:relative !important;
+    z-index:9000 !important;
+    isolation:isolate !important;
+  }
+
+  .hambBtn{
+    position:relative !important;
+    z-index:9001 !important;
+  }
+
+  .hambMenu{
+    box-sizing:border-box !important;
+  }
+
+  .hambMenu.masterFloatingMenu{
+    display:flex !important;
+    position:fixed !important;
+    left:var(--master-menu-left) !important;
+    top:var(--master-menu-top) !important;
+    right:auto !important;
+    bottom:auto !important;
+    width:min(315px, calc(100vw - 24px)) !important;
+    min-width:min(270px, calc(100vw - 24px)) !important;
+    max-width:calc(100vw - 24px) !important;
+    max-height:calc(100dvh - var(--master-menu-top) - 16px) !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    z-index:2147482000 !important;
+    pointer-events:auto !important;
+    transform:none !important;
+    clip-path:none !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    flex-direction:column !important;
+    gap:8px !important;
+    padding:12px !important;
+    border-radius:18px !important;
+    background:linear-gradient(180deg,rgba(255,255,255,.99),rgba(246,249,255,.98)) !important;
+    border:2px solid rgba(7,18,37,.24) !important;
+    box-shadow:0 28px 80px rgba(0,0,0,.42) !important;
+  }
+
+  body[data-theme="dark"] .hambMenu.masterFloatingMenu,
+  body[data-theme="ocean"] .hambMenu.masterFloatingMenu,
+  body[data-theme="violet"] .hambMenu.masterFloatingMenu,
+  body[data-theme="gold"] .hambMenu.masterFloatingMenu,
+  body[data-theme="graphite"] .hambMenu.masterFloatingMenu,
+  body[data-theme="emerald"] .hambMenu.masterFloatingMenu,
+  body[data-theme="tesla"] .hambMenu.masterFloatingMenu,
+  body[data-theme="sexta_13"] .hambMenu.masterFloatingMenu,
+  body[data-theme="game_of_thrones"] .hambMenu.masterFloatingMenu,
+  body[data-theme="sonic"] .hambMenu.masterFloatingMenu,
+  body[data-theme="resident_evil_2"] .hambMenu.masterFloatingMenu,
+  body[data-theme="senna_mclaren"] .hambMenu.masterFloatingMenu,
+  body[data-theme="senna_capacete"] .hambMenu.masterFloatingMenu{
+    background:linear-gradient(180deg,rgba(14,20,38,.995),rgba(8,13,26,.985)) !important;
+    border-color:rgba(255,255,255,.22) !important;
+  }
+
+  .hambMenu.masterFloatingMenu .btn,
+  .hambMenu.masterFloatingMenu .menuItem{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    min-height:44px !important;
+    height:auto !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    white-space:normal !important;
+    line-height:1.15 !important;
+    position:relative !important;
+    z-index:1 !important;
+  }
+
+  .hambMenu.masterFloatingMenu .btn{
+    color:#071225 !important;
+    -webkit-text-fill-color:#071225 !important;
+  }
+
+  body[data-theme="dark"] .hambMenu.masterFloatingMenu .btn,
+  body[data-theme="ocean"] .hambMenu.masterFloatingMenu .btn,
+  body[data-theme="violet"] .hambMenu.masterFloatingMenu .btn,
+  body[data-theme="gold"] .hambMenu.masterFloatingMenu .btn,
+  body[data-theme="graphite"] .hambMenu.masterFloatingMenu .btn,
+  body[data-theme="emerald"] .hambMenu.masterFloatingMenu .btn,
+  body[data-theme="tesla"] .hambMenu.masterFloatingMenu .btn,
+  body[data-theme="sexta_13"] .hambMenu.masterFloatingMenu .btn,
+  body[data-theme="game_of_thrones"] .hambMenu.masterFloatingMenu .btn,
+  body[data-theme="sonic"] .hambMenu.masterFloatingMenu .btn,
+  body[data-theme="resident_evil_2"] .hambMenu.masterFloatingMenu .btn,
+  body[data-theme="senna_mclaren"] .hambMenu.masterFloatingMenu .btn,
+  body[data-theme="senna_capacete"] .hambMenu.masterFloatingMenu .btn{
+    color:#fff !important;
+    -webkit-text-fill-color:#fff !important;
+  }
+
+  @media(max-width:760px){
+    .hambMenu.masterFloatingMenu::after{
+      content:'deslize para ver mais botões';
+      position:sticky;
+      bottom:0;
+      display:block;
+      text-align:center;
+      padding:9px 10px;
+      margin:8px 0 0;
+      border-radius:999px;
+      background:linear-gradient(180deg,rgba(96,165,250,.22),rgba(96,165,250,.10));
+      border:1px solid rgba(96,165,250,.26);
+      font-size:11px;
+      font-weight:1000;
+      color:currentColor;
+      animation:menuSlideHint 1.4s ease-in-out infinite;
+    }
+  }
+
+  /* Login sempre inteiro, acima de qualquer menu flutuante */
+  #ovLogin.open{
+    z-index:2147483000 !important;
+    align-items:flex-start !important;
+    justify-content:center !important;
+    padding-top:calc(22px + env(safe-area-inset-top)) !important;
+    padding-bottom:calc(22px + env(safe-area-inset-bottom)) !important;
+    overflow:auto !important;
+  }
+
+  #ovLogin.open .modal{
+    position:relative !important;
+    z-index:2147483001 !important;
+    margin-top:0 !important;
+    max-height:calc(100dvh - 44px) !important;
+    overflow:auto !important;
+  }
+
+  #ovLogin .mHead{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    min-height:56px !important;
+    padding:6px 58px 14px 2px !important;
+    visibility:visible !important;
+    opacity:1 !important;
+  }
+
+  #ovLogin .mHead h3,
+  #ovLogin .mHead .ttl,
+  #ovLogin .mHead *{
+    visibility:visible !important;
+    opacity:1 !important;
+  }
+
+  #loginClose{
+    display:flex !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    z-index:2147483002 !important;
+  }
+
+  body[data-theme="senna_brasil"] #ovLogin .modal,
+  body[data-theme="senna_mclaren"] #ovLogin .modal{
+    background:linear-gradient(180deg,rgba(255,248,224,.99),rgba(232,218,169,.97)) !important;
+    border-color:rgba(7,18,37,.22) !important;
+  }
+
+  body[data-theme="senna_brasil"] #ovLogin,
+  body[data-theme="senna_brasil"] #ovLogin :where(h1,h2,h3,h4,h5,h6,p,span,div,label,small,strong,b,em),
+  body[data-theme="senna_mclaren"] #ovLogin,
+  body[data-theme="senna_mclaren"] #ovLogin :where(h1,h2,h3,h4,h5,h6,p,span,div,label,small,strong,b,em){
+    color:#071225 !important;
+    -webkit-text-fill-color:#071225 !important;
+    text-shadow:none !important;
+  }
+
+  body[data-theme="senna_brasil"] #ovLogin :where(input,select,textarea,.input),
+  body[data-theme="senna_mclaren"] #ovLogin :where(input,select,textarea,.input){
+    color:#071225 !important;
+    -webkit-text-fill-color:#071225 !important;
+    background:rgba(255,255,255,.98) !important;
+    border-color:rgba(7,18,37,.24) !important;
+  }
+
+  body[data-theme="senna_brasil"] #ovLogin :where(input,textarea,.input)::placeholder,
+  body[data-theme="senna_mclaren"] #ovLogin :where(input,textarea,.input)::placeholder{
+    color:rgba(7,18,37,.52) !important;
+    -webkit-text-fill-color:rgba(7,18,37,.52) !important;
+    opacity:1 !important;
+  }
+
+  body[data-theme="senna_brasil"] #loginClose,
+  body[data-theme="senna_mclaren"] #loginClose,
+  body[data-theme="senna_brasil"] #ovLogin .passToggle,
+  body[data-theme="senna_mclaren"] #ovLogin .passToggle{
+    color:#071225 !important;
+    -webkit-text-fill-color:#071225 !important;
+    background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(241,245,249,.92)) !important;
+    border-color:rgba(7,18,37,.22) !important;
+  }
+
+  body[data-theme="senna_brasil"] #loginClose::before,
+  body[data-theme="senna_brasil"] #loginClose::after,
+  body[data-theme="senna_mclaren"] #loginClose::before,
+  body[data-theme="senna_mclaren"] #loginClose::after{
+    background:#071225 !important;
+  }
+
+  body[data-theme="senna_brasil"] #ovLogin .passToggle::before,
+  body[data-theme="senna_mclaren"] #ovLogin .passToggle::before{border-color:#071225 !important;}
+  body[data-theme="senna_brasil"] #ovLogin .passToggle::after,
+  body[data-theme="senna_mclaren"] #ovLogin .passToggle::after{background:#071225 !important;}
+</style>
+
+<script id="master-hamburger-login-fix-js">
+(function(){
+  var originalParent = null;
+  var originalNext = null;
+  var floatingMenu = null;
+  var activeWrap = null;
+
+  function px(n){ return Math.round(n) + 'px'; }
+  function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
+
+  function isLoginOpen(){
+    var login = document.getElementById('ovLogin');
+    return !!(login && login.classList.contains('open'));
+  }
+
+  function closeHamburgers(){
+    document.querySelectorAll('.hambWrap[open]').forEach(function(w){ w.open = false; });
+    restoreMenu();
+  }
+
+  function restoreMenu(){
+    if(floatingMenu && originalParent){
+      floatingMenu.classList.remove('masterFloatingMenu');
+      floatingMenu.style.removeProperty('display');
+      if(originalNext && originalNext.parentNode === originalParent){
+        originalParent.insertBefore(floatingMenu, originalNext);
+      }else{
+        originalParent.appendChild(floatingMenu);
+      }
+    }
+    floatingMenu = null;
+    originalParent = null;
+    originalNext = null;
+    activeWrap = null;
+  }
+
+  function positionMenu(){
+    if(!floatingMenu || !activeWrap) return;
+    var btn = activeWrap.querySelector('.hambBtn') || activeWrap.querySelector('summary') || activeWrap;
+    var r = btn.getBoundingClientRect();
+    var w = Math.min(315, window.innerWidth - 24);
+    var left = clamp(r.left, 12, window.innerWidth - w - 12);
+    var top = clamp(r.bottom + 10, 10, window.innerHeight - 90);
+    document.documentElement.style.setProperty('--master-menu-left', px(left));
+    document.documentElement.style.setProperty('--master-menu-top', px(top));
+  }
+
+  function floatMenu(wrap){
+    if(!wrap || isLoginOpen()){
+      closeHamburgers();
+      return;
+    }
+    var menu = wrap.querySelector('.hambMenu') || (floatingMenu && activeWrap === wrap ? floatingMenu : null);
+    if(!menu) return;
+
+    if(floatingMenu && floatingMenu !== menu) restoreMenu();
+
+    activeWrap = wrap;
+    floatingMenu = menu;
+    if(!originalParent){
+      originalParent = menu.parentNode;
+      originalNext = menu.nextSibling;
+    }
+    menu.classList.add('masterFloatingMenu');
+    document.body.appendChild(menu);
+    positionMenu();
+    requestAnimationFrame(positionMenu);
+    setTimeout(positionMenu, 80);
+  }
+
+  function bind(){
+    document.querySelectorAll('.hambWrap').forEach(function(wrap){
+      if(wrap.dataset.masterHambBound === '1') return;
+      wrap.dataset.masterHambBound = '1';
+      wrap.addEventListener('toggle', function(){
+        if(wrap.open) floatMenu(wrap);
+        else if(activeWrap === wrap) restoreMenu();
+      });
+      var summary = wrap.querySelector('summary');
+      if(summary){
+        summary.addEventListener('click', function(){
+          setTimeout(function(){ if(wrap.open) floatMenu(wrap); }, 0);
+        });
+      }
+    });
+  }
+
+  document.addEventListener('click', function(e){
+    if(floatingMenu && !e.target.closest('.hambMenu') && !e.target.closest('.hambWrap')) closeHamburgers();
+  }, true);
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeHamburgers();
+  });
+
+  window.addEventListener('resize', positionMenu, {passive:true});
+  window.addEventListener('scroll', positionMenu, {passive:true});
+
+  document.addEventListener('DOMContentLoaded', function(){
+    bind();
+    var login = document.getElementById('ovLogin');
+    if(login){
+      new MutationObserver(function(){ if(isLoginOpen()) closeHamburgers(); })
+        .observe(login, {attributes:true, attributeFilter:['class']});
+    }
+  });
+
+  new MutationObserver(function(){ bind(); if(activeWrap && activeWrap.open) positionMenu(); })
+    .observe(document.documentElement, {childList:true, subtree:true});
+})();
+</script>
+
 </body>
 </html>
