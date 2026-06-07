@@ -11,7 +11,7 @@
       --txt:#f2f6ff;--mut:rgba(242,246,255,.72);--mut2:rgba(242,246,255,.56);
       --acc:#60a5fa;--good:#39d98a;--warn:#ffb020;--bad:#ff5d5d;--shadow:0 16px 60px rgba(0,0,0,.45);
       --cellH:128px;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
-      --crm-alert-color:#ff5d5d;--crm-alert-soft:rgba(255,93,93,.26);--crm-alert-strong:rgba(255,93,93,.62);--crm-alert-glow:rgba(255,93,93,.32);
+      --crm-alert-color:#ff5d5d;--crm-alert-soft:rgba(255,93,93,.26);--crm-alert-strong:rgba(255,93,93,.62);--crm-alert-glow:rgba(255,93,93,.32);--crm-form-bg:rgba(255,255,255,.10);
     }
     body[data-theme="light"]{--bg0:#eef3ff;--bg1:#cfdcff;--card:rgba(255,255,255,.94);--line:rgba(10,20,40,.10);--txt:#0f1a2e;--mut:rgba(15,26,46,.72);--mut2:rgba(15,26,46,.56);--shadow:0 14px 40px rgba(40,50,70,.14)}
     body[data-theme="ocean"]{--bg0:#06131f;--bg1:#0a2940;--card:rgba(10,30,50,.88);--line:rgba(125,211,252,.16);--txt:#ecfeff;--mut:rgba(236,254,255,.76);--mut2:rgba(236,254,255,.58);--acc:#38bdf8}
@@ -3820,6 +3820,13 @@ body.crm-mode .sideOut .sideLabel,body.crm-mode .sideOut .sideMonth{display:none
 
 .crmHero{display:grid;grid-template-columns:1fr;gap:12px}
 .crmPanel{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.035));padding:14px;box-shadow:0 14px 36px rgba(0,0,0,.18)}
+.crmFormPanel{background:linear-gradient(180deg,var(--crm-form-bg),rgba(255,255,255,.035)) !important;border-color:color-mix(in srgb, var(--crm-form-bg) 55%, var(--line)) !important;}
+.crmCreateBtn{position:relative;isolation:isolate;overflow:hidden;border-width:2px !important;box-shadow:0 0 0 2px rgba(255,255,255,.06) inset,0 10px 24px rgba(0,0,0,.18) !important;}
+.crmCreateBtn span{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:999px;margin-right:5px;background:rgba(255,255,255,.18);font-weight:1000;}
+.crmCreateBtn::after{content:"";position:absolute;inset:-45%;background:linear-gradient(120deg,transparent 35%,rgba(255,255,255,.22),transparent 65%);transform:translateX(-60%);animation:crmCreateSweep 3.2s ease-in-out infinite;z-index:-1;}
+.crmCreatePatient{border-color:rgba(57,217,138,.78) !important;background:linear-gradient(135deg,rgba(57,217,138,.32),rgba(96,165,250,.14)) !important;}
+.crmCreateLead{border-color:rgba(255,176,32,.78) !important;background:linear-gradient(135deg,rgba(255,176,32,.30),rgba(255,255,255,.055)) !important;}
+@keyframes crmCreateSweep{0%,55%{transform:translateX(-70%) rotate(0deg)}80%,100%{transform:translateX(70%) rotate(0deg)}}
 .crmTitle{font-size:clamp(18px,1.6vw,24px);font-weight:1000;letter-spacing:.2px;color:var(--txt)}
 .crmSub{font-size:12px;color:var(--mut);line-height:1.6;margin-top:6px}
 .crmStats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
@@ -4073,6 +4080,10 @@ body[data-theme="windows_xp"].crm-mode #btnPatientCRM,
 body[data-theme="toy_story"].crm-mode #btnPatientCRM{
   color:#052e16 !important;
 }
+
+.crmAlertTile.bad{outline:1px solid var(--crm-alert-strong) !important;}
+.crmAlertTile.bad .big{letter-spacing:.2px;}
+.crmCard.crmDueLate{box-shadow:0 0 0 2px var(--crm-alert-soft),0 18px 38px rgba(0,0,0,.26) !important;border-color:var(--crm-alert-strong) !important;}
 @media (prefers-reduced-motion: reduce){
   .crmAlertTile.bad{animation:none !important;}
 }
@@ -4191,8 +4202,8 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
             <div class="sub">CRM comercial, acompanhamento e aquecimento de leads</div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-            <button class="smallBtn primary" id="crmNewPatient" type="button">Novo paciente</button>
-            <button class="smallBtn" id="crmNewLead" type="button">Novo lead</button>
+            <button class="smallBtn primary crmCreateBtn crmCreatePatient" id="crmNewPatient" type="button"><span>✚</span> Novo paciente</button>
+            <button class="smallBtn crmCreateBtn crmCreateLead" id="crmNewLead" type="button"><span>✚</span> Novo lead</button>
             <button class="smallBtn danger" id="crmExitMode" type="button">Sair</button>
           </div>
         </div>
@@ -4215,7 +4226,7 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
               </div>
             </div>
 
-            <div class="crmPanel">
+            <div class="crmPanel crmFormPanel">
               <div class="themeSectionTitle" id="crmFormTitle">Cadastrar paciente</div>
               <div class="crmFormGrid">
                 <div><div class="lbl">Nome completo</div><input class="input" id="crmName" placeholder="Nome do paciente / lead"></div>
@@ -4690,7 +4701,8 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
             <div><div class="lbl">Texto secundário</div><input class="input" id="customMut" type="color" value="#b8c4de"></div>
             <div><div class="lbl">Destaque geral</div><input class="input" id="customAcc" type="color" value="#3b82f6"></div>
             <div><div class="lbl">Destaque dos alertas</div><input class="input" id="customAlertColor" type="color" value="#ff5d5d"></div>
-            <div><div class="lbl">Força do alerta</div><select class="input" id="customAlertIntensity"><option value="1">Normal</option><option value="1.35" selected>Forte</option><option value="1.7">Máximo</option></select></div>
+            <div><div class="lbl">Força do alerta</div><select class="input" id="customAlertIntensity"><option value="1">Normal</option><option value="1.35" selected>Forte</option><option value="1.7">Máximo</option><option value="2.25">Ultra</option><option value="3">Crítico</option></select></div>
+            <div><div class="lbl">Fundo da janela CRM</div><input class="input" id="customCRMFormBg" type="color" value="#22304f"></div>
             <div><div class="lbl">Valor / positivo</div><input class="input" id="customGood" type="color" value="#39d98a"></div>
             <div><div class="lbl">Cor do mês</div><input class="input" id="customMonth" type="color" value="#f5f7fb"></div>
             <div><div class="lbl">Fonte das janelas</div><input class="input" id="customModalText" type="color" value="#10233f"></div>
@@ -4702,6 +4714,7 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
         <div class="mFoot">
           <button class="mBtn" id="btnApplyAccentColor" type="button">Aplicar destaque</button>
           <button class="mBtn" id="btnApplyAlertHighlight" type="button">Aplicar alertas comerciais</button>
+          <button class="mBtn" id="btnApplyCRMFormBg" type="button">Aplicar fundo CRM</button>
           <button class="mBtn" id="btnApplyTextColors" type="button">Aplicar só cores de texto</button>
           <button class="mBtn" id="btnApplyButtonColors" type="button">Aplicar degradê dos botões</button>
           <button class="mBtn" id="btnSavePresetEdit" type="button">Salvar edição no tema atual</button>
@@ -4980,7 +4993,7 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
       surgeries:[],
       crm:[],
       ui:{ summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, paymentRowsCollapsed:{} },
-      customTheme:{ bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', alertColor:'#ff5d5d', alertIntensity:1.35, manualTextColors:false, manualButtonColors:false, manualAccentColor:false, manualAlertHighlight:false, presetOverrides:{} },
+      customTheme:{ bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', alertColor:'#ff5d5d', alertIntensity:1.35, crmFormBg:'#22304f', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, manualAlertHighlight:false, presetOverrides:{} },
       _meta:{ updatedAt:'', updatedBy:'local' }
     };
 
@@ -5058,7 +5071,7 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
       s.crm = Array.isArray(s.crm) ? s.crm : [];
       s.ui = { summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, paymentRowsCollapsed:{}, ...(s.ui || {}) };
       s.ui.paymentRowsCollapsed = s.ui.paymentRowsCollapsed || {};
-      s.customTheme = { bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', alertColor:'#ff5d5d', alertIntensity:1.35, manualTextColors:false, manualButtonColors:false, manualAccentColor:false, manualAlertHighlight:false, presetOverrides:{}, ...(s.customTheme || {}) };
+      s.customTheme = { bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', alertColor:'#ff5d5d', alertIntensity:1.35, crmFormBg:'#22304f', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, manualAlertHighlight:false, presetOverrides:{}, ...(s.customTheme || {}) };
       s.customTheme.buttonBg1 = s.customTheme.buttonBg1 || s.customTheme.buttonBg || '#3b82f6';
       s.customTheme.buttonBg2 = s.customTheme.buttonBg2 || s.customTheme.buttonBg || '#8b5cf6';
       s.customTheme.presetOverrides = s.customTheme.presetOverrides || {};
@@ -5717,11 +5730,12 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
       const override = ((t.presetOverrides || {})[themeKey]) || {};
       const root = document.documentElement;
       const alertColor = override.alertColor || t.alertColor || '#ff5d5d';
-      const alertIntensity = Math.max(1, Math.min(1.7, Number(override.alertIntensity || t.alertIntensity || 1.35)));
+      const alertIntensity = Math.max(1, Math.min(3, Number(override.alertIntensity || t.alertIntensity || 1.35)));
       root.style.setProperty('--crm-alert-color', alertColor);
-      root.style.setProperty('--crm-alert-soft', hexToRgba(alertColor, Math.min(.42, .20 * alertIntensity)));
-      root.style.setProperty('--crm-alert-strong', hexToRgba(alertColor, Math.min(.88, .46 * alertIntensity)));
-      root.style.setProperty('--crm-alert-glow', hexToRgba(alertColor, Math.min(.60, .26 * alertIntensity)));
+      root.style.setProperty('--crm-alert-soft', hexToRgba(alertColor, Math.min(.72, .20 * alertIntensity)));
+      root.style.setProperty('--crm-alert-strong', hexToRgba(alertColor, Math.min(1, .46 * alertIntensity)));
+      root.style.setProperty('--crm-alert-glow', hexToRgba(alertColor, Math.min(.90, .26 * alertIntensity)));
+      root.style.setProperty('--crm-form-bg', hexToRgba(override.crmFormBg || t.crmFormBg || '#22304f', .62));
 
       const manualAccentOn = !!override.manualAccentColor;
       document.body.setAttribute('data-manual-accent', manualAccentOn ? 'on' : 'off');
@@ -5793,6 +5807,7 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
       UI.el('customGood').value = t.good || '#39d98a';
       if (UI.el('customAlertColor')) UI.el('customAlertColor').value = override.alertColor || t.alertColor || '#ff5d5d';
       if (UI.el('customAlertIntensity')) UI.el('customAlertIntensity').value = String(override.alertIntensity || t.alertIntensity || 1.35);
+      if (UI.el('customCRMFormBg')) UI.el('customCRMFormBg').value = override.crmFormBg || t.crmFormBg || '#22304f';
 
       UI.el('customMonth').value = override.month || '#0b1220';
       UI.el('customModalText').value = override.modalText || '#0b1220';
@@ -5831,6 +5846,7 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
         buttonText:UI.el('customButtonText').value,
         alertColor:UI.el('customAlertColor')?.value || '#ff5d5d',
         alertIntensity:Number(UI.el('customAlertIntensity')?.value || 1.35),
+        crmFormBg:UI.el('customCRMFormBg')?.value || '#22304f',
         manualTextColors:false,
         manualButtonColors:false,
         manualAccentColor:false,
@@ -5847,6 +5863,7 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
         buttonText: UI.el('customButtonText').value,
         alertColor: UI.el('customAlertColor')?.value || '#ff5d5d',
         alertIntensity: Number(UI.el('customAlertIntensity')?.value || 1.35),
+        crmFormBg: UI.el('customCRMFormBg')?.value || '#22304f',
         manualAccentColor: true,
         manualTextColors: true,
         manualButtonColors: true
@@ -5882,6 +5899,15 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
       save();
       applyTheme();
       renderCRMAlerts?.();
+      renderThemeGrid();
+    }
+
+    function applyCRMFormBgFromInputs(){
+      const o = ensureCurrentThemeOverride();
+      o.crmFormBg = UI.el('customCRMFormBg')?.value || '#22304f';
+      o.manualCRMFormBg = true;
+      save();
+      applyTheme();
       renderThemeGrid();
     }
 
@@ -5950,6 +5976,7 @@ body[data-theme="toy_story"].crm-mode #btnPatientCRM{
       o.buttonText = UI.el('customButtonText').value;
       o.alertColor = UI.el('customAlertColor')?.value || '#ff5d5d';
       o.alertIntensity = Number(UI.el('customAlertIntensity')?.value || 1.35);
+      o.crmFormBg = UI.el('customCRMFormBg')?.value || '#22304f';
       o.manualAccentColor = true;
       o.manualAlertHighlight = true;
       o.manualTextColors = true;
@@ -8045,7 +8072,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       if (crmIsDue(item)) badges.push(`<span class="crmBadge bad">🔔 ${escapeHtml(due)}</span>`);
       else if (item.nextContact) badges.push(`<span class="crmBadge warn">${escapeHtml(due)}</span>`);
       if (item.type !== 'lead' && end) { const left = crmDaysUntil(end); if (left !== null && left <= 30) badges.push(`<span class="crmBadge warn">⚠ Pacote ${left < 0 ? 'expirado há ' + Math.abs(left) + ' dia(s)' : 'vence em ' + left + ' dia(s)'}</span>`); }
-      return `<div class="crmCard">
+      return `<div class="crmCard ${crmIsDue(item) ? 'crmDueLate' : ''}">
         <div class="crmCardTop">
           <div><div class="crmName">${escapeHtml(item.name || 'Sem nome')}</div><div class="crmMeta">${escapeHtml(item.phone || 'Sem WhatsApp')} · ${escapeHtml(item.doctor || 'Médico não definido')}<br>${escapeHtml(item.interest || item.procedures || 'Sem interesse/procedimento definido')}</div></div>
           <div class="crmBadgeRow">${badges.join('')}</div>
@@ -8585,6 +8612,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('btnApplyCustomTheme').addEventListener('click', applyCustomThemeFromInputs);
       UI.el('btnApplyAccentColor').addEventListener('click', applyOnlyAccentColorFromInputs);
       UI.el('btnApplyAlertHighlight')?.addEventListener('click', applyAlertHighlightFromInputs);
+      UI.el('btnApplyCRMFormBg')?.addEventListener('click', applyCRMFormBgFromInputs);
       UI.el('btnApplyTextColors').addEventListener('click', applyOnlyTextColorsFromInputs);
       UI.el('btnApplyButtonColors').addEventListener('click', applyOnlyButtonColorsFromInputs);
       UI.el('btnSavePresetEdit').addEventListener('click', saveCurrentPresetEdit);
@@ -8594,6 +8622,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('btnResetButtonColors').addEventListener('click', disableManualButtonColors);
       UI.el('customAcc').addEventListener('input', applyOnlyAccentColorFromInputs);
       ['customAlertColor','customAlertIntensity'].forEach(id => UI.el(id)?.addEventListener('input', applyAlertHighlightFromInputs));
+      UI.el('customCRMFormBg')?.addEventListener('input', applyCRMFormBgFromInputs);
       ['customMonth','customModalText'].forEach(id => UI.el(id).addEventListener('input', applyOnlyTextColorsFromInputs));
       ['customButtonBg1','customButtonBg2','customButtonText'].forEach(id => UI.el(id).addEventListener('input', applyOnlyButtonColorsFromInputs));
       UI.el('btnNew').addEventListener('click', () => openEventNew(state.selDate || todayISO()));
