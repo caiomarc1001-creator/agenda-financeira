@@ -4379,14 +4379,9 @@ body[data-theme="nasa"] .crmDueCard{
 
 /* =========================================================
    AJUSTE PONTUAL — SENNA BRASIL / HEADER
-   Pedido: trocar apenas a imagem abstrata vermelho/branco/preto
-   atrás da conta por um carro F1 estilo McLaren da era Senna.
-   Não altera layout, textos, botões, calendário, CRM ou demais temas.
+   Pedido: mudar SOMENTE a arte vermelho/branco/preto do canto superior direito.
+   Mantém as faixas verde, azul, branca e o restante do layout intactos.
 ========================================================= */
-body[data-theme="senna_brasil"]::before{
-  background:
-    linear-gradient(180deg,#ffd700 0 52%, #009739 52% 60%, #ffffff 60% 64%, #0b1d6b 64% 78%, transparent 78%) !important;
-}
 body[data-theme="senna_brasil"] .hdr{
   overflow:hidden !important;
 }
@@ -4397,29 +4392,30 @@ body[data-theme="senna_brasil"] .headerAligned{
 body[data-theme="senna_brasil"] .hdr::after{
   content:"";
   position:absolute;
-  right:18px;
-  top:4px;
-  width:min(390px,36vw);
-  height:86px;
-  background-image:url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20760%20150%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3Cfilter%20id=%22shadow%22%20x=%22-20%%22%20y=%22-40%%22%20width=%22140%%22%20height=%22200%%22%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx=%220%22%20dy=%228%22%20stdDeviation=%227%22%20flood-color=%22#000000%22%20flood-opacity=%220.35%22/%3E%0A%20%20%20%20%3C/filter%3E%0A%20%20%20%20%3ClinearGradient%20id=%22body%22%20x1=%220%22%20x2=%221%22%20y1=%220%22%20y2=%220%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset=%220%22%20stop-color=%22#e02020%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset=%220.22%22%20stop-color=%22#ffffff%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset=%220.68%22%20stop-color=%22#ffffff%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset=%221%22%20stop-color=%22#f3f3f3%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%3C/defs%3E%0A%20%20%3Cg%20filter=%22url(#shadow)%22%3E%0A%20%20%20%20%3C%21--%20rear%20wing%20--%3E%0A%20%20%20%20%3Crect%20x=%2230%22%20y=%2231%22%20width=%2292%22%20height=%2218%22%20rx=%225%22%20fill=%22#111%22/%3E%0A%20%20%20%20%3Crect%20x=%2236%22%20y=%22103%22%20width=%2292%22%20height=%2218%22%20rx=%225%22%20fill=%22#111%22/%3E%0A%20%20%20%20%3Crect%20x=%2258%22%20y=%2246%22%20width=%2228%22%20height=%2262%22%20rx=%225%22%20fill=%22#e02020%22/%3E%0A%20%20%20%20%3C%21--%20rear%20tires%20--%3E%0A%20%20%20%20%3Crect%20x=%22115%22%20y=%2216%22%20width=%2258%22%20height=%2243%22%20rx=%2214%22%20fill=%22#080808%22/%3E%0A%20%20%20%20%3Crect%20x=%22115%22%20y=%2292%22%20width=%2258%22%20height=%2243%22%20rx=%2214%22%20fill=%22#080808%22/%3E%0A%20%20%20%20%3C%21--%20main%20body%20--%3E%0A%20%20%20%20%3Cpath%20d=%22M150%2072%20C210%2030%20325%2022%20470%2035%20C560%2043%20635%2060%20720%2068%20C637%2077%20560%20100%20470%20112%20C325%20130%20210%20120%20150%2078%20Z%22%20fill=%22url(#body)%22/%3E%0A%20%20%20%20%3C%21--%20red%20nose/rear%20accent%20--%3E%0A%20%20%20%20%3Cpath%20d=%22M150%2072%20C194%2043%20245%2033%20306%2030%20L274%20119%20C224%20114%20183%20101%20150%2078%20Z%22%20fill=%22#e02020%22%20opacity=%220.96%22/%3E%0A%20%20%20%20%3Cpath%20d=%22M572%2046%20C626%2055%20676%2063%20720%2068%20C672%2072%20622%2082%20570%2095%20Z%22%20fill=%22#f5f5f5%22/%3E%0A%20%20%20%20%3C%21--%20cockpit%20--%3E%0A%20%20%20%20%3Cellipse%20cx=%22445%22%20cy=%2273%22%20rx=%2248%22%20ry=%2230%22%20fill=%22#101010%22/%3E%0A%20%20%20%20%3Cellipse%20cx=%22462%22%20cy=%2269%22%20rx=%2225%22%20ry=%2218%22%20fill=%22#252525%22/%3E%0A%20%20%20%20%3C%21--%20front%20suspension%20/%20nose%20--%3E%0A%20%20%20%20%3Cpath%20d=%22M706%2067%20L755%2043%20L760%2054%20L721%2068%20L760%2083%20L755%2094%20Z%22%20fill=%22#f6f6f6%22/%3E%0A%20%20%20%20%3Cpath%20d=%22M704%2068%20L758%2068%22%20stroke=%22#111%22%20stroke-width=%225%22%20stroke-linecap=%22round%22/%3E%0A%20%20%20%20%3C%21--%20front%20tires%20--%3E%0A%20%20%20%20%3Crect%20x=%22673%22%20y=%2213%22%20width=%2254%22%20height=%2239%22%20rx=%2213%22%20fill=%22#080808%22/%3E%0A%20%20%20%20%3Crect%20x=%22673%22%20y=%2298%22%20width=%2254%22%20height=%2239%22%20rx=%2213%22%20fill=%22#080808%22/%3E%0A%20%20%20%20%3C%21--%20black%20sidepod%20/%20shadow%20lines%20--%3E%0A%20%20%20%20%3Cpath%20d=%22M300%2057%20C350%2047%20397%2048%20423%2057%20L408%2088%20C370%2094%20330%2091%20295%2082%20Z%22%20fill=%22#111%22%20opacity=%220.92%22/%3E%0A%20%20%20%20%3Cpath%20d=%22M206%2077%20C282%2085%20374%2087%20528%2074%22%20stroke=%22#111%22%20stroke-width=%224%22%20opacity=%220.28%22%20fill=%22none%22/%3E%0A%20%20%20%20%3Cpath%20d=%22M210%2055%20C294%2046%20410%2047%20536%2062%22%20stroke=%22#d71920%22%20stroke-width=%225%22%20opacity=%220.65%22%20fill=%22none%22/%3E%0A%20%20%20%20%3C%21--%20white%20highlight%20--%3E%0A%20%20%20%20%3Cpath%20d=%22M244%2038%20C334%2027%20473%2037%20582%2058%22%20stroke=%22#ffffff%22%20stroke-width=%229%22%20opacity=%220.42%22%20fill=%22none%22/%3E%0A%20%20%3C/g%3E%0A%3C/svg%3E");
+  right:14px;
+  top:2px;
+  width:min(410px,36vw);
+  height:92px;
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http:%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20760%20150%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3Cfilter%20id%3D%22shadow%22%20x%3D%22-20%%22%20y%3D%22-40%%22%20width%3D%22140%%22%20height%3D%22200%%22%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%228%22%20stdDeviation%3D%227%22%20flood-color%3D%22#000000%22%20flood-opacity%3D%220.35%22%2F%3E%0A%20%20%20%20%3C%2Ffilter%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22body%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%220%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22#e02020%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220.22%22%20stop-color%3D%22#ffffff%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220.68%22%20stop-color%3D%22#ffffff%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%221%22%20stop-color%3D%22#f3f3f3%22%2F%3E%0A%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Cg%20filter%3D%22url(#shadow)%22%3E%0A%20%20%20%20%3Crect%20x%3D%2230%22%20y%3D%2231%22%20width%3D%2292%22%20height%3D%2218%22%20rx%3D%225%22%20fill%3D%22#111%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%2236%22%20y%3D%22103%22%20width%3D%2292%22%20height%3D%2218%22%20rx%3D%225%22%20fill%3D%22#111%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%2246%22%20width%3D%2228%22%20height%3D%2262%22%20rx%3D%225%22%20fill%3D%22#e02020%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22115%22%20y%3D%2216%22%20width%3D%2258%22%20height%3D%2243%22%20rx%3D%2214%22%20fill%3D%22#080808%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22115%22%20y%3D%2292%22%20width%3D%2258%22%20height%3D%2243%22%20rx%3D%2214%22%20fill%3D%22#080808%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M150%2072%20C210%2030%20325%2022%20470%2035%20C560%2043%20635%2060%20720%2068%20C637%2077%20560%20100%20470%20112%20C325%20130%20210%20120%20150%2078%20Z%22%20fill%3D%22url(#body)%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M150%2072%20C194%2043%20245%2033%20306%2030%20L274%20119%20C224%20114%20183%20101%20150%2078%20Z%22%20fill%3D%22#e02020%22%20opacity%3D%220.96%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M572%2046%20C626%2055%20676%2063%20720%2068%20C672%2072%20622%2082%20570%2095%20Z%22%20fill%3D%22#f5f5f5%22%2F%3E%0A%20%20%20%20%3Cellipse%20cx%3D%22445%22%20cy%3D%2273%22%20rx%3D%2248%22%20ry%3D%2230%22%20fill%3D%22#101010%22%2F%3E%0A%20%20%20%20%3Cellipse%20cx%3D%22462%22%20cy%3D%2269%22%20rx%3D%2225%22%20ry%3D%2218%22%20fill%3D%22#252525%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M706%2067%20L755%2043%20L760%2054%20L721%2068%20L760%2083%20L755%2094%20Z%22%20fill%3D%22#f6f6f6%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M704%2068%20L758%2068%22%20stroke%3D%22#111%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22673%22%20y%3D%2213%22%20width%3D%2254%22%20height%3D%2239%22%20rx%3D%2213%22%20fill%3D%22#080808%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22673%22%20y%3D%2298%22%20width%3D%2254%22%20height%3D%2239%22%20rx%3D%2213%22%20fill%3D%22#080808%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M300%2057%20C350%2047%20397%2048%20423%2057%20L408%2088%20C370%2094%20330%2091%20295%2082%20Z%22%20fill%3D%22#111%22%20opacity%3D%220.92%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M206%2077%20C282%2085%20374%2087%20528%2074%22%20stroke%3D%22#111%22%20stroke-width%3D%224%22%20opacity%3D%220.28%22%20fill%3D%22none%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M210%2055%20C294%2046%20410%2047%20536%2062%22%20stroke%3D%22#d71920%22%20stroke-width%3D%225%22%20opacity%3D%220.65%22%20fill%3D%22none%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M244%2038%20C334%2027%20473%2037%20582%2058%22%20stroke%3D%22#ffffff%22%20stroke-width%3D%229%22%20opacity%3D%220.42%22%20fill%3D%22none%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
   background-repeat:no-repeat;
   background-size:contain;
   background-position:center right;
-  opacity:.88;
+  opacity:.92;
   pointer-events:none;
   z-index:1;
 }
 @media(max-width:980px){
   body[data-theme="senna_brasil"] .hdr::after{
-    opacity:.28;
-    right:-34px;
-    width:260px;
+    right:-38px;
+    width:270px;
+    opacity:.30;
   }
 }
 @media(max-width:680px){
-  body[data-theme="senna_brasil"] .hdr::after{display:none !important;}
+  body[data-theme="senna_brasil"] .hdr::after{
+    display:none !important;
+  }
 }
-
 </style>
 </head>
 <body data-theme="senna_capacete">
