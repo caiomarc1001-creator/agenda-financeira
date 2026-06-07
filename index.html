@@ -3772,23 +3772,66 @@ body[data-theme="toy_story"] .dashboardPeriodHint{color:#334155 !important}
 
 
 /* =========================
-   PACIENTES & LEADS — CRM MÉDICO
+   SPRINT CRM + ESTABILIDADE VISUAL
 ========================= */
-.crmHero{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;align-items:stretch}
+.statusPill{
+  width:176px !important;
+  min-width:176px !important;
+  max-width:176px !important;
+  height:42px !important;
+  justify-content:center !important;
+  flex:0 0 176px !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+}
+.statusPill #saveLabel{display:inline-block;max-width:132px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.statusPill.saved{border-color:rgba(57,217,138,.42) !important;background:linear-gradient(135deg,rgba(57,217,138,.18),rgba(255,255,255,.045)) !important}
+.statusPill.dirty{border-color:rgba(255,176,32,.45) !important;background:linear-gradient(135deg,rgba(255,176,32,.18),rgba(255,255,255,.045)) !important}
+.statusPill.saving{border-color:rgba(96,165,250,.48) !important;background:linear-gradient(135deg,rgba(96,165,250,.20),rgba(255,255,255,.045)) !important}
+.statusPill.error{border-color:rgba(255,93,93,.50) !important;background:linear-gradient(135deg,rgba(255,93,93,.20),rgba(255,255,255,.045)) !important}
+
+html{overflow-x:hidden}
+body{overflow-x:hidden}
+.container{max-width:1920px;margin:0 auto}
+.headerAligned,.container,.modal,.card,.sectionHead{min-width:0}
+.btn,.mBtn,.smallBtn{max-width:100%}
+.primaryButtons{min-width:0;overflow-x:auto;scrollbar-width:none}.primaryButtons::-webkit-scrollbar{display:none}
+.month{font-size:clamp(20px,2.1vw,32px)}
+.compactBrand h1{font-size:clamp(15px,1.3vw,18px)}
+
+/* CRM como página operacional */
+#crmPageCard{display:none}
+body.crm-mode .container{grid-template-columns:minmax(340px,460px) minmax(0,1fr)}
+body.crm-mode .mainCol{order:1}
+body.crm-mode .sidebarCol{order:2}
+body.crm-mode .sidebarCol > .section:not(#crmPageCard){display:none !important}
+body.crm-mode #crmPageCard{display:block !important;margin-top:0;min-height:calc(100vh - 104px)}
+body.crm-mode #btnPatientCRM{border-color:rgba(57,217,138,.65);background:linear-gradient(135deg,rgba(57,217,138,.28),rgba(96,165,250,.16))}
+body.crm-mode{--cellH:88px}
+body.crm-mode .mainCalendarCard .sectionHead{min-height:auto;top:72px}
+body.crm-mode .month{font-size:22px}
+body.crm-mode .dowShell{grid-template-columns:30px 1fr 30px;gap:6px;padding:8px 8px 0}
+body.crm-mode .calFrame{grid-template-columns:30px minmax(0,1fr) 30px;gap:6px;padding:8px}
+body.crm-mode .grid,body.crm-mode .dowRow{gap:5px}
+body.crm-mode .day{padding:5px;border-radius:12px}
+body.crm-mode .chip{font-size:10px;padding:5px 6px}
+body.crm-mode .sideOut .sideLabel,body.crm-mode .sideOut .sideMonth{display:none}
+
+.crmHero{display:grid;grid-template-columns:1fr;gap:12px}
 .crmPanel{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.035));padding:14px;box-shadow:0 14px 36px rgba(0,0,0,.18)}
-.crmTitle{font-size:24px;font-weight:1000;letter-spacing:.2px;color:var(--txt)}
+.crmTitle{font-size:clamp(18px,1.6vw,24px);font-weight:1000;letter-spacing:.2px;color:var(--txt)}
 .crmSub{font-size:12px;color:var(--mut);line-height:1.6;margin-top:6px}
-.crmStats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.crmStats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
 .crmStat{border:1px solid var(--line);border-radius:16px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.03))}
-.crmStat .k{font-size:11px;color:var(--mut2);font-weight:1000;text-transform:uppercase;letter-spacing:.3px}
-.crmStat .v{font-size:20px;font-weight:1000;margin-top:6px;color:var(--txt)}
+.crmStat .k{font-size:10px;color:var(--mut2);font-weight:1000;text-transform:uppercase;letter-spacing:.3px}
+.crmStat .v{font-size:18px;font-weight:1000;margin-top:6px;color:var(--txt)}
 .crmTabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .crmTab{border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.03));color:var(--txt);font-weight:1000;font-size:12px}
 .crmTab.active{border-color:rgba(96,165,250,.55);background:linear-gradient(135deg,rgba(96,165,250,.28),rgba(139,92,246,.18))}
-.crmToolbar{display:grid;grid-template-columns:1fr 180px 180px;gap:10px;margin-top:12px}
-.crmFormGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.crmFormGrid2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
-.crmList{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px;max-height:55vh;overflow:auto;padding-right:2px}
+.crmToolbar{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.crmFormGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.crmFormGrid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.crmList{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px;max-height:58vh;overflow:auto;padding-right:2px}
 .crmCard{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.025));padding:14px;box-shadow:0 10px 24px rgba(0,0,0,.14)}
 .crmCardTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .crmName{font-size:16px;font-weight:1000;color:var(--txt)}
@@ -3798,6 +3841,7 @@ body[data-theme="toy_story"] .dashboardPeriodHint{color:#334155 !important}
 .crmBadge.good{border-color:rgba(57,217,138,.38);background:rgba(57,217,138,.12)}
 .crmBadge.warn{border-color:rgba(255,176,32,.42);background:rgba(255,176,32,.13)}
 .crmBadge.bad{border-color:rgba(255,93,93,.42);background:rgba(255,93,93,.12)}
+.crmBadge.info{border-color:rgba(96,165,250,.42);background:rgba(96,165,250,.12)}
 .crmTimeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
 .crmTimeBox{border:1px solid var(--line);border-radius:14px;padding:10px;background:rgba(255,255,255,.045)}
 .crmTimeBox .k{font-size:10px;color:var(--mut2);font-weight:1000;text-transform:uppercase;letter-spacing:.3px}
@@ -3814,8 +3858,10 @@ body[data-theme="light"] .crmBadge, body[data-theme="paper"] .crmBadge,
 body[data-theme="light"] .crmTimeBox .v, body[data-theme="paper"] .crmTimeBox .v{color:#0b1220}
 body[data-theme="light"] .crmSub, body[data-theme="paper"] .crmSub,
 body[data-theme="light"] .crmMeta, body[data-theme="paper"] .crmMeta{color:#334155}
-@media(max-width:980px){.crmHero{grid-template-columns:1fr}.crmToolbar{grid-template-columns:1fr}.crmFormGrid{grid-template-columns:1fr 1fr}.crmTimeline{grid-template-columns:1fr 1fr}.crmStats{grid-template-columns:1fr 1fr}}
-@media(max-width:680px){.crmFormGrid,.crmFormGrid2,.crmTimeline,.crmStats{grid-template-columns:1fr}.crmTitle{font-size:20px}.crmList{max-height:60vh}.crmCard{padding:12px}}
+@media(max-width:1250px){.crmFormGrid3{grid-template-columns:1fr 1fr}.crmTimeline{grid-template-columns:1fr 1fr}}
+@media(max-width:1100px){body.crm-mode .container{grid-template-columns:1fr !important}body.crm-mode .mainCol{order:1 !important}body.crm-mode .sidebarCol{order:2 !important}body.crm-mode .mainCalendarCard{position:relative !important;top:auto !important}body.crm-mode{--cellH:76px}}
+@media(max-width:760px){.statusPill{width:150px !important;min-width:150px !important;max-width:150px !important;font-size:11px !important}.crmToolbar,.crmFormGrid,.crmFormGrid3,.crmTimeline,.crmStats{grid-template-columns:1fr}.crmCard{padding:12px}.crmList{max-height:65vh}}
+@media (min-resolution: 1.2dppx) and (max-width:1400px){.container{padding-left:10px;padding-right:10px;gap:10px}.btn{font-size:clamp(11px,.9vw,14px);padding:8px 10px}.sectionHead{padding:12px 14px}.card{border-radius:16px}.day{border-radius:12px}}
 
 </style>
 </head>
@@ -3848,6 +3894,7 @@ body[data-theme="light"] .crmMeta, body[data-theme="paper"] .crmMeta{color:#3341
           <button class="btn" id="btnTheme">Tema</button>
           <button class="btn" id="btnPay">Regras de pagamento</button>
           <button class="btn" id="btnNewSurgery">Modo Cirurgião</button>
+          <button class="btn" id="btnCRMMode">Pacientes & Leads</button>
           <button class="btn" id="btnUndo">Desfazer</button>
           <button class="btn" id="btnSaveNow">Salvar agora</button>
         </div>
@@ -3919,6 +3966,86 @@ body[data-theme="light"] .crmMeta, body[data-theme="paper"] .crmMeta{color:#3341
             <div class="surgeryMini"><div class="k">A receber</div><div class="v" id="surgUnpaidValue">R$ 0,00</div></div>
           </div>
           <div class="surgeryList" id="surgeryPreviewList"></div>
+        </div>
+      </section>
+
+      <section class="card section" id="crmPageCard">
+        <div class="sectionHead">
+          <div>
+            <div class="ttl">Pacientes & Leads</div>
+            <div class="sub">CRM comercial, acompanhamento e aquecimento de leads</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <button class="smallBtn primary" id="crmNewPatient" type="button">Novo paciente</button>
+            <button class="smallBtn" id="crmNewLead" type="button">Novo lead</button>
+            <button class="smallBtn danger" id="crmExitMode" type="button">Sair</button>
+          </div>
+        </div>
+        <div class="padded">
+          <div class="crmHero">
+            <div class="crmPanel">
+              <div class="crmTitle">Central de relacionamento</div>
+              <div class="crmSub">Pacientes convertidos, pacotes de acompanhamento e carteira de leads não convertidos com alertas de recontato para a equipe comercial.</div>
+              <div class="crmStats">
+                <div class="crmStat"><div class="k">Pacientes ativos</div><div class="v" id="crmStatPatients">0</div></div>
+                <div class="crmStat"><div class="k">Leads abertos</div><div class="v" id="crmStatLeads">0</div></div>
+                <div class="crmStat"><div class="k">Recontatos hoje/atrasados</div><div class="v" id="crmStatDue">0</div></div>
+                <div class="crmStat"><div class="k">Valores pagos</div><div class="v" id="crmStatPaid">R$ 0,00</div></div>
+              </div>
+              <div class="crmTabs">
+                <button class="crmTab active" id="crmTabPatients" type="button">Pacientes</button>
+                <button class="crmTab" id="crmTabLeads" type="button">Leads não convertidos</button>
+                <button class="crmTab" id="crmTabDue" type="button">Recontatos</button>
+              </div>
+            </div>
+
+            <div class="crmPanel">
+              <div class="themeSectionTitle" id="crmFormTitle">Cadastrar paciente</div>
+              <div class="crmFormGrid">
+                <div><div class="lbl">Nome completo</div><input class="input" id="crmName" placeholder="Nome do paciente / lead"></div>
+                <div><div class="lbl">Telefone / WhatsApp</div><input class="input" id="crmPhone" placeholder="(00) 00000-0000"></div>
+              </div>
+              <div class="crmFormGrid3">
+                <div><div class="lbl">Origem do lead</div><input class="input" id="crmOrigin" placeholder="Google, Instagram, WhatsApp, indicação..."></div>
+                <div><div class="lbl">Médico responsável</div><input class="input" id="crmDoctor" placeholder="Dr(a). responsável"></div>
+                <div><div class="lbl">Responsável comercial</div><input class="input" id="crmOwner" placeholder="Equipe / secretária"></div>
+              </div>
+              <div class="crmFormGrid3">
+                <div><div class="lbl">Tipo</div><select class="input" id="crmType"><option value="patient">Paciente convertido</option><option value="lead">Lead não convertido</option></select></div>
+                <div><div class="lbl">Status do lead/paciente</div><select class="input" id="crmStatus"><option value="ativo">Ativo</option><option value="renovacao">Renovação</option><option value="expirado">Expirado</option><option value="novo">Novo lead</option><option value="negociacao">Em negociação</option><option value="recontatar">Recontatar</option><option value="sem_resposta">Sem resposta</option><option value="perdido">Perdido</option><option value="convertido">Convertido</option></select></div>
+                <div><div class="lbl">Interesse / procedimento</div><input class="input" id="crmInterest" placeholder="Emagrecimento, cirurgia, gastro..."></div>
+              </div>
+              <div class="crmFormGrid3">
+                <div><div class="lbl">Pacote contratado</div><input class="input" id="crmPackage" placeholder="Trimestral, semestral, anual..."></div>
+                <div><div class="lbl">Meses fechados</div><input class="input" id="crmPackageMonths" type="number" min="0" step="1" placeholder="3, 6, 12"></div>
+                <div><div class="lbl">Início do pacote</div><input class="input" id="crmPackageStart" type="date"></div>
+              </div>
+              <div class="crmFormGrid3">
+                <div><div class="lbl">Valor pago</div><input class="input" id="crmAmountPaid" type="number" min="0" step="0.01" placeholder="0,00"></div>
+                <div><div class="lbl">Próximo contato / consulta</div><input class="input" id="crmNextContact" type="date"></div>
+                <div><div class="lbl">Recorrência recontato (dias)</div><input class="input" id="crmRecurrenceDays" type="number" min="0" step="1" placeholder="Ex: 7, 15, 30"></div>
+              </div>
+              <div class="crmFormGrid3">
+                <div><div class="lbl">Primeiro contato</div><input class="input" id="crmFirstContact" type="date"></div>
+                <div><div class="lbl">Último contato</div><input class="input" id="crmLastContact" type="date"></div>
+                <div><div class="lbl">Avisar dias antes</div><input class="input" id="crmReminderDays" type="number" min="0" step="1" value="0"></div>
+              </div>
+              <div style="margin-top:10px"><div class="lbl">Procedimentos realizados / histórico de interesse</div><textarea class="input" id="crmProcedures" rows="2"></textarea></div>
+              <div style="margin-top:10px"><div class="lbl">Observações e histórico comercial</div><textarea class="input" id="crmNotes" rows="3" placeholder="Motivos de não conversão, objeções, próximos passos, observações clínicas/comerciais..."></textarea></div>
+              <div class="mFoot">
+                <button class="mBtn ghost" id="crmClear" type="button">Limpar</button>
+                <button class="mBtn primary" id="crmSave" type="button">Salvar cadastro</button>
+              </div>
+            </div>
+
+            <div class="crmPanel">
+              <div class="crmToolbar">
+                <div><div class="lbl">Pesquisar</div><input class="input" id="crmSearch" placeholder="Nome, telefone, origem, médico, procedimento..."></div>
+                <div><div class="lbl">Filtro rápido</div><select class="input" id="crmQuickFilter"><option value="all">Todos</option><option value="due">Recontato hoje/atrasado</option><option value="active">Ativos</option><option value="lost">Perdidos</option><option value="renew">Renovação</option></select></div>
+              </div>
+              <div class="crmList" id="crmList"></div>
+            </div>
+          </div>
         </div>
       </section>
     </aside>
@@ -4427,77 +4554,6 @@ body[data-theme="light"] .crmMeta, body[data-theme="paper"] .crmMeta{color:#3341
   </div>
 
 
-  <div class="ov" id="ovPatientCRM">
-    <div class="modal" style="width:min(1180px,100%)">
-      <div class="mHead">
-        <h3>Pacientes & Leads · relacionamento comercial</h3>
-        <button class="closeX" id="crmClose" type="button">✕</button>
-      </div>
-      <div class="form">
-        <div class="crmHero">
-          <div class="crmPanel">
-            <div class="crmTitle">Central de pacientes e leads</div>
-            <div class="crmSub">Cadastro completo de pacientes convertidos, origem do lead, médico responsável, pacote contratado, valores pagos, lembretes de retorno e recontato comercial.</div>
-            <div class="crmStats">
-              <div class="crmStat"><div class="k">Pacientes</div><div class="v" id="crmStatPatients">0</div></div>
-              <div class="crmStat"><div class="k">Leads abertos</div><div class="v" id="crmStatLeads">0</div></div>
-              <div class="crmStat"><div class="k">Alertas hoje</div><div class="v" id="crmStatDue">0</div></div>
-              <div class="crmStat"><div class="k">Valor recebido</div><div class="v" id="crmStatPaid">R$ 0,00</div></div>
-            </div>
-            <div class="crmTabs">
-              <button class="crmTab active" id="crmTabPatients" type="button">Pacientes convertidos</button>
-              <button class="crmTab" id="crmTabLeads" type="button">Leads não convertidos</button>
-            </div>
-          </div>
-          <div class="crmPanel">
-            <div class="themeSectionTitle">Pesquisa e filtros</div>
-            <div class="crmToolbar">
-              <div><div class="lbl">Pesquisar</div><input class="input" id="crmSearch" placeholder="Nome, telefone, origem, médico, procedimento..."></div>
-              <div><div class="lbl">Origem</div><input class="input" id="crmFilterOrigin" placeholder="Instagram, Google, indicação..."></div>
-              <div><div class="lbl">Médico</div><input class="input" id="crmFilterDoctor" placeholder="Responsável"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="accountPanel">
-          <div class="themeSectionTitle" id="crmFormTitle">Cadastrar paciente convertido</div>
-          <div class="crmFormGrid">
-            <div><div class="lbl">Nome completo</div><input class="input" id="crmName" placeholder="Nome do paciente / lead"></div>
-            <div><div class="lbl">Telefone / WhatsApp</div><input class="input" id="crmPhone" placeholder="(00) 00000-0000"></div>
-            <div><div class="lbl">E-mail</div><input class="input" id="crmEmail" placeholder="email@exemplo.com"></div>
-          </div>
-          <div class="crmFormGrid" style="margin-top:10px">
-            <div><div class="lbl">Origem do lead</div><input class="input" id="crmOrigin" placeholder="Google Ads, Instagram, indicação..."></div>
-            <div><div class="lbl">Médico responsável</div><input class="input" id="crmDoctor" placeholder="Dr(a). responsável"></div>
-            <div><div class="lbl">Status</div><select class="input" id="crmStatus"><option value="patient">Paciente convertido</option><option value="lead">Lead não convertido</option></select></div>
-          </div>
-          <div style="margin-top:10px"><div class="lbl">Procedimentos realizados / interesse principal</div><textarea class="input" id="crmProcedures" rows="2" placeholder="Ex: protocolo de emagrecimento, cirurgia, acompanhamento clínico..."></textarea></div>
-          <div class="crmFormGrid" style="margin-top:10px">
-            <div><div class="lbl">Pacote adquirido</div><input class="input" id="crmPackage" placeholder="Semestral, trimestral, mensal..."></div>
-            <div><div class="lbl">Meses fechados</div><input class="input" id="crmPackageMonths" type="number" min="0" step="1" placeholder="Ex: 3, 6, 12"></div>
-            <div><div class="lbl">Início do pacote</div><input class="input" id="crmPackageStart" type="date"></div>
-          </div>
-          <div class="crmFormGrid" style="margin-top:10px">
-            <div><div class="lbl">Valor pago</div><input class="input" id="crmAmountPaid" type="number" min="0" step="0.01" placeholder="0,00"></div>
-            <div><div class="lbl">Próxima consulta / recontato</div><input class="input" id="crmNextContact" type="date"></div>
-            <div><div class="lbl">Lembrar quantos dias antes</div><input class="input" id="crmReminderDays" type="number" min="0" step="1" value="7"></div>
-          </div>
-          <div style="margin-top:10px"><div class="lbl">Observações</div><textarea class="input" id="crmNotes" rows="3" placeholder="Observações clínicas, comerciais, motivos de não conversão, próximos passos..."></textarea></div>
-          <div class="mFoot">
-            <button class="mBtn ghost" id="crmClear" type="button">Limpar</button>
-            <button class="mBtn primary" id="crmSave" type="button">Salvar cadastro</button>
-          </div>
-        </div>
-
-        <div>
-          <div class="themeSectionTitle">Lista</div>
-          <div class="crmList" id="crmList"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
   <div class="ov" id="ovDashboardCenter">
     <div class="modal dashboardModal" style="width:min(1120px,100%)">
       <div class="mHead">
@@ -4704,7 +4760,7 @@ body[data-theme="light"] .crmMeta, body[data-theme="paper"] .crmMeta{color:#3341
       bonusRules:[],
       surgeries:[],
       crm:[],
-      ui:{ summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, paymentRowsCollapsed:{} },
+      ui:{ summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, paymentRowsCollapsed:{} },
       customTheme:{ bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, presetOverrides:{} },
       _meta:{ updatedAt:'', updatedBy:'local' }
     };
@@ -4781,7 +4837,7 @@ body[data-theme="light"] .crmMeta, body[data-theme="paper"] .crmMeta{color:#3341
       s.bonusRules = Array.isArray(s.bonusRules) ? s.bonusRules : [];
       s.surgeries = Array.isArray(s.surgeries) ? s.surgeries : [];
       s.crm = Array.isArray(s.crm) ? s.crm : [];
-      s.ui = { summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, paymentRowsCollapsed:{}, ...(s.ui || {}) };
+      s.ui = { summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, paymentRowsCollapsed:{}, ...(s.ui || {}) };
       s.ui.paymentRowsCollapsed = s.ui.paymentRowsCollapsed || {};
       s.customTheme = { bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, presetOverrides:{}, ...(s.customTheme || {}) };
       s.customTheme.buttonBg1 = s.customTheme.buttonBg1 || s.customTheme.buttonBg || '#3b82f6';
@@ -4817,17 +4873,18 @@ body[data-theme="light"] .crmMeta, body[data-theme="paper"] .crmMeta{color:#3341
         events: Array.isArray(s.events) ? s.events.length : 0,
         surgeries: Array.isArray(s.surgeries) ? s.surgeries.length : 0,
         payRules: Array.isArray(s.payRules) ? s.payRules.length : 0,
-        bonusRules: Array.isArray(s.bonusRules) ? s.bonusRules.length : 0
+        bonusRules: Array.isArray(s.bonusRules) ? s.bonusRules.length : 0,
+        crm: Array.isArray(s.crm) ? s.crm.length : 0
       };
     }
     function stateDataScore(candidate){
       const c = countStateItems(candidate);
-      return c.events + c.surgeries + c.payRules + c.bonusRules;
+      return c.events + c.surgeries + c.payRules + c.bonusRules + (c.crm || 0);
     }
     function hasMeaningfulData(candidate){ return stateDataScore(candidate) > 0; }
     function stateSummaryText(candidate){
       const c = countStateItems(candidate);
-      return `${c.events} evento(s), ${c.surgeries} cirurgia(s), ${c.payRules} regra(s) de pagamento e ${c.bonusRules} bonificação(ões)`;
+      return `${c.events} evento(s), ${c.surgeries} cirurgia(s), ${c.payRules} regra(s), ${c.bonusRules} bonificação(ões) e ${(c.crm || 0)} contato(s)`;
     }
     function getBestLocalRecoveryState(){ return null; }
     function saveLocalBackup(){ return null; }
@@ -7522,6 +7579,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       state.ui = state.ui || {};
       state.ui.surgeonMode = !state.ui.surgeonMode;
       if (state.ui.surgeonMode) {
+        state.ui.crmMode = false;
         state.ui.surgeriesCollapsed = false;
         state.selDate = state.selDate || todayISO();
       }
@@ -7530,9 +7588,243 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       renderAll();
     }
 
+
+    const CRMForm = { editingId:null, tab:'patient' };
+    function crmEnsure(){ state.crm = Array.isArray(state.crm) ? state.crm : []; state.ui = state.ui || {}; }
+    function crmDaysUntil(dateISO){
+      if (!dateISO) return null;
+      const a = parseISO(todayISO());
+      const b = parseISO(dateISO);
+      return Math.ceil((b.getTime() - a.getTime()) / 86400000);
+    }
+    function crmEndDate(item){
+      if (!item.packageStart || !Number(item.packageMonths || 0)) return '';
+      const d = parseISO(item.packageStart);
+      d.setMonth(d.getMonth() + Number(item.packageMonths || 0));
+      return iso(d);
+    }
+    function crmIsDue(item){
+      if (!item.nextContact) return false;
+      const days = crmDaysUntil(item.nextContact);
+      return days !== null && days <= Number(item.reminderDays || 0);
+    }
+    function crmDueText(item){
+      if (!item.nextContact) return 'Sem lembrete';
+      const days = crmDaysUntil(item.nextContact);
+      if (days < 0) return `Atrasado há ${Math.abs(days)} dia(s)`;
+      if (days === 0) return 'Recontatar hoje';
+      return `Faltam ${days} dia(s)`;
+    }
+    function crmPackageText(item){
+      if (item.type !== 'patient') return item.statusLabel || crmStatusLabel(item.status || 'novo');
+      const end = crmEndDate(item);
+      if (!end) return item.packageName || 'Sem pacote definido';
+      const days = crmDaysUntil(end);
+      if (days < 0) return `Pacote expirado há ${Math.abs(days)} dia(s)`;
+      return `${item.packageName || 'Pacote'} · faltam ${days} dia(s)`;
+    }
+    function crmStatusLabel(status){
+      const map = { ativo:'Ativo', renovacao:'Renovação', expirado:'Expirado', novo:'Novo lead', negociacao:'Em negociação', recontatar:'Recontatar', sem_resposta:'Sem resposta', perdido:'Perdido', convertido:'Convertido' };
+      return map[status] || status || '—';
+    }
+    function crmBadgeClass(item){
+      if (crmIsDue(item)) return 'bad';
+      if (item.type === 'lead') {
+        if (item.status === 'perdido') return 'bad';
+        if (item.status === 'recontatar' || item.status === 'sem_resposta') return 'warn';
+        if (item.status === 'convertido') return 'good';
+        return 'info';
+      }
+      const end = crmEndDate(item);
+      const days = end ? crmDaysUntil(end) : null;
+      if (days !== null && days < 0) return 'bad';
+      if (days !== null && days <= 30) return 'warn';
+      return 'good';
+    }
+    function clearCRMForm(type){
+      crmEnsure();
+      CRMForm.editingId = null;
+      if (type) CRMForm.tab = type;
+      const isLead = CRMForm.tab === 'lead';
+      const set = (id,val='') => { const el = UI.el(id); if (el) el.value = val; };
+      const title = UI.el('crmFormTitle'); if (title) title.textContent = isLead ? 'Cadastrar lead não convertido' : 'Cadastrar paciente';
+      set('crmName'); set('crmPhone'); set('crmOrigin'); set('crmDoctor'); set('crmOwner'); set('crmInterest'); set('crmPackage'); set('crmPackageMonths'); set('crmPackageStart'); set('crmAmountPaid'); set('crmNextContact'); set('crmRecurrenceDays'); set('crmFirstContact', todayISO()); set('crmLastContact'); set('crmReminderDays','0'); set('crmProcedures'); set('crmNotes');
+      set('crmType', isLead ? 'lead' : 'patient');
+      set('crmStatus', isLead ? 'novo' : 'ativo');
+    }
+    function setCRMTab(type){
+      crmEnsure();
+      CRMForm.tab = type === 'lead' || type === 'due' ? type : 'patient';
+      UI.el('crmTabPatients')?.classList.toggle('active', CRMForm.tab === 'patient');
+      UI.el('crmTabLeads')?.classList.toggle('active', CRMForm.tab === 'lead');
+      UI.el('crmTabDue')?.classList.toggle('active', CRMForm.tab === 'due');
+      if (CRMForm.tab !== 'due') clearCRMForm(CRMForm.tab);
+      renderCRMPanel();
+    }
+    function applyCRMMode(){
+      const on = !!state.ui?.crmMode;
+      document.body.classList.toggle('crm-mode', on);
+      const b1 = UI.el('btnPatientCRM'); if (b1) b1.textContent = on ? 'Sair de Pacientes & Leads' : 'Pacientes & Leads';
+      const b2 = UI.el('btnCRMMode'); if (b2) b2.textContent = on ? 'Sair Pacientes & Leads' : 'Pacientes & Leads';
+    }
+    function toggleCRMMode(force){
+      state.ui = state.ui || {};
+      const next = typeof force === 'boolean' ? force : !state.ui.crmMode;
+      state.ui.crmMode = next;
+      if (next) state.ui.surgeonMode = false;
+      save();
+      applySurgeonMode();
+      applyCRMMode();
+      renderAll();
+    }
+    function saveCRMEntry(){
+      crmEnsure();
+      const name = (UI.el('crmName')?.value || '').trim();
+      if (!name) return alert('Informe o nome.');
+      const type = UI.el('crmType')?.value === 'lead' ? 'lead' : 'patient';
+      const now = new Date().toISOString();
+      const model = {
+        id: CRMForm.editingId || uid(),
+        type,
+        name,
+        phone:(UI.el('crmPhone')?.value || '').trim(),
+        origin:(UI.el('crmOrigin')?.value || '').trim(),
+        doctor:(UI.el('crmDoctor')?.value || '').trim(),
+        owner:(UI.el('crmOwner')?.value || '').trim(),
+        interest:(UI.el('crmInterest')?.value || '').trim(),
+        status:(UI.el('crmStatus')?.value || (type === 'lead' ? 'novo' : 'ativo')),
+        procedures:(UI.el('crmProcedures')?.value || '').trim(),
+        packageName:(UI.el('crmPackage')?.value || '').trim(),
+        packageMonths:Number(UI.el('crmPackageMonths')?.value || 0),
+        packageStart:UI.el('crmPackageStart')?.value || '',
+        amountPaid:Number(UI.el('crmAmountPaid')?.value || 0),
+        nextContact:UI.el('crmNextContact')?.value || '',
+        recurrenceDays:Number(UI.el('crmRecurrenceDays')?.value || 0),
+        firstContact:UI.el('crmFirstContact')?.value || '',
+        lastContact:UI.el('crmLastContact')?.value || '',
+        reminderDays:Number(UI.el('crmReminderDays')?.value || 0),
+        notes:(UI.el('crmNotes')?.value || '').trim(),
+        updatedAt:now,
+        createdAt: CRMForm.editingId ? ((state.crm.find(x=>x.id===CRMForm.editingId)||{}).createdAt || now) : now
+      };
+      const old = state.crm.find(x => x.id === model.id);
+      if (old && old.history) model.history = old.history;
+      const idx = state.crm.findIndex(x => x.id === model.id);
+      if (idx >= 0) state.crm[idx] = model; else state.crm.push(model);
+      CRMForm.tab = type;
+      pushHistorySnapshot();
+      save();
+      clearCRMForm(type);
+      renderCRMPanel();
+    }
+    function editCRMEntry(id){
+      crmEnsure();
+      const item = state.crm.find(x => x.id === id);
+      if (!item) return;
+      CRMForm.editingId = id;
+      CRMForm.tab = item.type === 'lead' ? 'lead' : 'patient';
+      UI.el('crmTabPatients')?.classList.toggle('active', CRMForm.tab === 'patient');
+      UI.el('crmTabLeads')?.classList.toggle('active', CRMForm.tab === 'lead');
+      UI.el('crmTabDue')?.classList.toggle('active', false);
+      const set = (id,val='') => { const el = UI.el(id); if (el) el.value = val; };
+      UI.el('crmFormTitle').textContent = 'Editando: ' + (item.name || 'cadastro');
+      set('crmName', item.name); set('crmPhone', item.phone); set('crmOrigin', item.origin); set('crmDoctor', item.doctor); set('crmOwner', item.owner); set('crmInterest', item.interest); set('crmType', item.type); set('crmStatus', item.status); set('crmProcedures', item.procedures); set('crmPackage', item.packageName); set('crmPackageMonths', item.packageMonths); set('crmPackageStart', item.packageStart); set('crmAmountPaid', item.amountPaid); set('crmNextContact', item.nextContact); set('crmRecurrenceDays', item.recurrenceDays); set('crmFirstContact', item.firstContact); set('crmLastContact', item.lastContact); set('crmReminderDays', item.reminderDays ?? 0); set('crmNotes', item.notes);
+      document.getElementById('crmPageCard')?.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+    function deleteCRMEntry(id){
+      if (!confirm('Excluir este cadastro?')) return;
+      crmEnsure();
+      pushHistorySnapshot();
+      state.crm = state.crm.filter(x => x.id !== id);
+      save();
+      renderCRMPanel();
+    }
+    function convertLeadToPatient(id){
+      crmEnsure();
+      const item = state.crm.find(x => x.id === id);
+      if (!item) return;
+      pushHistorySnapshot();
+      item.type = 'patient';
+      item.status = 'ativo';
+      item.convertedAt = new Date().toISOString();
+      item.updatedAt = item.convertedAt;
+      CRMForm.tab = 'patient';
+      save();
+      renderCRMPanel();
+    }
+    function scheduleNextCRMContact(id){
+      crmEnsure();
+      const item = state.crm.find(x => x.id === id);
+      if (!item) return;
+      const days = Number(item.recurrenceDays || 0) || 7;
+      const d = parseISO(todayISO());
+      d.setDate(d.getDate() + days);
+      pushHistorySnapshot();
+      item.lastContact = todayISO();
+      item.nextContact = iso(d);
+      item.status = item.type === 'lead' ? 'recontatar' : (item.status || 'ativo');
+      item.updatedAt = new Date().toISOString();
+      save();
+      renderCRMPanel();
+    }
+    function crmCardHtml(item){
+      const due = crmDueText(item);
+      const cls = crmBadgeClass(item);
+      const end = crmEndDate(item);
+      const contactLabel = item.type === 'lead' ? 'Próximo recontato' : 'Retorno / consulta';
+      const badges = [`<span class="crmBadge ${cls}">${item.type === 'lead' ? 'Lead' : 'Paciente'} · ${escapeHtml(crmStatusLabel(item.status))}</span>`];
+      if (item.origin) badges.push(`<span class="crmBadge info">Origem: ${escapeHtml(item.origin)}</span>`);
+      if (crmIsDue(item)) badges.push(`<span class="crmBadge bad">🔔 ${escapeHtml(due)}</span>`);
+      else if (item.nextContact) badges.push(`<span class="crmBadge warn">${escapeHtml(due)}</span>`);
+      return `<div class="crmCard">
+        <div class="crmCardTop">
+          <div><div class="crmName">${escapeHtml(item.name || 'Sem nome')}</div><div class="crmMeta">${escapeHtml(item.phone || 'Sem WhatsApp')} · ${escapeHtml(item.doctor || 'Médico não definido')}<br>${escapeHtml(item.interest || item.procedures || 'Sem interesse/procedimento definido')}</div></div>
+          <div class="crmBadgeRow">${badges.join('')}</div>
+        </div>
+        <div class="crmTimeline">
+          <div class="crmTimeBox"><div class="k">${contactLabel}</div><div class="v">${item.nextContact ? formatDateBR(item.nextContact) : '—'}</div></div>
+          <div class="crmTimeBox"><div class="k">Pacote</div><div class="v">${escapeHtml(crmPackageText(item))}</div></div>
+          <div class="crmTimeBox"><div class="k">Fim pacote</div><div class="v">${end ? formatDateBR(end) : '—'}</div></div>
+          <div class="crmTimeBox"><div class="k">Valor pago</div><div class="v">${fmtMoney(item.amountPaid || 0)}</div></div>
+        </div>
+        ${item.notes ? `<div class="crmMeta" style="margin-top:10px"><b>Obs.:</b> ${escapeHtml(item.notes)}</div>` : ''}
+        <div class="crmActions">
+          <button class="smallBtn" type="button" data-crm-edit="${escapeAttr(item.id)}">Editar</button>
+          <button class="smallBtn" type="button" data-crm-next="${escapeAttr(item.id)}">Reagendar contato</button>
+          ${item.type === 'lead' ? `<button class="smallBtn primary" type="button" data-crm-convert="${escapeAttr(item.id)}">Converter em paciente</button>` : ''}
+          <button class="smallBtn danger" type="button" data-crm-del="${escapeAttr(item.id)}">Excluir</button>
+        </div>
+      </div>`;
+    }
+    function renderCRMPanel(){
+      crmEnsure();
+      const list = UI.el('crmList');
+      if (!list) return;
+      const q = (UI.el('crmSearch')?.value || '').toLowerCase().trim();
+      const quick = UI.el('crmQuickFilter')?.value || 'all';
+      const patients = state.crm.filter(x => x.type !== 'lead');
+      const leads = state.crm.filter(x => x.type === 'lead' && x.status !== 'convertido');
+      const due = state.crm.filter(crmIsDue);
+      const paid = patients.reduce((a,b)=>a+Number(b.amountPaid||0),0);
+      const setTxt = (id,v)=>{ const el=UI.el(id); if(el) el.textContent=v; };
+      setTxt('crmStatPatients', String(patients.length)); setTxt('crmStatLeads', String(leads.length)); setTxt('crmStatDue', String(due.length)); setTxt('crmStatPaid', fmtMoney(paid));
+      let arr = CRMForm.tab === 'lead' ? leads : (CRMForm.tab === 'due' ? due : patients);
+      if (quick === 'due') arr = arr.filter(crmIsDue);
+      if (quick === 'active') arr = arr.filter(x => ['ativo','novo','negociacao','recontatar'].includes(x.status));
+      if (quick === 'lost') arr = arr.filter(x => x.status === 'perdido');
+      if (quick === 'renew') arr = arr.filter(x => x.status === 'renovacao' || (crmEndDate(x) && crmDaysUntil(crmEndDate(x)) <= 30));
+      if (q) arr = arr.filter(x => [x.name,x.phone,x.origin,x.doctor,x.owner,x.interest,x.procedures,x.notes].join(' ').toLowerCase().includes(q));
+      arr = arr.slice().sort((a,b) => {
+        const da = a.nextContact || '9999-12-31'; const db = b.nextContact || '9999-12-31';
+        return da.localeCompare(db) || String(a.name||'').localeCompare(String(b.name||''));
+      });
+      list.innerHTML = arr.length ? arr.map(crmCardHtml).join('') : '<div class="crmEmpty">Nenhum cadastro encontrado nesta visão.</div>';
+    }
+
     function renderAll(){
       applyTheme();
       applySurgeonMode();
+      applyCRMMode();
       applyCellH();
       renderDow();
       renderCalendar();
@@ -7911,230 +8203,6 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       renderDashboardRows('dashPlans', plans, 'Nenhum convênio ou particular cadastrado neste mês.');
     }
 
-
-    const CRMForm = { editingId:null, tab:'patient' };
-
-    function addMonthsISO(dateISO, months){
-      if (!dateISO || !months) return '';
-      const d = parseISO(dateISO);
-      d.setMonth(d.getMonth() + Number(months || 0));
-      return isoDate(d);
-    }
-
-    function daysBetweenISO(fromISO, toISO){
-      if (!toISO) return null;
-      const a = parseISO(fromISO || todayISO()); a.setHours(0,0,0,0);
-      const b = parseISO(toISO); b.setHours(0,0,0,0);
-      return Math.round((b - a) / 86400000);
-    }
-
-    function crmStatusText(type){ return type === 'lead' ? 'Lead não convertido' : 'Paciente convertido'; }
-
-    function crmAlertClass(days){
-      if (days === null || !Number.isFinite(days)) return '';
-      if (days < 0) return 'bad';
-      if (days <= 3) return 'warn';
-      return 'good';
-    }
-
-    function crmAlertText(item){
-      const today = todayISO();
-      const target = item.nextContact || '';
-      if (!target) return 'Sem lembrete';
-      const days = daysBetweenISO(today, target);
-      const remind = Number(item.reminderDays || 0);
-      if (days < 0) return `Atrasado há ${Math.abs(days)} dia(s)`;
-      if (days === 0) return 'Alerta hoje';
-      if (days <= remind) return `Avisar em ${days} dia(s)`;
-      return `${days} dia(s) até retorno`;
-    }
-
-    function crmPackageText(item){
-      if ((item.type || 'patient') === 'lead') return 'Ainda não convertido';
-      const end = addMonthsISO(item.packageStart, Number(item.packageMonths || 0));
-      if (!end) return item.packageName || 'Sem pacote definido';
-      const days = daysBetweenISO(todayISO(), end);
-      if (days < 0) return `Pacote encerrado há ${Math.abs(days)} dia(s)`;
-      return `${item.packageName || 'Pacote'} · faltam ${days} dia(s)`;
-    }
-
-    function clearCRMForm(type){
-      CRMForm.editingId = null;
-      if (type) CRMForm.tab = type;
-      UI.el('crmFormTitle').textContent = CRMForm.tab === 'lead' ? 'Cadastrar lead não convertido' : 'Cadastrar paciente convertido';
-      UI.el('crmName').value = '';
-      UI.el('crmPhone').value = '';
-      UI.el('crmEmail').value = '';
-      UI.el('crmOrigin').value = '';
-      UI.el('crmDoctor').value = '';
-      UI.el('crmStatus').value = CRMForm.tab === 'lead' ? 'lead' : 'patient';
-      UI.el('crmProcedures').value = '';
-      UI.el('crmPackage').value = '';
-      UI.el('crmPackageMonths').value = '';
-      UI.el('crmPackageStart').value = '';
-      UI.el('crmAmountPaid').value = '';
-      UI.el('crmNextContact').value = '';
-      UI.el('crmReminderDays').value = '7';
-      UI.el('crmNotes').value = '';
-    }
-
-    function setCRMTab(type){
-      CRMForm.tab = type === 'lead' ? 'lead' : 'patient';
-      UI.el('crmTabPatients').classList.toggle('active', CRMForm.tab === 'patient');
-      UI.el('crmTabLeads').classList.toggle('active', CRMForm.tab === 'lead');
-      UI.el('crmStatus').value = CRMForm.tab;
-      UI.el('crmFormTitle').textContent = CRMForm.tab === 'lead' ? 'Cadastrar lead não convertido' : 'Cadastrar paciente convertido';
-      renderCRMPanel();
-    }
-
-    function openPatientCRM(type='patient'){
-      setCRMTab(type);
-      clearCRMForm(type);
-      renderCRMPanel();
-      UI.open('ovPatientCRM');
-    }
-
-    function saveCRMEntry(){
-      const name = UI.el('crmName').value.trim();
-      if (!name) return alert('Informe o nome.');
-      const type = UI.el('crmStatus').value === 'lead' ? 'lead' : 'patient';
-      const model = {
-        id: CRMForm.editingId || uid(),
-        type,
-        name,
-        phone: UI.el('crmPhone').value.trim(),
-        email: UI.el('crmEmail').value.trim(),
-        origin: UI.el('crmOrigin').value.trim(),
-        doctor: UI.el('crmDoctor').value.trim(),
-        procedures: UI.el('crmProcedures').value.trim(),
-        packageName: UI.el('crmPackage').value.trim(),
-        packageMonths: Number(UI.el('crmPackageMonths').value || 0),
-        packageStart: UI.el('crmPackageStart').value || '',
-        amountPaid: Number(UI.el('crmAmountPaid').value || 0),
-        nextContact: UI.el('crmNextContact').value || '',
-        reminderDays: Number(UI.el('crmReminderDays').value || 0),
-        notes: UI.el('crmNotes').value.trim(),
-        updatedAt: new Date().toISOString()
-      };
-      state.crm = Array.isArray(state.crm) ? state.crm : [];
-      const idx = state.crm.findIndex(x => x.id === model.id);
-      if (idx >= 0) state.crm[idx] = model; else state.crm.push(model);
-      CRMForm.tab = type;
-      save();
-      clearCRMForm(type);
-      renderCRMPanel();
-    }
-
-    function editCRMEntry(id){
-      const item = (state.crm || []).find(x => x.id === id);
-      if (!item) return;
-      CRMForm.editingId = id;
-      CRMForm.tab = item.type === 'lead' ? 'lead' : 'patient';
-      setCRMTab(CRMForm.tab);
-      UI.el('crmFormTitle').textContent = 'Editando: ' + (item.name || 'cadastro');
-      UI.el('crmName').value = item.name || '';
-      UI.el('crmPhone').value = item.phone || '';
-      UI.el('crmEmail').value = item.email || '';
-      UI.el('crmOrigin').value = item.origin || '';
-      UI.el('crmDoctor').value = item.doctor || '';
-      UI.el('crmStatus').value = CRMForm.tab;
-      UI.el('crmProcedures').value = item.procedures || '';
-      UI.el('crmPackage').value = item.packageName || '';
-      UI.el('crmPackageMonths').value = item.packageMonths || '';
-      UI.el('crmPackageStart').value = item.packageStart || '';
-      UI.el('crmAmountPaid').value = item.amountPaid || '';
-      UI.el('crmNextContact').value = item.nextContact || '';
-      UI.el('crmReminderDays').value = item.reminderDays ?? 7;
-      UI.el('crmNotes').value = item.notes || '';
-    }
-
-    function deleteCRMEntry(id){
-      const item = (state.crm || []).find(x => x.id === id);
-      if (!item) return;
-      if (!confirm(`Excluir cadastro de ${item.name}?`)) return;
-      state.crm = (state.crm || []).filter(x => x.id !== id);
-      save();
-      clearCRMForm(CRMForm.tab);
-      renderCRMPanel();
-    }
-
-    function convertLeadToPatient(id){
-      const item = (state.crm || []).find(x => x.id === id);
-      if (!item) return;
-      item.type = 'patient';
-      item.updatedAt = new Date().toISOString();
-      save();
-      setCRMTab('patient');
-      renderCRMPanel();
-    }
-
-    function crmCardHtml(item){
-      const type = item.type === 'lead' ? 'lead' : 'patient';
-      const alertDays = item.nextContact ? daysBetweenISO(todayISO(), item.nextContact) : null;
-      const cls = crmAlertClass(alertDays);
-      const packageEnd = addMonthsISO(item.packageStart, Number(item.packageMonths || 0));
-      return `
-        <div class="crmCard">
-          <div class="crmCardTop">
-            <div>
-              <div class="crmName">${escapeHtml(item.name || 'Sem nome')}</div>
-              <div class="crmMeta">${escapeHtml(item.phone || 'Sem telefone')} · ${escapeHtml(item.email || 'Sem e-mail')}</div>
-              <div class="crmMeta">Origem: <b>${escapeHtml(item.origin || '-')}</b> · Médico: <b>${escapeHtml(item.doctor || '-')}</b></div>
-            </div>
-            <span class="crmBadge ${type === 'patient' ? 'good' : 'warn'}">${type === 'patient' ? '✅' : '📞'} ${crmStatusText(type)}</span>
-          </div>
-          <div class="crmBadgeRow">
-            <span class="crmBadge ${cls}">⏰ ${escapeHtml(crmAlertText(item))}</span>
-            <span class="crmBadge">💰 ${fmtMoney(Number(item.amountPaid || 0))}</span>
-            <span class="crmBadge">📦 ${escapeHtml(crmPackageText(item))}</span>
-          </div>
-          <div class="crmTimeline">
-            <div class="crmTimeBox"><div class="k">Próxima ação</div><div class="v">${item.nextContact ? formatDateBR(item.nextContact) : '-'}</div></div>
-            <div class="crmTimeBox"><div class="k">Lembrete</div><div class="v">${Number(item.reminderDays || 0)} dia(s) antes</div></div>
-            <div class="crmTimeBox"><div class="k">Início pacote</div><div class="v">${item.packageStart ? formatDateBR(item.packageStart) : '-'}</div></div>
-            <div class="crmTimeBox"><div class="k">Fim pacote</div><div class="v">${packageEnd ? formatDateBR(packageEnd) : '-'}</div></div>
-          </div>
-          ${item.procedures ? `<div class="crmMeta" style="margin-top:10px"><b>Procedimentos/interesse:</b> ${escapeHtml(item.procedures)}</div>` : ''}
-          ${item.notes ? `<div class="crmMeta" style="margin-top:8px"><b>Observações:</b> ${escapeHtml(item.notes)}</div>` : ''}
-          <div class="crmActions">
-            <button class="smallBtn" type="button" onclick="editCRMEntry('${item.id}')">Editar</button>
-            ${type === 'lead' ? `<button class="smallBtn" type="button" onclick="convertLeadToPatient('${item.id}')">Converter em paciente</button>` : ''}
-            <button class="smallBtn danger" type="button" onclick="deleteCRMEntry('${item.id}')">Excluir</button>
-          </div>
-        </div>`;
-    }
-
-    function renderCRMPanel(){
-      const list = UI.el('crmList');
-      if (!list) return;
-      const items = Array.isArray(state.crm) ? state.crm : [];
-      const today = todayISO();
-      const search = (UI.el('crmSearch')?.value || '').toLowerCase().trim();
-      const origin = (UI.el('crmFilterOrigin')?.value || '').toLowerCase().trim();
-      const doctor = (UI.el('crmFilterDoctor')?.value || '').toLowerCase().trim();
-      const patients = items.filter(x => (x.type || 'patient') === 'patient');
-      const leads = items.filter(x => x.type === 'lead');
-      const due = items.filter(x => x.nextContact && daysBetweenISO(today, x.nextContact) <= Number(x.reminderDays || 0));
-      const totalPaid = patients.reduce((a,x) => a + Number(x.amountPaid || 0), 0);
-      UI.el('crmStatPatients').textContent = String(patients.length);
-      UI.el('crmStatLeads').textContent = String(leads.length);
-      UI.el('crmStatDue').textContent = String(due.length);
-      UI.el('crmStatPaid').textContent = fmtMoney(totalPaid);
-      let filtered = items.filter(x => (x.type || 'patient') === CRMForm.tab);
-      filtered = filtered.filter(x => {
-        const hay = [x.name,x.phone,x.email,x.origin,x.doctor,x.procedures,x.packageName,x.notes].join(' ').toLowerCase();
-        if (search && !hay.includes(search)) return false;
-        if (origin && !String(x.origin || '').toLowerCase().includes(origin)) return false;
-        if (doctor && !String(x.doctor || '').toLowerCase().includes(doctor)) return false;
-        return true;
-      }).sort((a,b) => {
-        const ad = a.nextContact || '9999-99-99';
-        const bd = b.nextContact || '9999-99-99';
-        return ad.localeCompare(bd) || String(a.name || '').localeCompare(String(b.name || ''));
-      });
-      list.innerHTML = filtered.length ? filtered.map(crmCardHtml).join('') : '<div class="crmEmpty">Nenhum cadastro encontrado neste filtro.</div>';
-    }
-
     async function openDashboardCenter(){
       UI.open('ovDashboardCenter');
       if (!dashboardView) dashboardView = { y: state.view.y, m: state.view.m };
@@ -8165,6 +8233,20 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('btnUndo').addEventListener('click', undoLast);
       UI.el('btnSaveNow').addEventListener('click', () => performSave(true));
       UI.el('btnNewSurgery').addEventListener('click', toggleSurgeonMode);
+      UI.el('btnPatientCRM')?.addEventListener('click', () => toggleCRMMode());
+      UI.el('btnCRMMode')?.addEventListener('click', () => toggleCRMMode());
+      UI.el('crmExitMode')?.addEventListener('click', () => toggleCRMMode(false));
+      UI.el('crmNewPatient')?.addEventListener('click', () => { setCRMTab('patient'); clearCRMForm('patient'); });
+      UI.el('crmNewLead')?.addEventListener('click', () => { setCRMTab('lead'); clearCRMForm('lead'); });
+      UI.el('crmTabPatients')?.addEventListener('click', () => setCRMTab('patient'));
+      UI.el('crmTabLeads')?.addEventListener('click', () => setCRMTab('lead'));
+      UI.el('crmTabDue')?.addEventListener('click', () => setCRMTab('due'));
+      UI.el('crmSave')?.addEventListener('click', saveCRMEntry);
+      UI.el('crmClear')?.addEventListener('click', () => clearCRMForm(CRMForm.tab === 'due' ? 'lead' : CRMForm.tab));
+      UI.el('crmSearch')?.addEventListener('input', renderCRMPanel);
+      UI.el('crmQuickFilter')?.addEventListener('change', renderCRMPanel);
+      UI.el('crmType')?.addEventListener('change', e => { CRMForm.tab = e.target.value === 'lead' ? 'lead' : 'patient'; });
+      UI.el('crmList')?.addEventListener('click', e => { const edit=e.target.closest('[data-crm-edit]'); const del=e.target.closest('[data-crm-del]'); const conv=e.target.closest('[data-crm-convert]'); const next=e.target.closest('[data-crm-next]'); if(edit) editCRMEntry(edit.dataset.crmEdit); if(del) deleteCRMEntry(del.dataset.crmDel); if(conv) convertLeadToPatient(conv.dataset.crmConvert); if(next) scheduleNextCRMContact(next.dataset.crmNext); });
       UI.el('btnSurgeryCenter').addEventListener('click', () => openSurgeryCenter(false));
       UI.el('btnOpenSurgeryCenter').addEventListener('click', () => openSurgeryCenter(false));
       UI.el('btnNewSurgeryRecord').addEventListener('click', () => openSurgeryFromCalendar(state.selDate || todayISO()));
@@ -8272,16 +8354,6 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('btnExport').addEventListener('click', exportData);
       UI.el('btnBackupCenter').addEventListener('click', openBackupCenter);
       UI.el('btnDashboardCenter').addEventListener('click', openDashboardCenter);
-
-      UI.el('btnPatientCRM').addEventListener('click', () => openPatientCRM('patient'));
-      UI.el('crmClose').addEventListener('click', () => UI.close('ovPatientCRM'));
-      UI.el('crmTabPatients').addEventListener('click', () => setCRMTab('patient'));
-      UI.el('crmTabLeads').addEventListener('click', () => setCRMTab('lead'));
-      UI.el('crmSave').addEventListener('click', saveCRMEntry);
-      UI.el('crmClear').addEventListener('click', () => clearCRMForm(CRMForm.tab));
-      ['crmSearch','crmFilterOrigin','crmFilterDoctor'].forEach(id => UI.el(id).addEventListener('input', renderCRMPanel));
-      UI.el('crmStatus').addEventListener('change', e => setCRMTab(e.target.value === 'lead' ? 'lead' : 'patient'));
-
       UI.el('dashboardClose').addEventListener('click', () => UI.close('ovDashboardCenter'));
       const dashPrev = UI.el('dashPrevMonth');
       const dashNext = UI.el('dashNextMonth');
