@@ -3863,6 +3863,141 @@ body[data-theme="light"] .crmMeta, body[data-theme="paper"] .crmMeta{color:#3341
 @media(max-width:760px){.statusPill{width:150px !important;min-width:150px !important;max-width:150px !important;font-size:11px !important}.crmToolbar,.crmFormGrid,.crmFormGrid3,.crmTimeline,.crmStats{grid-template-columns:1fr}.crmCard{padding:12px}.crmList{max-height:65vh}}
 @media (min-resolution: 1.2dppx) and (max-width:1400px){.container{padding-left:10px;padding-right:10px;gap:10px}.btn{font-size:clamp(11px,.9vw,14px);padding:8px 10px}.sectionHead{padding:12px 14px}.card{border-radius:16px}.day{border-radius:12px}}
 
+
+
+/* =========================================================
+   SPRINT CRM COMERCIAL — ALERTAS, WHATSAPP, ZOOM E NUVEM FIXA
+========================================================= */
+.statusPill{
+  width:148px !important;
+  min-width:148px !important;
+  max-width:148px !important;
+  height:42px !important;
+  padding:0 12px !important;
+  flex:0 0 148px !important;
+}
+.statusPill #saveLabel{
+  max-width:96px !important;
+  min-width:78px !important;
+  text-align:left !important;
+}
+.statusPill.saved{color:var(--txt) !important}
+.statusPill.dirty{color:var(--txt) !important}
+.statusPill.saving{color:var(--txt) !important}
+.statusPill.error{color:var(--txt) !important}
+.crmGlobalAlertStrip{
+  width:min(1920px,calc(100% - 28px));
+  margin:10px auto 0;
+  display:none;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  position:relative;
+  z-index:50;
+}
+.crmGlobalAlertStrip.on{display:grid}
+.crmAlertTile{
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:12px 14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.045));
+  box-shadow:0 10px 28px rgba(0,0,0,.18);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  min-width:0;
+  cursor:pointer;
+  transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.crmAlertTile:hover{transform:translateY(-1px);box-shadow:0 16px 34px rgba(0,0,0,.22)}
+.crmAlertTile .big{font-size:clamp(18px,1.5vw,24px);font-weight:1000;line-height:1;color:var(--txt)}
+.crmAlertTile .small{font-size:11px;color:var(--mut);font-weight:950;line-height:1.25;margin-top:4px}
+.crmAlertTile.bad{border-color:rgba(255,93,93,.55);background:linear-gradient(135deg,rgba(255,93,93,.22),rgba(255,255,255,.045));animation:crmPulseBad 1.35s ease-in-out infinite}
+.crmAlertTile.warn{border-color:rgba(255,176,32,.52);background:linear-gradient(135deg,rgba(255,176,32,.20),rgba(255,255,255,.045))}
+.crmAlertTile.good{border-color:rgba(57,217,138,.48);background:linear-gradient(135deg,rgba(57,217,138,.18),rgba(255,255,255,.045))}
+@keyframes crmPulseBad{0%,100%{box-shadow:0 10px 28px rgba(0,0,0,.18),0 0 0 0 rgba(255,93,93,.0)}50%{box-shadow:0 12px 34px rgba(0,0,0,.24),0 0 0 4px rgba(255,93,93,.14)}}
+.crmCommercialBox{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-top:12px;
+}
+.crmCommercialMini{
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:12px;
+  background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.035));
+  min-width:0;
+}
+.crmCommercialMini .k{font-size:10px;color:var(--mut2);font-weight:1000;text-transform:uppercase;letter-spacing:.3px}
+.crmCommercialMini .v{font-size:20px;font-weight:1000;margin-top:6px;color:var(--txt)}
+.crmCommercialMini.bad{border-color:rgba(255,93,93,.45);background:linear-gradient(135deg,rgba(255,93,93,.16),rgba(255,255,255,.035))}
+.crmCommercialMini.warn{border-color:rgba(255,176,32,.45);background:linear-gradient(135deg,rgba(255,176,32,.14),rgba(255,255,255,.035))}
+.crmCommercialMini.good{border-color:rgba(57,217,138,.42);background:linear-gradient(135deg,rgba(57,217,138,.14),rgba(255,255,255,.035))}
+.crmCard.overdue{
+  border-color:rgba(255,93,93,.56) !important;
+  background:linear-gradient(135deg,rgba(255,93,93,.16),rgba(255,255,255,.035)) !important;
+  box-shadow:0 12px 32px rgba(255,93,93,.10),0 10px 24px rgba(0,0,0,.14) !important;
+}
+.crmCard.dueToday{
+  border-color:rgba(255,176,32,.56) !important;
+  background:linear-gradient(135deg,rgba(255,176,32,.15),rgba(255,255,255,.035)) !important;
+}
+.crmCard.packageSoon{
+  border-color:rgba(96,165,250,.46) !important;
+  background:linear-gradient(135deg,rgba(96,165,250,.13),rgba(255,255,255,.035)) !important;
+}
+.crmActions .smallBtn.whatsapp{
+  border-color:rgba(57,217,138,.48) !important;
+  background:linear-gradient(135deg,rgba(57,217,138,.22),rgba(255,255,255,.045)) !important;
+}
+.crmQuickDelay{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.crmQuickDelay .smallBtn{font-size:11px;padding:7px 9px}
+body[data-theme="light"] .crmGlobalAlertStrip .crmAlertTile,
+body[data-theme="paper"] .crmGlobalAlertStrip .crmAlertTile,
+body[data-theme="windows_xp"] .crmGlobalAlertStrip .crmAlertTile,
+body[data-theme="toy_story"] .crmGlobalAlertStrip .crmAlertTile,
+body[data-theme="light"] .crmCommercialMini,
+body[data-theme="paper"] .crmCommercialMini,
+body[data-theme="windows_xp"] .crmCommercialMini,
+body[data-theme="toy_story"] .crmCommercialMini{
+  background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(248,250,252,.90));
+}
+body[data-theme="light"] .crmAlertTile .big,
+body[data-theme="paper"] .crmAlertTile .big,
+body[data-theme="windows_xp"] .crmAlertTile .big,
+body[data-theme="toy_story"] .crmAlertTile .big,
+body[data-theme="light"] .crmCommercialMini .v,
+body[data-theme="paper"] .crmCommercialMini .v,
+body[data-theme="windows_xp"] .crmCommercialMini .v,
+body[data-theme="toy_story"] .crmCommercialMini .v{color:#0b1220 !important}
+@media(max-width:1100px){
+  .crmGlobalAlertStrip{grid-template-columns:1fr;width:calc(100% - 16px);gap:8px;margin-top:8px}
+  .crmCommercialBox{grid-template-columns:1fr}
+  body.crm-mode .container{grid-template-columns:1fr !important;max-width:100% !important}
+  body.crm-mode .mainCol{order:1 !important;width:100% !important}
+  body.crm-mode .sidebarCol{order:2 !important;width:100% !important}
+}
+@media(max-width:760px){
+  .crmAlertTile{padding:10px 12px;border-radius:14px}
+  .crmAlertTile .big{font-size:18px}
+  .crmAlertTile .small{font-size:10.5px}
+  .statusPill{width:126px !important;min-width:126px !important;max-width:126px !important;flex-basis:126px !important}
+  .statusPill #saveLabel{max-width:76px !important;font-size:11px !important}
+}
+@media(min-width:1101px){
+  body{font-size:clamp(13px,.82vw,16px)}
+  .container{width:min(100%,1920px) !important;grid-template-columns:minmax(260px,clamp(280px,22vw,360px)) minmax(0,1fr) !important}
+  body.crm-mode .container{grid-template-columns:minmax(320px,clamp(340px,28vw,500px)) minmax(0,1fr) !important}
+  .sectionHead{padding:clamp(10px,.9vw,16px) clamp(12px,1vw,18px) !important}
+  .btn{font-size:clamp(11px,.75vw,14px);padding:clamp(8px,.7vw,10px) clamp(10px,.85vw,14px)}
+  .primaryButtons .btn{min-width:clamp(86px,7vw,118px)}
+}
+@media(min-resolution:1.2dppx) and (min-width:1101px){
+  .headerAligned{grid-template-columns:minmax(190px,260px) minmax(0,1fr) minmax(240px,auto) !important}
+  .primaryButtons{gap:8px !important}
+}
+
 </style>
 </head>
 <body data-theme="senna_capacete">
@@ -3910,6 +4045,7 @@ body[data-theme="light"] .crmMeta, body[data-theme="paper"] .crmMeta{color:#3341
       </div>
     </div>
   </header>
+  <div class="crmGlobalAlertStrip" id="crmGlobalAlertStrip" aria-live="polite"></div>
 
   <main class="container">
     <aside class="sidebarCol">
@@ -3986,6 +4122,7 @@ body[data-theme="light"] .crmMeta, body[data-theme="paper"] .crmMeta{color:#3341
             <div class="crmPanel">
               <div class="crmTitle">Central de relacionamento</div>
               <div class="crmSub">Pacientes convertidos, pacotes de acompanhamento e carteira de leads não convertidos com alertas de recontato para a equipe comercial.</div>
+              <div class="crmCommercialBox" id="crmCommercialBox"></div>
               <div class="crmStats">
                 <div class="crmStat"><div class="k">Pacientes ativos</div><div class="v" id="crmStatPatients">0</div></div>
                 <div class="crmStat"><div class="k">Leads abertos</div><div class="v" id="crmStatLeads">0</div></div>
@@ -4898,7 +5035,15 @@ body[data-theme="light"] .crmMeta, body[data-theme="paper"] .crmMeta{color:#3341
       saveHistory(memoryHistory);
       updateUndoButton();
     }
-    function setSaveStatus(kind,label){ const pill = UI.el('savePill'); pill.classList.remove('saved','dirty','saving','error'); pill.classList.add(kind); UI.el('saveLabel').textContent = label; }
+    function setSaveStatus(kind,label){
+      const pill = UI.el('savePill');
+      if (!pill) return;
+      pill.classList.remove('saved','dirty','saving','error');
+      pill.classList.add(kind);
+      pill.title = label || 'Status da nuvem';
+      const lab = UI.el('saveLabel');
+      if (lab) lab.textContent = '☁ Nuvem';
+    }
     function markDirty(){ isDirty = true; setSaveStatus('dirty', currentUser ? 'Não salvo' : 'Entre para salvar na nuvem'); clearTimeout(saveTimer); saveTimer = setTimeout(() => performSave(false), 1200); }
     function performSave(forceHistory){
       clearTimeout(saveTimer);
@@ -7776,6 +7921,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       if (item.origin) badges.push(`<span class="crmBadge info">Origem: ${escapeHtml(item.origin)}</span>`);
       if (crmIsDue(item)) badges.push(`<span class="crmBadge bad">🔔 ${escapeHtml(due)}</span>`);
       else if (item.nextContact) badges.push(`<span class="crmBadge warn">${escapeHtml(due)}</span>`);
+      if (item.type !== 'lead' && end) { const left = crmDaysUntil(end); if (left !== null && left <= 30) badges.push(`<span class="crmBadge warn">⚠ Pacote ${left < 0 ? 'expirado há ' + Math.abs(left) + ' dia(s)' : 'vence em ' + left + ' dia(s)'}</span>`); }
       return `<div class="crmCard">
         <div class="crmCardTop">
           <div><div class="crmName">${escapeHtml(item.name || 'Sem nome')}</div><div class="crmMeta">${escapeHtml(item.phone || 'Sem WhatsApp')} · ${escapeHtml(item.doctor || 'Médico não definido')}<br>${escapeHtml(item.interest || item.procedures || 'Sem interesse/procedimento definido')}</div></div>
@@ -7789,13 +7935,106 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         </div>
         ${item.notes ? `<div class="crmMeta" style="margin-top:10px"><b>Obs.:</b> ${escapeHtml(item.notes)}</div>` : ''}
         <div class="crmActions">
+          <button class="smallBtn whatsapp" type="button" data-crm-whatsapp="${escapeAttr(item.id)}">📲 WhatsApp</button>
           <button class="smallBtn" type="button" data-crm-edit="${escapeAttr(item.id)}">Editar</button>
           <button class="smallBtn" type="button" data-crm-next="${escapeAttr(item.id)}">Reagendar contato</button>
           ${item.type === 'lead' ? `<button class="smallBtn primary" type="button" data-crm-convert="${escapeAttr(item.id)}">Converter em paciente</button>` : ''}
           <button class="smallBtn danger" type="button" data-crm-del="${escapeAttr(item.id)}">Excluir</button>
         </div>
+        <div class="crmQuickDelay">
+          <button class="smallBtn" type="button" data-crm-delay="3" data-crm-delay-id="${escapeAttr(item.id)}">+3 dias</button>
+          <button class="smallBtn" type="button" data-crm-delay="7" data-crm-delay-id="${escapeAttr(item.id)}">+7 dias</button>
+          <button class="smallBtn" type="button" data-crm-delay="15" data-crm-delay-id="${escapeAttr(item.id)}">+15 dias</button>
+          <button class="smallBtn" type="button" data-crm-delay="30" data-crm-delay-id="${escapeAttr(item.id)}">+30 dias</button>
+        </div>
       </div>`;
     }
+    function crmPhoneToWhatsApp(phone){
+      let n = String(phone || '').replace(/\D/g,'');
+      if (!n) return '';
+      if (n.length === 10 || n.length === 11) n = '55' + n;
+      if (!n.startsWith('55') && n.length > 8) n = '55' + n;
+      return n;
+    }
+    function crmOpenWhatsApp(id){
+      crmEnsure();
+      const item = state.crm.find(x => x.id === id);
+      if (!item) return;
+      const n = crmPhoneToWhatsApp(item.phone);
+      if (!n) return alert('Este cadastro não possui telefone/WhatsApp válido.');
+      const msg = item.type === 'lead'
+        ? `Olá, ${item.name || ''}! Tudo bem? Estou entrando em contato da clínica para dar continuidade ao seu atendimento.`
+        : `Olá, ${item.name || ''}! Tudo bem? Estou entrando em contato da clínica sobre seu acompanhamento.`;
+      window.open(`https://wa.me/${n}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+    function crmPostpone(id, days){
+      crmEnsure();
+      const item = state.crm.find(x => x.id === id);
+      if (!item) return;
+      pushHistorySnapshot();
+      const d = parseISO(todayISO());
+      d.setDate(d.getDate() + Number(days || 0));
+      item.lastContact = todayISO();
+      item.nextContact = iso(d);
+      item.status = item.type === 'lead' ? 'recontatar' : (item.status || 'ativo');
+      item.updatedAt = new Date().toISOString();
+      save();
+      renderCRMPanel();
+      renderCRMAlerts();
+    }
+    function crmMetrics(){
+      crmEnsure();
+      const today = todayISO();
+      const seven = parseISO(today); seven.setDate(seven.getDate() - 7);
+      const patients = state.crm.filter(x => x.type !== 'lead');
+      const leadsOpen = state.crm.filter(x => x.type === 'lead' && x.status !== 'convertido');
+      const converted = state.crm.filter(x => x.status === 'convertido' || (x.type !== 'lead' && x.origin));
+      const dueToday = leadsOpen.filter(x => x.nextContact && crmDaysUntil(x.nextContact) === 0);
+      const overdue = leadsOpen.filter(x => x.nextContact && crmDaysUntil(x.nextContact) < 0);
+      const dueWindow = leadsOpen.filter(crmIsDue);
+      const convertedWeek = converted.filter(x => {
+        const d = x.updatedAt || x.createdAt || '';
+        if (!d) return false;
+        return new Date(d) >= seven;
+      });
+      const renew = patients.filter(x => {
+        const end = crmEndDate(x);
+        if (!end) return false;
+        const days = crmDaysUntil(end);
+        return days !== null && days <= 30;
+      });
+      const conversionBase = leadsOpen.length + converted.length;
+      const conversionRate = conversionBase ? Math.round((converted.length / conversionBase) * 100) : 0;
+      return {patients, leadsOpen, converted, dueToday, overdue, dueWindow, convertedWeek, renew, conversionRate};
+    }
+    function renderCRMAlerts(){
+      const box = UI.el('crmGlobalAlertStrip');
+      const commercial = UI.el('crmCommercialBox');
+      const m = crmMetrics();
+      const totalUrgent = m.dueToday.length + m.overdue.length;
+      const badgeText = totalUrgent ? `Pacientes & Leads 🔴${totalUrgent}` : 'Pacientes & Leads';
+      const b1 = UI.el('btnPatientCRM'); if (b1 && !state.ui?.crmMode) b1.textContent = badgeText;
+      const b2 = UI.el('btnCRMMode'); if (b2 && !state.ui?.crmMode) b2.textContent = badgeText;
+      if (box){
+        if (totalUrgent || m.renew.length || m.convertedWeek.length){
+          box.classList.add('on');
+          box.innerHTML = `
+            <button class="crmAlertTile bad" type="button" data-crm-alert="due"><div><div class="big">🔔 ${m.dueToday.length}</div><div class="small">Recontatos hoje</div></div><b>Ver</b></button>
+            <button class="crmAlertTile warn" type="button" data-crm-alert="late"><div><div class="big">⚠ ${m.overdue.length}</div><div class="small">Leads atrasados</div></div><b>Prioridade</b></button>
+            <button class="crmAlertTile good" type="button" data-crm-alert="renew"><div><div class="big">🟢 ${m.convertedWeek.length}</div><div class="small">Conversões na semana · ${m.renew.length} pacotes vencendo</div></div><b>CRM</b></button>`;
+        } else {
+          box.classList.remove('on');
+          box.innerHTML = '';
+        }
+      }
+      if (commercial){
+        commercial.innerHTML = `
+          <div class="crmCommercialMini bad"><div class="k">Recontatar hoje</div><div class="v">${m.dueToday.length}</div></div>
+          <div class="crmCommercialMini warn"><div class="k">Atrasados</div><div class="v">${m.overdue.length}</div></div>
+          <div class="crmCommercialMini good"><div class="k">Conversão geral</div><div class="v">${m.conversionRate}%</div></div>`;
+      }
+    }
+
     function renderCRMPanel(){
       crmEnsure();
       const list = UI.el('crmList');
@@ -7815,9 +8054,12 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       if (quick === 'renew') arr = arr.filter(x => x.status === 'renovacao' || (crmEndDate(x) && crmDaysUntil(crmEndDate(x)) <= 30));
       if (q) arr = arr.filter(x => [x.name,x.phone,x.origin,x.doctor,x.owner,x.interest,x.procedures,x.notes].join(' ').toLowerCase().includes(q));
       arr = arr.slice().sort((a,b) => {
+        const pa = crmIsDue(a) ? 0 : 1; const pb = crmIsDue(b) ? 0 : 1;
+        if (pa !== pb) return pa - pb;
         const da = a.nextContact || '9999-12-31'; const db = b.nextContact || '9999-12-31';
         return da.localeCompare(db) || String(a.name||'').localeCompare(String(b.name||''));
       });
+      renderCRMAlerts();
       list.innerHTML = arr.length ? arr.map(crmCardHtml).join('') : '<div class="crmEmpty">Nenhum cadastro encontrado nesta visão.</div>';
     }
 
@@ -8246,7 +8488,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('crmSearch')?.addEventListener('input', renderCRMPanel);
       UI.el('crmQuickFilter')?.addEventListener('change', renderCRMPanel);
       UI.el('crmType')?.addEventListener('change', e => { CRMForm.tab = e.target.value === 'lead' ? 'lead' : 'patient'; });
-      UI.el('crmList')?.addEventListener('click', e => { const edit=e.target.closest('[data-crm-edit]'); const del=e.target.closest('[data-crm-del]'); const conv=e.target.closest('[data-crm-convert]'); const next=e.target.closest('[data-crm-next]'); if(edit) editCRMEntry(edit.dataset.crmEdit); if(del) deleteCRMEntry(del.dataset.crmDel); if(conv) convertLeadToPatient(conv.dataset.crmConvert); if(next) scheduleNextCRMContact(next.dataset.crmNext); });
+      UI.el('crmList')?.addEventListener('click', e => { const edit=e.target.closest('[data-crm-edit]'); const del=e.target.closest('[data-crm-del]'); const conv=e.target.closest('[data-crm-convert]'); const next=e.target.closest('[data-crm-next]'); const wa=e.target.closest('[data-crm-whatsapp]'); const delay=e.target.closest('[data-crm-delay]'); if(edit) editCRMEntry(edit.dataset.crmEdit); if(del) deleteCRMEntry(del.dataset.crmDel); if(conv) convertLeadToPatient(conv.dataset.crmConvert); if(next) scheduleNextCRMContact(next.dataset.crmNext); if(wa) crmOpenWhatsApp(wa.dataset.crmWhatsapp); if(delay) crmPostpone(delay.dataset.crmDelayId, Number(delay.dataset.crmDelay)); });
+      UI.el('crmGlobalAlertStrip')?.addEventListener('click', e => { const hit=e.target.closest('[data-crm-alert]'); if(!hit) return; toggleCRMMode(true); setCRMTab(hit.dataset.crmAlert === 'renew' ? 'patient' : 'due'); });
       UI.el('btnSurgeryCenter').addEventListener('click', () => openSurgeryCenter(false));
       UI.el('btnOpenSurgeryCenter').addEventListener('click', () => openSurgeryCenter(false));
       UI.el('btnNewSurgeryRecord').addEventListener('click', () => openSurgeryFromCalendar(state.selDate || todayISO()));
