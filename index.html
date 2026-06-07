@@ -5186,6 +5186,95 @@ body[data-theme="senna_mclaren"] :where(.modal,#ovLogin,#crmPageCard,.crmPanel,.
   -webkit-text-fill-color:#071225 !important;
 }
 
+
+
+/* =========================================================
+   CORREÇÃO DEFINITIVA — MENU HAMBÚRGUER SEM FICAR ESCONDIDO
+   Mantém o menu sempre acima do calendário, da faixa escura e dos cards.
+========================================================= */
+.hdr{
+  position:sticky !important;
+  top:0 !important;
+  z-index:999900 !important;
+  overflow:visible !important;
+  isolation:isolate !important;
+}
+.headerAligned,
+.toolbarCenter,
+.hambWrap{
+  overflow:visible !important;
+}
+.hambWrap,
+body[data-theme="senna_brasil"] .hambWrap,
+body[data-theme="senna_mclaren"] .hambWrap{
+  position:relative !important;
+  z-index:999950 !important;
+}
+.hambBtn{
+  position:relative !important;
+  z-index:999960 !important;
+}
+.hambMenu,
+body[data-theme="senna_brasil"] .hambMenu,
+body[data-theme="senna_mclaren"] .hambMenu{
+  position:absolute !important;
+  top:58px !important;
+  left:0 !important;
+  z-index:999999 !important;
+  display:none;
+  min-width:250px !important;
+  max-height:calc(100vh - 150px) !important;
+  overflow-y:auto !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,246,196,.97)) !important;
+  border:1px solid rgba(11,29,107,.28) !important;
+  box-shadow:0 22px 60px rgba(0,0,0,.38) !important;
+  color:#071225 !important;
+  -webkit-text-fill-color:#071225 !important;
+}
+.hambWrap[open] .hambMenu,
+body[data-theme="senna_brasil"] .hambWrap[open] .hambMenu,
+body[data-theme="senna_mclaren"] .hambWrap[open] .hambMenu{
+  display:flex !important;
+}
+.hambMenu .btn,
+body[data-theme="senna_brasil"] .hambMenu .btn,
+body[data-theme="senna_mclaren"] .hambMenu .btn{
+  color:#071225 !important;
+  -webkit-text-fill-color:#071225 !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,246,196,.94)) !important;
+  border-color:rgba(11,29,107,.22) !important;
+  text-shadow:none !important;
+  width:100% !important;
+  min-width:100% !important;
+  justify-content:center !important;
+}
+.hambMenu .btn.danger{
+  color:#8b1111 !important;
+  -webkit-text-fill-color:#8b1111 !important;
+}
+.mainCalendarCard .sectionHead,
+.monthRow,
+.dowShell,
+.calFrame,
+.container,
+.card{
+  z-index:auto !important;
+}
+body[data-theme="senna_brasil"] .hdr::before,
+body[data-theme="senna_brasil"] .hdr::after{
+  pointer-events:none !important;
+}
+@media(max-width:760px){
+  .hambMenu,
+  body[data-theme="senna_brasil"] .hambMenu,
+  body[data-theme="senna_mclaren"] .hambMenu{
+    top:56px !important;
+    left:0 !important;
+    min-width:260px !important;
+    max-height:65vh !important;
+  }
+}
+
 </style>
 </head>
 <body data-theme="senna_brasil">
