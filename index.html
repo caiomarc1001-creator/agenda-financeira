@@ -4918,6 +4918,149 @@ body[data-theme="senna_brasil"] .compactBrand h1{
   .hdr{min-height:126px !important;}
 }
 
+
+
+/* =========================================================
+   CORREÇÃO GLOBAL — SENNA MCLAREN: FONTES PRETAS EM JANELAS
+   Inclui CRM/Pacientes, formulários, regras, eventos e login.
+   Mantém botões principais com contraste próprio.
+========================================================= */
+body[data-theme="senna_mclaren"] .modal,
+body[data-theme="senna_mclaren"] .modal *:not(.btn):not(.mBtn):not(.smallBtn):not(.closeX):not(.passToggle):not(.hambLines):not(.hambLines::before):not(.hambLines::after),
+body[data-theme="senna_mclaren"] #ovLogin .modal,
+body[data-theme="senna_mclaren"] #ovLogin .modal *:not(.btn):not(.mBtn):not(.smallBtn):not(.closeX):not(.passToggle),
+body[data-theme="senna_mclaren"] #crmPageCard,
+body[data-theme="senna_mclaren"] #crmPageCard *:not(.btn):not(.mBtn):not(.smallBtn),
+body[data-theme="senna_mclaren"] .crmPanel,
+body[data-theme="senna_mclaren"] .crmPanel *:not(.btn):not(.mBtn):not(.smallBtn),
+body[data-theme="senna_mclaren"] .crmCard,
+body[data-theme="senna_mclaren"] .crmCard *:not(.btn):not(.mBtn):not(.smallBtn){
+  color:#071225 !important;
+  text-shadow:none !important;
+}
+
+body[data-theme="senna_mclaren"] .modal,
+body[data-theme="senna_mclaren"] #ovLogin .modal{
+  background:linear-gradient(180deg,rgba(255,248,224,.98),rgba(232,218,169,.96)) !important;
+  border-color:rgba(7,18,37,.18) !important;
+  box-shadow:0 0 0 4px rgba(7,18,37,.08),0 22px 70px rgba(0,0,0,.34) !important;
+}
+
+body[data-theme="senna_mclaren"] .modal .mHead,
+body[data-theme="senna_mclaren"] #ovLogin .mHead{
+  border-bottom-color:rgba(7,18,37,.12) !important;
+}
+
+body[data-theme="senna_mclaren"] .modal .helper,
+body[data-theme="senna_mclaren"] .modal .cloudHint,
+body[data-theme="senna_mclaren"] #ovLogin .helper,
+body[data-theme="senna_mclaren"] #ovLogin .cloudHint{
+  color:#071225 !important;
+  background:rgba(255,255,255,.52) !important;
+  border-color:rgba(7,18,37,.18) !important;
+}
+
+body[data-theme="senna_mclaren"] .modal input,
+body[data-theme="senna_mclaren"] .modal select,
+body[data-theme="senna_mclaren"] .modal textarea,
+body[data-theme="senna_mclaren"] .modal .input,
+body[data-theme="senna_mclaren"] #ovLogin input,
+body[data-theme="senna_mclaren"] #ovLogin select,
+body[data-theme="senna_mclaren"] #ovLogin textarea,
+body[data-theme="senna_mclaren"] #ovLogin .input,
+body[data-theme="senna_mclaren"] #crmPageCard input,
+body[data-theme="senna_mclaren"] #crmPageCard select,
+body[data-theme="senna_mclaren"] #crmPageCard textarea,
+body[data-theme="senna_mclaren"] #crmPageCard .input{
+  color:#071225 !important;
+  -webkit-text-fill-color:#071225 !important;
+  background:rgba(255,255,255,.96) !important;
+  border-color:rgba(7,18,37,.18) !important;
+  caret-color:#071225 !important;
+}
+
+body[data-theme="senna_mclaren"] .modal input::placeholder,
+body[data-theme="senna_mclaren"] .modal textarea::placeholder,
+body[data-theme="senna_mclaren"] #ovLogin input::placeholder,
+body[data-theme="senna_mclaren"] #ovLogin textarea::placeholder,
+body[data-theme="senna_mclaren"] #crmPageCard input::placeholder,
+body[data-theme="senna_mclaren"] #crmPageCard textarea::placeholder{
+  color:rgba(7,18,37,.52) !important;
+  -webkit-text-fill-color:rgba(7,18,37,.52) !important;
+  opacity:1 !important;
+}
+
+body[data-theme="senna_mclaren"] .modal select option,
+body[data-theme="senna_mclaren"] #ovLogin select option,
+body[data-theme="senna_mclaren"] #crmPageCard select option{
+  color:#071225 !important;
+  background:#fff !important;
+}
+
+body[data-theme="senna_mclaren"] #loginClose,
+body[data-theme="senna_mclaren"] .closeX{
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(241,245,249,.90)) !important;
+  border-color:rgba(7,18,37,.18) !important;
+  box-shadow:0 8px 18px rgba(7,18,37,.12), inset 0 1px 0 rgba(255,255,255,.72) !important;
+}
+body[data-theme="senna_mclaren"] #loginClose::before,
+body[data-theme="senna_mclaren"] #loginClose::after,
+body[data-theme="senna_mclaren"] .closeX::before,
+body[data-theme="senna_mclaren"] .closeX::after{
+  color:#071225 !important;
+  background:#071225 !important;
+}
+
+body[data-theme="senna_mclaren"] .passToggle{
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(241,245,249,.90)) !important;
+  border-color:rgba(7,18,37,.18) !important;
+  box-shadow:0 8px 18px rgba(7,18,37,.12), inset 0 1px 0 rgba(255,255,255,.72) !important;
+}
+body[data-theme="senna_mclaren"] .passToggle::before{
+  border-color:#071225 !important;
+}
+body[data-theme="senna_mclaren"] .passToggle::after{
+  background:#071225 !important;
+}
+
+body[data-theme="senna_mclaren"] .modal .btn.primary,
+body[data-theme="senna_mclaren"] .modal .mBtn.primary,
+body[data-theme="senna_mclaren"] #ovLogin .btn.primary,
+body[data-theme="senna_mclaren"] #ovLogin .mBtn.primary{
+  color:#fffaf7 !important;
+  -webkit-text-fill-color:#fffaf7 !important;
+}
+
+body[data-theme="senna_mclaren"] .modal .btn:not(.primary):not(.danger),
+body[data-theme="senna_mclaren"] .modal .mBtn:not(.primary):not(.danger),
+body[data-theme="senna_mclaren"] .modal .smallBtn:not(.danger),
+body[data-theme="senna_mclaren"] #ovLogin .btn:not(.primary):not(.danger),
+body[data-theme="senna_mclaren"] #ovLogin .mBtn:not(.primary):not(.danger),
+body[data-theme="senna_mclaren"] #ovLogin .smallBtn:not(.danger){
+  color:#071225 !important;
+  -webkit-text-fill-color:#071225 !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(255,255,255,.54)) !important;
+  border-color:rgba(7,18,37,.18) !important;
+}
+
+body[data-theme="senna_mclaren"] .modal .btn.danger,
+body[data-theme="senna_mclaren"] .modal .mBtn.danger,
+body[data-theme="senna_mclaren"] .modal .smallBtn.danger{
+  color:#7f1d1d !important;
+  -webkit-text-fill-color:#7f1d1d !important;
+  background:rgba(255,93,93,.16) !important;
+  border-color:rgba(127,29,29,.30) !important;
+}
+
+body[data-theme="senna_mclaren"] .crmBadge,
+body[data-theme="senna_mclaren"] .crmTimeBox,
+body[data-theme="senna_mclaren"] .crmStat,
+body[data-theme="senna_mclaren"] .crmPanel,
+body[data-theme="senna_mclaren"] .crmCard{
+  background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.52)) !important;
+  border-color:rgba(7,18,37,.14) !important;
+}
+
 </style>
 </head>
 <body data-theme="senna_brasil">
