@@ -4378,44 +4378,123 @@ body[data-theme="nasa"] .crmDueCard{
 
 
 /* =========================================================
-   AJUSTE PONTUAL — SENNA BRASIL / HEADER
-   Pedido: mudar SOMENTE a arte vermelho/branco/preto do canto superior direito.
-   Mantém as faixas verde, azul, branca e o restante do layout intactos.
+   CORREÇÃO FINAL PONTUAL — SENNA BRASIL
+   1) restaura faixas verde / branca / azul no topo
+   2) substitui arte abstrata por carro estilo McLaren/Senna no canto direito
+   3) corrige textos das janelas/modais para preto no tema Senna Brasil
+   Sem alterar calendário, CRM, Firebase ou demais temas.
 ========================================================= */
 body[data-theme="senna_brasil"] .hdr{
+  position:sticky !important;
   overflow:hidden !important;
+  background:#FFD700 !important;
+  border-bottom:none !important;
+  box-shadow:0 10px 28px rgba(11,29,107,.18) !important;
+  color:#071225 !important;
+}
+body[data-theme="senna_brasil"] .hdr::before{
+  content:"" !important;
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  height:20px !important;
+  pointer-events:none !important;
+  z-index:1 !important;
+  background:linear-gradient(180deg,
+    #009739 0 34%,
+    #ffffff 34% 46%,
+    #0B1D6B 46% 100%
+  ) !important;
+  opacity:1 !important;
 }
 body[data-theme="senna_brasil"] .headerAligned{
   position:relative !important;
-  z-index:2 !important;
+  z-index:3 !important;
 }
 body[data-theme="senna_brasil"] .hdr::after{
-  content:"";
-  position:absolute;
-  right:14px;
-  top:2px;
-  width:min(410px,36vw);
-  height:92px;
-  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http:%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20760%20150%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3Cfilter%20id%3D%22shadow%22%20x%3D%22-20%%22%20y%3D%22-40%%22%20width%3D%22140%%22%20height%3D%22200%%22%3E%0A%20%20%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%228%22%20stdDeviation%3D%227%22%20flood-color%3D%22#000000%22%20flood-opacity%3D%220.35%22%2F%3E%0A%20%20%20%20%3C%2Ffilter%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22body%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%220%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22#e02020%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220.22%22%20stop-color%3D%22#ffffff%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220.68%22%20stop-color%3D%22#ffffff%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%221%22%20stop-color%3D%22#f3f3f3%22%2F%3E%0A%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Cg%20filter%3D%22url(#shadow)%22%3E%0A%20%20%20%20%3Crect%20x%3D%2230%22%20y%3D%2231%22%20width%3D%2292%22%20height%3D%2218%22%20rx%3D%225%22%20fill%3D%22#111%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%2236%22%20y%3D%22103%22%20width%3D%2292%22%20height%3D%2218%22%20rx%3D%225%22%20fill%3D%22#111%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%2246%22%20width%3D%2228%22%20height%3D%2262%22%20rx%3D%225%22%20fill%3D%22#e02020%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22115%22%20y%3D%2216%22%20width%3D%2258%22%20height%3D%2243%22%20rx%3D%2214%22%20fill%3D%22#080808%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22115%22%20y%3D%2292%22%20width%3D%2258%22%20height%3D%2243%22%20rx%3D%2214%22%20fill%3D%22#080808%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M150%2072%20C210%2030%20325%2022%20470%2035%20C560%2043%20635%2060%20720%2068%20C637%2077%20560%20100%20470%20112%20C325%20130%20210%20120%20150%2078%20Z%22%20fill%3D%22url(#body)%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M150%2072%20C194%2043%20245%2033%20306%2030%20L274%20119%20C224%20114%20183%20101%20150%2078%20Z%22%20fill%3D%22#e02020%22%20opacity%3D%220.96%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M572%2046%20C626%2055%20676%2063%20720%2068%20C672%2072%20622%2082%20570%2095%20Z%22%20fill%3D%22#f5f5f5%22%2F%3E%0A%20%20%20%20%3Cellipse%20cx%3D%22445%22%20cy%3D%2273%22%20rx%3D%2248%22%20ry%3D%2230%22%20fill%3D%22#101010%22%2F%3E%0A%20%20%20%20%3Cellipse%20cx%3D%22462%22%20cy%3D%2269%22%20rx%3D%2225%22%20ry%3D%2218%22%20fill%3D%22#252525%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M706%2067%20L755%2043%20L760%2054%20L721%2068%20L760%2083%20L755%2094%20Z%22%20fill%3D%22#f6f6f6%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M704%2068%20L758%2068%22%20stroke%3D%22#111%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22673%22%20y%3D%2213%22%20width%3D%2254%22%20height%3D%2239%22%20rx%3D%2213%22%20fill%3D%22#080808%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22673%22%20y%3D%2298%22%20width%3D%2254%22%20height%3D%2239%22%20rx%3D%2213%22%20fill%3D%22#080808%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M300%2057%20C350%2047%20397%2048%20423%2057%20L408%2088%20C370%2094%20330%2091%20295%2082%20Z%22%20fill%3D%22#111%22%20opacity%3D%220.92%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M206%2077%20C282%2085%20374%2087%20528%2074%22%20stroke%3D%22#111%22%20stroke-width%3D%224%22%20opacity%3D%220.28%22%20fill%3D%22none%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M210%2055%20C294%2046%20410%2047%20536%2062%22%20stroke%3D%22#d71920%22%20stroke-width%3D%225%22%20opacity%3D%220.65%22%20fill%3D%22none%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M244%2038%20C334%2027%20473%2037%20582%2058%22%20stroke%3D%22#ffffff%22%20stroke-width%3D%229%22%20opacity%3D%220.42%22%20fill%3D%22none%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
-  background-repeat:no-repeat;
-  background-size:contain;
-  background-position:center right;
-  opacity:.92;
-  pointer-events:none;
-  z-index:1;
+  content:"" !important;
+  position:absolute !important;
+  right:8px !important;
+  top:2px !important;
+  width:min(520px,39vw) !important;
+  height:104px !important;
+  pointer-events:none !important;
+  z-index:2 !important;
+  opacity:.96 !important;
+  background-repeat:no-repeat !important;
+  background-size:contain !important;
+  background-position:center right !important;
+  filter:drop-shadow(0 12px 14px rgba(0,0,0,.28)) !important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 210'%3E%3Cdefs%3E%3ClinearGradient id='whiteBody' x1='0' x2='1' y1='0' y2='0'%3E%3Cstop offset='0' stop-color='%23f8f8f8'/%3E%3Cstop offset='.55' stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23e8e8e8'/%3E%3C/linearGradient%3E%3Cfilter id='shadow' x='-20%25' y='-40%25' width='140%25' height='200%25'%3E%3CfeDropShadow dx='0' dy='9' stdDeviation='8' flood-color='%23000000' flood-opacity='.35'/%3E%3C/filter%3E%3C/defs%3E%3Cg filter='url(%23shadow)'%3E%3C!-- rodas --%3E%3Cellipse cx='155' cy='48' rx='62' ry='23' fill='%23080a0d'/%3E%3Cellipse cx='170' cy='162' rx='62' ry='23' fill='%23080a0d'/%3E%3Cellipse cx='747' cy='48' rx='55' ry='22' fill='%23080a0d'/%3E%3Cellipse cx='747' cy='162' rx='55' ry='22' fill='%23080a0d'/%3E%3C!-- asas --%3E%3Crect x='42' y='78' width='132' height='54' rx='7' fill='%23d61f26'/%3E%3Crect x='58' y='84' width='34' height='42' rx='3' fill='%23ffffff' opacity='.92'/%3E%3Cpath d='M724 77 L884 55 L894 83 L760 104 L894 127 L884 155 L724 133 Z' fill='%23f4f4f4'/%3E%3Cpath d='M733 105 L890 105' stroke='%23080a0d' stroke-width='7' stroke-linecap='round' opacity='.95'/%3E%3Crect x='798' y='44' width='72' height='44' rx='6' fill='%23d61f26'/%3E%3Ctext x='826' y='73' font-family='Arial, Helvetica, sans-serif' font-size='28' font-weight='900' fill='%23ffffff'%3E12%3C/text%3E%3C!-- corpo principal --%3E%3Cpath d='M133 106 C215 54 334 42 493 58 C590 68 656 82 736 101 C656 122 590 142 493 153 C334 171 215 155 133 112 Z' fill='url(%23whiteBody)'/%3E%3Cpath d='M132 106 C185 72 247 55 322 51 L290 159 C224 153 176 138 132 112 Z' fill='%23d61f26'/%3E%3Cpath d='M318 51 C392 48 476 54 560 67 C485 76 393 80 300 76 Z' fill='%23ffffff'/%3E%3Cpath d='M300 134 C398 130 493 122 570 106 C500 139 410 156 292 158 Z' fill='%23f0f0f0'/%3E%3C!-- cockpit --%3E%3Cellipse cx='474' cy='105' rx='58' ry='35' fill='%23101010'/%3E%3Cellipse cx='493' cy='100' rx='28' ry='21' fill='%23202020'/%3E%3Cpath d='M354 84 C405 73 447 77 474 91 L450 130 C407 132 367 121 335 106 Z' fill='%23101010' opacity='.96'/%3E%3C!-- bico --%3E%3Cpath d='M540 88 C622 91 681 98 736 101 C683 108 623 118 540 124 Z' fill='%23f9f9f9'/%3E%3Cpath d='M546 103 C619 103 678 103 735 102' stroke='%23101010' stroke-width='4' opacity='.28'/%3E%3C!-- suspensoes --%3E%3Cpath d='M181 56 L308 86 M183 154 L309 122 M663 76 L744 50 M663 134 L744 161' stroke='%23101010' stroke-width='8' stroke-linecap='round' opacity='.9'/%3E%3Cpath d='M200 104 C318 114 440 116 606 104' stroke='%23101010' stroke-width='5' opacity='.20' fill='none'/%3E%3C!-- detalhes/sponsors estilizados --%3E%3Ctext x='593' y='91' font-family='Arial Black, Arial, sans-serif' font-size='26' font-weight='900' fill='%23101010' transform='rotate(3 593 91)'%3EMarlboro%3C/text%3E%3Ctext x='265' y='101' font-family='Arial, sans-serif' font-size='16' font-weight='900' fill='%23101010' opacity='.75'%3EHONDA%3C/text%3E%3Ctext x='240' y='125' font-family='Arial, sans-serif' font-size='13' font-weight='800' fill='%23101010' opacity='.55'%3EGoodyear%3C/text%3E%3Ccircle cx='578' cy='114' r='16' fill='%23ffcc00'/%3E%3Cpath d='M565 114 h26' stroke='%23d61f26' stroke-width='5'/%3E%3C/g%3E%3C/svg%3E") !important;
 }
-@media(max-width:980px){
+body[data-theme="senna_brasil"] .saveDock,
+body[data-theme="senna_brasil"] .userDock{
+  position:relative !important;
+  z-index:4 !important;
+}
+@media(max-width:1180px){
   body[data-theme="senna_brasil"] .hdr::after{
-    right:-38px;
-    width:270px;
-    opacity:.30;
+    width:360px !important;
+    right:-10px !important;
+    opacity:.38 !important;
   }
 }
-@media(max-width:680px){
+@media(max-width:720px){
   body[data-theme="senna_brasil"] .hdr::after{
     display:none !important;
   }
 }
+
+/* Textos das janelas/modais no Senna Brasil: preto e legível */
+body[data-theme="senna_brasil"] .modal,
+body[data-theme="senna_brasil"] .modal .mHead h3,
+body[data-theme="senna_brasil"] .modal .lbl,
+body[data-theme="senna_brasil"] .modal .small,
+body[data-theme="senna_brasil"] .modal .cloudHint,
+body[data-theme="senna_brasil"] .modal .helper,
+body[data-theme="senna_brasil"] .modal details,
+body[data-theme="senna_brasil"] .modal summary,
+body[data-theme="senna_brasil"] .modal .accountPanel,
+body[data-theme="senna_brasil"] .modal .themeSectionTitle,
+body[data-theme="senna_brasil"] .modal .themeTitle,
+body[data-theme="senna_brasil"] .modal .themeDesc{
+  color:#071225 !important;
+  text-shadow:none !important;
+}
+body[data-theme="senna_brasil"] .modal .input,
+body[data-theme="senna_brasil"] .modal input,
+body[data-theme="senna_brasil"] .modal select,
+body[data-theme="senna_brasil"] .modal textarea{
+  background:rgba(255,255,255,.96) !important;
+  color:#071225 !important;
+  border-color:rgba(11,29,107,.24) !important;
+}
+body[data-theme="senna_brasil"] .modal .input::placeholder,
+body[data-theme="senna_brasil"] .modal input::placeholder,
+body[data-theme="senna_brasil"] .modal textarea::placeholder{
+  color:rgba(7,18,37,.48) !important;
+}
+body[data-theme="senna_brasil"] .modal .passToggle,
+body[data-theme="senna_brasil"] .modal .closeX{
+  color:#071225 !important;
+  background:rgba(255,255,255,.90) !important;
+  border-color:rgba(11,29,107,.18) !important;
+}
+body[data-theme="senna_brasil"] .modal .mBtn:not(.primary):not(.danger),
+body[data-theme="senna_brasil"] .modal .smallBtn:not(.primary):not(.danger),
+body[data-theme="senna_brasil"] .modal .btn:not(.primary):not(.danger){
+  color:#071225 !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,246,196,.92)) !important;
+  border-color:rgba(11,29,107,.18) !important;
+}
+body[data-theme="senna_brasil"] .modal .mBtn.primary,
+body[data-theme="senna_brasil"] .modal .smallBtn.primary,
+body[data-theme="senna_brasil"] .modal .btn.primary{
+  color:#ffffff !important;
+  background:linear-gradient(135deg,#009739,#006b2c) !important;
+}
+
 </style>
 </head>
 <body data-theme="senna_capacete">
