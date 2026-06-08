@@ -11046,3 +11046,123 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
   });
 })();
 </script>
+
+
+<!-- =========================================================
+     CORREÇÃO FINAL MESTRE — MODAIS INTERNOS SEM CORTE NO TOPO
+     Corrige a hierarquia: header/menu ficam abaixo das janelas.
+     Ao abrir qualquer modal, a janela inicia no topo e com respiro.
+========================================================= -->
+<style id="modal-top-master-fix-css">
+  /* Header continua fixo/sticky, mas não pode cortar janelas internas */
+  .hdr{
+    z-index:1000 !important;
+    overflow:visible !important;
+  }
+
+  /* Menus flutuantes continuam acima do calendário, mas abaixo dos modais */
+  #hamburgerPortalMenu,
+  .hambMenu.masterFloatingMenu,
+  .hambWrap[open] .hambMenu{
+    z-index:9000 !important;
+  }
+
+  /* Qualquer janela interna aberta fica acima de tudo */
+  .ov.open{
+    position:fixed !important;
+    inset:0 !important;
+    z-index:50000 !important;
+    display:flex !important;
+    align-items:flex-start !important;
+    justify-content:center !important;
+    padding-top:calc(96px + env(safe-area-inset-top)) !important;
+    padding-bottom:calc(32px + env(safe-area-inset-bottom)) !important;
+    padding-left:14px !important;
+    padding-right:14px !important;
+    overflow:auto !important;
+    overscroll-behavior:contain !important;
+    -webkit-overflow-scrolling:touch !important;
+  }
+
+  .ov.open .modal{
+    position:relative !important;
+    z-index:50001 !important;
+    margin-top:0 !important;
+    margin-bottom:0 !important;
+    max-height:calc(100dvh - 132px) !important;
+    overflow:auto !important;
+    overscroll-behavior:contain !important;
+    -webkit-overflow-scrolling:touch !important;
+  }
+
+  /* Garante que o cabeçalho da própria janela nunca fique escondido */
+  .ov.open .modal > .mHead,
+  .ov.open .mHead{
+    position:sticky !important;
+    top:0 !important;
+    z-index:2 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    min-height:52px !important;
+    padding-top:6px !important;
+    background:inherit !important;
+  }
+
+  /* Login recebe um pouco menos de respiro para não ficar baixo demais */
+  #ovLogin.open{
+    z-index:51000 !important;
+    padding-top:calc(28px + env(safe-area-inset-top)) !important;
+  }
+  #ovLogin.open .modal{
+    z-index:51001 !important;
+    max-height:calc(100dvh - 58px) !important;
+  }
+
+  @media(max-width:760px){
+    .ov.open{
+      padding-top:calc(78px + env(safe-area-inset-top)) !important;
+      padding-left:10px !important;
+      padding-right:10px !important;
+    }
+    .ov.open .modal{
+      max-height:calc(100dvh - 112px) !important;
+      width:100% !important;
+    }
+    #ovLogin.open{
+      padding-top:calc(18px + env(safe-area-inset-top)) !important;
+    }
+    #ovLogin.open .modal{
+      max-height:calc(100dvh - 42px) !important;
+    }
+  }
+</style>
+<script id="modal-top-master-fix-js">
+(function(){
+  function closeFloatingMenus(){
+    var portal = document.getElementById('hamburgerPortalMenu');
+    if(portal) portal.classList.remove('open');
+    document.querySelectorAll('.hambWrap[open]').forEach(function(w){ w.removeAttribute('open'); });
+    document.querySelectorAll('.hambMenu.masterFloatingMenu').forEach(function(m){ m.classList.remove('masterFloatingMenu'); });
+  }
+  function resetModalScroll(ov){
+    if(!ov || !ov.classList || !ov.classList.contains('open')) return;
+    closeFloatingMenus();
+    ov.scrollTop = 0;
+    var modal = ov.querySelector('.modal');
+    if(modal) modal.scrollTop = 0;
+  }
+  function bind(){
+    document.querySelectorAll('.ov').forEach(function(ov){
+      if(ov.dataset.modalTopMasterFix === '1') return;
+      ov.dataset.modalTopMasterFix = '1';
+      new MutationObserver(function(){ resetModalScroll(ov); })
+        .observe(ov, {attributes:true, attributeFilter:['class']});
+      resetModalScroll(ov);
+    });
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
+  else bind();
+  new MutationObserver(bind).observe(document.documentElement, {childList:true, subtree:true});
+})();
+</script>
