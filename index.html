@@ -5572,6 +5572,17 @@ body[data-theme="senna_brasil"] .hdr::after{
           <div><div class="lbl">Horas</div><input class="input" id="evHours" type="number" min="0" step="0.25" /></div>
           <div><div class="lbl">Total (calculado)</div><input class="input" id="evTotal" readonly type="text" /></div>
         </div>
+        <div class="row2" id="evFullAmountRow" style="display:none">
+          <div>
+            <div class="lbl">Valor integral da conta a pagar (R$)</div>
+            <input class="input" id="evFullAmount" type="number" min="0" step="0.01" placeholder="Ex: 1250,00" />
+          </div>
+          <div>
+            <div class="helper" style="height:100%;display:flex;align-items:center">
+              Para contas a pagar, você pode preencher o valor integral diretamente. O total usará este valor e não dependerá de horas × valor/hora.
+            </div>
+          </div>
+        </div>
         <div class="row2">
           <div>
             <div class="lbl">Recorrência</div>
@@ -7365,7 +7376,11 @@ body[data-theme="senna_brasil"] .hdr::after{
     function eventHours(e){ return Number(e.hours || 0); }
     function eventRate(e){ return Number(e.rate || 0); }
     function eventTotal(e){
+      const isPayable = (e?.financeKind || e?.transactionKind || 'receivable') === 'payable';
+      const directFull = Number(e?.fullAmount || e?.payableFullAmount || 0);
+      if (isPayable && Number.isFinite(directFull) && directFull > 0) return directFull;
       const baseTotal = eventRate(e) * eventHours(e);
+      if (isPayable) return baseTotal;
       const range = parseTimeRange(e?.time);
       if (!range || eventHours(e) <= 0 || eventRate(e) <= 0 || !Array.isArray(state.bonusRules) || !state.bonusRules.length) return baseTotal;
 
@@ -7845,7 +7860,7 @@ body[data-theme="senna_brasil"] .hdr::after{
     function defaultEvent(dateISO){
       return {
         id:uid(), name:'', startDate:dateISO || todayISO(), time:'', type:'plantao', color:'#3B82F6',
-        rate:0, hours:0, note:'', financeKind:'receivable',
+        rate:0, hours:0, fullAmount:0, note:'', financeKind:'receivable',
         rec:'none', endDate:'', exceptions:[],
         isOverride:false, seriesId:'', dateISO:'',
         retroMode:'none', retroSingleDate:'', retroStartDate:'', retroEndDate:'', retroInfoDate:''
@@ -7861,6 +7876,7 @@ body[data-theme="senna_brasil"] .hdr::after{
       UI.el('btnPickColor').dataset.color = hexNorm(m.color || '#3B82F6');
       UI.el('evRate').value = m.rate || '';
       UI.el('evHours').value = m.hours || '';
+      if (UI.el('evFullAmount')) UI.el('evFullAmount').value = m.fullAmount || m.payableFullAmount || '';
       UI.el('evNote').value = m.note || '';
       UI.el('evFinanceKind').value = (m.financeKind || m.transactionKind || 'receivable') === 'payable' ? 'payable' : 'receivable';
       updateFinanceBadge();
@@ -7883,8 +7899,10 @@ body[data-theme="senna_brasil"] .hdr::after{
       m.time = String(UI.el('evTime').value || '').trim();
       m.type = UI.el('evType').value || 'plantao';
       m.color = hexNorm(UI.el('btnPickColor').dataset.color || '#3B82F6');
-      m.rate = Number(UI.el('evRate').value || 0);
-      m.hours = Number(UI.el('evHours').value || 0);
+      m.rate = Number(String(UI.el('evRate').value || 0).replace(',', '.')) || 0;
+      m.hours = Number(String(UI.el('evHours').value || 0).replace(',', '.')) || 0;
+      m.fullAmount = UI.el('evFullAmount') ? (Number(String(UI.el('evFullAmount').value || 0).replace(',', '.')) || 0) : 0;
+      m.payableFullAmount = m.fullAmount;
       m.rec = UI.el('evRec').value || 'none';
       m.endDate = m.rec !== 'none' ? (UI.el('evEnd').value || '') : '';
       m.note = String(UI.el('evNote').value || '').trim();
@@ -7912,6 +7930,8 @@ body[data-theme="senna_brasil"] .hdr::after{
         badge.textContent = isPayable ? 'A pagar' : 'A receber';
         badge.classList.toggle('payable', isPayable);
       }
+      const fullRow = UI.el('evFullAmountRow');
+      if (fullRow) fullRow.style.display = isPayable ? 'grid' : 'none';
     }
 
     function updateChipPreview(){
@@ -7925,6 +7945,15 @@ body[data-theme="senna_brasil"] .hdr::after{
     }
 
     function updateEventTotalPreview(){
+      const isPayable = UI.el('evFinanceKind') && UI.el('evFinanceKind').value === 'payable';
+      const directFull = UI.el('evFullAmount') ? (Number(String(UI.el('evFullAmount').value || '0').replace(',', '.')) || 0) : 0;
+
+      if (isPayable && directFull > 0) {
+        UI.el('evTotal').value = fmtMoney(directFull);
+        updateChipPreview();
+        return;
+      }
+
       const timeValue = UI.el('evTime').value || '';
       const autoHours = parseTimeRangeToHours(timeValue);
 
@@ -10230,7 +10259,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('evDelete').addEventListener('click', deleteEvent);
       UI.el('btnCopySpecificDates').addEventListener('click', () => openSpecificDatesModal('copy'));
       UI.el('btnDeleteSpecificDates').addEventListener('click', () => openSpecificDatesModal('delete'));
-      ['evName','evTime','evRate','evHours','evNote'].forEach(id => UI.el(id).addEventListener('input', updateEventTotalPreview));
+      ['evName','evTime','evRate','evHours','evFullAmount','evNote'].forEach(id => UI.el(id).addEventListener('input', updateEventTotalPreview));
       ['evType','evDate','evEnd','evRec','evFinanceKind','evRetroMode','evRetroSingleDate','evRetroStartDate','evRetroEndDate','evRetroInfoDate'].forEach(id => UI.el(id).addEventListener('change', () => {
         if (id === 'evRec') UI.el('recEndRow').style.display = UI.el('evRec').value !== 'none' ? '' : 'none';
         if (id === 'evRetroMode') updateRetroUi();
