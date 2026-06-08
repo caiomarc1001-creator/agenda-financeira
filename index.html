@@ -5344,6 +5344,62 @@ body[data-theme="senna_brasil"] .hdr::after{
   }
 }
 
+
+
+/* =========================================================
+   CRM — RELATÓRIO POR PERÍODO E MÉDICO
+========================================================= */
+.crmDoctorReport{
+  margin-top:14px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
+  padding:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,.16);
+}
+.crmDoctorReportHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.crmDoctorReportTitle{font-size:16px;font-weight:1000;color:var(--txt)}
+.crmDoctorReportSub{font-size:12px;color:var(--mut);line-height:1.45;margin-top:3px}
+.crmDoctorFilters{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.crmDoctorReportGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.crmDoctorTile{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.06);padding:12px}
+.crmDoctorTile .doc{font-size:13px;font-weight:1000;color:var(--txt);line-height:1.25}
+.crmDoctorTile .num{font-size:28px;font-weight:1000;margin-top:7px;color:var(--acc)}
+.crmDoctorTile .mini{font-size:12px;color:var(--mut);line-height:1.45;margin-top:6px}
+.crmDoctorTableWrap{margin-top:12px;overflow:auto;border:1px solid var(--line);border-radius:16px;background:rgba(0,0,0,.08)}
+.crmDoctorTable{width:100%;border-collapse:collapse;min-width:720px}
+.crmDoctorTable th,.crmDoctorTable td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:12px;vertical-align:top}
+.crmDoctorTable th{font-weight:1000;color:var(--txt);background:rgba(255,255,255,.06);position:sticky;top:0}
+.crmDoctorTable td{color:var(--mut)}
+.crmDoctorTable tr:last-child td{border-bottom:0}
+.crmDoctorEmpty{border:1px dashed var(--line);border-radius:16px;padding:14px;color:var(--mut);font-weight:900;text-align:center;background:rgba(255,255,255,.04)}
+body[data-theme="light"] .crmDoctorReport,
+body[data-theme="paper"] .crmDoctorReport,
+body[data-theme="windows_xp"] .crmDoctorReport,
+body[data-theme="toy_story"] .crmDoctorReport{background:rgba(255,255,255,.88)}
+body[data-theme="light"] .crmDoctorReportTitle,
+body[data-theme="paper"] .crmDoctorReportTitle,
+body[data-theme="windows_xp"] .crmDoctorReportTitle,
+body[data-theme="toy_story"] .crmDoctorReportTitle,
+body[data-theme="light"] .crmDoctorTile .doc,
+body[data-theme="paper"] .crmDoctorTile .doc,
+body[data-theme="windows_xp"] .crmDoctorTile .doc,
+body[data-theme="toy_story"] .crmDoctorTile .doc,
+body[data-theme="light"] .crmDoctorTable th,
+body[data-theme="paper"] .crmDoctorTable th,
+body[data-theme="windows_xp"] .crmDoctorTable th,
+body[data-theme="toy_story"] .crmDoctorTable th{color:#0b1220!important}
+body[data-theme="light"] .crmDoctorReportSub,
+body[data-theme="paper"] .crmDoctorReportSub,
+body[data-theme="windows_xp"] .crmDoctorReportSub,
+body[data-theme="toy_story"] .crmDoctorReportSub,
+body[data-theme="light"] .crmDoctorTable td,
+body[data-theme="paper"] .crmDoctorTable td,
+body[data-theme="windows_xp"] .crmDoctorTable td,
+body[data-theme="toy_story"] .crmDoctorTable td{color:#334155!important}
+@media(max-width:980px){.crmDoctorFilters{grid-template-columns:1fr 1fr}.crmDoctorFilters .span2{grid-column:1/-1}}
+@media(max-width:620px){.crmDoctorFilters{grid-template-columns:1fr}.crmDoctorReport{padding:12px}.crmDoctorTile .num{font-size:24px}}
+
 </style>
 </head>
 <body data-theme="senna_brasil">
@@ -5547,6 +5603,25 @@ body[data-theme="senna_brasil"] .hdr::after{
               </div>
               <div class="crmOverdueBox" id="crmOverdueBox"></div>
               <div class="crmList" id="crmList"></div>
+
+              <div class="crmDoctorReport" id="crmDoctorReportBox">
+                <div class="crmDoctorReportHead">
+                  <div>
+                    <div class="crmDoctorReportTitle">Controle por período · atendimento por médico</div>
+                    <div class="crmDoctorReportSub">Filtre o período para saber quais e quantos pacientes/leads cada médico atendeu ou acompanhou.</div>
+                  </div>
+                  <button class="smallBtn" id="crmDoctorPeriodThisMonth" type="button">Mês atual</button>
+                </div>
+                <div class="crmDoctorFilters">
+                  <div><div class="lbl">Data inicial</div><input class="input" id="crmDoctorPeriodFrom" type="date"></div>
+                  <div><div class="lbl">Data final</div><input class="input" id="crmDoctorPeriodTo" type="date"></div>
+                  <div><div class="lbl">Considerar data de</div><select class="input" id="crmDoctorPeriodBasis"><option value="lastContact">Último contato / atendimento</option><option value="firstContact">Primeiro contato</option><option value="packageStart">Início do pacote</option><option value="createdAt">Cadastro criado</option><option value="updatedAt">Última atualização</option></select></div>
+                  <div><div class="lbl">Tipo</div><select class="input" id="crmDoctorPeriodType"><option value="all">Pacientes e leads</option><option value="patient">Somente pacientes</option><option value="lead">Somente leads</option></select></div>
+                  <div class="span2"><div class="lbl">Médico</div><select class="input" id="crmDoctorPeriodDoctor"><option value="all">Todos os médicos</option></select></div>
+                </div>
+                <div id="crmDoctorPeriodReport"></div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -9908,6 +9983,104 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       }
     }
 
+
+
+    function crmNormalizeDateForReport(value){
+      if (!value) return '';
+      const str = String(value);
+      if (/^\d{4}-\d{2}-\d{2}/.test(str)) return str.slice(0,10);
+      const d = new Date(str);
+      if (isNaN(d.getTime())) return '';
+      return iso(d);
+    }
+    function crmReportDate(item, basis){
+      if (basis === 'firstContact') return crmNormalizeDateForReport(item.firstContact);
+      if (basis === 'packageStart') return crmNormalizeDateForReport(item.packageStart);
+      if (basis === 'createdAt') return crmNormalizeDateForReport(item.createdAt);
+      if (basis === 'updatedAt') return crmNormalizeDateForReport(item.updatedAt);
+      return crmNormalizeDateForReport(item.lastContact || item.nextContact || item.firstContact || item.createdAt);
+    }
+    function crmDoctorName(item){
+      return (item.doctor || '').trim() || 'Médico não informado';
+    }
+    function crmRefreshDoctorFilterOptions(items){
+      const sel = UI.el('crmDoctorPeriodDoctor');
+      if (!sel) return;
+      const current = sel.value || 'all';
+      const names = Array.from(new Set(items.map(crmDoctorName))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      sel.innerHTML = '<option value="all">Todos os médicos</option>' + names.map(n=>`<option value="${escapeAttr(n)}">${escapeHtml(n)}</option>`).join('');
+      sel.value = names.includes(current) ? current : 'all';
+    }
+    function renderCRMDoctorPeriodReport(){
+      crmEnsure();
+      const box = UI.el('crmDoctorPeriodReport');
+      if (!box) return;
+      const from = UI.el('crmDoctorPeriodFrom')?.value || '';
+      const to = UI.el('crmDoctorPeriodTo')?.value || '';
+      const basis = UI.el('crmDoctorPeriodBasis')?.value || 'lastContact';
+      const type = UI.el('crmDoctorPeriodType')?.value || 'all';
+      const selectedDoctor = UI.el('crmDoctorPeriodDoctor')?.value || 'all';
+      const baseItems = state.crm.filter(x => {
+        if (type === 'patient' && x.type === 'lead') return false;
+        if (type === 'lead' && x.type !== 'lead') return false;
+        return true;
+      });
+      crmRefreshDoctorFilterOptions(baseItems);
+      const selectedAfterRefresh = UI.el('crmDoctorPeriodDoctor')?.value || selectedDoctor;
+      const filtered = baseItems.filter(x => {
+        const d = crmReportDate(x, basis);
+        if (!d) return false;
+        if (from && d < from) return false;
+        if (to && d > to) return false;
+        if (selectedAfterRefresh !== 'all' && crmDoctorName(x) !== selectedAfterRefresh) return false;
+        return true;
+      });
+      const grouped = new Map();
+      filtered.forEach(item => {
+        const doc = crmDoctorName(item);
+        if (!grouped.has(doc)) grouped.set(doc, { total:0, patients:0, leads:0, amount:0, items:[] });
+        const g = grouped.get(doc);
+        g.total += 1;
+        if (item.type === 'lead') g.leads += 1; else g.patients += 1;
+        g.amount += Number(item.amountPaid || 0);
+        g.items.push(item);
+      });
+      const rows = Array.from(grouped.entries()).sort((a,b)=>b[1].total-a[1].total || a[0].localeCompare(b[0],'pt-BR'));
+      const periodLabel = `${from ? formatDateBR(from) : 'início'} até ${to ? formatDateBR(to) : 'hoje'}`;
+      if (!rows.length){
+        box.innerHTML = `<div class="crmDoctorEmpty">Nenhum atendimento encontrado no período selecionado (${escapeHtml(periodLabel)}).</div>`;
+        return;
+      }
+      const cards = rows.map(([doc,g]) => `<div class="crmDoctorTile">
+        <div class="doc">${escapeHtml(doc)}</div>
+        <div class="num">${g.total}</div>
+        <div class="mini">${g.patients} paciente(s) · ${g.leads} lead(s)<br>Total pago registrado: ${fmtMoney(g.amount)}</div>
+      </div>`).join('');
+      const tableRows = filtered.slice().sort((a,b)=>crmReportDate(b,basis).localeCompare(crmReportDate(a,basis)) || crmDoctorName(a).localeCompare(crmDoctorName(b),'pt-BR')).map(item => {
+        const d = crmReportDate(item, basis);
+        return `<tr>
+          <td>${escapeHtml(formatDateBR(d))}</td>
+          <td>${escapeHtml(crmDoctorName(item))}</td>
+          <td><b>${escapeHtml(item.name || 'Sem nome')}</b><br>${escapeHtml(item.phone || '')}</td>
+          <td>${item.type === 'lead' ? 'Lead' : 'Paciente'}</td>
+          <td>${escapeHtml(item.interest || item.procedures || '—')}</td>
+          <td>${escapeHtml(crmStatusLabel(item.status))}</td>
+          <td>${fmtMoney(item.amountPaid || 0)}</td>
+        </tr>`;
+      }).join('');
+      box.innerHTML = `<div class="crmDoctorReportSub" style="margin-bottom:10px"><b>${filtered.length}</b> cadastro(s) no período: ${escapeHtml(periodLabel)}.</div>
+        <div class="crmDoctorReportGrid">${cards}</div>
+        <div class="crmDoctorTableWrap"><table class="crmDoctorTable"><thead><tr><th>Data</th><th>Médico</th><th>Paciente/Lead</th><th>Tipo</th><th>Interesse/Procedimento</th><th>Status</th><th>Valor pago</th></tr></thead><tbody>${tableRows}</tbody></table></div>`;
+    }
+    function crmSetDoctorReportCurrentMonth(){
+      const now = new Date();
+      const from = iso(new Date(now.getFullYear(), now.getMonth(), 1));
+      const to = iso(new Date(now.getFullYear(), now.getMonth()+1, 0));
+      const f = UI.el('crmDoctorPeriodFrom'); if (f) f.value = from;
+      const t = UI.el('crmDoctorPeriodTo'); if (t) t.value = to;
+      renderCRMDoctorPeriodReport();
+    }
+
     function renderCRMPanel(){
       crmEnsure();
       const list = UI.el('crmList');
@@ -9935,6 +10108,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       renderCRMAlerts();
       renderCRMOverdueContacts();
       list.innerHTML = arr.length ? arr.map(crmCardHtml).join('') : '<div class="crmEmpty">Nenhum cadastro encontrado nesta visão.</div>';
+      renderCRMDoctorPeriodReport();
     }
 
     function renderAll(){
@@ -10373,6 +10547,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('crmClear')?.addEventListener('click', () => clearCRMForm(CRMForm.tab === 'due' ? 'lead' : CRMForm.tab));
       UI.el('crmSearch')?.addEventListener('input', renderCRMPanel);
       UI.el('crmQuickFilter')?.addEventListener('change', renderCRMPanel);
+      ['crmDoctorPeriodFrom','crmDoctorPeriodTo','crmDoctorPeriodBasis','crmDoctorPeriodType','crmDoctorPeriodDoctor'].forEach(id => UI.el(id)?.addEventListener('change', renderCRMDoctorPeriodReport));
+      UI.el('crmDoctorPeriodThisMonth')?.addEventListener('click', crmSetDoctorReportCurrentMonth);
       UI.el('crmType')?.addEventListener('change', e => { CRMForm.tab = e.target.value === 'lead' ? 'lead' : 'patient'; });
       const handleCRMClick = e => { const edit=e.target.closest('[data-crm-edit]'); const del=e.target.closest('[data-crm-del]'); const conv=e.target.closest('[data-crm-convert]'); const next=e.target.closest('[data-crm-next]'); const wa=e.target.closest('[data-crm-whatsapp]'); const delay=e.target.closest('[data-crm-delay]'); const done=e.target.closest('[data-crm-done]'); if(edit) editCRMEntry(edit.dataset.crmEdit); if(del) deleteCRMEntry(del.dataset.crmDel); if(conv) convertLeadToPatient(conv.dataset.crmConvert); if(next) scheduleNextCRMContact(next.dataset.crmNext); if(wa) crmOpenWhatsApp(wa.dataset.crmWhatsapp); if(delay) crmPostpone(delay.dataset.crmDelayId, Number(delay.dataset.crmDelay)); if(done) crmMarkContactDone(done.dataset.crmDone); };
       UI.el('crmList')?.addEventListener('click', handleCRMClick);
