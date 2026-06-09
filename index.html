@@ -9712,8 +9712,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       item.repositionedAt = new Date().toISOString();
       item.lastContact = item.lastContact || todayISO();
       item.nextContact = item.nextContact || todayISO();
-      item.notes = `${item.notes ? item.notes + '
-' : ''}[Reposicionado como lead não convertido em ${formatDateBR(todayISO())}] ${reason}`;
+      item.notes = `${item.notes ? item.notes + '\n' : ''}[Reposicionado como lead não convertido em ${formatDateBR(todayISO())}] ${reason}`;
       item.updatedAt = new Date().toISOString();
       CRMForm.tab = 'lead';
       save();
