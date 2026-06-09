@@ -5400,6 +5400,21 @@ body[data-theme="toy_story"] .crmDoctorTable td{color:#334155!important}
 @media(max-width:980px){.crmDoctorFilters{grid-template-columns:1fr 1fr}.crmDoctorFilters .span2{grid-column:1/-1}}
 @media(max-width:620px){.crmDoctorFilters{grid-template-columns:1fr}.crmDoctorReport{padding:12px}.crmDoctorTile .num{font-size:24px}}
 
+
+
+/* =========================================================
+   GESTÃO DE MÉDICOS + REPOSICIONAMENTO CRM
+========================================================= */
+.crmDoctorManager{margin-top:10px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.025));padding:12px}
+.crmDoctorManagerHead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.crmDoctorManagerGrid{display:grid;grid-template-columns:minmax(0,1.4fr) auto minmax(0,1.2fr) auto;gap:10px;align-items:end}
+.crmDoctorManagerActions{display:flex;align-items:end;height:100%}
+.crmRepositionNote{margin-top:8px;border:1px solid rgba(255,176,32,.34);background:rgba(255,176,32,.10);border-radius:14px;padding:9px 10px;font-size:12px;font-weight:900;color:var(--txt);line-height:1.45}
+body[data-theme="light"] .crmDoctorManager,body[data-theme="paper"] .crmDoctorManager,body[data-theme="windows_xp"] .crmDoctorManager,body[data-theme="toy_story"] .crmDoctorManager{background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(248,250,252,.90))}
+body[data-theme="light"] .crmRepositionNote,body[data-theme="paper"] .crmRepositionNote,body[data-theme="windows_xp"] .crmRepositionNote,body[data-theme="toy_story"] .crmRepositionNote{color:#0b1220;background:rgba(255,176,32,.14)}
+@media(max-width:980px){.crmDoctorManagerGrid{grid-template-columns:1fr 1fr}.crmDoctorManagerActions .smallBtn{width:100%}}
+@media(max-width:620px){.crmDoctorManagerGrid{grid-template-columns:1fr}.crmDoctorManagerActions{height:auto}.crmDoctorManagerActions .smallBtn{width:100%}}
+
 </style>
 </head>
 <body data-theme="senna_brasil">
@@ -5565,8 +5580,22 @@ body[data-theme="toy_story"] .crmDoctorTable td{color:#334155!important}
               </div>
               <div class="crmFormGrid3">
                 <div><div class="lbl">Origem do lead</div><input class="input" id="crmOrigin" placeholder="Google, Instagram, WhatsApp, indicação..."></div>
-                <div><div class="lbl">Médico responsável</div><input class="input" id="crmDoctor" placeholder="Dr(a). responsável"></div>
+                <div><div class="lbl">Médico responsável</div><select class="input" id="crmDoctor"><option value="">Selecione o médico</option></select></div>
                 <div><div class="lbl">Responsável comercial</div><input class="input" id="crmOwner" placeholder="Equipe / secretária"></div>
+              </div>
+              <div class="crmDoctorManager">
+                <div class="crmDoctorManagerHead">
+                  <div>
+                    <div class="themeSectionTitle">Equipe médica</div>
+                    <div class="crmSub">Adicione ou remova médicos da lista usada nos cadastros e relatórios.</div>
+                  </div>
+                </div>
+                <div class="crmDoctorManagerGrid">
+                  <div><div class="lbl">Adicionar médico</div><input class="input" id="crmDoctorNewName" placeholder="Ex: Dra. Nome Sobrenome"></div>
+                  <div class="crmDoctorManagerActions"><button class="smallBtn primary" id="crmDoctorAddBtn" type="button">Adicionar</button></div>
+                  <div><div class="lbl">Remover médico</div><select class="input" id="crmDoctorRemoveSelect"></select></div>
+                  <div class="crmDoctorManagerActions"><button class="smallBtn danger" id="crmDoctorRemoveBtn" type="button">Remover</button></div>
+                </div>
               </div>
               <div class="crmFormGrid3">
                 <div><div class="lbl">Tipo</div><select class="input" id="crmType"><option value="patient">Paciente convertido</option><option value="lead">Lead não convertido</option></select></div>
@@ -6413,6 +6442,7 @@ body[data-theme="toy_story"] .crmDoctorTable td{color:#334155!important}
       bonusRules:[],
       surgeries:[],
       crm:[],
+      doctors:['Dr. Caio Marcondes Jacomini','Dra. Bruna','Dr. Helber','Dra. Thaís Marcondes Jacomini','Dra. Fernanda Oyakawa'],
       ui:{ summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, hideCalendarEvents:false, paymentRowsCollapsed:{}, payableRowsCollapsed:{} },
       customTheme:{ bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', alertColor:'#ff5d5d', alertIntensity:1.35, crmFormBg:'#22304f', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, manualAlertHighlight:false, presetOverrides:{} },
       _meta:{ updatedAt:'', updatedBy:'local' }
@@ -6497,6 +6527,10 @@ body[data-theme="toy_story"] .crmDoctorTable td{color:#334155!important}
       s.bonusRules = Array.isArray(s.bonusRules) ? s.bonusRules : [];
       s.surgeries = Array.isArray(s.surgeries) ? s.surgeries : [];
       s.crm = Array.isArray(s.crm) ? s.crm : [];
+      const baseDoctors = ['Dr. Caio Marcondes Jacomini','Dra. Bruna','Dr. Helber','Dra. Thaís Marcondes Jacomini','Dra. Fernanda Oyakawa'];
+      const existingDoctors = Array.isArray(s.doctors) ? s.doctors : [];
+      const usedDoctors = s.crm.map(x => (x && x.doctor ? String(x.doctor).trim() : '')).filter(Boolean);
+      s.doctors = Array.from(new Set([...baseDoctors, ...existingDoctors, ...usedDoctors].map(x => String(x || '').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
       s.ui = { summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, hideCalendarEvents:false, paymentRowsCollapsed:{}, payableRowsCollapsed:{}, ...(s.ui || {}) };
       s.ui.paymentRowsCollapsed = s.ui.paymentRowsCollapsed || {};
       s.ui.payableRowsCollapsed = s.ui.payableRowsCollapsed || {};
@@ -9609,6 +9643,83 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     }
 
 
+
+    const CORE_DOCTORS = ['Dr. Caio Marcondes Jacomini','Dra. Bruna','Dr. Helber','Dra. Thaís Marcondes Jacomini','Dra. Fernanda Oyakawa'];
+    function doctorsEnsure(){
+      state.doctors = Array.isArray(state.doctors) ? state.doctors : [];
+      const crmDoctors = Array.isArray(state.crm) ? state.crm.map(x => (x?.doctor || '').trim()).filter(Boolean) : [];
+      state.doctors = Array.from(new Set([...CORE_DOCTORS, ...state.doctors, ...crmDoctors].map(x => String(x || '').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      return state.doctors;
+    }
+    function ensureDoctorName(name){
+      const n = String(name || '').trim();
+      if (!n) return;
+      doctorsEnsure();
+      if (!state.doctors.includes(n)) state.doctors.push(n);
+      state.doctors = Array.from(new Set(state.doctors)).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    }
+    function doctorOptionsHtml(selected='', includeAll=false){
+      const docs = doctorsEnsure();
+      const start = includeAll ? '<option value="all">Todos os médicos</option>' : '<option value="">Selecione o médico</option>';
+      return start + docs.map(d => `<option value="${escapeAttr(d)}" ${d===selected?'selected':''}>${escapeHtml(d)}</option>`).join('');
+    }
+    function crmRefreshDoctorSelects(selectedDoctor){
+      const current = selectedDoctor ?? (UI.el('crmDoctor')?.value || '');
+      ensureDoctorName(current);
+      const doctorSel = UI.el('crmDoctor');
+      if (doctorSel) doctorSel.innerHTML = doctorOptionsHtml(current, false);
+      const removeSel = UI.el('crmDoctorRemoveSelect');
+      if (removeSel) removeSel.innerHTML = doctorsEnsure().map(d => `<option value="${escapeAttr(d)}">${escapeHtml(d)}</option>`).join('') || '<option value="">Nenhum médico</option>';
+    }
+    function addDoctorFromCRM(){
+      const inp = UI.el('crmDoctorNewName');
+      const name = (inp?.value || '').trim();
+      if (!name) return alert('Informe o nome do médico.');
+      ensureDoctorName(name);
+      if (inp) inp.value = '';
+      pushHistorySnapshot();
+      save();
+      crmRefreshDoctorSelects(name);
+      renderCRMDoctorPeriodReport();
+    }
+    function removeDoctorFromCRM(){
+      doctorsEnsure();
+      const sel = UI.el('crmDoctorRemoveSelect');
+      const name = (sel?.value || '').trim();
+      if (!name) return;
+      const inUse = (state.crm || []).some(x => (x.doctor || '').trim() === name) || (state.surgeries || []).some(x => (x.doctor || x.surgeon || '').trim() === name);
+      if (inUse) {
+        if (!confirm('Este médico já está vinculado a pacientes/leads ou cirurgias. Deseja remover apenas da lista de novas seleções mantendo o histórico?')) return;
+      }
+      pushHistorySnapshot();
+      state.doctors = state.doctors.filter(d => d !== name);
+      save();
+      crmRefreshDoctorSelects();
+      renderCRMDoctorPeriodReport();
+    }
+    function repositionPatientToLead(id){
+      crmEnsure();
+      const item = state.crm.find(x => x.id === id);
+      if (!item) return;
+      const reason = prompt('Motivo do reposicionamento para lead não convertido:', 'Marcou cirurgia e não compareceu à consulta') || 'Marcou cirurgia e não compareceu à consulta';
+      pushHistorySnapshot();
+      item.type = 'lead';
+      item.status = 'sem_resposta';
+      item.packageName = '';
+      item.packageMonths = 0;
+      item.packageStart = '';
+      item.amountPaid = Number(item.amountPaid || 0);
+      item.repositionedAt = new Date().toISOString();
+      item.lastContact = item.lastContact || todayISO();
+      item.nextContact = item.nextContact || todayISO();
+      item.notes = `${item.notes ? item.notes + '
+' : ''}[Reposicionado como lead não convertido em ${formatDateBR(todayISO())}] ${reason}`;
+      item.updatedAt = new Date().toISOString();
+      CRMForm.tab = 'lead';
+      save();
+      renderCRMPanel();
+    }
+
     const CRMForm = { editingId:null, tab:'patient' };
     function crmEnsure(){ state.crm = Array.isArray(state.crm) ? state.crm : []; state.ui = state.ui || {}; }
     function crmDaysUntil(dateISO){
@@ -9668,6 +9779,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const isLead = CRMForm.tab === 'lead';
       const set = (id,val='') => { const el = UI.el(id); if (el) el.value = val; };
       const title = UI.el('crmFormTitle'); if (title) title.textContent = isLead ? 'Cadastrar lead não convertido' : 'Cadastrar paciente';
+      crmRefreshDoctorSelects();
       set('crmName'); set('crmPhone'); set('crmOrigin'); set('crmDoctor'); set('crmOwner'); set('crmInterest'); set('crmPackage'); set('crmPackageMonths'); set('crmPackageStart'); set('crmAmountPaid'); set('crmNextContact'); set('crmRecurrenceDays'); set('crmFirstContact', todayISO()); set('crmLastContact'); set('crmReminderDays','0'); set('crmProcedures'); set('crmNotes');
       set('crmType', isLead ? 'lead' : 'patient');
       set('crmStatus', isLead ? 'novo' : 'ativo');
@@ -9713,6 +9825,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       if (!name) return alert('Informe o nome.');
       const type = UI.el('crmType')?.value === 'lead' ? 'lead' : 'patient';
       const now = new Date().toISOString();
+      ensureDoctorName(UI.el('crmDoctor')?.value || '');
       const model = {
         id: CRMForm.editingId || uid(),
         type,
@@ -9756,6 +9869,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('crmTabPatients')?.classList.toggle('active', CRMForm.tab === 'patient');
       UI.el('crmTabLeads')?.classList.toggle('active', CRMForm.tab === 'lead');
       UI.el('crmTabDue')?.classList.toggle('active', false);
+      ensureDoctorName(item.doctor);
+      crmRefreshDoctorSelects(item.doctor);
       const set = (id,val='') => { const el = UI.el(id); if (el) el.value = val; };
       UI.el('crmFormTitle').textContent = 'Editando: ' + (item.name || 'cadastro');
       set('crmName', item.name); set('crmPhone', item.phone); set('crmOrigin', item.origin); set('crmDoctor', item.doctor); set('crmOwner', item.owner); set('crmInterest', item.interest); set('crmType', item.type); set('crmStatus', item.status); set('crmProcedures', item.procedures); set('crmPackage', item.packageName); set('crmPackageMonths', item.packageMonths); set('crmPackageStart', item.packageStart); set('crmAmountPaid', item.amountPaid); set('crmNextContact', item.nextContact); set('crmRecurrenceDays', item.recurrenceDays); set('crmFirstContact', item.firstContact); set('crmLastContact', item.lastContact); set('crmReminderDays', item.reminderDays ?? 0); set('crmNotes', item.notes);
@@ -9818,12 +9933,13 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
           <div class="crmTimeBox"><div class="k">Fim pacote</div><div class="v">${end ? formatDateBR(end) : '—'}</div></div>
           <div class="crmTimeBox"><div class="k">Valor pago</div><div class="v">${fmtMoney(item.amountPaid || 0)}</div></div>
         </div>
+        ${item.repositionedAt ? `<div class="crmRepositionNote">Paciente reposicionado como lead não convertido em ${escapeHtml(formatDateBR(String(item.repositionedAt).slice(0,10)))}.</div>` : ''}
         ${item.notes ? `<div class="crmMeta" style="margin-top:10px"><b>Obs.:</b> ${escapeHtml(item.notes)}</div>` : ''}
         <div class="crmActions">
           <button class="smallBtn whatsapp" type="button" data-crm-whatsapp="${escapeAttr(item.id)}">📲 WhatsApp</button>
           <button class="smallBtn" type="button" data-crm-edit="${escapeAttr(item.id)}">Editar</button>
           <button class="smallBtn" type="button" data-crm-next="${escapeAttr(item.id)}">Reagendar contato</button>
-          ${item.type === 'lead' ? `<button class="smallBtn primary" type="button" data-crm-convert="${escapeAttr(item.id)}">Converter em paciente</button>` : ''}
+          ${item.type === 'lead' ? `<button class="smallBtn primary" type="button" data-crm-convert="${escapeAttr(item.id)}">Converter em paciente</button>` : `<button class="smallBtn" type="button" data-crm-backlead="${escapeAttr(item.id)}">Reposicionar como lead não convertido</button>`}
           <button class="smallBtn danger" type="button" data-crm-del="${escapeAttr(item.id)}">Excluir</button>
         </div>
         <div class="crmQuickDelay">
@@ -10007,7 +10123,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const sel = UI.el('crmDoctorPeriodDoctor');
       if (!sel) return;
       const current = sel.value || 'all';
-      const names = Array.from(new Set(items.map(crmDoctorName))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      const names = Array.from(new Set([...doctorsEnsure(), ...items.map(crmDoctorName)])).sort((a,b)=>a.localeCompare(b,'pt-BR'));
       sel.innerHTML = '<option value="all">Todos os médicos</option>' + names.map(n=>`<option value="${escapeAttr(n)}">${escapeHtml(n)}</option>`).join('');
       sel.value = names.includes(current) ? current : 'all';
     }
@@ -10083,6 +10199,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
 
     function renderCRMPanel(){
       crmEnsure();
+      crmRefreshDoctorSelects(UI.el('crmDoctor')?.value || '');
       const list = UI.el('crmList');
       if (!list) return;
       const q = (UI.el('crmSearch')?.value || '').toLowerCase().trim();
@@ -10545,12 +10662,14 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('crmTabDue')?.addEventListener('click', () => setCRMTab('due'));
       UI.el('crmSave')?.addEventListener('click', saveCRMEntry);
       UI.el('crmClear')?.addEventListener('click', () => clearCRMForm(CRMForm.tab === 'due' ? 'lead' : CRMForm.tab));
+      UI.el('crmDoctorAddBtn')?.addEventListener('click', addDoctorFromCRM);
+      UI.el('crmDoctorRemoveBtn')?.addEventListener('click', removeDoctorFromCRM);
       UI.el('crmSearch')?.addEventListener('input', renderCRMPanel);
       UI.el('crmQuickFilter')?.addEventListener('change', renderCRMPanel);
       ['crmDoctorPeriodFrom','crmDoctorPeriodTo','crmDoctorPeriodBasis','crmDoctorPeriodType','crmDoctorPeriodDoctor'].forEach(id => UI.el(id)?.addEventListener('change', renderCRMDoctorPeriodReport));
       UI.el('crmDoctorPeriodThisMonth')?.addEventListener('click', crmSetDoctorReportCurrentMonth);
       UI.el('crmType')?.addEventListener('change', e => { CRMForm.tab = e.target.value === 'lead' ? 'lead' : 'patient'; });
-      const handleCRMClick = e => { const edit=e.target.closest('[data-crm-edit]'); const del=e.target.closest('[data-crm-del]'); const conv=e.target.closest('[data-crm-convert]'); const next=e.target.closest('[data-crm-next]'); const wa=e.target.closest('[data-crm-whatsapp]'); const delay=e.target.closest('[data-crm-delay]'); const done=e.target.closest('[data-crm-done]'); if(edit) editCRMEntry(edit.dataset.crmEdit); if(del) deleteCRMEntry(del.dataset.crmDel); if(conv) convertLeadToPatient(conv.dataset.crmConvert); if(next) scheduleNextCRMContact(next.dataset.crmNext); if(wa) crmOpenWhatsApp(wa.dataset.crmWhatsapp); if(delay) crmPostpone(delay.dataset.crmDelayId, Number(delay.dataset.crmDelay)); if(done) crmMarkContactDone(done.dataset.crmDone); };
+      const handleCRMClick = e => { const edit=e.target.closest('[data-crm-edit]'); const del=e.target.closest('[data-crm-del]'); const conv=e.target.closest('[data-crm-convert]'); const backlead=e.target.closest('[data-crm-backlead]'); const next=e.target.closest('[data-crm-next]'); const wa=e.target.closest('[data-crm-whatsapp]'); const delay=e.target.closest('[data-crm-delay]'); const done=e.target.closest('[data-crm-done]'); if(edit) editCRMEntry(edit.dataset.crmEdit); if(del) deleteCRMEntry(del.dataset.crmDel); if(conv) convertLeadToPatient(conv.dataset.crmConvert); if(backlead) repositionPatientToLead(backlead.dataset.crmBacklead); if(next) scheduleNextCRMContact(next.dataset.crmNext); if(wa) crmOpenWhatsApp(wa.dataset.crmWhatsapp); if(delay) crmPostpone(delay.dataset.crmDelayId, Number(delay.dataset.crmDelay)); if(done) crmMarkContactDone(done.dataset.crmDone); };
       UI.el('crmList')?.addEventListener('click', handleCRMClick);
       UI.el('crmOverdueBox')?.addEventListener('click', handleCRMClick);
       UI.el('crmGlobalAlertStrip')?.addEventListener('click', e => { const hit=e.target.closest('[data-crm-alert]'); if(!hit) return; toggleCRMMode(true); setCRMTab(hit.dataset.crmAlert === 'renew' ? 'patient' : 'due'); });
