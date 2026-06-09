@@ -5416,6 +5416,164 @@ body[data-theme="light"] .crmRepositionNote,body[data-theme="paper"] .crmReposit
 @media(max-width:620px){.crmDoctorManagerGrid{grid-template-columns:1fr}.crmDoctorManagerActions{height:auto}.crmDoctorManagerActions .smallBtn{width:100%}}
 
 </style>
+
+<style id="MASTER_STABILITY_PATCH">
+
+/* =========================================================
+   VERSÃO MESTRE — CORREÇÃO SEGURA MOBILE/TABLET + CORE
+   Data: 2026-06-09
+   Objetivo: estabilizar layout sem mexer na lógica do Firebase/calendário/login.
+========================================================= */
+
+/* Remove definitivamente qualquer aviso visual de deslizar/setas */
+.swipeMonthHint,
+.hambWrap::before,
+.hambWrap::after,
+.hambMenu::before,
+.hambMenu::after,
+.mobileSlideHint,
+.mobileSwipeHint,
+.slideHint,
+.scrollHint{
+  display:none !important;
+  content:none !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+
+/* Garante que a aplicação principal nunca suma por overflow/z-index da header */
+html, body{min-width:0 !important; overflow-x:hidden !important;}
+.hdr{overflow:visible !important; z-index:5000 !important;}
+.headerAligned{min-width:0 !important; max-width:100% !important;}
+.toolbarCenter,.primaryButtons,.saveDock,.compactBrand{min-width:0 !important;}
+.container{position:relative !important; z-index:1 !important; min-width:0 !important;}
+.mainCalendarCard,.sidebarCol,.mainCol{min-width:0 !important;}
+
+/* Menu hambúrguer sempre acima de tudo e sem corte */
+.hambWrap{position:relative !important; z-index:70000 !important; overflow:visible !important; flex:0 0 auto !important;}
+.hambMenu{
+  position:fixed !important;
+  top:calc(var(--hamb-menu-top, 64px) + env(safe-area-inset-top)) !important;
+  left:var(--hamb-menu-left, 12px) !important;
+  right:auto !important;
+  width:min(280px, calc(100vw - 24px)) !important;
+  max-height:calc(100dvh - var(--hamb-menu-top, 64px) - 18px) !important;
+  overflow:auto !important;
+  z-index:80000 !important;
+  transform:none !important;
+  margin:0 !important;
+}
+
+/* Modais e login sempre completos no topo seguro */
+.ov{
+  z-index:60000 !important;
+  align-items:flex-start !important;
+  padding-top:calc(22px + env(safe-area-inset-top)) !important;
+  padding-bottom:calc(22px + env(safe-area-inset-bottom)) !important;
+  overflow:auto !important;
+}
+.modal{
+  margin:0 auto !important;
+  max-height:calc(100dvh - 48px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+  overflow:auto !important;
+}
+#ovLogin{z-index:65000 !important;}
+#ovLogin .modal{margin-top:0 !important;}
+
+/* Desktop/tablet grande: impede segunda linha quando houver espaço */
+.headerAligned{
+  display:grid !important;
+  grid-template-columns:minmax(200px,280px) minmax(0,1fr) minmax(160px,auto) !important;
+  align-items:center !important;
+  gap:10px !important;
+}
+.toolbarCenter{display:flex !important; align-items:center !important; justify-content:center !important; gap:8px !important; overflow:hidden !important;}
+.primaryButtons{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:8px !important;
+  flex-wrap:nowrap !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  white-space:nowrap !important;
+  -webkit-overflow-scrolling:touch !important;
+  scrollbar-width:none !important;
+}
+.primaryButtons::-webkit-scrollbar{display:none !important;}
+.primaryButtons .btn{flex:0 0 auto !important; white-space:nowrap !important; min-width:auto !important;}
+.saveDock{display:flex !important; align-items:center !important; justify-content:flex-end !important; gap:8px !important; overflow:hidden !important;}
+.userBadge{min-width:0 !important; max-width:210px !important;}
+.userName,.userEmail{white-space:nowrap !important; overflow:hidden !important; text-overflow:ellipsis !important;}
+
+@media(max-width:1100px){
+  :root{--cellH:112px;}
+  .hdr{padding:8px 10px !important;}
+  .headerAligned{
+    width:100% !important;
+    margin-left:0 !important;
+    grid-template-columns:44px minmax(0,1fr) minmax(72px,auto) !important;
+    grid-template-areas:
+      "hamb brand dock"
+      "nav nav nav" !important;
+    gap:8px !important;
+    align-items:center !important;
+  }
+  .compactBrand{grid-area:brand !important; overflow:hidden !important;}
+  .compactBrand h1{font-size:16px !important; line-height:1.12 !important; white-space:nowrap !important; overflow:hidden !important; text-overflow:ellipsis !important;}
+  .toolbarCenter{grid-area:nav !important; width:100% !important; display:flex !important; overflow:visible !important; gap:8px !important;}
+  .hambWrap{grid-area:hamb !important; width:44px !important; height:44px !important; order:0 !important;}
+  .hambBtn{width:44px !important; height:44px !important;}
+  .primaryButtons{width:100% !important; padding:2px 0 4px !important; gap:8px !important; scroll-snap-type:x proximity !important;}
+  .primaryButtons .btn{font-size:13px !important; padding:9px 12px !important; border-radius:999px !important; scroll-snap-align:start !important;}
+  .saveDock{grid-area:dock !important; justify-content:flex-end !important; min-width:0 !important; gap:6px !important;}
+  .saveDock .statusPill{display:none !important;}
+  .saveDock .userBadge{display:none !important;}
+  .saveDock .btn{font-size:12px !important; padding:8px 10px !important;}
+  .container{grid-template-columns:1fr !important; padding:10px 10px 28px !important; gap:12px !important;}
+  .sidebarCol{order:2 !important;}
+  .mainCol{order:1 !important;}
+  .mainCalendarCard .sectionHead{position:relative !important; top:auto !important; min-height:auto !important;}
+  .month{font-size:24px !important;}
+  .dowShell{grid-template-columns:1fr !important; padding:8px 10px 0 !important;}
+  .dowShell .sideOut{display:none !important;}
+  .calFrame{grid-template-columns:1fr !important; padding:10px !important;}
+  .calFrame > .sideOut{display:none !important;}
+  .grid,.dowRow{gap:6px !important;}
+  .day{height:var(--cellH) !important; padding:6px !important;}
+  .chip{font-size:10px !important; padding:5px 7px !important;}
+  .sectionHead{padding:12px !important;}
+  .padded{padding:12px !important;}
+}
+
+@media(max-width:680px){
+  :root{--cellH:92px;}
+  .hdr{padding:7px 8px !important;}
+  .headerAligned{grid-template-columns:42px minmax(0,1fr) minmax(60px,auto) !important; gap:6px !important;}
+  .compactBrand h1{font-size:14px !important;}
+  .hambWrap,.hambBtn{width:42px !important; height:42px !important;}
+  .primaryButtons .btn{font-size:12px !important; padding:8px 10px !important;}
+  .saveDock .guestOnly{max-width:82px !important; overflow:hidden !important; text-overflow:ellipsis !important; white-space:nowrap !important;}
+  .saveDock #btnLogoutTop{max-width:66px !important; overflow:hidden !important; text-overflow:ellipsis !important; white-space:nowrap !important;}
+  .container{padding:8px 8px 24px !important;}
+  .dow{font-size:11px !important; padding:8px 0 !important;}
+  .day .num{font-size:12px !important;}
+  .day .cnt{font-size:10px !important;}
+  .month{font-size:21px !important;}
+  .note{font-size:12px !important; padding:6px 8px !important;}
+  .row2,.row3{grid-template-columns:1fr !important;}
+  .modal{width:100% !important; border-radius:18px !important; padding:14px !important;}
+}
+
+@media(max-width:430px){
+  :root{--cellH:80px;}
+  .primaryButtons .btn{font-size:11px !important; padding:8px 9px !important;}
+  .chip{font-size:9px !important; padding:4px 6px !important;}
+  .compactBrand h1{font-size:13px !important;}
+}
+
+</style>
 </head>
 <body data-theme="senna_brasil">
   <header class="hdr">
@@ -9712,8 +9870,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       item.repositionedAt = new Date().toISOString();
       item.lastContact = item.lastContact || todayISO();
       item.nextContact = item.nextContact || todayISO();
-      item.notes = `${item.notes ? item.notes + '
-' : ''}[Reposicionado como lead não convertido em ${formatDateBR(todayISO())}] ${reason}`;
+      PLACEHOLDER
       item.updatedAt = new Date().toISOString();
       CRMForm.tab = 'lead';
       save();
@@ -11339,6 +11496,42 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
   document.addEventListener('click', function(){ setTimeout(repair,30); }, true);
   document.addEventListener('DOMContentLoaded', repair);
   setTimeout(repair, 300);
+})();
+</script>
+
+<script id="MASTER_STABILITY_JS">
+(function(){
+  function positionMenu(){
+    const wrap = document.getElementById('hambWrap');
+    const menu = wrap ? wrap.querySelector('.hambMenu') : null;
+    if(!wrap || !menu) return;
+    const r = wrap.getBoundingClientRect();
+    const left = Math.max(8, Math.min(r.left, window.innerWidth - Math.min(280, window.innerWidth - 24) - 8));
+    document.documentElement.style.setProperty('--hamb-menu-left', left + 'px');
+    document.documentElement.style.setProperty('--hamb-menu-top', Math.max(56, r.bottom + 8) + 'px');
+  }
+  function cleanHints(){
+    document.querySelectorAll('.swipeMonthHint,.mobileSlideHint,.mobileSwipeHint,.slideHint,.scrollHint').forEach(el=>{ el.style.display='none'; el.setAttribute('aria-hidden','true'); });
+    document.querySelectorAll('*').forEach(el=>{
+      if(el.childNodes && el.childNodes.length===1 && el.textContent){
+        const t=(el.textContent||'').trim().toLowerCase();
+        if(t==='deslize' || t==='↕' || t==='↔ deslize no calendário para trocar o mês' || t==='deslize para ver mais botões'){
+          el.style.display='none';
+          el.setAttribute('aria-hidden','true');
+        }
+      }
+    });
+  }
+  function boot(){ cleanHints(); positionMenu(); }
+  window.addEventListener('resize', positionMenu, {passive:true});
+  window.addEventListener('scroll', positionMenu, {passive:true});
+  document.addEventListener('click', function(ev){
+    const wrap=document.getElementById('hambWrap');
+    if(!wrap) return;
+    if(wrap.contains(ev.target)) setTimeout(positionMenu,0);
+  }, true);
+  document.addEventListener('DOMContentLoaded', boot);
+  setTimeout(boot, 250);
 })();
 </script>
 </body>
