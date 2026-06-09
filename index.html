@@ -11692,6 +11692,366 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
   .themeGrid{grid-template-columns:1fr!important;}
   .themeCard{min-width:0!important;}
 }
+
+
+/* =========================================================
+   MASTER FIX MOBILE/TABLET — RECONSTRUÇÃO RESPONSIVA FINAL
+   - Não altera desktop.
+   - Reorganiza header, calendário, CRM, cards, modais e menu.
+========================================================= */
+@media (max-width: 1180px){
+  html,body{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    overflow-x:hidden !important;
+  }
+  body *{max-width:100%;}
+
+  .hdr{
+    position:sticky !important;
+    top:0 !important;
+    left:0 !important;
+    right:0 !important;
+    width:100% !important;
+    z-index:8000 !important;
+    padding:12px 12px !important;
+    overflow:visible !important;
+  }
+
+  .headerAligned{
+    width:100% !important;
+    max-width:100% !important;
+    display:grid !important;
+    grid-template-columns:48px minmax(0,1fr) auto !important;
+    grid-template-areas:
+      "hamb brand save"
+      "tools tools tools" !important;
+    align-items:center !important;
+    column-gap:10px !important;
+    row-gap:10px !important;
+  }
+
+  .hambWrap{
+    grid-area:hamb !important;
+    position:relative !important;
+    z-index:900000 !important;
+    width:48px !important;
+    min-width:48px !important;
+  }
+  .hambBtn{
+    width:44px !important;
+    height:44px !important;
+    min-width:44px !important;
+    border-radius:14px !important;
+  }
+  .compactBrand{
+    grid-area:brand !important;
+    min-width:0 !important;
+    width:100% !important;
+    overflow:visible !important;
+  }
+  .compactBrand h1{
+    display:block !important;
+    width:100% !important;
+    max-width:100% !important;
+    font-size:clamp(15px,2.4vw,20px) !important;
+    line-height:1.15 !important;
+    white-space:normal !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
+    word-break:normal !important;
+  }
+  .compactBrand p{
+    display:block !important;
+    width:100% !important;
+    font-size:clamp(10px,1.7vw,12px) !important;
+    line-height:1.28 !important;
+    white-space:normal !important;
+    overflow:visible !important;
+  }
+  .saveDock{
+    grid-area:save !important;
+    display:flex !important;
+    justify-content:flex-end !important;
+    min-width:0 !important;
+  }
+  .saveDock .statusPill{
+    width:auto !important;
+    min-width:0 !important;
+    max-width:145px !important;
+    padding:8px 10px !important;
+    font-size:11px !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+  }
+
+  .toolbarCenter{
+    grid-area:tools !important;
+    display:block !important;
+    width:100% !important;
+    min-width:0 !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    -webkit-overflow-scrolling:touch !important;
+    scrollbar-width:thin !important;
+    padding:0 0 4px 0 !important;
+  }
+  .primaryButtons{
+    width:max-content !important;
+    min-width:100% !important;
+    display:flex !important;
+    justify-content:flex-start !important;
+    align-items:center !important;
+    flex-wrap:nowrap !important;
+    gap:8px !important;
+  }
+  .primaryButtons .btn,
+  .toolbarCenter .btn{
+    flex:0 0 auto !important;
+    min-width:max-content !important;
+    white-space:nowrap !important;
+    padding:9px 12px !important;
+    font-size:12px !important;
+    line-height:1.15 !important;
+  }
+
+  .container{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    grid-template-columns:none !important;
+    gap:12px !important;
+    padding:10px 10px 28px !important;
+    overflow-x:hidden !important;
+  }
+  .mainCol{order:1 !important;width:100% !important;min-width:0 !important;}
+  .sidebarCol{order:2 !important;width:100% !important;min-width:0 !important;}
+  body.crm-mode .mainCol{order:1 !important;}
+  body.crm-mode .sidebarCol{order:2 !important;}
+
+  .card,.section,.padded,.sectionHead,
+  .mainCalendarCard,.sidebarCol > *, .mainCol > *{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+  }
+  .card{border-radius:16px !important;overflow:hidden;}
+  .padded{padding:12px !important;}
+  .sectionHead{
+    padding:12px !important;
+    gap:8px !important;
+    min-height:auto !important;
+    align-items:flex-start !important;
+    flex-wrap:wrap !important;
+  }
+  .sectionHead > *{min-width:0 !important;}
+  .sectionHead .ttl,.ttl{font-size:15px !important;line-height:1.2 !important;}
+  .sectionHead .sub,.sub{font-size:11px !important;line-height:1.35 !important;}
+
+  .mainCalendarCard .sectionHead{
+    position:relative !important;
+    top:auto !important;
+    z-index:3 !important;
+  }
+  .monthRow{
+    width:100% !important;
+    justify-content:center !important;
+    gap:8px !important;
+  }
+  .month{
+    font-size:clamp(22px,4.8vw,30px) !important;
+    text-align:center !important;
+    line-height:1.1 !important;
+  }
+  .note{font-size:11px !important;padding:6px 9px !important;}
+
+  .dowShell,
+  .calFrame{
+    width:100% !important;
+    min-width:0 !important;
+    display:grid !important;
+    grid-template-columns:34px minmax(0,1fr) 34px !important;
+    gap:6px !important;
+    padding-left:8px !important;
+    padding-right:8px !important;
+  }
+  .dowRow,
+  .grid{
+    width:100% !important;
+    min-width:0 !important;
+    display:grid !important;
+    grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+    gap:5px !important;
+  }
+  .dow{font-size:10px !important;padding:8px 0 !important;min-width:0 !important;}
+  body{--cellH:88px !important;}
+  .day{
+    height:var(--cellH) !important;
+    min-width:0 !important;
+    border-radius:10px !important;
+    padding:5px !important;
+    gap:4px !important;
+  }
+  .dayTop{min-width:0 !important;gap:3px !important;}
+  .day .num{font-size:11px !important;}
+  .day .cnt{font-size:9px !important;}
+  .day .chips{min-width:0 !important;overflow:auto !important;}
+  .chip{
+    min-width:0 !important;
+    max-width:100% !important;
+    font-size:9px !important;
+    line-height:1.15 !important;
+    padding:4px 5px !important;
+    border-radius:7px !important;
+    gap:4px !important;
+  }
+  .chipMark{width:7px !important;height:7px !important;min-width:7px !important;}
+  .sideOut{
+    min-height:calc(var(--cellH) * 6 + 30px) !important;
+    border-radius:10px !important;
+    padding:4px 0 !important;
+  }
+
+  .summaryGrid,.row2,.row3,
+  .crmHero,.crmToolbar,.crmFormGrid,.crmFormGrid3,.crmTimeline,.crmDoctorFilters{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:10px !important;
+    width:100% !important;
+  }
+  .crmStats{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px !important;}
+  .crmPanel,.crmFormPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,
+  .crmCard,.crmItem,.crmLeadCard,.crmPatientCard{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    overflow:hidden !important;
+    padding:12px !important;
+  }
+  .crmTitle{font-size:20px !important;line-height:1.15 !important;}
+  .crmSub{font-size:12px !important;line-height:1.45 !important;}
+  .crmTabs{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    gap:8px !important;
+    overflow-x:auto !important;
+    -webkit-overflow-scrolling:touch !important;
+    padding-bottom:4px !important;
+  }
+  .crmTab{flex:0 0 auto !important;white-space:nowrap !important;font-size:12px !important;padding:9px 10px !important;}
+  .crmName,.crmMeta,.small{overflow-wrap:anywhere !important;word-break:break-word !important;}
+  .crmDoctorReportHead{display:flex !important;flex-direction:column !important;align-items:stretch !important;gap:10px !important;}
+  .crmDoctorFilters .span2{grid-column:auto !important;}
+  .crmDoctorTableWrap{width:100% !important;overflow-x:auto !important;-webkit-overflow-scrolling:touch !important;}
+  .crmDoctorTable{min-width:620px !important;}
+
+  input,select,textarea,.input{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    font-size:16px !important;
+  }
+
+  .ov.open{
+    position:fixed !important;
+    inset:0 !important;
+    z-index:700000 !important;
+    align-items:flex-start !important;
+    justify-content:center !important;
+    padding-top:calc(78px + env(safe-area-inset-top)) !important;
+    padding-left:10px !important;
+    padding-right:10px !important;
+    padding-bottom:calc(24px + env(safe-area-inset-bottom)) !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+  }
+  .ov.open .modal{
+    width:100% !important;
+    max-width:min(920px,100%) !important;
+    max-height:calc(100dvh - 112px) !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    margin:0 auto !important;
+    border-radius:18px !important;
+    padding:14px !important;
+  }
+  .ov.open .modal > .mHead,
+  .ov.open .mHead{
+    position:sticky !important;
+    top:0 !important;
+    z-index:5 !important;
+    min-height:50px !important;
+    background:inherit !important;
+  }
+  #ovLogin.open{padding-top:calc(18px + env(safe-area-inset-top)) !important;}
+  #ovLogin.open .modal{max-height:calc(100dvh - 42px) !important;}
+
+  .hambMenu,
+  .hamburgerPortalMenu,
+  #hamburgerPortalMenu,
+  .hambPortalMenu{
+    position:fixed !important;
+    z-index:9999999 !important;
+    max-width:calc(100vw - 20px) !important;
+    max-height:calc(100dvh - 24px) !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+  }
+}
+
+@media (max-width: 640px){
+  .hdr{padding:10px 8px !important;}
+  .headerAligned{
+    grid-template-columns:42px minmax(0,1fr) auto !important;
+    column-gap:7px !important;
+    row-gap:8px !important;
+  }
+  .hambWrap{width:42px !important;min-width:42px !important;}
+  .hambBtn{width:40px !important;height:40px !important;border-radius:12px !important;}
+  .compactBrand h1{font-size:15px !important;line-height:1.12 !important;}
+  .compactBrand p{font-size:9.5px !important;line-height:1.2 !important;}
+  .saveDock .statusPill{max-width:94px !important;padding:7px 8px !important;font-size:10px !important;}
+  .container{padding:8px 6px 24px !important;gap:10px !important;}
+  .padded{padding:10px !important;}
+  .sectionHead{padding:10px !important;}
+  .month{font-size:20px !important;}
+  .note{font-size:10px !important;padding:5px 7px !important;}
+  .dowShell,.calFrame{
+    grid-template-columns:26px minmax(0,1fr) 26px !important;
+    gap:4px !important;
+    padding-left:4px !important;
+    padding-right:4px !important;
+  }
+  .dowRow,.grid{gap:3px !important;}
+  .dow{font-size:9px !important;padding:7px 0 !important;}
+  body{--cellH:72px !important;}
+  .day{padding:4px 3px !important;border-radius:8px !important;}
+  .day .num{font-size:10px !important;}
+  .day .cnt{display:none !important;}
+  .chip{font-size:8px !important;padding:3px 4px !important;}
+  .sideOut .sideLabel,.sideOut .sideMonth{display:none !important;}
+  .sideOut .arrow{font-size:16px !important;}
+  .primaryButtons .btn,.toolbarCenter .btn{font-size:11px !important;padding:8px 10px !important;}
+  .crmStats{grid-template-columns:1fr 1fr !important;}
+  .crmStat{padding:10px !important;}
+  .crmStat .v{font-size:20px !important;}
+  .themeGrid{grid-template-columns:1fr !important;}
+  .mFoot{display:flex !important;flex-wrap:wrap !important;gap:8px !important;}
+  .mFoot .mBtn,.mFoot .btn{flex:1 1 130px !important;}
+  .ov.open{padding-top:calc(66px + env(safe-area-inset-top)) !important;}
+  .ov.open .modal{max-height:calc(100dvh - 92px) !important;border-radius:16px !important;}
+  #ovLogin.open{padding-top:calc(12px + env(safe-area-inset-top)) !important;}
+}
+
+@media (min-width: 641px) and (max-width: 1180px){
+  body{--cellH:92px !important;}
+  .container{padding:12px 12px 30px !important;}
+  .crmStats{grid-template-columns:repeat(4,minmax(0,1fr)) !important;}
+}
 </style>
 <script id="modal-top-master-fix-js">
 (function(){
