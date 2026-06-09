@@ -5699,6 +5699,27 @@ html, body{min-width:0 !important; overflow-x:hidden !important;}
   }
 }
 </style>
+
+
+<style id="BTN_PAY_DESKTOP_WIDTH_PATCH">
+/* Correção pontual PC: mantém todos os botões iguais e dá espaço apenas ao texto "Regras de pagamento". */
+@media (min-width: 1101px){
+  .primaryButtons #btnPay{
+    min-width:170px !important;
+    width:auto !important;
+    flex:0 0 auto !important;
+    padding-left:16px !important;
+    padding-right:16px !important;
+    white-space:nowrap !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    line-height:1.05 !important;
+  }
+}
+</style>
 </head>
 <body data-theme="senna_brasil">
   <header class="hdr">
