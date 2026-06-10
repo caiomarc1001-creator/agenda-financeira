@@ -5720,6 +5720,181 @@ html, body{min-width:0 !important; overflow-x:hidden !important;}
   }
 }
 </style>
+
+
+<style id="AGORA_V1_1_PRIME_EXPERT_STABILIZATION">
+/* =========================================================
+   AGORA V1.1 — ESTABILIZAÇÃO VISUAL SEM ALTERAR FUNCIONALIDADES
+   Escopo: header, botões, menu, responsividade e remoção de avisos de deslize.
+========================================================= */
+
+/* 1) Remove definitivamente textos/indicadores de deslize e setas auxiliares */
+.mobileSlideHint,
+.mobileSwipeHint,
+.swipeMonthHint,
+.slideHint,
+.scrollHint{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+.hambWrap::after,
+.hambMenu::after,
+.toolbarCenter::after,
+.primaryButtons::after{
+  content:none !important;
+  display:none !important;
+}
+
+/* 2) Botões: texto sempre dentro, centralizado e sem escapar */
+.btn,
+.mBtn,
+.smallBtn,
+.primaryButtons .btn,
+.hambMenu .btn,
+.saveDock .btn,
+.statusPill{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  vertical-align:middle !important;
+  white-space:nowrap !important;
+  line-height:1.05 !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+/* 3) PC: botão Regras de pagamento recebe largura suficiente sem alterar os demais */
+@media (min-width:1101px){
+  .primaryButtons #btnPay{
+    min-width:188px !important;
+    max-width:none !important;
+    width:auto !important;
+    flex:0 0 auto !important;
+    padding-left:18px !important;
+    padding-right:18px !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
+    font-size:14px !important;
+  }
+
+  .primaryButtons{
+    flex-wrap:nowrap !important;
+  }
+}
+
+/* 4) Tablet/celular: uma linha rolável, sem segunda linha de menu */
+@media (max-width:1100px){
+  .hdr{
+    overflow:visible !important;
+  }
+
+  .headerAligned{
+    grid-template-columns:minmax(0,1fr) auto !important;
+    grid-template-areas:
+      "brand save"
+      "toolbar toolbar" !important;
+    align-items:center !important;
+    gap:8px !important;
+  }
+
+  .compactBrand{grid-area:brand !important; min-width:0 !important;}
+  .saveDock{grid-area:save !important; min-width:0 !important; justify-content:flex-end !important;}
+  .toolbarCenter{
+    grid-area:toolbar !important;
+    width:100% !important;
+    min-width:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    overflow-x:auto !important;
+    overflow-y:visible !important;
+    -webkit-overflow-scrolling:touch !important;
+    scrollbar-width:none !important;
+    gap:8px !important;
+    padding-bottom:1px !important;
+  }
+
+  .toolbarCenter::-webkit-scrollbar{display:none !important;}
+
+  .primaryButtons{
+    flex:0 0 auto !important;
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:8px !important;
+    width:max-content !important;
+    min-width:max-content !important;
+  }
+
+  .primaryButtons .btn{
+    flex:0 0 auto !important;
+    width:auto !important;
+    min-width:max-content !important;
+    max-width:none !important;
+    padding-left:12px !important;
+    padding-right:12px !important;
+    font-size:12px !important;
+  }
+
+  .primaryButtons #btnPay{
+    min-width:max-content !important;
+  }
+}
+
+@media (max-width:680px){
+  .compactBrand h1{
+    font-size:15px !important;
+    line-height:1.1 !important;
+    white-space:normal !important;
+  }
+
+  .primaryButtons .btn{
+    height:34px !important;
+    min-height:34px !important;
+    font-size:11px !important;
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+
+  .saveDock .btn,
+  .statusPill{
+    height:34px !important;
+    min-height:34px !important;
+    font-size:11px !important;
+  }
+}
+
+/* 5) Menu hambúrguer sempre acima do calendário e sem corte */
+.hambWrap{
+  position:relative !important;
+  z-index:99990 !important;
+  flex:0 0 auto !important;
+}
+
+.hambMenu{
+  z-index:99999 !important;
+  max-height:min(72vh,620px) !important;
+  overflow:auto !important;
+  -webkit-overflow-scrolling:touch !important;
+}
+
+/* 6) Modais preservados no topo, sem afetar login/calendário */
+.ov{
+  z-index:90000 !important;
+  padding-top:calc(18px + env(safe-area-inset-top)) !important;
+}
+
+.modal{
+  margin-top:0 !important;
+  max-height:calc(100dvh - 44px) !important;
+}
+</style>
+
 </head>
 <body data-theme="senna_brasil">
   <header class="hdr">
