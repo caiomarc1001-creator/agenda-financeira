@@ -5914,6 +5914,8 @@ html, body{min-width:0 !important; overflow-x:hidden !important;}
             <button class="btn menuItem" id="btnExport">Exportar</button>
             <button class="btn menuItem" id="btnBackupCenter">Backups</button>
             <button class="btn menuItem" id="btnDashboardCenter">Dashboard</button>
+            <button class="btn menuItem" id="btnAdminCenter" type="button">Administração</button>
+            <button class="btn menuItem" id="btnAuditCenter" type="button">Auditoria</button>
             <button class="btn menuItem" id="btnTheme">Tema</button>
             <button class="btn menuItem" id="btnToggleCalendarEvents" type="button">Ocultar eventos</button>
             <button class="btn menuItem" id="btnPatientCRM">Pacientes & Leads</button>
@@ -10191,7 +10193,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       item.repositionedAt = new Date().toISOString();
       item.lastContact = item.lastContact || todayISO();
       item.nextContact = item.nextContact || todayISO();
-      PLACEHOLDER
+      item.timeline = Array.isArray(item.timeline) ? item.timeline : [];
+      item.timeline.push({ at:new Date().toISOString(), type:'reposicionado', text:reason });
       item.updatedAt = new Date().toISOString();
       CRMForm.tab = 'lead';
       save();
@@ -11285,7 +11288,214 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       document.querySelectorAll('.ov').forEach(ov => ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); }));
     }
 
+
+
+    /* =========================================================
+       AGORA V2 — ADMINISTRAÇÃO, AUDITORIA E TIMELINE
+    ========================================================= */
+    function agoraV2Ensure(){
+      state.auditLog = Array.isArray(state.auditLog) ? state.auditLog : [];
+      state.hospitals = Array.isArray(state.hospitals) ? state.hospitals : [];
+      state.insurances = Array.isArray(state.insurances) ? state.insurances : [];
+      state.payableCategories = Array.isArray(state.payableCategories) ? state.payableCategories : ['Aluguel','Funcionários','Marketing','Materiais','Impostos','Outros'];
+      doctorsEnsure?.();
+      crmEnsure?.();
+      (state.crm || []).forEach(agoraV2NormalizeTimeline);
+    }
+    function agoraV2User(){
+      return (currentUser && (currentUser.displayName || currentUser.email)) || 'Usuário local';
+    }
+    function agoraV2Audit(action, entity, target, details, targetId){
+      agoraV2Ensure();
+      state.auditLog.unshift({
+        id:uid(),
+        at:new Date().toISOString(),
+        user:agoraV2User(),
+        action:String(action || ''),
+        entity:String(entity || 'geral'),
+        target:String(target || ''),
+        targetId:String(targetId || ''),
+        details:String(details || '')
+      });
+      state.auditLog = state.auditLog.slice(0,500);
+    }
+    function agoraV2TimelinePush(item, type, text){
+      if (!item) return;
+      item.timeline = Array.isArray(item.timeline) ? item.timeline : [];
+      item.timeline.push({ at:new Date().toISOString(), type:String(type || 'evento'), text:String(text || '') });
+      item.timeline = item.timeline.slice(-100);
+    }
+    function agoraV2NormalizeTimeline(item){
+      if (!item) return;
+      item.timeline = Array.isArray(item.timeline) ? item.timeline : [];
+      if (!item.timeline.length){
+        if (item.createdAt) item.timeline.push({at:item.createdAt,type:'cadastro',text:(item.type === 'lead' ? 'Lead criado' : 'Paciente criado')});
+        if (item.firstContact) item.timeline.push({at:item.firstContact,type:'contato',text:'Primeiro contato registrado'});
+        if (item.lastContact) item.timeline.push({at:item.lastContact,type:'contato',text:'Último contato registrado'});
+        if (item.packageStart) item.timeline.push({at:item.packageStart,type:'pacote',text:'Início do pacote / acompanhamento'});
+        if (item.convertedAt) item.timeline.push({at:item.convertedAt,type:'conversao',text:'Lead convertido em paciente'});
+        if (item.repositionedAt) item.timeline.push({at:item.repositionedAt,type:'reposicionado',text:'Reposicionado como lead não convertido'});
+      }
+    }
+    function agoraV2DateBR(value){
+      if (!value) return '—';
+      const str = String(value);
+      const datePart = str.slice(0,10);
+      const timePart = str.includes('T') ? str.slice(11,16) : '';
+      return formatDateBR(datePart) + (timePart ? ' ' + timePart : '');
+    }
+    function agoraV2TimelineHtml(item){
+      agoraV2NormalizeTimeline(item);
+      const auditItems = (state.auditLog || []).filter(x => x.targetId && x.targetId === item.id).slice(0,6).map(x => ({at:x.at,type:x.entity,text:x.action + (x.details ? ' · ' + x.details : '')}));
+      const items = [...(item.timeline || []), ...auditItems]
+        .filter(x => x && (x.at || x.text))
+        .sort((a,b)=>String(a.at || '').localeCompare(String(b.at || '')))
+        .slice(-10);
+      if (!items.length) return '';
+      return `<div class="agoraTimelineFull"><div class="agoraTimelineTitle">Timeline do paciente / lead</div><div class="agoraTimelineList">${items.map(x=>`<div class="agoraTimelineItem"><div class="agoraTimelineDate">${escapeHtml(agoraV2DateBR(x.at))}</div><div class="agoraTimelineText">${escapeHtml(x.text || x.type || 'Registro')}</div></div>`).join('')}</div></div>`;
+    }
+    const agoraV2OriginalCrmCardHtml = crmCardHtml;
+    crmCardHtml = function(item){
+      const html = agoraV2OriginalCrmCardHtml(item);
+      return html.replace('<div class="crmActions">', agoraV2TimelineHtml(item) + '<div class="crmActions">');
+    };
+
+    const agoraV2OriginalSaveCRMEntry = saveCRMEntry;
+    saveCRMEntry = function(){
+      const editId = CRMForm.editingId || '';
+      const nameBefore = (UI.el('crmName')?.value || '').trim();
+      const typeBefore = UI.el('crmType')?.value === 'lead' ? 'lead' : 'patient';
+      agoraV2OriginalSaveCRMEntry();
+      agoraV2Ensure();
+      const item = editId ? state.crm.find(x=>x.id===editId) : state.crm.slice().reverse().find(x => (x.name || '') === nameBefore && x.type === typeBefore);
+      if (item){
+        agoraV2TimelinePush(item, editId ? 'atualizacao' : 'cadastro', editId ? 'Cadastro atualizado' : (item.type === 'lead' ? 'Lead criado' : 'Paciente criado'));
+        agoraV2Audit(editId ? 'Cadastro atualizado' : 'Cadastro criado', 'crm', item.name || nameBefore, item.type === 'lead' ? 'Lead' : 'Paciente', item.id);
+        save();
+      }
+      renderCRMPanel();
+    };
+    const agoraV2OriginalDeleteCRMEntry = deleteCRMEntry;
+    deleteCRMEntry = function(id){
+      const item = (state.crm || []).find(x=>x.id===id);
+      agoraV2OriginalDeleteCRMEntry(id);
+      if (item){ agoraV2Audit('Cadastro excluído','crm',item.name || 'Cadastro', item.type === 'lead' ? 'Lead' : 'Paciente', id); save(); renderAuditCenter?.(); }
+    };
+    const agoraV2OriginalConvertLeadToPatient = convertLeadToPatient;
+    convertLeadToPatient = function(id){
+      agoraV2OriginalConvertLeadToPatient(id);
+      const item = (state.crm || []).find(x=>x.id===id);
+      if (item){ agoraV2TimelinePush(item,'conversao','Lead convertido em paciente'); agoraV2Audit('Lead convertido em paciente','crm',item.name || 'Lead','Conversão',id); save(); renderCRMPanel(); }
+    };
+    const agoraV2OriginalRepositionPatientToLead = repositionPatientToLead;
+    repositionPatientToLead = function(id){
+      agoraV2OriginalRepositionPatientToLead(id);
+      const item = (state.crm || []).find(x=>x.id===id);
+      if (item){ agoraV2TimelinePush(item,'reposicionado','Retornou para Lead não convertido'); agoraV2Audit('Reposicionado como Lead não convertido','crm',item.name || 'Paciente','Não compareceu / não convertido',id); save(); renderCRMPanel(); }
+    };
+    const agoraV2OriginalScheduleNextCRMContact = scheduleNextCRMContact;
+    scheduleNextCRMContact = function(id){
+      agoraV2OriginalScheduleNextCRMContact(id);
+      const item = (state.crm || []).find(x=>x.id===id);
+      if (item){ agoraV2TimelinePush(item,'recontato','Contato reagendado para ' + (item.nextContact ? formatDateBR(item.nextContact) : 'nova data')); agoraV2Audit('Recontato reagendado','crm',item.name || 'Lead', item.nextContact ? formatDateBR(item.nextContact) : '', id); save(); }
+    };
+    const agoraV2OriginalCrmMarkContactDone = crmMarkContactDone;
+    crmMarkContactDone = function(id){
+      agoraV2OriginalCrmMarkContactDone(id);
+      const item = (state.crm || []).find(x=>x.id===id);
+      if (item){ agoraV2TimelinePush(item,'contato','Contato realizado'); agoraV2Audit('Contato realizado','crm',item.name || 'Lead','Saiu da pendência de recontato',id); save(); renderCRMPanel(); }
+    };
+    const agoraV2OriginalCrmPostpone = crmPostpone;
+    crmPostpone = function(id, days){
+      agoraV2OriginalCrmPostpone(id, days);
+      const item = (state.crm || []).find(x=>x.id===id);
+      if (item){ agoraV2TimelinePush(item,'recontato','Recontato adiado +' + Number(days || 0) + ' dias'); agoraV2Audit('Recontato adiado','crm',item.name || 'Lead','+' + Number(days || 0) + ' dias',id); save(); }
+    };
+    const agoraV2OriginalAddDoctorFromCRM = addDoctorFromCRM;
+    addDoctorFromCRM = function(){
+      const name = (UI.el('crmDoctorNewName')?.value || '').trim();
+      agoraV2OriginalAddDoctorFromCRM();
+      if (name){ agoraV2Audit('Médico adicionado','admin',name,'Lista médica'); save(); renderAdminCenter(); }
+    };
+    const agoraV2OriginalRemoveDoctorFromCRM = removeDoctorFromCRM;
+    removeDoctorFromCRM = function(){
+      const name = (UI.el('crmDoctorRemoveSelect')?.value || '').trim();
+      agoraV2OriginalRemoveDoctorFromCRM();
+      if (name){ agoraV2Audit('Médico removido','admin',name,'Lista médica'); save(); renderAdminCenter(); }
+    };
+    const agoraV2OriginalSaveEvent = saveEvent;
+    saveEvent = function(){
+      const title = (UI.el('eventTitle')?.value || UI.el('evTitle')?.value || UI.el('modalTitle')?.textContent || 'Evento').trim();
+      agoraV2OriginalSaveEvent();
+      agoraV2Audit('Evento salvo','finance',title,'Agenda / financeiro');
+      save();
+    };
+    const agoraV2OriginalSaveSurgery = saveSurgery;
+    saveSurgery = function(){
+      const patient = (UI.el('surgPatient')?.value || UI.el('surgeryPatient')?.value || 'Cirurgia').trim();
+      agoraV2OriginalSaveSurgery();
+      agoraV2Audit('Cirurgia salva','surgery',patient,'Controle cirúrgico');
+      save();
+    };
+
+    function agoraV2ArrayAdd(kind, value){
+      const v = String(value || '').trim();
+      if (!v) return;
+      agoraV2Ensure();
+      if (kind === 'doctor') ensureDoctorName(v);
+      if (kind === 'hospital') state.hospitals = Array.from(new Set([...(state.hospitals || []), v])).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      if (kind === 'insurance') state.insurances = Array.from(new Set([...(state.insurances || []), v])).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      agoraV2Audit(kind === 'doctor' ? 'Médico adicionado' : kind === 'hospital' ? 'Hospital adicionado' : 'Convênio adicionado','admin',v,'Administração');
+      pushHistorySnapshot(); save(); renderAdminCenter(); renderCRMPanel();
+    }
+    function agoraV2ArrayRemove(kind, value){
+      const v = String(value || '').trim();
+      if (!v) return;
+      agoraV2Ensure();
+      if (kind === 'doctor') state.doctors = (state.doctors || []).filter(x=>x!==v);
+      if (kind === 'hospital') state.hospitals = (state.hospitals || []).filter(x=>x!==v);
+      if (kind === 'insurance') state.insurances = (state.insurances || []).filter(x=>x!==v);
+      agoraV2Audit(kind === 'doctor' ? 'Médico removido' : kind === 'hospital' ? 'Hospital removido' : 'Convênio removido','admin',v,'Administração');
+      pushHistorySnapshot(); save(); renderAdminCenter(); renderCRMPanel();
+    }
+    function agoraV2AdminListHtml(items, kind){
+      return (items || []).map(x => `<div class="agoraV2Row"><div><div class="agoraV2Name">${escapeHtml(x)}</div><div class="agoraV2Meta">${kind === 'doctor' ? 'Equipe médica ativa para novas seleções' : kind === 'hospital' ? 'Hospital cadastrado' : 'Convênio cadastrado'}</div></div><button class="smallBtn danger" type="button" data-admin-remove="${kind}" data-admin-name="${escapeAttr(x)}">Remover</button></div>`).join('') || '<div class="crmEmpty">Nenhum item cadastrado.</div>';
+    }
+    function renderAdminCenter(){
+      agoraV2Ensure();
+      const dl = UI.el('adminDoctorsList'); if (dl) dl.innerHTML = agoraV2AdminListHtml(doctorsEnsure(), 'doctor');
+      const hl = UI.el('adminHospitalsList'); if (hl) hl.innerHTML = agoraV2AdminListHtml(state.hospitals, 'hospital');
+      const il = UI.el('adminInsurancesList'); if (il) il.innerHTML = agoraV2AdminListHtml(state.insurances, 'insurance');
+    }
+    function openAdminCenter(){ renderAdminCenter(); UI.open('ovAdminCenter'); }
+    function renderAuditCenter(){
+      agoraV2Ensure();
+      const tbody = UI.el('auditRows'); if (!tbody) return;
+      const q = (UI.el('auditSearch')?.value || '').toLowerCase().trim();
+      const ent = UI.el('auditFilterEntity')?.value || 'all';
+      let rows = (state.auditLog || []).slice();
+      if (ent !== 'all') rows = rows.filter(x => x.entity === ent);
+      if (q) rows = rows.filter(x => [x.user,x.action,x.entity,x.target,x.details].join(' ').toLowerCase().includes(q));
+      UI.el('auditSummary').textContent = `${rows.length} registro(s) de auditoria exibido(s). Histórico total: ${(state.auditLog || []).length}.`;
+      tbody.innerHTML = rows.length ? rows.map(x => `<tr><td>${escapeHtml(agoraV2DateBR(x.at))}</td><td><span class="agoraAuditBadge ${escapeAttr(x.entity)}">${escapeHtml(x.entity || 'geral')}</span></td><td>${escapeHtml(x.action || '')}</td><td>${escapeHtml(x.target || '')}</td><td>${escapeHtml(x.user || '')}</td><td>${escapeHtml(x.details || '')}</td></tr>`).join('') : '<tr><td colspan="6">Nenhum registro encontrado.</td></tr>';
+    }
+    function openAuditCenter(){ renderAuditCenter(); UI.open('ovAuditCenter'); }
+    const agoraV2OriginalRenderAll = renderAll;
+    renderAll = function(){ agoraV2Ensure(); agoraV2OriginalRenderAll(); renderAdminCenter(); };
+
     bindEvents();
+
+    UI.el('btnAdminCenter')?.addEventListener('click', openAdminCenter);
+    UI.el('btnAuditCenter')?.addEventListener('click', openAuditCenter);
+    UI.el('adminClose')?.addEventListener('click', () => UI.close('ovAdminCenter'));
+    UI.el('auditClose')?.addEventListener('click', () => UI.close('ovAuditCenter'));
+    UI.el('adminAddDoctor')?.addEventListener('click', () => { const el=UI.el('adminDoctorName'); agoraV2ArrayAdd('doctor', el?.value || ''); if(el) el.value=''; });
+    UI.el('adminAddHospital')?.addEventListener('click', () => { const el=UI.el('adminHospitalName'); agoraV2ArrayAdd('hospital', el?.value || ''); if(el) el.value=''; });
+    UI.el('adminAddInsurance')?.addEventListener('click', () => { const el=UI.el('adminInsuranceName'); agoraV2ArrayAdd('insurance', el?.value || ''); if(el) el.value=''; });
+    document.addEventListener('click', e => { const btn=e.target.closest('[data-admin-remove]'); if(!btn) return; agoraV2ArrayRemove(btn.dataset.adminRemove, btn.dataset.adminName); });
+    UI.el('auditFilterEntity')?.addEventListener('change', renderAuditCenter);
+    UI.el('auditSearch')?.addEventListener('input', renderAuditCenter);
+    UI.el('auditClear')?.addEventListener('click', () => { if(UI.el('auditFilterEntity')) UI.el('auditFilterEntity').value='all'; if(UI.el('auditSearch')) UI.el('auditSearch').value=''; renderAuditCenter(); });
     preparePasswordFieldsForSafeAutofill();
     bindHamburgerAutoHide();
     clearSensitiveAuthFields();
@@ -11855,6 +12065,87 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
   setTimeout(boot, 250);
 })();
 </script>
+
+
+<!-- =========================================================
+     AGORA V2 — ADMINISTRAÇÃO, AUDITORIA E TIMELINE
+========================================================= -->
+<style id="agora-v2-admin-audit-css">
+  .agoraV2Grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .agoraV2Box{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));padding:14px;min-width:0}
+  .agoraV2BoxTitle{font-weight:1000;margin-bottom:6px;color:var(--txt)}
+  .agoraV2BoxSub{font-size:12px;color:var(--mut);line-height:1.45;margin-bottom:10px}
+  .agoraV2List{display:grid;gap:8px;max-height:280px;overflow:auto;padding-right:2px;margin-top:10px}
+  .agoraV2Row{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.045);padding:10px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}
+  .agoraV2Name{font-weight:1000;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt)}
+  .agoraV2Meta{font-size:11px;color:var(--mut);line-height:1.35;margin-top:3px}
+  .agoraTimelineFull{margin-top:12px;border:1px solid rgba(96,165,250,.24);border-radius:16px;background:linear-gradient(180deg,rgba(96,165,250,.10),rgba(255,255,255,.025));padding:12px}
+  .agoraTimelineTitle{font-size:12px;font-weight:1000;color:var(--txt);margin-bottom:8px;text-transform:uppercase;letter-spacing:.3px}
+  .agoraTimelineList{display:grid;gap:8px}
+  .agoraTimelineItem{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;align-items:start;border-left:3px solid var(--acc);padding-left:10px}
+  .agoraTimelineDate{font-size:11px;font-weight:1000;color:var(--mut2)}
+  .agoraTimelineText{font-size:12px;font-weight:900;color:var(--txt);line-height:1.35}
+  .agoraAuditTools{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:12px}
+  .agoraAuditTableWrap{max-height:64vh;overflow:auto;border:1px solid var(--line);border-radius:16px}
+  .agoraAuditTable{width:100%;border-collapse:collapse;font-size:12px}
+  .agoraAuditTable th,.agoraAuditTable td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;color:var(--txt)}
+  .agoraAuditTable th{position:sticky;top:0;background:rgba(12,18,34,.98);z-index:2;font-size:11px;text-transform:uppercase;letter-spacing:.35px;color:var(--mut)}
+  .agoraAuditBadge{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:5px 8px;background:rgba(255,255,255,.06);font-weight:1000;white-space:nowrap}
+  .agoraAuditBadge.crm{border-color:rgba(255,176,32,.36);background:rgba(255,176,32,.10)}
+  .agoraAuditBadge.finance{border-color:rgba(57,217,138,.34);background:rgba(57,217,138,.10)}
+  .agoraAuditBadge.admin{border-color:rgba(96,165,250,.38);background:rgba(96,165,250,.12)}
+  body[data-theme="light"] .agoraV2BoxTitle,body[data-theme="paper"] .agoraV2BoxTitle,body[data-theme="windows_xp"] .agoraV2BoxTitle,body[data-theme="toy_story"] .agoraV2BoxTitle,
+  body[data-theme="light"] .agoraV2Name,body[data-theme="paper"] .agoraV2Name,body[data-theme="windows_xp"] .agoraV2Name,body[data-theme="toy_story"] .agoraV2Name,
+  body[data-theme="light"] .agoraTimelineTitle,body[data-theme="paper"] .agoraTimelineTitle,body[data-theme="windows_xp"] .agoraTimelineTitle,body[data-theme="toy_story"] .agoraTimelineTitle,
+  body[data-theme="light"] .agoraTimelineText,body[data-theme="paper"] .agoraTimelineText,body[data-theme="windows_xp"] .agoraTimelineText,body[data-theme="toy_story"] .agoraTimelineText,
+  body[data-theme="light"] .agoraAuditTable td,body[data-theme="paper"] .agoraAuditTable td,body[data-theme="windows_xp"] .agoraAuditTable td,body[data-theme="toy_story"] .agoraAuditTable td{color:#0b1220 !important}
+  body[data-theme="light"] .agoraAuditTable th,body[data-theme="paper"] .agoraAuditTable th,body[data-theme="windows_xp"] .agoraAuditTable th,body[data-theme="toy_story"] .agoraAuditTable th{background:rgba(255,255,255,.98);color:#334155 !important}
+  @media(max-width:900px){.agoraV2Grid{grid-template-columns:1fr}.agoraAuditTools{grid-template-columns:1fr}.agoraTimelineItem{grid-template-columns:1fr;gap:4px}}
+</style>
+
+<div class="ov" id="ovAdminCenter">
+  <div class="modal" style="width:min(1100px,100%)">
+    <div class="mHead"><h3>Administração</h3><button class="closeX" id="adminClose" type="button">✕</button></div>
+    <div class="helper" style="margin-bottom:12px">Gerencie médicos, hospitais e convênios sem editar o código.</div>
+    <div class="agoraV2Grid">
+      <div class="agoraV2Box">
+        <div class="agoraV2BoxTitle">Médicos</div>
+        <div class="agoraV2BoxSub">Usado em filtros, pacientes/leads, cirurgias e relatórios.</div>
+        <input class="input" id="adminDoctorName" placeholder="Nome do médico">
+        <div class="mFoot"><button class="mBtn primary" id="adminAddDoctor" type="button">Adicionar médico</button></div>
+        <div class="agoraV2List" id="adminDoctorsList"></div>
+      </div>
+      <div class="agoraV2Box">
+        <div class="agoraV2BoxTitle">Hospitais</div>
+        <div class="agoraV2BoxSub">Base para futuras regras financeiras, filtros e auditoria.</div>
+        <input class="input" id="adminHospitalName" placeholder="Nome do hospital">
+        <div class="mFoot"><button class="mBtn primary" id="adminAddHospital" type="button">Adicionar hospital</button></div>
+        <div class="agoraV2List" id="adminHospitalsList"></div>
+      </div>
+      <div class="agoraV2Box">
+        <div class="agoraV2BoxTitle">Convênios</div>
+        <div class="agoraV2BoxSub">Base para cadastro cirúrgico e relatórios futuros.</div>
+        <input class="input" id="adminInsuranceName" placeholder="Nome do convênio">
+        <div class="mFoot"><button class="mBtn primary" id="adminAddInsurance" type="button">Adicionar convênio</button></div>
+        <div class="agoraV2List" id="adminInsurancesList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="ovAuditCenter">
+  <div class="modal" style="width:min(1180px,100%)">
+    <div class="mHead"><h3>Auditoria</h3><button class="closeX" id="auditClose" type="button">✕</button></div>
+    <div class="agoraAuditTools">
+      <select class="input" id="auditFilterEntity"><option value="all">Todos os módulos</option><option value="crm">CRM / Leads / Pacientes</option><option value="finance">Financeiro / Agenda</option><option value="admin">Administração</option><option value="surgery">Cirurgias</option></select>
+      <input class="input" id="auditSearch" placeholder="Buscar por usuário, paciente, ação, médico...">
+      <button class="mBtn" id="auditClear" type="button">Limpar filtros</button>
+    </div>
+    <div id="auditSummary" class="helper" style="margin-bottom:12px"></div>
+    <div class="agoraAuditTableWrap"><table class="agoraAuditTable"><thead><tr><th>Data/hora</th><th>Módulo</th><th>Ação</th><th>Registro</th><th>Usuário</th><th>Detalhes</th></tr></thead><tbody id="auditRows"></tbody></table></div>
+  </div>
+</div>
+
 </body>
 </html>
 <!-- =========================================================
