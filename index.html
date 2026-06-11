@@ -13572,6 +13572,273 @@ html, body{
     padding:3px 4px !important;
   }
 }
+
+
+/* =========================================================
+   RESPONSIVIDADE FINAL V2 — ADAPTAÇÃO REAL AO APARELHO/PC
+   Alteração exclusiva de layout. Não altera login, Firebase,
+   calendário, CRM, financeiro ou regras de negócio.
+========================================================= */
+:root{
+  --hdrPadX:clamp(8px,1.2vw,16px);
+  --hdrPadY:clamp(8px,.8vw,12px);
+  --appGap:clamp(8px,1vw,14px);
+  --btnFont:clamp(11px,.78vw,14px);
+  --btnPadY:clamp(8px,.65vw,10px);
+  --btnPadX:clamp(10px,.9vw,14px);
+}
+html,body{
+  width:100% !important;
+  max-width:100% !important;
+  overflow-x:hidden !important;
+  -webkit-text-size-adjust:100%;
+}
+*,*::before,*::after{box-sizing:border-box;min-width:0}
+.hdr{
+  width:100% !important;
+  max-width:100% !important;
+  padding:var(--hdrPadY) var(--hdrPadX) !important;
+  z-index:70000 !important;
+  overflow:visible !important;
+}
+.headerAligned{
+  width:100% !important;
+  max-width:100% !important;
+  display:grid !important;
+  grid-template-columns:minmax(210px,280px) minmax(0,1fr) auto !important;
+  align-items:center !important;
+  gap:var(--appGap) !important;
+}
+.compactBrand{min-width:0 !important;overflow:hidden !important}
+.compactBrand h1{
+  max-width:100% !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  font-size:clamp(14px,1.05vw,18px) !important;
+  line-height:1.12 !important;
+}
+.toolbarCenter{
+  min-width:0 !important;
+  max-width:100% !important;
+  overflow:visible !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:8px !important;
+}
+.toolbarCenter::after{content:none !important;display:none !important}
+.primaryButtons{
+  min-width:0 !important;
+  max-width:100% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex-wrap:nowrap !important;
+  gap:clamp(6px,.65vw,10px) !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  scrollbar-width:none !important;
+  scroll-snap-type:x proximity !important;
+}
+.primaryButtons::-webkit-scrollbar{display:none !important}
+.btn,.mBtn,.smallBtn,.primaryButtons .btn,.hambMenu .btn{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  vertical-align:middle !important;
+  white-space:nowrap !important;
+  line-height:1.08 !important;
+  min-height:38px !important;
+  max-width:100% !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+.primaryButtons .btn{
+  flex:0 0 auto !important;
+  width:auto !important;
+  min-width:max-content !important;
+  padding:var(--btnPadY) var(--btnPadX) !important;
+  font-size:var(--btnFont) !important;
+  scroll-snap-align:start !important;
+}
+#btnPay{min-width:clamp(158px,10.5vw,190px) !important}
+.saveDock{
+  min-width:0 !important;
+  max-width:100% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:8px !important;
+  overflow:hidden !important;
+}
+.userBadge{min-width:0 !important;max-width:220px !important;overflow:hidden !important}
+.userName,.userEmail{overflow:hidden !important;text-overflow:ellipsis !important;white-space:nowrap !important}
+.hambWrap{flex:0 0 auto !important;z-index:90000 !important}
+.hambMenu{
+  z-index:95000 !important;
+  max-height:calc(100dvh - 76px) !important;
+  overflow:auto !important;
+}
+.container{
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  padding:clamp(8px,1vw,14px) clamp(7px,1vw,14px) 40px !important;
+  gap:var(--appGap) !important;
+}
+.sidebarCol,.mainCol,.card,.section,.mainCalendarCard{min-width:0 !important;max-width:100% !important}
+.ov,.loginOverlay,.modalOverlay,.crmOverlay{z-index:85000 !important}
+.modal{
+  width:min(920px,calc(100vw - 24px)) !important;
+  max-width:calc(100vw - 24px) !important;
+  max-height:calc(100dvh - 32px) !important;
+  margin:0 auto !important;
+}
+.row2,.row3,.crmFormGrid,.crmFormGrid3,.crmToolbar,.crmStats,.crmDoctorFilters,.crmDoctorManagerGrid{
+  min-width:0 !important;
+}
+img,svg,canvas,video{max-width:100%;height:auto}
+
+@media (max-width:1400px){
+  .headerAligned{grid-template-columns:minmax(190px,250px) minmax(0,1fr) auto !important}
+  .userBadge{max-width:180px !important}
+}
+
+@media (max-width:1180px){
+  :root{--cellH:96px;--btnFont:12px;--btnPadX:12px;--btnPadY:9px}
+  .headerAligned{
+    grid-template-columns:minmax(0,1fr) auto !important;
+    grid-template-areas:"brand save" "nav nav" !important;
+    align-items:center !important;
+    gap:9px !important;
+  }
+  .compactBrand{grid-area:brand !important}
+  .compactBrand h1{font-size:clamp(15px,2vw,18px) !important;white-space:nowrap !important}
+  .saveDock{grid-area:save !important;max-width:48vw !important;gap:6px !important}
+  .saveDock .userBadge{display:none !important}
+  .toolbarCenter{
+    grid-area:nav !important;
+    width:100% !important;
+    justify-content:flex-start !important;
+    overflow:hidden !important;
+    padding:0 !important;
+  }
+  .primaryButtons{
+    flex:1 1 auto !important;
+    justify-content:flex-start !important;
+    width:100% !important;
+    padding:1px 0 4px !important;
+  }
+  .container{grid-template-columns:1fr !important}
+  .mainCol{order:1 !important}
+  .sidebarCol{order:2 !important}
+  .mainCalendarCard .sectionHead{position:relative !important;top:auto !important;min-height:auto !important;z-index:1 !important}
+  .month{font-size:clamp(22px,3vw,30px) !important}
+  .dowShell,.calFrame{grid-template-columns:36px minmax(0,1fr) 36px !important;gap:6px !important;padding-left:10px !important;padding-right:10px !important}
+  .grid,.dowRow{gap:6px !important}
+  .sideOut{min-height:calc(var(--cellH) * 6 + 36px) !important}
+  .day{height:var(--cellH) !important;padding:6px !important}
+  .chip{font-size:10px !important;padding:5px 7px !important}
+}
+
+@media (min-width:761px) and (max-width:1180px){
+  .container{padding:12px 12px 34px !important}
+  .dow{font-size:12px !important;padding:9px 0 !important}
+  .sectionHead{padding:13px 14px !important}
+  .crmFormGrid3,.crmDoctorFilters,.crmDoctorManagerGrid{grid-template-columns:1fr 1fr !important}
+}
+
+@media (max-width:760px){
+  :root{--cellH:76px;--btnFont:11.5px;--btnPadX:10px;--btnPadY:8px}
+  .hdr{padding:9px 8px 8px !important}
+  .headerAligned{gap:7px !important}
+  .compactBrand h1{font-size:14px !important;line-height:1.08 !important}
+  .saveDock{max-width:52vw !important}
+  .saveDock .statusPill{display:none !important}
+  .saveDock .btn{min-height:34px !important;padding:7px 9px !important;font-size:11px !important}
+  .hambBtn{width:40px !important;height:40px !important;flex:0 0 40px !important}
+  .hambMenu{
+    position:fixed !important;
+    top:calc(env(safe-area-inset-top) + 56px) !important;
+    left:8px !important;
+    width:min(280px,calc(100vw - 16px)) !important;
+    min-width:0 !important;
+  }
+  .container{padding:9px 7px 28px !important;gap:10px !important}
+  .sectionHead{padding:11px !important;gap:8px !important;flex-wrap:wrap !important}
+  .padded{padding:11px !important}
+  .monthRow{gap:7px !important;justify-content:center !important}
+  .month{font-size:21px !important}
+  .note{font-size:11px !important;padding:6px 9px !important}
+  .dowShell,.calFrame{grid-template-columns:29px minmax(0,1fr) 29px !important;gap:4px !important;padding-left:5px !important;padding-right:5px !important}
+  .grid,.dowRow{gap:4px !important}
+  .dow{font-size:10px !important;padding:7px 0 !important;border-radius:9px !important}
+  .sideOut{min-height:calc(var(--cellH) * 6 + 28px) !important;border-radius:10px !important;padding:2px !important}
+  .sideOut .sideLabel,.sideOut .sideMonth{display:none !important}
+  .sideOut .arrow{font-size:17px !important}
+  .day{border-radius:10px !important;padding:4px !important;gap:3px !important}
+  .day .num{font-size:11px !important}
+  .day .cnt{display:none !important}
+  .chip{font-size:8.8px !important;padding:3px 4px !important;border-radius:7px !important;gap:4px !important}
+  .chipMark{width:7px !important;height:7px !important;flex:0 0 7px !important}
+  .row2,.row3,.crmToolbar,.crmFormGrid,.crmFormGrid3,.crmTimeline,.crmStats,.crmDoctorFilters,.crmDoctorManagerGrid{grid-template-columns:1fr !important}
+  .mFoot{gap:8px !important}
+  .mFoot .mBtn,.mFoot .btn,.mFoot .smallBtn{flex:1 1 auto !important;min-width:120px !important}
+  .modal{width:calc(100vw - 16px) !important;max-width:calc(100vw - 16px) !important;max-height:calc(100dvh - 22px) !important;border-radius:17px !important;padding:12px !important}
+  .ov{padding:calc(8px + env(safe-area-inset-top)) 8px calc(12px + env(safe-area-inset-bottom)) !important;align-items:flex-start !important}
+}
+
+@media (max-width:480px){
+  :root{--cellH:64px;--btnFont:11px;--btnPadX:9px;--btnPadY:8px}
+  .compactBrand h1{font-size:13px !important}
+  .primaryButtons{gap:6px !important}
+  #btnPay{min-width:150px !important}
+  .note{display:none !important}
+  .month{font-size:19px !important}
+  .dowShell,.calFrame{grid-template-columns:25px minmax(0,1fr) 25px !important;gap:3px !important;padding-left:3px !important;padding-right:3px !important}
+  .grid,.dowRow{gap:3px !important}
+  .dow{font-size:9px !important;padding:6px 0 !important}
+  .day{padding:3px !important;border-radius:8px !important}
+  .chip{font-size:8px !important;padding:2px 3px !important;line-height:1 !important}
+  .sumBox .val{font-size:18px !important}
+}
+
+@media (max-width:360px){
+  :root{--cellH:58px;--btnFont:10.5px}
+  .compactBrand h1{font-size:12px !important}
+  .saveDock .btn{font-size:10px !important;padding:6px 7px !important}
+  .hambBtn{width:36px !important;height:36px !important;flex-basis:36px !important}
+  .primaryButtons .btn{padding:7px 8px !important}
+  #btnPay{min-width:142px !important}
+  .dowShell,.calFrame{grid-template-columns:22px minmax(0,1fr) 22px !important}
+  .chip{display:none !important}
+}
+
+@media (orientation:landscape) and (max-height:560px){
+  :root{--cellH:56px}
+  .hdr{position:relative !important}
+  .compactBrand h1{font-size:13px !important}
+  .primaryButtons .btn{min-height:32px !important;padding-top:6px !important;padding-bottom:6px !important}
+  .container{padding-top:7px !important}
+  .modal{max-height:calc(100dvh - 14px) !important}
+  .ov{padding-top:7px !important;padding-bottom:7px !important}
+}
+
+@media (hover:none) and (pointer:coarse){
+  .btn,.mBtn,.smallBtn,.hambBtn{touch-action:manipulation}
+  .card:hover,.day:hover,.btn:hover,.mBtn:hover,.smallBtn:hover{transform:none !important}
+}
+
+@media (min-resolution:1.25dppx) and (min-width:1101px){
+  :root{--btnFont:clamp(11px,.72vw,13px)}
+  .container{padding-left:10px !important;padding-right:10px !important}
+  .primaryButtons .btn{padding-left:10px !important;padding-right:10px !important}
+  #btnPay{min-width:170px !important}
+}
+
 </style>
 <script id="modal-top-master-fix-js">
 (function(){
