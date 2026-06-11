@@ -13861,6 +13861,128 @@ html, body{
     padding:3px 4px !important;
   }
 }
+
+
+/* =========================================================
+   HOTFIX FINAL — RESPONSIVIDADE DOS BOTÕES DA HEADER
+   Mantém as funções intactas: somente CSS.
+   Garante que o texto nunca saia do botão em PC/tablet/celular.
+========================================================= */
+.hdr,
+.headerAligned,
+.toolbarCenter{
+  max-width:100vw !important;
+}
+
+.toolbarCenter{
+  min-width:0 !important;
+  overflow:hidden !important;
+}
+
+.primaryButtons{
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  flex-wrap:nowrap !important;
+  gap:10px !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  scrollbar-width:none !important;
+  padding:2px 4px 6px 2px !important;
+}
+.primaryButtons::-webkit-scrollbar{display:none !important;}
+
+.primaryButtons .btn,
+.toolbarCenter .btn{
+  flex:0 0 auto !important;
+  min-width:126px !important;
+  max-width:174px !important;
+  min-height:48px !important;
+  height:48px !important;
+  padding:0 14px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  white-space:normal !important;
+  overflow:hidden !important;
+  text-overflow:clip !important;
+  line-height:1.05 !important;
+  font-size:13px !important;
+  font-weight:1000 !important;
+  word-break:normal !important;
+  overflow-wrap:normal !important;
+  hyphens:none !important;
+}
+
+.primaryButtons .btn.primary,
+.toolbarCenter .btn.primary{
+  min-width:112px !important;
+}
+
+.primaryButtons .btn:nth-child(3),
+.primaryButtons .btn:nth-child(4),
+.primaryButtons .btn:nth-child(5){
+  min-width:146px !important;
+}
+
+@media(max-width:1280px){
+  .primaryButtons{gap:8px !important;}
+  .primaryButtons .btn,
+  .toolbarCenter .btn{
+    min-width:118px !important;
+    max-width:160px !important;
+    height:46px !important;
+    min-height:46px !important;
+    padding:0 12px !important;
+    font-size:12.5px !important;
+  }
+  .primaryButtons .btn:nth-child(3),
+  .primaryButtons .btn:nth-child(4),
+  .primaryButtons .btn:nth-child(5){
+    min-width:138px !important;
+  }
+}
+
+@media(max-width:760px){
+  .primaryButtons{gap:7px !important; padding-bottom:5px !important;}
+  .primaryButtons .btn,
+  .toolbarCenter .btn{
+    min-width:108px !important;
+    max-width:146px !important;
+    height:42px !important;
+    min-height:42px !important;
+    padding:0 10px !important;
+    font-size:11.5px !important;
+    line-height:1.02 !important;
+  }
+  .primaryButtons .btn:nth-child(3),
+  .primaryButtons .btn:nth-child(4),
+  .primaryButtons .btn:nth-child(5){
+    min-width:126px !important;
+  }
+}
+
+@media(max-width:480px){
+  .primaryButtons .btn,
+  .toolbarCenter .btn{
+    min-width:100px !important;
+    max-width:134px !important;
+    height:40px !important;
+    min-height:40px !important;
+    padding:0 9px !important;
+    font-size:10.8px !important;
+  }
+  .primaryButtons .btn:nth-child(3),
+  .primaryButtons .btn:nth-child(4),
+  .primaryButtons .btn:nth-child(5){
+    min-width:118px !important;
+  }
+}
 </style>
 <script id="modal-top-master-fix-js">
 (function(){
