@@ -5965,6 +5965,146 @@ body{
   .sectionHead{padding:12px 10px !important;}
   .padded{padding:12px 10px !important;}
 }
+
+
+/* =========================================================
+   HEADER LIMPA — BOTÕES NO HAMBÚRGUER E APENAS AÇÕES ESSENCIAIS NO TOPO
+   Mantém Novo + Cadastro/Login + indicador da tela em uma linha estável.
+========================================================= */
+.headerAligned{
+  grid-template-columns:minmax(190px, 300px) minmax(260px, 1fr) minmax(260px, auto) !important;
+  align-items:center !important;
+  gap:12px !important;
+}
+.toolbarCenter{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  min-width:0 !important;
+  overflow:visible !important;
+  gap:10px !important;
+}
+.primaryButtons{
+  width:auto !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  flex-wrap:nowrap !important;
+  overflow:visible !important;
+  gap:8px !important;
+  padding:0 !important;
+  scroll-snap-type:none !important;
+}
+.primaryButtons .btn,
+.primaryButtons button.btn{
+  flex:0 0 auto !important;
+  width:auto !important;
+  max-width:none !important;
+  min-height:38px !important;
+  height:38px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  line-height:1 !important;
+  padding:0 14px !important;
+  transform:none !important;
+}
+#btnNew{min-width:84px !important;}
+#btnLoginTop{min-width:132px !important;}
+#activeScreenBadge{
+  min-width:130px !important;
+  max-width:220px !important;
+  cursor:default !important;
+  pointer-events:none !important;
+  opacity:1 !important;
+  border-color:rgba(96,165,250,.42) !important;
+  background:linear-gradient(135deg,rgba(96,165,250,.18),rgba(139,92,246,.12)) !important;
+  color:var(--txt) !important;
+}
+.hambWrap{flex:0 0 auto !important; z-index:99999 !important;}
+.hambMenu{
+  z-index:999999 !important;
+  min-width:260px !important;
+  max-width:min(92vw, 360px) !important;
+  max-height:calc(100dvh - 92px) !important;
+  overflow:auto !important;
+  overscroll-behavior:contain !important;
+}
+.hambMenu .menuItem{
+  min-height:38px !important;
+  height:auto !important;
+  width:100% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  white-space:nowrap !important;
+  line-height:1.15 !important;
+  padding:10px 14px !important;
+}
+.hambMenu .headerMenuLoginGhost{display:none !important;}
+.saveDock.userDock{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:8px !important;
+  min-width:0 !important;
+  overflow:visible !important;
+}
+.userBadge{min-width:0 !important; max-width:260px !important;}
+.userName,.userEmail{white-space:nowrap !important; overflow:hidden !important; text-overflow:ellipsis !important;}
+
+@media (max-width: 1100px){
+  .headerAligned{
+    grid-template-columns:minmax(150px, 1fr) auto !important;
+    grid-template-areas:
+      "brand dock"
+      "tools tools" !important;
+    gap:8px !important;
+  }
+  .compactBrand{grid-area:brand !important; min-width:0 !important;}
+  .toolbarCenter{grid-area:tools !important; width:100% !important;}
+  .saveDock{grid-area:dock !important;}
+  .primaryButtons{flex:1 1 auto !important; min-width:0 !important;}
+}
+@media (max-width: 760px){
+  .hdr{padding:8px 10px !important;}
+  .headerAligned{grid-template-columns:minmax(120px, 1fr) auto !important;}
+  .compactBrand h1{font-size:14px !important; line-height:1.05 !important;}
+  .toolbarCenter{gap:7px !important;}
+  .hambBtn{width:40px !important; height:40px !important; border-radius:13px !important;}
+  .primaryButtons{gap:6px !important;}
+  .primaryButtons .btn,
+  .primaryButtons button.btn{
+    height:36px !important;
+    min-height:36px !important;
+    font-size:12px !important;
+    padding:0 10px !important;
+  }
+  #btnNew{min-width:70px !important;}
+  #btnLoginTop{min-width:118px !important;}
+  #activeScreenBadge{min-width:96px !important; max-width:34vw !important;}
+  .saveDock.userDock{gap:6px !important;}
+  .userBadge{max-width:34vw !important;}
+  .saveDock .btn{height:34px !important; min-height:34px !important; padding:0 8px !important; font-size:11px !important;}
+  .statusPill{height:34px !important; padding:0 8px !important;}
+}
+@media (max-width: 430px){
+  .compactBrand h1{font-size:12px !important;}
+  #btnNew{min-width:62px !important;}
+  #btnLoginTop{min-width:108px !important;}
+  #activeScreenBadge{min-width:84px !important; max-width:30vw !important; font-size:11px !important;}
+  .primaryButtons .btn,
+  .primaryButtons button.btn{font-size:11px !important; padding:0 8px !important;}
+  .userBadge{max-width:30vw !important;}
+  .userEmail{display:none !important;}
+}
+
 </style>
 
 <style id="MASTER_STABILITY_PATCH">
@@ -6741,34 +6881,35 @@ input,select,textarea,.input{max-width:100% !important;min-width:0 !important;}
         <details class="hambWrap" id="hambWrap">
           <summary aria-label="Menu" class="hambBtn"><span class="hambLines"></span></summary>
           <div class="hambMenu">
+            <button class="btn menuItem" id="btnPay">Regras de pagamento</button>
+            <button class="btn menuItem" id="btnNewSurgery">Modo Cirurgião</button>
+            <button class="btn menuItem" id="btnCRMMode">Pacientes &amp; Leads</button>
+            <button class="btn menuItem" id="btnUndo">Desfazer</button>
+            <button class="btn menuItem" id="btnSaveNow">Salvar agora</button>
             <button class="btn menuItem" id="btnDayH">Altura do dia</button>
             <button class="btn menuItem" id="btnBonusRules">Bonificação</button>
             <button class="btn menuItem" id="btnSurgeryCenter">Cirurgias</button>
-            <button class="btn menuItem" id="btnImport">Importar</button>
-            <button class="btn menuItem" id="btnExport">Exportar</button>
-            <button class="btn menuItem" id="btnBackupCenter">Backups</button>
+            <button class="btn menuItem" id="btnPatientCRM">Pacientes &amp; Leads</button>
             <button class="btn menuItem" id="btnDashboardCenter">Dashboard</button>
             <button class="btn menuItem" id="btnAdminCenter" type="button">Administração</button>
             <button class="btn menuItem" id="btnAuditCenter" type="button">Auditoria</button>
             <button class="btn menuItem" id="btnTheme">Tema</button>
             <button class="btn menuItem" id="btnToggleCalendarEvents" type="button">Ocultar eventos</button>
-            <button class="btn menuItem" id="btnPatientCRM">Pacientes & Leads</button>
-            <button class="btn menuItem" id="btnLogin">Cadastro/Login</button>
+            <button class="btn menuItem" id="btnBackupCenter">Backups</button>
+            <button class="btn menuItem" id="btnImport">Importar</button>
+            <button class="btn menuItem" id="btnExport">Exportar</button>
+            <button class="btn menuItem headerMenuLoginGhost" id="btnLogin">Cadastro/Login</button>
             <button class="btn danger menuItem" id="btnReset">Zerar</button>
             <input accept="application/json" hidden id="fileImport" type="file" />
           </div>
         </details>
         <div class="primaryButtons">
           <button class="btn primary" id="btnNew">Novo</button>
-          <button class="btn" id="btnPay">Regras de pagamento</button>
-          <button class="btn" id="btnNewSurgery">Modo Cirurgião</button>
-          <button class="btn" id="btnCRMMode">Pacientes & Leads</button>
-          <button class="btn" id="btnUndo">Desfazer</button>
-          <button class="btn" id="btnSaveNow">Salvar agora</button>
+          <button class="btn primary guestOnly" id="btnLoginTop" type="button">Cadastro/Login</button>
+          <button class="btn activeScreenBadge" id="activeScreenBadge" type="button" aria-live="polite">Agenda</button>
         </div>
       </div>
       <div class="saveDock userDock">
-        <button class="btn primary guestOnly" id="btnLoginTop" type="button">Cadastro/Login</button>
         <div class="userBadge" id="userBadge" title="Usuário logado">
           <div class="userName" id="userDisplayName">Não conectado</div>
           <div class="userEmail" id="userDisplayEmail">Faça login para ver sua agenda</div>
@@ -12979,6 +13120,326 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     <div class="agoraAuditTableWrap"><table class="agoraAuditTable"><thead><tr><th>Data/hora</th><th>Módulo</th><th>Ação</th><th>Registro</th><th>Usuário</th><th>Detalhes</th></tr></thead><tbody id="auditRows"></tbody></table></div>
   </div>
 </div>
+
+
+
+<style id="pixel-perfect-responsive-header-final">
+/* =========================================================
+   CORREÇÃO DEFINITIVA — RESPONSIVIDADE POR PIXEL + BOTÕES
+   - Não altera JS, Firebase, calendário, CRM ou dados.
+   - O menu principal nunca quebra texto e nunca corta botão.
+   - Em qualquer largura/zoom, a barra vira scroll horizontal natural.
+========================================================= */
+html, body{
+  width:100% !important;
+  max-width:100% !important;
+  overflow-x:hidden !important;
+}
+
+.hdr{
+  width:100% !important;
+  max-width:100vw !important;
+  min-width:0 !important;
+  overflow:visible !important;
+  padding:10px clamp(8px,1.1vw,16px) !important;
+}
+
+.headerAligned{
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  margin:0 !important;
+  display:grid !important;
+  grid-template-columns:minmax(172px,clamp(190px,20vw,292px)) minmax(0,1fr) minmax(176px,max-content) !important;
+  grid-template-areas:"brand nav dock" !important;
+  align-items:center !important;
+  gap:clamp(8px,1vw,14px) !important;
+  overflow:visible !important;
+}
+
+.compactBrand{
+  grid-area:brand !important;
+  min-width:0 !important;
+  overflow:hidden !important;
+}
+.compactBrand h1,
+.compactBrand p{
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+.toolbarCenter{
+  grid-area:nav !important;
+  min-width:0 !important;
+  width:100% !important;
+  max-width:100% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:8px !important;
+  overflow-x:auto !important;
+  overflow-y:visible !important;
+  -webkit-overflow-scrolling:touch !important;
+  scrollbar-width:none !important;
+  padding:2px 2px 5px 2px !important;
+  scroll-snap-type:x proximity !important;
+}
+.toolbarCenter::-webkit-scrollbar{display:none !important;}
+
+.primaryButtons{
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  flex-wrap:nowrap !important;
+  gap:clamp(6px,.75vw,10px) !important;
+  width:max-content !important;
+  min-width:max-content !important;
+  max-width:none !important;
+  overflow:visible !important;
+  padding:0 18px 0 0 !important;
+  margin:0 !important;
+}
+
+.hdr .btn,
+.hdr button.btn,
+.primaryButtons .btn,
+.primaryButtons button.btn,
+.toolbarCenter > .btn,
+.saveDock .btn,
+#btnSaveNow,
+#btnLoginTop,
+#btnLogoutTop{
+  box-sizing:border-box !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex:0 0 auto !important;
+  width:auto !important;
+  max-width:none !important;
+  height:42px !important;
+  min-height:42px !important;
+  max-height:42px !important;
+  padding:0 15px !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+  word-break:keep-all !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  text-align:center !important;
+  font-size:clamp(11.5px,.82vw,14px) !important;
+  font-weight:950 !important;
+  border-radius:999px !important;
+  scroll-snap-align:start !important;
+}
+
+.hdr .btn *,
+.primaryButtons .btn *,
+.saveDock .btn *{
+  white-space:nowrap !important;
+  word-break:keep-all !important;
+  overflow:visible !important;
+  line-height:1 !important;
+}
+
+#btnNew{min-width:92px !important;}
+#btnPay{min-width:190px !important;}
+#btnNewSurgery{min-width:154px !important;}
+#btnCRMMode{min-width:164px !important;}
+#btnUndo{min-width:118px !important;}
+#btnSaveNow{min-width:132px !important;}
+
+.saveDock,
+.userDock{
+  grid-area:dock !important;
+  min-width:0 !important;
+  max-width:clamp(176px,24vw,390px) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  flex-wrap:nowrap !important;
+  gap:7px !important;
+  overflow:hidden !important;
+}
+.userBadge{
+  min-width:0 !important;
+  max-width:clamp(88px,13vw,185px) !important;
+  overflow:hidden !important;
+}
+.userName,
+.userEmail,
+#userDisplayName,
+#userDisplayEmail{
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+.statusPill{
+  flex:0 0 auto !important;
+  min-width:max-content !important;
+  height:42px !important;
+  min-height:42px !important;
+  max-height:42px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  white-space:nowrap !important;
+}
+.hambWrap{
+  flex:0 0 auto !important;
+  width:44px !important;
+  min-width:44px !important;
+  max-width:44px !important;
+  z-index:99999 !important;
+}
+.hambBtn{
+  width:42px !important;
+  min-width:42px !important;
+  height:42px !important;
+  min-height:42px !important;
+  max-height:42px !important;
+}
+.hambMenu{
+  z-index:100000 !important;
+}
+
+/* Quando a largura real não comporta tudo, a navegação ocupa uma linha própria.
+   Isso evita qualquer corte sem perder responsividade. */
+@media (max-width:1280px){
+  .headerAligned{
+    grid-template-columns:minmax(0,1fr) minmax(160px,max-content) !important;
+    grid-template-areas:
+      "brand dock"
+      "nav nav" !important;
+    gap:8px !important;
+  }
+  .toolbarCenter{
+    width:100% !important;
+    max-width:100% !important;
+  }
+  .primaryButtons .btn,
+  .hdr .btn,
+  .saveDock .btn,
+  #btnSaveNow{
+    font-size:13px !important;
+    height:40px !important;
+    min-height:40px !important;
+    max-height:40px !important;
+    padding:0 14px !important;
+  }
+  #btnPay{min-width:186px !important;}
+  #btnNewSurgery{min-width:150px !important;}
+  #btnCRMMode{min-width:160px !important;}
+}
+
+@media (max-width:820px){
+  .hdr{padding:8px 8px !important;}
+  .headerAligned{
+    grid-template-columns:minmax(0,1fr) minmax(112px,max-content) !important;
+    grid-template-areas:
+      "brand dock"
+      "nav nav" !important;
+  }
+  .compactBrand h1{font-size:15px !important;}
+  .saveDock,
+  .userDock{max-width:46vw !important;gap:5px !important;}
+  .userBadge{display:none !important;}
+  .statusPill{height:38px !important;min-height:38px !important;max-height:38px !important;padding:0 10px !important;font-size:11px !important;}
+  .hambWrap{width:40px !important;min-width:40px !important;}
+  .hambBtn{width:38px !important;min-width:38px !important;height:38px !important;min-height:38px !important;max-height:38px !important;}
+  .primaryButtons{gap:7px !important;padding-right:16px !important;}
+  .primaryButtons .btn,
+  .hdr .btn,
+  .saveDock .btn,
+  #btnSaveNow{
+    height:38px !important;
+    min-height:38px !important;
+    max-height:38px !important;
+    padding:0 12px !important;
+    font-size:12px !important;
+  }
+  #btnNew{min-width:82px !important;}
+  #btnPay{min-width:174px !important;}
+  #btnNewSurgery{min-width:140px !important;}
+  #btnCRMMode{min-width:150px !important;}
+  #btnUndo{min-width:104px !important;}
+  #btnSaveNow{min-width:118px !important;}
+}
+
+@media (max-width:420px){
+  .compactBrand h1{font-size:13.5px !important;}
+  .saveDock,
+  .userDock{max-width:48vw !important;}
+  .primaryButtons .btn,
+  .hdr .btn,
+  .saveDock .btn,
+  #btnSaveNow{
+    height:36px !important;
+    min-height:36px !important;
+    max-height:36px !important;
+    padding:0 10px !important;
+    font-size:11px !important;
+  }
+  #btnPay{min-width:162px !important;}
+  #btnNewSurgery{min-width:130px !important;}
+  #btnCRMMode{min-width:142px !important;}
+}
+</style>
+
+
+<script>
+(function(){
+  function ready(fn){
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
+  ready(function(){
+    const badge = document.getElementById('activeScreenBadge');
+    const labels = {
+      btnPay:'Regras',
+      btnNewSurgery:'Cirurgião',
+      btnCRMMode:'Pacientes',
+      btnPatientCRM:'Pacientes',
+      btnDashboardCenter:'Dashboard',
+      btnAdminCenter:'Administração',
+      btnAuditCenter:'Auditoria',
+      btnTheme:'Tema',
+      btnToggleCalendarEvents:'Eventos',
+      btnSurgeryCenter:'Cirurgias',
+      btnBonusRules:'Bonificação',
+      btnDayH:'Altura do dia',
+      btnBackupCenter:'Backups',
+      btnImport:'Importar',
+      btnExport:'Exportar',
+      btnReset:'Zerar',
+      btnUndo:'Desfazer',
+      btnSaveNow:'Salvar'
+    };
+    function setScreen(label){
+      if(!badge || !label) return;
+      badge.textContent = label;
+      badge.setAttribute('title', 'Tela/função atual: ' + label);
+    }
+    Object.keys(labels).forEach(function(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.addEventListener('click', function(){
+        setScreen(labels[id]);
+        const wrap = document.getElementById('hambWrap');
+        if(wrap && id !== 'btnImport') setTimeout(function(){ wrap.removeAttribute('open'); }, 120);
+      }, true);
+    });
+    const newBtn = document.getElementById('btnNew');
+    if(newBtn) newBtn.addEventListener('click', function(){ setScreen('Agenda'); }, true);
+    document.body.addEventListener('click', function(ev){
+      const wrap = document.getElementById('hambWrap');
+      if(!wrap || !wrap.open) return;
+      if(!wrap.contains(ev.target)) wrap.removeAttribute('open');
+    }, true);
+  });
+})();
+</script>
 
 </body>
 </html>
