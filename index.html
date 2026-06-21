@@ -6972,13 +6972,13 @@ body[data-theme="senna_brasil"] .hdr{
             <button class="btn menuItem" id="btnAgendaScreen" type="button">Agenda</button>
             <button class="btn menuItem" id="btnPay">Regras de pagamento</button>
             <button class="btn menuItem" id="btnNewSurgery">Modo Cirurgião</button>
-            <button class="btn menuItem" id="btnCRMMode">Pacientes &amp; Leads</button>
+            <button class="btn menuItem" id="btnCRMMode">Controle Comercial</button>
             <button class="btn menuItem" id="btnUndo">Desfazer</button>
             <button class="btn menuItem" id="btnSaveNow">Salvar agora</button>
             <button class="btn menuItem" id="btnDayH">Altura do dia</button>
             <button class="btn menuItem" id="btnBonusRules">Bonificação</button>
             <button class="btn menuItem" id="btnSurgeryCenter">Cirurgias</button>
-            <button class="btn menuItem" id="btnPatientCRM">Pacientes &amp; Leads</button>
+            <button class="btn menuItem" id="btnPatientCRM">Controle Comercial</button>
             <button class="btn menuItem" id="btnDashboardCenter">Dashboard</button>
             <button class="btn menuItem" id="btnAdminCenter" type="button">Administração</button>
             <button class="btn menuItem" id="btnAuditCenter" type="button">Auditoria</button>
@@ -7719,48 +7719,56 @@ body[data-theme="senna_brasil"] .hdr{
   <div class="ov" id="ovSurgeryCenter">
     <div class="modal" style="width:min(1120px,100%)">
       <div class="mHead">
-        <h3>Controle cirúrgico · pacientes operados</h3>
+        <h3>Adicionar Cirurgia</h3>
         <button class="closeX" id="surgeryClose" type="button">✕</button>
       </div>
       <div class="form">
         <div class="helper">Registre cada paciente operado com hospital, convênio/particular, função na cirurgia e status visual de pagamento. Esses dados ficam dentro do mesmo arquivo da agenda e seguem o login do usuário.</div>
-        <div class="surgeryFilterBar">
-          <div><div class="lbl">Filtro por texto</div><input class="input" id="surgerySearch" placeholder="Paciente, hospital, plano, atendimento..."></div>
-          <div><div class="lbl">Status</div><select class="input" id="surgeryStatusFilter"><option value="all">Todos</option><option value="unpaid">Não pagos</option><option value="expected">Previstos</option><option value="billed">Faturados</option><option value="overdue">Pendentes</option><option value="denied">Glosados</option><option value="paid">Pagos</option></select></div>
+        <div class="surgeryFilterBar surgeryFilterBarPremium">
+          <div><div class="lbl">Busca</div><input class="input" id="surgerySearch" placeholder="Nome, hospital, atendimento, convênio..."></div>
+          <div><div class="lbl">Data inicial</div><input class="input" id="surgeryDateFrom" type="date"></div>
+          <div><div class="lbl">Data final</div><input class="input" id="surgeryDateTo" type="date"></div>
+          <div><div class="lbl">Status</div><select class="input" id="surgeryStatusFilter"><option value="all">Todos</option><option value="unpaid">Não pago</option><option value="paid">Pago</option></select></div>
+          <div><div class="lbl">Hospital</div><input class="input" id="surgeryHospitalFilter" placeholder="Filtrar hospital"></div>
           <div><div class="lbl">Mês</div><select class="input" id="surgeryMonthFilter"><option value="current">Mês visível</option><option value="all">Todos os meses</option></select></div>
+          <div class="span2"><button class="mBtn primary" id="btnSurgeryReportDoc" type="button">Baixar relatório .doc</button></div>
         </div>
 
-        <div class="accountPanel">
+        <div class="accountPanel surgeryFormPremium">
           <div class="row3">
-            <div><div class="lbl">Data da cirurgia</div><input class="input" id="surgDate" type="date"></div>
-            <div><div class="lbl">Nome do paciente</div><input class="input" id="surgPatient" placeholder="Nome completo"></div>
-            <div><div class="lbl">Nº atendimento</div><input class="input" id="surgAttendance" placeholder="Atendimento / guia / conta"></div>
-          </div>
-          <div style="margin-top:10px"><div class="lbl">Procedimentos realizados</div><textarea class="input" id="surgProcedures" rows="3" placeholder="Ex: colecistectomia videolaparoscópica, hernioplastia..."></textarea></div>
-          <div class="row3" style="margin-top:10px">
-            <div><div class="lbl">Particular ou convênio</div><select class="input" id="surgPaymentType"><option value="convenio">Convênio</option><option value="particular">Particular</option></select></div>
-            <div><div class="lbl">Plano de saúde</div><input class="input" id="surgHealthPlan" placeholder="Ex: Unimed, SulAmérica, Bradesco"></div>
-            <div><div class="lbl">Hospital</div><input class="input" id="surgHospital" placeholder="Hospital onde foi operado"></div>
+            <div><div class="lbl">Nome</div><input class="input" id="surgPatient" placeholder="Nome completo"></div>
+            <div><div class="lbl">Data de Nascimento</div><input class="input" id="surgBirthDate" type="date"></div>
+            <div><div class="lbl">Data do Procedimento</div><input class="input" id="surgDate" type="date"></div>
           </div>
           <div class="row3" style="margin-top:10px">
-            <div><div class="lbl">Atuação</div><select class="input" id="surgRole"><option value="principal">Cirurgião principal</option><option value="auxiliar">Auxiliar</option></select></div>
-            <div><div class="lbl">Status financeiro</div><select class="input" id="surgPaymentStatus"><option value="unpaid">Não pago</option><option value="expected">Previsto</option><option value="billed">Faturado</option><option value="overdue">Pendente</option><option value="denied">Glosado</option><option value="paid">Pago</option></select></div>
-            <div><div class="lbl">Valor previsto</div><input class="input" id="surgAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
+            <div><div class="lbl">Hospital do Procedimento</div><input class="input" id="surgHospital" placeholder="Hospital do procedimento"></div>
+            <div><div class="lbl">Atendimento</div><input class="input" id="surgAttendance" placeholder="Número do atendimento"></div>
+            <div><div class="lbl">Categoria</div><select class="input" id="surgPaymentType"><option value="convenio">Convênio</option><option value="particular">Particular</option></select></div>
           </div>
-          <div class="surgeryFinanceGrid">
-            <div><div class="lbl">Valor recebido</div><input class="input" id="surgReceivedAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
-            <div><div class="lbl">Valor glosado</div><input class="input" id="surgDeniedAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
-            <div><div class="lbl">Data faturamento</div><input class="input" id="surgBillingDate" type="date"></div>
-            <div><div class="lbl">Previsão pagamento</div><input class="input" id="surgExpectedPayDate" type="date"></div>
+          <div class="row3" style="margin-top:10px">
+            <div><div class="lbl">Convênio</div><input class="input" id="surgInsurance" placeholder="Nome do convênio"></div>
+            <div><div class="lbl">Plano de Saúde</div><input class="input" id="surgHealthPlan" placeholder="Plano de saúde"></div>
+            <div><div class="lbl">Atuação</div><select class="input" id="surgRole"><option value="principal">Cirurgião</option><option value="auxiliar">Auxiliar</option></select></div>
+          </div>
+          <div style="margin-top:10px"><div class="lbl">Detalhes do procedimento</div><textarea class="input" id="surgProcedures" rows="3" placeholder="Descrição livre do procedimento"></textarea></div>
+          <div class="row3" style="margin-top:10px">
+            <div><div class="lbl">Status</div><select class="input" id="surgPaymentStatus"><option value="unpaid">Não Pago</option><option value="paid">Pago</option></select></div>
+            <div><div class="lbl">Valor Previsto</div><input class="input" id="surgAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
+            <div><div class="lbl">Valor Pago</div><input class="input" id="surgReceivedAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
           </div>
           <div class="row2" style="margin-top:10px">
-            <div><div class="lbl">Data pagamento efetivo</div><input class="input" id="surgPaidDate" type="date"></div>
-            <div><div class="lbl">Observações financeiras</div><input class="input" id="surgFinanceNote" placeholder="Ex: recurso, glosa parcial, previsão do convênio..."></div>
+            <div><div class="lbl">Data do Pagamento</div><input class="input" id="surgPaidDate" type="date"></div>
+            <div><div class="lbl">Observações Gerais</div><textarea class="input" id="surgNotes" rows="2" placeholder="Observações gerais"></textarea></div>
           </div>
-          <div style="margin-top:10px"><div class="lbl">Observações</div><textarea class="input" id="surgNotes" rows="2" placeholder="Ex: aguardando faturamento, guia enviada, glosa, recurso..."></textarea></div>
+          <div style="display:none">
+            <input id="surgDeniedAmount" type="hidden" value="">
+            <input id="surgBillingDate" type="hidden" value="">
+            <input id="surgExpectedPayDate" type="hidden" value="">
+            <input id="surgFinanceNote" type="hidden" value="">
+          </div>
           <div class="mFoot">
             <button class="mBtn ghost" id="surgClear" type="button">Limpar formulário</button>
-            <button class="mBtn primary" id="surgSave" type="button">Salvar paciente operado</button>
+            <button class="mBtn primary" id="surgSave" type="button">Salvar cirurgia</button>
           </div>
         </div>
 
@@ -8168,6 +8176,16 @@ body[data-theme="senna_brasil"] .hdr{
       scheduleCloudSave(250);
     }
     function save(){ markDirty(); }
+    // PREMIUM_SAFE_BRIDGE: ponte somente-leitura/controlada para módulos adicionais sem quebrar o core.
+    window.__agendaBridge = window.__agendaBridge || {};
+    window.__agendaBridge.getState = () => state;
+    window.__agendaBridge.save = save;
+    window.__agendaBridge.renderAll = () => { try { renderAll(); } catch(e){ console.error('renderAll bridge', e); } };
+    window.__agendaBridge.todayISO = todayISO;
+    window.__agendaBridge.formatDateBR = formatDateBR;
+    window.__agendaBridge.fmtMoney = fmtMoney;
+    window.__agendaBridge.filteredSurgeries = () => { try { return filteredSurgeries(); } catch(e){ return []; } };
+
     function updateUndoButton(){ UI.el('btnUndo').disabled = loadHistory().length === 0; }
     function undoLast(){
       const arr = loadHistory();
@@ -10926,15 +10944,21 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const search = String(UI.el('surgerySearch')?.value || '').trim().toLowerCase();
       const status = UI.el('surgeryStatusFilter')?.value || 'all';
       const monthMode = UI.el('surgeryMonthFilter')?.value || 'current';
+      const dateFrom = UI.el('surgeryDateFrom')?.value || '';
+      const dateTo = UI.el('surgeryDateTo')?.value || '';
+      const hospitalFilter = String(UI.el('surgeryHospitalFilter')?.value || '').trim().toLowerCase();
       const { start, end } = currentMonthRangeISO();
 
       return (state.surgeries || [])
         .filter(s => {
           const d = String(s.date || '');
-          if (monthMode === 'current' && (d < start || d > end)) return false;
+          if (monthMode === 'current' && !dateFrom && !dateTo && (d < start || d > end)) return false;
+          if (dateFrom && d < dateFrom) return false;
+          if (dateTo && d > dateTo) return false;
           if (status !== 'all' && s.paymentStatus !== status) return false;
+          if (hospitalFilter && !String(s.hospital || '').toLowerCase().includes(hospitalFilter)) return false;
           if (search) {
-            const hay = [s.patientName,s.attendanceNumber,s.procedures,s.paymentType,s.healthPlan,s.hospital,s.role,s.paymentStatus,s.financeNote,s.notes].join(' ').toLowerCase();
+            const hay = [s.patientName,s.birthDate,s.attendanceNumber,s.procedures,s.paymentType,s.insurance,s.healthPlan,s.hospital,s.role,s.paymentStatus,s.financeNote,s.notes].join(' ').toLowerCase();
             if (!hay.includes(search)) return false;
           }
           return true;
@@ -11033,8 +11057,10 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       SurgeryForm.editingId = null;
       UI.el('surgDate').value = state.selDate || todayISO();
       UI.el('surgPatient').value = '';
+      if (UI.el('surgBirthDate')) UI.el('surgBirthDate').value = '';
       UI.el('surgAttendance').value = '';
       UI.el('surgProcedures').value = '';
+      if (UI.el('surgInsurance')) UI.el('surgInsurance').value = '';
       UI.el('surgPaymentType').value = 'convenio';
       UI.el('surgHealthPlan').value = '';
       UI.el('surgHospital').value = '';
@@ -11074,9 +11100,11 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         id: SurgeryForm.editingId || uid(),
         date: UI.el('surgDate').value || todayISO(),
         patientName,
+        birthDate: UI.el('surgBirthDate')?.value || '',
         attendanceNumber: UI.el('surgAttendance').value.trim(),
         procedures: UI.el('surgProcedures').value.trim(),
         paymentType: UI.el('surgPaymentType').value,
+        insurance: (UI.el('surgInsurance')?.value || '').trim(),
         healthPlan: UI.el('surgPaymentType').value === 'particular' ? '' : UI.el('surgHealthPlan').value.trim(),
         hospital: UI.el('surgHospital').value.trim(),
         role: UI.el('surgRole').value,
@@ -11105,9 +11133,11 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       SurgeryForm.editingId = id;
       UI.el('surgDate').value = s.date || todayISO();
       UI.el('surgPatient').value = s.patientName || '';
+      if (UI.el('surgBirthDate')) UI.el('surgBirthDate').value = s.birthDate || '';
       UI.el('surgAttendance').value = s.attendanceNumber || '';
       UI.el('surgProcedures').value = s.procedures || '';
       UI.el('surgPaymentType').value = s.paymentType || 'convenio';
+      if (UI.el('surgInsurance')) UI.el('surgInsurance').value = s.insurance || '';
       UI.el('surgHealthPlan').value = s.healthPlan || '';
       UI.el('surgHospital').value = s.hospital || '';
       UI.el('surgRole').value = s.role || 'principal';
@@ -11148,6 +11178,20 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       save();
       renderSurgeryPanel();
       renderCalendar();
+    }
+
+    function exportSurgeryReportDoc(){
+      const rows = filteredSurgeries();
+      if (!rows.length) return alert('Nenhuma cirurgia encontrada para os filtros atuais.');
+      const esc = v => String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const tableRows = rows.map(s => `<tr><td>${esc(s.patientName || '')}</td><td>${esc(s.attendanceNumber || '')}</td><td>${esc(formatDateBR(s.date || ''))}</td><td>${esc(s.hospital || '')}</td><td>${esc(s.paymentStatus === 'paid' ? 'Pago' : 'Não Pago')}</td></tr>`).join('');
+      const doc = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Relatório Cirúrgico</title><style>body{font-family:Arial,sans-serif}h1{font-size:20px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #333;padding:8px;font-size:12px}th{background:#eee}</style></head><body><h1>Relatório Cirúrgico</h1><p>Gerado em ${esc(new Date().toLocaleString('pt-BR'))}</p><table><thead><tr><th>Nome do paciente</th><th>Atendimento</th><th>Data da cirurgia</th><th>Hospital</th><th>Status de pagamento</th></tr></thead><tbody>${tableRows}</tbody></table>`;
+      const blob = new Blob(['\ufeff', doc], { type:'application/msword;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `relatorio_cirurgico_${Date.now()}.doc`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     }
 
     function bindSurgeryListActions(host){
@@ -11343,13 +11387,13 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       document.body.classList.toggle('crm-mode', on);
       const b1 = UI.el('btnPatientCRM');
       if (b1) {
-        b1.textContent = on ? 'Sair de Controle Comercial' : 'Controle Comercial';
+        b1.textContent = on ? 'Controle Comercial' : 'Controle Comercial';
         b1.classList.toggle('modeActive', on);
         b1.setAttribute('aria-pressed', on ? 'true' : 'false');
       }
       const b2 = UI.el('btnCRMMode');
       if (b2) {
-        b2.textContent = on ? 'Sair Controle Comercial' : 'Controle Comercial';
+        b2.textContent = on ? 'Controle Comercial' : 'Controle Comercial';
         b2.classList.toggle('modeActive', on);
         b2.setAttribute('aria-pressed', on ? 'true' : 'false');
       }
@@ -12236,7 +12280,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('surgeryClose').addEventListener('click', () => UI.close('ovSurgeryCenter'));
       UI.el('surgSave').addEventListener('click', saveSurgery);
       UI.el('surgClear').addEventListener('click', clearSurgeryForm);
-      ['surgerySearch','surgeryStatusFilter','surgeryMonthFilter'].forEach(id => UI.el(id).addEventListener('input', renderSurgeryPanel));
+      ['surgerySearch','surgeryStatusFilter','surgeryMonthFilter','surgeryDateFrom','surgeryDateTo','surgeryHospitalFilter'].forEach(id => UI.el(id)?.addEventListener('input', renderSurgeryPanel));
+      UI.el('btnSurgeryReportDoc')?.addEventListener('click', exportSurgeryReportDoc);
       UI.el('btnToggleSummary').addEventListener('click', toggleSummaryPanel);
       UI.el('btnTogglePayments').addEventListener('click', togglePaymentsPanel);
       UI.el('btnTogglePayables').addEventListener('click', togglePayablesPanel);
@@ -12556,78 +12601,6 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     function openAuditCenter(){ renderAuditCenter(); UI.open('ovAuditCenter'); }
     const agoraV2OriginalRenderAll = renderAll;
     renderAll = function(){ agoraV2Ensure(); agoraV2OriginalRenderAll(); renderAdminCenter(); };
-
-
-
-    /* =========================================================
-       PREMIUM V8 — páginas exclusivas sem remover o core
-    ========================================================= */
-    function v8Today(){ return iso(new Date()); }
-    function v8AddDays(d,n){ if(!d) return ''; const x=new Date(d+'T00:00:00'); x.setDate(x.getDate()+Number(n||0)); return iso(x); }
-    function v8Money(v){ return fmtMoney(Number(v||0)); }
-    function v8Html(s){ return escapeHtml(String(s ?? '')); }
-    function v8Attr(s){ return escapeAttr(String(s ?? '')); }
-    function v8Ensure(){
-      state.crm = Array.isArray(state.crm) ? state.crm : [];
-      state.surgeries = Array.isArray(state.surgeries) ? state.surgeries : [];
-      state.commercialActionNotes = state.commercialActionNotes || '';
-      state.crm.forEach(x=>{ x.ext=x.ext||{}; x.contactHistory=Array.isArray(x.contactHistory)?x.contactHistory:[]; x.timeline=Array.isArray(x.timeline)?x.timeline:[]; });
-    }
-    function v8Doctors(){ try{return doctorsEnsure();}catch(e){ return Array.from(new Set((state.crm||[]).map(x=>x.doctor).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'pt-BR')); } }
-    function v8FillDoctorSelect(id, allLabel){ const sel=UI.el(id); if(!sel) return; const cur=sel.value; const opts=(allLabel?`<option value="all">${allLabel}</option>`:'') + v8Doctors().map(d=>`<option value="${v8Attr(d)}">${v8Html(d)}</option>`).join(''); sel.innerHTML=opts; if([...sel.options].some(o=>o.value===cur)) sel.value=cur; }
-    function v8SyncSelects(){ ['v8CadDoctor'].forEach(id=>v8FillDoctorSelect(id,'')); v8FillDoctorSelect('v8CadFilterDoctor','Todos'); v8FillDoctorSelect('v8ComFilterDoctor','Todos'); }
-    function v8SetScreen(screen){
-      document.body.classList.remove('app-screen-agenda','app-screen-surgery','app-screen-cadastro','app-screen-comercial');
-      document.body.classList.add('app-screen-'+screen);
-      ['v8SurgeryPage','v8CadastroPage','v8ComercialPage'].forEach(id=>{ const p=UI.el(id); if(p) p.hidden = true; });
-      if(screen==='surgery' && UI.el('v8SurgeryPage')) UI.el('v8SurgeryPage').hidden=false;
-      if(screen==='cadastro' && UI.el('v8CadastroPage')) UI.el('v8CadastroPage').hidden=false;
-      if(screen==='comercial' && UI.el('v8ComercialPage')) UI.el('v8ComercialPage').hidden=false;
-      const badge=UI.el('activeScreenBadge'); if(badge) badge.textContent = screen==='agenda'?'Agenda':screen==='surgery'?'Modo Cirurgião':screen==='cadastro'?'Cadastro de pacientes':'Controle Comercial';
-      if(screen==='surgery') v8RenderSurgeryReport();
-      if(screen==='cadastro') v8RenderCadSearch();
-      if(screen==='comercial') v8RenderCommercial();
-      try{ document.getElementById('hambWrap')?.removeAttribute('open'); document.getElementById('hamburgerPortalMenu')?.classList.remove('open'); }catch(e){}
-    }
-    window.v8SetScreen = v8SetScreen;
-
-    function v8ClearSurgery(){ ['v8SurgEditingId','v8SurgName','v8SurgBirth','v8SurgDate','v8SurgHospital','v8SurgAttendance','v8SurgInsurance','v8SurgPlan','v8SurgDetails','v8SurgExpected','v8SurgPaid','v8SurgPaidDate','v8SurgNotes'].forEach(id=>{const e=UI.el(id); if(e)e.value='';}); if(UI.el('v8SurgCategory'))UI.el('v8SurgCategory').value='Convênio'; if(UI.el('v8SurgRole'))UI.el('v8SurgRole').value='Cirurgião'; if(UI.el('v8SurgStatus'))UI.el('v8SurgStatus').value='unpaid'; }
-    function v8SaveSurgery(){
-      const name=(UI.el('v8SurgName')?.value||'').trim(); if(!name) return alert('Informe o nome do paciente.');
-      const id=UI.el('v8SurgEditingId')?.value||uid(); let s=state.surgeries.find(x=>x.id===id); const isNew=!s; if(!s){s={id,createdAt:new Date().toISOString()}; state.surgeries.push(s);} 
-      s.patientName=name; s.birthDate=UI.el('v8SurgBirth')?.value||''; s.date=UI.el('v8SurgDate')?.value||''; s.hospital=(UI.el('v8SurgHospital')?.value||'').trim(); s.attendanceNumber=(UI.el('v8SurgAttendance')?.value||'').trim(); s.paymentType=UI.el('v8SurgCategory')?.value||'Convênio'; s.insurance=(UI.el('v8SurgInsurance')?.value||'').trim(); s.healthPlan=(UI.el('v8SurgPlan')?.value||'').trim(); s.procedures=(UI.el('v8SurgDetails')?.value||'').trim(); s.role=UI.el('v8SurgRole')?.value||'Cirurgião'; s.paymentStatus=UI.el('v8SurgStatus')?.value||'unpaid'; s.amount=Number(UI.el('v8SurgExpected')?.value||0); s.receivedAmount=Number(UI.el('v8SurgPaid')?.value||0); s.paidDate=UI.el('v8SurgPaidDate')?.value||''; s.notes=(UI.el('v8SurgNotes')?.value||'').trim(); s.updatedAt=new Date().toISOString();
-      try{ agoraV2Audit(isNew?'Cirurgia cadastrada':'Cirurgia atualizada','surgery',name,'Modo Cirurgião V8',id); }catch(e){}
-      save(); renderAll(); v8RenderSurgeryReport(); alert('Cirurgia salva.');
-    }
-    function v8FilteredSurgeries(){ const q=(UI.el('v8SurgFilterText')?.value||'').toLowerCase().trim(); const from=UI.el('v8SurgFilterFrom')?.value||''; const to=UI.el('v8SurgFilterTo')?.value||''; const status=UI.el('v8SurgFilterStatus')?.value||'all'; const hosp=(UI.el('v8SurgFilterHospital')?.value||'').toLowerCase().trim(); const cat=UI.el('v8SurgFilterCategory')?.value||'all'; return (state.surgeries||[]).filter(s=>{ const d=s.date||''; if(from&&(!d||d<from)) return false; if(to&&(!d||d>to)) return false; if(status!=='all'&&s.paymentStatus!==status) return false; if(cat!=='all'&&String(s.paymentType||'')!==cat) return false; if(hosp && !String(s.hospital||'').toLowerCase().includes(hosp)) return false; if(q && ![s.patientName,s.attendanceNumber,s.date,s.hospital,s.insurance,s.healthPlan,s.procedures,s.role,s.notes].join(' ').toLowerCase().includes(q)) return false; return true; }).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))); }
-    function v8SurgeryTable(){ const rows=v8FilteredSurgeries().map(s=>`<tr><td>${v8Html(s.patientName)}</td><td>${v8Html(s.attendanceNumber)}</td><td>${v8Html(s.date?formatDateBR(s.date):'')}</td><td>${v8Html(s.hospital)}</td><td>${s.paymentStatus==='paid'?'Pago':'Não Pago'}</td></tr>`).join(''); return `<table class="v8Table"><thead><tr><th>Nome do paciente</th><th>Atendimento</th><th>Data da cirurgia</th><th>Hospital</th><th>Status de pagamento</th></tr></thead><tbody>${rows||'<tr><td colspan="5">Sem cirurgias no período.</td></tr>'}</tbody></table>`; }
-    function v8RenderSurgeryReport(){ const box=UI.el('v8SurgeryReportBox'); if(box) box.innerHTML=v8SurgeryTable(); }
-    function v8DownloadDoc(filename,title,body){ const doc='<!doctype html><html><head><meta charset="utf-8"><title>'+v8Html(title)+'</title><style>body{font-family:Arial,sans-serif}table{width:100%;border-collapse:collapse}th,td{border:1px solid #999;padding:8px;text-align:left}th{background:#eee}</style></head><body><h1>'+v8Html(title)+'</h1>'+body+'<\/body><\/html>'; const blob=new Blob([doc],{type:'application/msword;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
-    function v8Print(body){ const w=window.open('','_blank'); if(!w) return; w.document.write('<html><head><title>Relatório</title><style>table{width:100%;border-collapse:collapse}th,td{border:1px solid #999;padding:8px;text-align:left}</style></head><body>'+body+'<\/body><\/html>'); w.document.close(); w.print(); }
-
-    function v8ClearCad(){ ['v8CadId','v8CadName','v8CadBirth','v8CadCpf','v8CadEmail','v8CadPhone','v8CadAddress','v8CadOrigin','v8CadDoctorsSeen','v8CadFirstConsult','v8CadLastConsult','v8CadNextContact','v8CadRecurrence','v8CadSpent','v8CadNotes'].forEach(id=>{const e=UI.el(id); if(e)e.value='';}); if(UI.el('v8CadType'))UI.el('v8CadType').value='patient'; if(UI.el('v8CadStatus'))UI.el('v8CadStatus').value='ativo'; v8SyncSelects(); v8RenderCadHistory(null); }
-    function v8LoadCad(id){ const item=(state.crm||[]).find(x=>x.id===id); if(!item) return; item.ext=item.ext||{}; item.contactHistory=Array.isArray(item.contactHistory)?item.contactHistory:[]; const ext=item.ext; const set=(id,v)=>{const e=UI.el(id); if(e)e.value=v||''}; set('v8CadId',item.id); set('v8CadType',item.type||'patient'); set('v8CadName',item.name); set('v8CadBirth',ext.birth); set('v8CadCpf',ext.cpf); set('v8CadEmail',ext.email); set('v8CadPhone',item.phone); set('v8CadAddress',ext.address); set('v8CadOrigin',item.origin); set('v8CadDoctor',item.doctor); set('v8CadDoctorsSeen',ext.doctorsSeen||item.doctor); set('v8CadFirstConsult',ext.firstConsult||item.firstContact); set('v8CadLastConsult',ext.lastConsult||item.lastContact); set('v8CadNextContact',item.nextContact); set('v8CadRecurrence',item.recurrenceDays); set('v8CadSpent',item.amountPaid); set('v8CadStatus',item.status); set('v8CadNotes',item.notes); v8RenderCadHistory(item); v8SetScreen('cadastro'); }
-    function v8SaveCad(){ const name=(UI.el('v8CadName')?.value||'').trim(); if(!name) return alert('Informe o nome do contato.'); const id=UI.el('v8CadId')?.value||uid(); let item=state.crm.find(x=>x.id===id); const isNew=!item; if(!item){item={id,createdAt:new Date().toISOString(),contactHistory:[],timeline:[]}; state.crm.push(item);} item.ext=item.ext||{}; item.contactHistory=Array.isArray(item.contactHistory)?item.contactHistory:[]; item.timeline=Array.isArray(item.timeline)?item.timeline:[]; const type=UI.el('v8CadType')?.value||'patient'; const last=UI.el('v8CadLastConsult')?.value||''; const rec=Number(UI.el('v8CadRecurrence')?.value||0); item.type=type; item.name=name; item.phone=(UI.el('v8CadPhone')?.value||'').trim(); item.origin=(UI.el('v8CadOrigin')?.value||'').trim(); item.doctor=UI.el('v8CadDoctor')?.value||''; item.amountPaid=Number(UI.el('v8CadSpent')?.value||0); item.firstContact=UI.el('v8CadFirstConsult')?.value||item.firstContact||v8Today(); item.lastContact=last||item.lastContact||''; item.nextContact=UI.el('v8CadNextContact')?.value||''; if(type==='patient'&&last&&rec>0) item.nextContact=v8AddDays(last,rec); item.recurrenceDays=rec; item.status=UI.el('v8CadStatus')?.value||'ativo'; item.notes=(UI.el('v8CadNotes')?.value||'').trim(); item.ext=Object.assign({},item.ext,{birth:UI.el('v8CadBirth')?.value||'',cpf:(UI.el('v8CadCpf')?.value||'').trim(),email:(UI.el('v8CadEmail')?.value||'').trim(),address:(UI.el('v8CadAddress')?.value||'').trim(),doctorsSeen:(UI.el('v8CadDoctorsSeen')?.value||'').trim(),firstConsult:UI.el('v8CadFirstConsult')?.value||'',lastConsult:last}); item.updatedAt=new Date().toISOString(); item.timeline.push({at:new Date().toISOString(),type:'cadastro',text:isNew?'Cadastro criado':'Cadastro atualizado'}); if(item.doctor) ensureDoctorName(item.doctor); try{agoraV2Audit(isNew?'Cadastro criado':'Cadastro atualizado','crm',name,type==='lead'?'Lead':'Paciente',id);}catch(e){} save(); renderAll(); v8LoadCad(id); v8RenderCadSearch(); v8RenderCommercial(); alert('Cadastro salvo.'); }
-    function v8FilteredCad(){ const q=(UI.el('v8CadFilterName')?.value||'').toLowerCase().trim(); const doc=UI.el('v8CadFilterDoctor')?.value||'all'; const type=UI.el('v8CadFilterType')?.value||'all'; const multi=UI.el('v8CadFilterMulti')?.value||'all'; const from=UI.el('v8CadFilterFrom')?.value||''; const to=UI.el('v8CadFilterTo')?.value||''; const basis=UI.el('v8CadFilterBasis')?.value||'last'; return (state.crm||[]).filter(x=>{ x.ext=x.ext||{}; const ext=x.ext; const hay=[x.name,x.phone,x.origin,x.doctor,x.notes,ext.cpf,ext.email,ext.address,ext.doctorsSeen].join(' ').toLowerCase(); if(q&&!hay.includes(q)) return false; if(doc!=='all'&&![x.doctor,ext.doctorsSeen].join(';').toLowerCase().includes(doc.toLowerCase())) return false; if(type!=='all'&&x.type!==type) return false; const docs=[x.doctor,ext.doctorsSeen].join(';').split(/[;,]/).map(s=>s.trim().toLowerCase()).filter(Boolean); const unique=Array.from(new Set(docs)); if(multi==='yes'&&unique.length<2) return false; if(multi==='no'&&unique.length>1) return false; const d=basis==='first'?(ext.firstConsult||x.firstContact||''):basis==='created'?String(x.createdAt||'').slice(0,10):(ext.lastConsult||x.lastContact||''); if(from&&(!d||d<from)) return false; if(to&&(!d||d>to)) return false; return true; }); }
-    function v8RenderCadSearch(){ v8SyncSelects(); const box=UI.el('v8CadResults'); if(!box) return; const items=v8FilteredCad(); box.innerHTML=items.length?items.map(x=>{ x.ext=x.ext||{}; return `<div class="v8ResultCard"><div><b>${v8Html(x.name||'Sem nome')}</b><div class="small">${x.type==='lead'?'Lead não convertido':'Paciente'} · ${v8Html(x.doctor||'Sem médico')} · Última consulta: ${v8Html(x.ext.lastConsult?formatDateBR(x.ext.lastConsult):'—')} · Recontatos: ${(x.contactHistory||[]).length}</div><div class="small">${v8Html(x.phone||'')}${x.ext.email?' · '+v8Html(x.ext.email):''}</div></div><div class="v8CardActions"><button class="smallBtn" data-v8-cad-edit="${v8Attr(x.id)}">Editar</button><button class="smallBtn primary" data-v8-contact="${v8Attr(x.id)}">Contato feito</button></div></div>`;}).join(''):'<div class="helper">Nenhum cadastro encontrado.</div>'; v8BuildCadReport(); }
-    function v8ContactDone(id){ const item=state.crm.find(x=>x.id===id); if(!item) return; item.contactHistory=Array.isArray(item.contactHistory)?item.contactHistory:[]; item.timeline=Array.isArray(item.timeline)?item.timeline:[]; item.contactHistory.push({at:new Date().toISOString(),date:v8Today(),note:'Contato realizado'}); item.lastContact=v8Today(); item.nextContact=Number(item.recurrenceDays||0)>0?v8AddDays(v8Today(),Number(item.recurrenceDays)):''; item.timeline.push({at:new Date().toISOString(),type:'contato',text:'Contato realizado'}); try{agoraV2Audit('Contato realizado','crm',item.name||'Contato','Recontato V8',id);}catch(e){} save(); renderAll(); v8LoadCad(id); v8RenderCadSearch(); }
-    function v8RenderCadHistory(item){ const box=UI.el('v8CadHistory'); if(!box) return; if(!item){box.innerHTML='<div class="helper">Selecione um cadastro para visualizar o histórico.</div>';return;} const hist=Array.isArray(item.contactHistory)?item.contactHistory:[]; box.innerHTML=hist.length?hist.slice().reverse().map((h,i)=>`<div class="v8HistoryItem"><b>Recontato ${hist.length-i}</b><div class="small">${v8Html(h.date?formatDateBR(h.date):String(h.at||'').slice(0,10))} · ${v8Html(h.note||'Contato realizado')}</div></div>`).join(''):'<div class="helper">Nenhum recontato registrado.</div>'; }
-    function v8BuildCadReport(){ const box=UI.el('v8CadReportBox'); if(!box) return; const by={}; v8FilteredCad().forEach(x=>{const d=x.doctor||'Sem médico'; by[d]=by[d]||{count:0,total:0}; by[d].count++; by[d].total+=Number(x.amountPaid||0);}); const rows=Object.keys(by).sort((a,b)=>a.localeCompare(b,'pt-BR')).map(d=>`<tr><td>${v8Html(d)}</td><td>${by[d].count}</td><td>${v8Money(by[d].total)}</td></tr>`).join(''); box.innerHTML=`<table class="v8Table"><thead><tr><th>Médico</th><th>Pacientes/leads no período</th><th>Faturamento</th></tr></thead><tbody>${rows||'<tr><td colspan="3">Sem dados.</td></tr>'}</tbody></table>`; }
-    function v8RenderCommercial(){ v8SyncSelects(); const dash=UI.el('v8ComDashboard'); if(!dash) return; const items=state.crm||[]; const now=state.view||{y:new Date().getFullYear(),m:new Date().getMonth()}; const from=iso(new Date(now.y,now.m,1)); const to=iso(new Date(now.y,now.m+1,0)); const month=items.filter(x=>{x.ext=x.ext||{}; const d=x.ext.lastConsult||x.lastContact||x.ext.firstConsult||x.firstContact||String(x.createdAt||'').slice(0,10); return d>=from&&d<=to;}); const leads=items.filter(x=>x.type==='lead'); const patients=items.filter(x=>x.type==='patient'); const paid=items.reduce((s,x)=>s+Number(x.amountPaid||0),0); dash.innerHTML=`<div class="v8Metric"><div class="k">Total de pacientes no consultório</div><div class="v">${patients.length}</div></div><div class="v8Metric"><div class="k">Atendidos no mês</div><div class="v">${month.length}</div></div><div class="v8Metric"><div class="k">Leads ativos</div><div class="v">${leads.length}</div></div><div class="v8Metric"><div class="k">Faturamento registrado</div><div class="v">${v8Money(paid)}</div></div>`; const by={}; month.forEach(x=>{const d=x.doctor||'Sem médico'; by[d]=by[d]||{count:0,total:0,leads:0,patients:0}; by[d].count++; by[d].total+=Number(x.amountPaid||0); if(x.type==='lead')by[d].leads++; else by[d].patients++;}); const max=Math.max(1,...Object.values(by).map(x=>x.count)); const charts=UI.el('v8ComCharts'); if(charts) charts.innerHTML=Object.keys(by).sort().map(d=>{const x=by[d]; const conv=(x.patients+x.leads)>0?Math.round((x.patients/(x.patients+x.leads))*100):0; return `<div class="v8BarRow"><div class="v8BarTop"><span>${v8Html(d)} · ${x.count} atendimento(s) · ${v8Money(x.total)} · conversão ${conv}%</span><span>${x.count}</span></div><div class="v8Bar"><i style="width:${Math.min(100,(x.count/max)*100)}%"></i></div></div>`;}).join('')||'<div class="helper">Sem produção médica no mês atual.</div>'; if(UI.el('v8ComNotes')) UI.el('v8ComNotes').value=state.commercialActionNotes||''; v8RenderCommercialSearch(); }
-    function v8FilteredCom(){ const q=(UI.el('v8ComFilterName')?.value||'').toLowerCase().trim(); const doc=UI.el('v8ComFilterDoctor')?.value||'all'; const from=UI.el('v8ComFilterFrom')?.value||''; const to=UI.el('v8ComFilterTo')?.value||''; return (state.crm||[]).filter(x=>{x.ext=x.ext||{}; const hay=[x.name,x.phone,x.doctor,x.ext.cpf,x.ext.email].join(' ').toLowerCase(); if(q&&!hay.includes(q))return false; if(doc!=='all'&&![x.doctor,x.ext.doctorsSeen].join(';').toLowerCase().includes(doc.toLowerCase()))return false; const d=x.ext.lastConsult||x.lastContact||x.ext.firstConsult||x.firstContact||String(x.createdAt||'').slice(0,10); if(from&&(!d||d<from))return false; if(to&&(!d||d>to))return false; return true;}); }
-    function v8RenderCommercialSearch(){ const box=UI.el('v8ComResults'); if(!box)return; const items=v8FilteredCom(); box.innerHTML=items.length?items.map(x=>`<div class="v8ResultCard"><div><b>${v8Html(x.name)}</b><div class="small">${x.type==='lead'?'Lead':'Paciente'} · ${v8Html(x.doctor||'Sem médico')} · ${v8Money(x.amountPaid||0)}</div></div><div class="v8CardActions"><button class="smallBtn" data-v8-cad-edit="${v8Attr(x.id)}">Abrir cadastro</button></div></div>`).join(''):'<div class="helper">Nenhum paciente encontrado.</div>'; }
-    function v8RebuildMenu(){ const menu=document.querySelector('.hambMenu'); if(!menu)return; menu.innerHTML=''; const items=[['Agenda',()=>v8SetScreen('agenda')],['Modo Cirurgião',()=>v8SetScreen('surgery')],['Cadastro de pacientes',()=>v8SetScreen('cadastro')],['Controle Comercial',()=>v8SetScreen('comercial')],['Tema',()=>UI.open('ovThemeSelector')],['Administração',()=>{try{openAdminCenter();}catch(e){UI.open('ovAdminCenter');}}],['Auditoria',()=>{try{openAuditCenter();}catch(e){UI.open('ovAuditCenter');}}],['Salvar agora',()=>save()],['Desfazer',()=>{try{undoLast();}catch(e){UI.el('btnUndo')?.click();}}],['Ocultar Eventos',()=>UI.open('ovHideOptions')],['Conta / Nuvem',()=>UI.open(currentUser?'ovAccount':'ovLogin')],['Zerar',()=>resetAll()]]; items.forEach(([txt,fn])=>{const b=document.createElement('button'); b.type='button'; b.className='btn menuItem v8MenuItem'; b.textContent=txt; b.addEventListener('click',()=>{fn(); try{document.getElementById('hambWrap')?.removeAttribute('open');document.getElementById('hamburgerPortalMenu')?.classList.remove('open');}catch(e){}}); menu.appendChild(b);}); }
-    function v8MoveUtilities(){ const pay=UI.el('ovPay'); const bonus=UI.el('btnBonusRules'); if(pay&&bonus&&!UI.el('v8BonusInsidePay')){ const b=document.createElement('button'); b.id='v8BonusInsidePay'; b.type='button'; b.className='mBtn'; b.textContent='Bonificação'; b.onclick=()=>UI.open('ovBonusRules'); pay.querySelector('.mFoot')?.prepend(b); } const theme=UI.el('ovThemeSelector'); if(theme&&!UI.el('v8DayHInsideTheme')){ const b=document.createElement('button'); b.id='v8DayHInsideTheme'; b.type='button'; b.className='mBtn'; b.textContent='Altura do dia'; b.onclick=()=>UI.open('ovDayH'); theme.querySelector('.mFoot')?.prepend(b); } const backup=UI.el('ovBackupCenter'); if(backup&&!UI.el('v8BackupImportExport')){ const div=document.createElement('div'); div.id='v8BackupImportExport'; div.className='mFoot'; div.innerHTML='<button class="mBtn" type="button" id="v8ImportInsideBackup">Importar</button><button class="mBtn" type="button" id="v8ExportInsideBackup">Exportar</button>'; backup.querySelector('.modal')?.appendChild(div); div.querySelector('#v8ImportInsideBackup').onclick=()=>UI.el('btnImport')?.click(); div.querySelector('#v8ExportInsideBackup').onclick=()=>UI.el('btnExport')?.click(); } }
-    function v8Bind(){ if(window.__v8Bound)return; window.__v8Bound=true; v8Ensure(); v8SyncSelects(); v8RebuildMenu(); v8MoveUtilities();
-      UI.el('v8SurgeryAddBtn')?.addEventListener('click',()=>{v8ClearSurgery(); UI.el('v8SurgeryFormBox')?.scrollIntoView({behavior:'smooth',block:'start'});}); UI.el('v8SurgeryClearBtn')?.addEventListener('click',v8ClearSurgery); UI.el('v8SurgSave')?.addEventListener('click',v8SaveSurgery); ['v8SurgFilterText','v8SurgFilterFrom','v8SurgFilterTo','v8SurgFilterStatus','v8SurgFilterHospital','v8SurgFilterCategory'].forEach(id=>{UI.el(id)?.addEventListener('input',v8RenderSurgeryReport);UI.el(id)?.addEventListener('change',v8RenderSurgeryReport);}); UI.el('v8SurgBuildReport')?.addEventListener('click',v8RenderSurgeryReport); UI.el('v8SurgDownloadDoc')?.addEventListener('click',()=>v8DownloadDoc('relatorio-cirurgias.doc','Relatório cirúrgico',v8SurgeryTable())); UI.el('v8SurgPrint')?.addEventListener('click',()=>v8Print(v8SurgeryTable()));
-      UI.el('v8CadNew')?.addEventListener('click',v8ClearCad); UI.el('v8CadSave')?.addEventListener('click',v8SaveCad); ['v8CadFilterName','v8CadFilterDoctor','v8CadFilterType','v8CadFilterMulti','v8CadFilterFrom','v8CadFilterTo','v8CadFilterBasis'].forEach(id=>{UI.el(id)?.addEventListener('input',v8RenderCadSearch);UI.el(id)?.addEventListener('change',v8RenderCadSearch);}); UI.el('v8CadReport')?.addEventListener('click',v8BuildCadReport); UI.el('v8CadDownloadDoc')?.addEventListener('click',()=>{v8BuildCadReport();v8DownloadDoc('relatorio-medico-cadastro.doc','Relatório por médico',UI.el('v8CadReportBox')?.innerHTML||'');}); UI.el('v8CadPrint')?.addEventListener('click',()=>{v8BuildCadReport();v8Print(UI.el('v8CadReportBox')?.innerHTML||'');}); UI.el('v8CadResults')?.addEventListener('click',e=>{const ed=e.target.closest('[data-v8-cad-edit]'); const co=e.target.closest('[data-v8-contact]'); if(ed)v8LoadCad(ed.dataset.v8CadEdit); if(co)v8ContactDone(co.dataset.v8Contact);});
-      UI.el('v8ComRefresh')?.addEventListener('click',v8RenderCommercial); ['v8ComFilterName','v8ComFilterDoctor','v8ComFilterFrom','v8ComFilterTo'].forEach(id=>{UI.el(id)?.addEventListener('input',v8RenderCommercialSearch);UI.el(id)?.addEventListener('change',v8RenderCommercialSearch);}); UI.el('v8ComResults')?.addEventListener('click',e=>{const ed=e.target.closest('[data-v8-cad-edit]'); if(ed)v8LoadCad(ed.dataset.v8CadEdit);}); UI.el('v8ComSaveNotes')?.addEventListener('click',()=>{state.commercialActionNotes=UI.el('v8ComNotes')?.value||''; save(); alert('Observações salvas.');});
-      document.addEventListener('click',e=>{ const ed=e.target.closest('[data-v8-cad-edit]'); if(ed)v8LoadCad(ed.dataset.v8CadEdit); }); v8SetScreen('agenda');
-    }
-    const v8OriginalRenderAll = renderAll;
-    renderAll = function(){ const r=v8OriginalRenderAll.apply(this,arguments); setTimeout(()=>{v8Ensure();v8SyncSelects();v8RebuildMenu();v8MoveUtilities(); if(document.body.classList.contains('app-screen-surgery'))v8RenderSurgeryReport(); if(document.body.classList.contains('app-screen-cadastro'))v8RenderCadSearch(); if(document.body.classList.contains('app-screen-comercial'))v8RenderCommercial();},0); return r; };
-
-    v8Bind();
 
     bindEvents();
 
@@ -13613,97 +13586,6 @@ html, body{
 })();
 </script>
 
-
-
-<style id="premium-v8-pages-css">
-/* V8 — páginas exclusivas sem quebrar o core da Agenda */
-body.app-screen-agenda .container{display:grid!important;}
-body.app-screen-surgery .container,
-body.app-screen-cadastro .container,
-body.app-screen-comercial .container{display:none!important;}
-.v8Page{display:none;width:100%;padding:14px 14px 40px;}
-body.app-screen-surgery #v8SurgeryPage,
-body.app-screen-cadastro #v8CadastroPage,
-body.app-screen-comercial #v8ComercialPage{display:block!important;}
-.v8Wrap{width:min(1540px,100%);margin:0 auto;display:flex;flex-direction:column;gap:14px;}
-.v8Grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
-.v8Grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
-.v8Grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
-.v8Actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end;}
-.v8Table{width:100%;border-collapse:separate;border-spacing:0 7px;}
-.v8Table th,.v8Table td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:13px;}
-.v8Table th{font-weight:1000;color:var(--txt);}
-.v8ResultCard{border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.065);padding:12px;display:flex;gap:10px;align-items:flex-start;justify-content:space-between;}
-.v8ResultCard b{font-size:14px}.v8CardActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
-.v8MetricGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;}
-.v8Metric{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.07);padding:13px;}
-.v8Metric .k{font-size:12px;color:var(--mut);font-weight:950;}.v8Metric .v{font-size:22px;font-weight:1000;margin-top:5px;}
-.v8BarRow{margin:10px 0}.v8BarTop{display:flex;justify-content:space-between;gap:10px;font-size:12px;font-weight:950;color:var(--mut)}.v8Bar{height:12px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:5px}.v8Bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--acc),var(--good));}
-.v8History{display:grid;gap:8px;max-height:340px;overflow:auto}.v8HistoryItem{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.055);padding:10px}.v8HistoryItem b{display:block;margin-bottom:3px;}
-.v8ExclusiveHead{align-items:flex-start!important}.v8ExclusiveHead .sub{max-width:760px;}
-/* Organização do menu e botões utilitários */
-#btnDashboardCenter,#btnBonusRules,#btnDayH,#btnImport,#btnExport,#crmExitMode{display:none!important;}
-body:not(.app-screen-agenda) #btnPaymentRules,body:not(.app-screen-agenda) #btnPayRules{display:none!important;}
-body.app-screen-surgery #v8SurgeryAddBtn{display:inline-flex!important;}
-body:not(.app-screen-surgery) #v8SurgeryAddBtn{display:none!important;}
-.v8MenuItem{width:100%;justify-content:center;}
-body[data-theme="senna_brasil"] :where(.v8Page,.v8Page *){color:#071225!important;text-shadow:none!important;}
-body[data-theme="senna_brasil"] .v8Page .input{background:rgba(255,255,255,.94)!important;color:#071225!important;}
-@media(max-width:980px){.v8Page{padding:10px}.v8Grid4,.v8Grid3,.v8Grid2{grid-template-columns:1fr!important}.v8ExclusiveHead{flex-direction:column!important}.v8Actions{justify-content:flex-start}.v8ResultCard{flex-direction:column}.v8CardActions{justify-content:flex-start}.v8Table{display:block;overflow-x:auto;white-space:nowrap}.hambMenu{max-height:calc(100dvh - 90px);overflow:auto;}}
-</style>
-
-
-<!-- V8 — Páginas exclusivas: Modo Cirurgião, Cadastro e Controle Comercial -->
-<section id="v8SurgeryPage" class="v8Page" hidden>
-  <div class="v8Wrap">
-    <div class="card">
-      <div class="sectionHead v8ExclusiveHead">
-        <div><div class="ttl">Modo Cirurgião</div><div class="sub">Cadastro cirúrgico enxuto, busca por período e relatório em tabela.</div></div>
-        <div class="v8Actions"><button id="v8SurgeryAddBtn" class="btn primary" type="button">Adicionar Cirurgia</button><button id="v8SurgeryClearBtn" class="btn" type="button">Limpar</button></div>
-      </div>
-      <div class="padded" id="v8SurgeryFormBox">
-        <h3 style="margin-bottom:12px">Adicionar Cirurgia</h3>
-        <div class="form">
-          <div class="v8Grid3"><label><div class="lbl">Nome</div><input id="v8SurgName" class="input"></label><label><div class="lbl">Data de Nascimento</div><input id="v8SurgBirth" type="date" class="input"></label><label><div class="lbl">Data do Procedimento</div><input id="v8SurgDate" type="date" class="input"></label></div>
-          <div class="v8Grid3"><label><div class="lbl">Hospital do Procedimento</div><input id="v8SurgHospital" class="input"></label><label><div class="lbl">Atendimento</div><input id="v8SurgAttendance" class="input"></label><label><div class="lbl">Categoria</div><select id="v8SurgCategory" class="input"><option>Convênio</option><option>Particular</option></select></label></div>
-          <div class="v8Grid3"><label><div class="lbl">Convênio</div><input id="v8SurgInsurance" class="input"></label><label><div class="lbl">Plano de Saúde</div><input id="v8SurgPlan" class="input"></label><label><div class="lbl">Atuação</div><select id="v8SurgRole" class="input"><option>Cirurgião</option><option>Auxiliar</option></select></label></div>
-          <label><div class="lbl">Detalhes do procedimento</div><textarea id="v8SurgDetails" class="input" rows="3"></textarea></label>
-          <div class="v8Grid4"><label><div class="lbl">Status</div><select id="v8SurgStatus" class="input"><option value="unpaid">Não Pago</option><option value="paid">Pago</option></select></label><label><div class="lbl">Valor Previsto</div><input id="v8SurgExpected" type="number" step="0.01" class="input"></label><label><div class="lbl">Valor Pago</div><input id="v8SurgPaid" type="number" step="0.01" class="input"></label><label><div class="lbl">Data do Pagamento</div><input id="v8SurgPaidDate" type="date" class="input"></label></div>
-          <label><div class="lbl">Observações Gerais</div><textarea id="v8SurgNotes" class="input" rows="3"></textarea></label>
-          <input id="v8SurgEditingId" type="hidden"><div class="mFoot"><button id="v8SurgSave" class="mBtn primary" type="button">Salvar cirurgia</button></div>
-        </div>
-      </div>
-    </div>
-    <div class="card"><div class="sectionHead"><div><div class="ttl">Busca e relatório cirúrgico</div><div class="sub">Filtros combinados por paciente, período, hospital e status.</div></div><div class="v8Actions"><button id="v8SurgBuildReport" class="btn" type="button">Gerar relatório</button><button id="v8SurgDownloadDoc" class="btn primary" type="button">Baixar .doc</button><button id="v8SurgPrint" class="btn" type="button">Imprimir</button></div></div><div class="padded"><div class="v8Grid4"><label><div class="lbl">Nome / atendimento</div><input id="v8SurgFilterText" class="input"></label><label><div class="lbl">De</div><input id="v8SurgFilterFrom" type="date" class="input"></label><label><div class="lbl">Até</div><input id="v8SurgFilterTo" type="date" class="input"></label><label><div class="lbl">Status</div><select id="v8SurgFilterStatus" class="input"><option value="all">Todos</option><option value="paid">Pago</option><option value="unpaid">Não Pago</option></select></label></div><div class="v8Grid2" style="margin-top:10px"><label><div class="lbl">Hospital</div><input id="v8SurgFilterHospital" class="input"></label><label><div class="lbl">Categoria</div><select id="v8SurgFilterCategory" class="input"><option value="all">Todas</option><option>Convênio</option><option>Particular</option></select></label></div><div id="v8SurgeryReportBox" style="margin-top:14px"></div></div></div>
-  </div>
-</section>
-
-<section id="v8CadastroPage" class="v8Page" hidden>
-  <div class="v8Wrap">
-    <div class="card"><div class="sectionHead v8ExclusiveHead"><div><div class="ttl">Cadastro de pacientes</div><div class="sub">Cadastro independente. Informe se o contato já é paciente ou ainda é lead.</div></div><div class="v8Actions"><button id="v8CadNew" class="btn" type="button">Novo cadastro</button><button id="v8CadSave" class="btn primary" type="button">Salvar cadastro</button></div></div><div class="padded"><div class="form"><input id="v8CadId" type="hidden"><div class="v8Grid3"><label><div class="lbl">Tipo</div><select id="v8CadType" class="input"><option value="patient">Paciente</option><option value="lead">Lead não convertido</option></select></label><label><div class="lbl">Nome do contato</div><input id="v8CadName" class="input"></label><label><div class="lbl">Data de nascimento</div><input id="v8CadBirth" type="date" class="input"></label></div><div class="v8Grid4"><label><div class="lbl">CPF</div><input id="v8CadCpf" class="input"></label><label><div class="lbl">E-mail</div><input id="v8CadEmail" type="email" class="input"></label><label><div class="lbl">Celular</div><input id="v8CadPhone" class="input"></label><label><div class="lbl">Origem do lead / indicação</div><input id="v8CadOrigin" class="input" placeholder="Google Ads, Instagram, indicação, orgânico..."></label></div><label><div class="lbl">Endereço</div><input id="v8CadAddress" class="input"></label><div class="v8Grid4"><label><div class="lbl">Médico principal</div><select id="v8CadDoctor" class="input"></select></label><label><div class="lbl">Atendido por mais médicos</div><input id="v8CadDoctorsSeen" class="input" placeholder="Separar por ;"></label><label><div class="lbl">Data da primeira consulta</div><input id="v8CadFirstConsult" type="date" class="input"></label><label><div class="lbl">Data da última consulta</div><input id="v8CadLastConsult" type="date" class="input"></label></div><div class="v8Grid4"><label><div class="lbl">Programação de recontato</div><input id="v8CadNextContact" type="date" class="input"></label><label><div class="lbl">Recorrência em dias</div><input id="v8CadRecurrence" type="number" class="input" min="0"></label><label><div class="lbl">Quanto já gastou</div><input id="v8CadSpent" type="number" step="0.01" class="input"></label><label><div class="lbl">Status</div><select id="v8CadStatus" class="input"><option value="ativo">Ativo</option><option value="novo">Novo</option><option value="convertido">Convertido</option><option value="perdido">Perdido</option></select></label></div><label><div class="lbl">Observações</div><textarea id="v8CadNotes" class="input" rows="4"></textarea></label></div></div></div>
-    <div class="card"><div class="sectionHead"><div><div class="ttl">Busca, edição e relatório por médico</div><div class="sub">Filtros combinados por nome, médico único/múltiplo e período.</div></div><div class="v8Actions"><button id="v8CadReport" class="btn" type="button">Gerar relatório</button><button id="v8CadDownloadDoc" class="btn primary" type="button">Baixar relatório</button><button id="v8CadPrint" class="btn" type="button">Imprimir</button></div></div><div class="padded"><div class="v8Grid4"><label><div class="lbl">Nome / CPF / celular</div><input id="v8CadFilterName" class="input"></label><label><div class="lbl">Médico</div><select id="v8CadFilterDoctor" class="input"></select></label><label><div class="lbl">Tipo</div><select id="v8CadFilterType" class="input"><option value="all">Todos</option><option value="patient">Pacientes</option><option value="lead">Leads</option></select></label><label><div class="lbl">Mais de um médico</div><select id="v8CadFilterMulti" class="input"><option value="all">Todos</option><option value="yes">Sim</option><option value="no">Não</option></select></label></div><div class="v8Grid3" style="margin-top:10px"><label><div class="lbl">Período de</div><input id="v8CadFilterFrom" type="date" class="input"></label><label><div class="lbl">Até</div><input id="v8CadFilterTo" type="date" class="input"></label><label><div class="lbl">Base do período</div><select id="v8CadFilterBasis" class="input"><option value="last">Última consulta</option><option value="first">Primeira consulta</option><option value="created">Cadastro</option></select></label></div><div id="v8CadResults" style="margin-top:14px;display:grid;gap:10px"></div><div id="v8CadReportBox" style="margin-top:14px"></div></div></div>
-    <div class="card"><div class="sectionHead"><div><div class="ttl">Histórico de recontatos</div><div class="sub">Mostra quantas vezes e quando o cadastro já foi recontactado.</div></div></div><div class="padded"><div id="v8CadHistory" class="v8History"><div class="helper">Selecione um cadastro para visualizar o histórico.</div></div></div></div>
-  </div>
-</section>
-
-<section id="v8ComercialPage" class="v8Page" hidden>
-  <div class="v8Wrap"><div class="card"><div class="sectionHead v8ExclusiveHead"><div><div class="ttl">Controle Comercial</div><div class="sub">Dashboard comercial com produção médica, conversão e busca de pacientes.</div></div><div class="v8Actions"><button id="v8ComRefresh" class="btn primary" type="button">Atualizar</button></div></div><div class="padded"><div id="v8ComDashboard" class="v8MetricGrid"></div><div id="v8ComCharts" style="margin-top:14px"></div></div></div><div class="card"><div class="sectionHead"><div><div class="ttl">Busca de pacientes</div><div class="sub">Combine médico, nome e período de atendimento.</div></div></div><div class="padded"><div class="v8Grid4"><label><div class="lbl">Nome</div><input id="v8ComFilterName" class="input"></label><label><div class="lbl">Médico</div><select id="v8ComFilterDoctor" class="input"></select></label><label><div class="lbl">De</div><input id="v8ComFilterFrom" type="date" class="input"></label><label><div class="lbl">Até</div><input id="v8ComFilterTo" type="date" class="input"></label></div><div id="v8ComResults" style="margin-top:14px;display:grid;gap:10px"></div></div></div><div class="card"><div class="sectionHead"><div><div class="ttl">Observações e proposta de ações</div><div class="sub">Campo livre para orientar ações comerciais.</div></div><button id="v8ComSaveNotes" class="btn primary" type="button">Salvar observações</button></div><div class="padded"><textarea id="v8ComNotes" class="input" rows="5"></textarea></div></div></div>
-</section>
-
-<script id="premium-v8-tail-menu-enforcer">
-(function(){
-  function closeMenu(){document.getElementById('hambWrap')?.removeAttribute('open');document.getElementById('hamburgerPortalMenu')?.classList.remove('open');}
-  function rebuild(){
-    var menu=document.querySelector('.hambMenu'); if(!menu) return;
-    menu.innerHTML='';
-    var items=[['Agenda',function(){window.v8SetScreen&&v8SetScreen('agenda')}],['Modo Cirurgião',function(){window.v8SetScreen&&v8SetScreen('surgery')}],['Cadastro de pacientes',function(){window.v8SetScreen&&v8SetScreen('cadastro')}],['Controle Comercial',function(){window.v8SetScreen&&v8SetScreen('comercial')}],['Tema',function(){document.getElementById('btnTheme')?.click()}],['Administração',function(){document.getElementById('btnAdminCenter')?.click()}],['Auditoria',function(){document.getElementById('btnAuditCenter')?.click()}],['Salvar agora',function(){document.getElementById('btnSaveNow')?.click()}],['Desfazer',function(){document.getElementById('btnUndo')?.click()}],['Ocultar Eventos',function(){document.getElementById('btnToggleCalendarEvents')?.click();document.getElementById('btnHideOptions')?.click()}],['Conta / Nuvem',function(){document.getElementById('btnLoginTop')?.click()}],['Zerar',function(){document.getElementById('btnReset')?.click()}]];
-    items.forEach(function(it){var b=document.createElement('button');b.type='button';b.className='btn menuItem v8MenuItem';b.textContent=it[0];b.onclick=function(){it[1]();closeMenu();};menu.appendChild(b);});
-  }
-  function rename(){document.querySelectorAll('button,a,span,div').forEach(function(el){if(el.childNodes.length===1&&el.textContent&&el.textContent.trim()==='Pacientes & Leads')el.textContent='Controle Comercial';});}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){rebuild();rename();}); else {rebuild();rename();}
-  window.addEventListener('load',function(){setTimeout(function(){rebuild();rename();},300);});
-})();
-</script>
 </body>
 </html>
 <!-- =========================================================
@@ -15424,5 +15306,70 @@ html, body{
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
   else bind();
   new MutationObserver(bind).observe(document.documentElement, {childList:true, subtree:true});
+})();
+</script>
+
+<style id="PREMIUM_RESTORE_V8_CSS">
+/* V8 Premium: restaura funcionalidade preservando core, organiza menu e cria navegação segura */
+.hambMenu .hiddenFromPremiumMenu{display:none !important;}
+#btnPayAgendaOnly,#btnBonusAgendaOnly{margin-left:8px;}
+.surgeryFilterBarPremium{grid-template-columns:repeat(auto-fit,minmax(190px,1fr)) !important;align-items:end;}
+.surgeryFormPremium .row3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr)) !important;}
+.surgeryFormPremium .row2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr)) !important;}
+.premiumPageFocus{outline:2px solid rgba(96,165,250,.45);box-shadow:0 0 0 4px rgba(96,165,250,.12);}
+.premiumScreenNote{font-size:12px;color:var(--mut);font-weight:950;margin-left:8px;}
+body[data-theme="senna_brasil"] .hdr{box-shadow:none !important;filter:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;}
+body[data-theme="senna_brasil"] .hdr::before,body[data-theme="senna_brasil"] .hdr::after{display:none!important;content:none!important;}
+#activeScreenBadge{min-width:145px!important;}
+@media(max-width:760px){#activeScreenBadge{min-width:120px!important}.surgeryFilterBarPremium{grid-template-columns:1fr!important}}
+</style>
+<script id="PREMIUM_RESTORE_V8_JS">
+(function(){
+  function $(id){return document.getElementById(id)}
+  function closeMenu(){ const w=$('hambWrap'); if(w) w.removeAttribute('open'); }
+  function setBadge(txt){ const b=$('activeScreenBadge'); if(b) b.textContent=txt; }
+  function click(id){ const el=$(id); if(el) el.click(); }
+  function showAgenda(){ document.body.classList.remove('surgeon-mode','crm-mode'); setBadge('Agenda'); closeMenu(); window.scrollTo({top:0,behavior:'smooth'}); }
+  function showSurgery(){ setBadge('Modo Cirurgião'); closeMenu(); if(!document.body.classList.contains('surgeon-mode')) click('btnNewSurgery'); setTimeout(function(){ $('surgeonPanel')?.scrollIntoView({behavior:'smooth',block:'start'}); },100); }
+  function showCommercial(){ setBadge('Controle Comercial'); closeMenu(); if(!document.body.classList.contains('crm-mode')) click('btnPatientCRM'); setTimeout(function(){ $('crmPageCard')?.scrollIntoView({behavior:'smooth',block:'start'}); },120); }
+  function showCadastro(){ setBadge('Cadastro'); closeMenu(); if(!document.body.classList.contains('crm-mode')) click('btnPatientCRM'); setTimeout(function(){ $('crmPageCard')?.scrollIntoView({behavior:'smooth',block:'start'}); $('crmName')?.focus(); },160); }
+  function moveMenu(){
+    const menu=document.querySelector('.hambMenu'); if(!menu) return;
+    const ids=['btnAgendaScreen','btnNewSurgery','btnCadastroPacientesPremium','btnPatientCRM','btnTheme','btnAdminCenter','btnAuditCenter','btnSaveNow','btnUndo','btnToggleCalendarEvents','btnLogin','btnReset'];
+    let cad=$('btnCadastroPacientesPremium');
+    if(!cad){ cad=document.createElement('button'); cad.className='btn menuItem'; cad.id='btnCadastroPacientesPremium'; cad.type='button'; cad.textContent='Cadastro de pacientes'; menu.appendChild(cad); }
+    const labels={btnAgendaScreen:'Agenda',btnNewSurgery:'Modo Cirurgião',btnPatientCRM:'Controle Comercial',btnTheme:'Tema',btnAdminCenter:'Administração',btnAuditCenter:'Auditoria',btnSaveNow:'Salvar agora',btnUndo:'Desfazer',btnToggleCalendarEvents:'Ocultar Eventos',btnLogin:'Conta / Nuvem',btnReset:'Zerar'};
+    ids.forEach(id=>{const el=$(id); if(el){ if(labels[id]) el.textContent=labels[id]; menu.appendChild(el); el.classList.remove('hiddenFromPremiumMenu'); }});
+    ['btnPay','btnBonusRules','btnSurgeryCenter','btnCRMMode','btnDashboardCenter','btnDayH','btnImport','btnExport','btnBackupCenter'].forEach(id=>$(id)?.classList.add('hiddenFromPremiumMenu'));
+    $('btnAgendaScreen')?.addEventListener('click', showAgenda);
+    $('btnNewSurgery')?.addEventListener('click', function(){ setBadge('Modo Cirurgião'); closeMenu(); setTimeout(()=>document.getElementById('surgeonPanel')?.scrollIntoView({behavior:'smooth',block:'start'}),100); });
+    $('btnCadastroPacientesPremium')?.addEventListener('click', showCadastro);
+    $('btnPatientCRM')?.addEventListener('click', function(){ setBadge('Controle Comercial'); closeMenu(); });
+  }
+  function addAgendaButtons(){
+    const head=document.querySelector('.mainCalendarCard .sectionHead .monthRow'); if(!head) return;
+    if(!$('btnPayAgendaOnly')){ const b=document.createElement('button'); b.id='btnPayAgendaOnly'; b.type='button'; b.className='smallBtn'; b.textContent='Regras de pagamento'; b.onclick=()=>click('btnPay'); head.appendChild(b); }
+    if(!$('btnBonusAgendaOnly')){ const b=document.createElement('button'); b.id='btnBonusAgendaOnly'; b.type='button'; b.className='smallBtn'; b.textContent='Bonificação'; b.onclick=()=>click('btnBonusRules'); head.appendChild(b); }
+  }
+  function improveWindows(){
+    // Fechar auditoria/administração mesmo que alguma versão anterior tenha perdido o listener.
+    document.querySelectorAll('#adminClose,#auditClose,[data-close-admin],[data-close-audit]').forEach(btn=>{
+      if(btn.dataset.premiumCloseBound) return; btn.dataset.premiumCloseBound='1';
+      btn.addEventListener('click',()=>{ document.querySelectorAll('.ov.open').forEach(ov=>ov.classList.remove('open')); });
+    });
+  }
+  function addBackupImportExport(){
+    const toolbar=document.querySelector('.backupToolbar'); if(!toolbar) return;
+    if(!$('btnImportBackupPremium')){ const b=document.createElement('button'); b.id='btnImportBackupPremium'; b.className='mBtn'; b.type='button'; b.textContent='Importar JSON'; b.onclick=()=>click('btnImport'); toolbar.appendChild(b); }
+    if(!$('btnExportBackupPremium')){ const b=document.createElement('button'); b.id='btnExportBackupPremium'; b.className='mBtn'; b.type='button'; b.textContent='Exportar JSON'; b.onclick=()=>click('btnExport'); toolbar.appendChild(b); }
+  }
+  function addThemeDayHeight(){
+    const modal=document.querySelector('#ovTheme .modal .form,#ovTheme .modal') || document.querySelector('#themeModal .modal'); if(!modal || $('btnDayHThemePremium')) return;
+    const box=document.createElement('div'); box.className='helper'; box.style.marginTop='10px'; box.innerHTML='<b>Altura do dia:</b> ajuste visual do calendário dentro de Temas. ';
+    const b=document.createElement('button'); b.id='btnDayHThemePremium'; b.className='smallBtn'; b.type='button'; b.textContent='Altura do dia'; b.onclick=()=>click('btnDayH'); box.appendChild(b); modal.appendChild(box);
+  }
+  function bind(){ moveMenu(); addAgendaButtons(); improveWindows(); addBackupImportExport(); addThemeDayHeight(); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', bind); else bind();
+  new MutationObserver(bind).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
