@@ -15318,3 +15318,156 @@ html, body{
   new MutationObserver(bind).observe(document.documentElement, {childList:true, subtree:true});
 })();
 </script>
+
+
+<!-- =========================================================
+     PATCH PREMIUM v10 — LOGIN FIREBASE EXISTENTE RESTAURADO
+     Escopo: somente autenticação e abertura/fechamento do modal.
+     Não altera calendário, Firestore, CRM, financeiro ou renderização.
+========================================================= -->
+<script id="premium-v10-login-existing-users-patch">
+(function(){
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+
+  function setAuthMsg(msg){
+    const a = $('cloudUserStatus');
+    const b = $('cloudHint');
+    if (a) a.textContent = msg;
+    if (b && msg) b.textContent = msg;
+  }
+
+  function openLoginModalSafe(){
+    const ov = $('ovLogin');
+    if (!ov) return;
+    ov.classList.add('open');
+    const email = $('loginEmail');
+    const pass = $('loginPassword');
+    if (email && !email.value && window.firebase?.auth?.().currentUser?.email) email.value = window.firebase.auth().currentUser.email;
+    setTimeout(() => (email?.value ? pass : email)?.focus?.(), 50);
+  }
+
+  function closeLoginModalSafe(){
+    $('ovLogin')?.classList.remove('open');
+  }
+
+  function humanAuthError(err){
+    const code = err?.code || '';
+    const raw = err?.message || String(err || '');
+    const map = {
+      'auth/invalid-email': 'E-mail inválido.',
+      'auth/user-disabled': 'Este usuário foi desativado no Firebase.',
+      'auth/user-not-found': 'Usuário não encontrado neste projeto Firebase.',
+      'auth/wrong-password': 'Senha incorreta.',
+      'auth/invalid-login-credentials': 'E-mail ou senha incorretos.',
+      'auth/invalid-credential': 'E-mail ou senha incorretos.',
+      'auth/too-many-requests': 'Muitas tentativas. Aguarde alguns minutos e tente novamente.',
+      'auth/network-request-failed': 'Falha de rede. Verifique a conexão.',
+      'auth/unauthorized-domain': 'Este domínio não está autorizado no Firebase Authentication.',
+      'auth/operation-not-allowed': 'Login por e-mail/senha não está habilitado no Firebase Authentication.'
+    };
+    return map[code] || raw;
+  }
+
+  async function waitFirebaseCompat(){
+    const started = Date.now();
+    while (Date.now() - started < 10000) {
+      if (window.firebase && firebase.apps && firebase.auth && firebase.firestore) {
+        if (!firebase.apps.length && window.FIREBASE_CONFIG) firebase.initializeApp(window.FIREBASE_CONFIG);
+        return firebase;
+      }
+      await new Promise(r => setTimeout(r, 120));
+    }
+    throw new Error('Firebase não carregou. Recarregue a página e tente novamente.');
+  }
+
+  async function signInExistingUserSafe(ev){
+    if (ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      ev.stopImmediatePropagation?.();
+    }
+
+    const emailEl = $('loginEmail');
+    const passEl = $('loginPassword');
+    const btn = $('btnSignIn');
+    const email = String(emailEl?.value || '').trim().toLowerCase();
+    const pass = String(passEl?.value || '');
+
+    if (!email || !pass) {
+      setAuthMsg('Informe e-mail e senha.');
+      alert('Informe e-mail e senha.');
+      return false;
+    }
+
+    try {
+      if (btn) { btn.disabled = true; btn.textContent = 'Entrando...'; }
+      setAuthMsg('Entrando com usuário existente...');
+
+      const fb = await waitFirebaseCompat();
+      const auth = fb.auth();
+      try { await auth.setPersistence(fb.auth.Auth.Persistence.LOCAL); } catch(_) {}
+
+      await auth.signInWithEmailAndPassword(email, pass);
+
+      if (passEl) passEl.value = '';
+      closeLoginModalSafe();
+      setAuthMsg('Login realizado. Carregando dados da nuvem...');
+      return false;
+    } catch (err) {
+      console.error('[LOGIN v10] Falha no login existente:', err);
+      const msg = humanAuthError(err);
+      setAuthMsg('Erro ao entrar: ' + msg);
+      alert('Erro ao entrar: ' + msg);
+      return false;
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
+    }
+  }
+
+  async function resetPasswordSafe(ev){
+    if (ev) { ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation?.(); }
+    const email = String($('loginEmail')?.value || '').trim().toLowerCase();
+    if (!email) return alert('Digite seu e-mail para recuperar a senha.');
+    try {
+      const fb = await waitFirebaseCompat();
+      await fb.auth().sendPasswordResetEmail(email);
+      alert('E-mail de recuperação enviado. Verifique sua caixa de entrada.');
+    } catch (err) {
+      alert('Erro ao recuperar senha: ' + humanAuthError(err));
+    }
+  }
+
+  function bindLoginPatch(){
+    $('btnLogin')?.addEventListener('click', openLoginModalSafe, true);
+    $('btnLoginTop')?.addEventListener('click', openLoginModalSafe, true);
+    $('loginClose')?.addEventListener('click', function(e){ e.preventDefault(); closeLoginModalSafe(); }, true);
+
+    const btn = $('btnSignIn');
+    if (btn) btn.addEventListener('click', signInExistingUserSafe, true);
+
+    const form = $('authForm');
+    if (form) form.addEventListener('submit', signInExistingUserSafe, true);
+
+    const pass = $('loginPassword');
+    if (pass) pass.addEventListener('keydown', function(e){ if (e.key === 'Enter') signInExistingUserSafe(e); }, true);
+
+    const reset = $('btnPasswordReset');
+    if (reset) reset.addEventListener('click', resetPasswordSafe, true);
+
+    if (window.firebase && firebase.auth) {
+      firebase.auth().onAuthStateChanged(function(user){
+        if (!user) return;
+        document.body.dataset.auth = 'on';
+        const name = $('userDisplayName');
+        const email = $('userDisplayEmail');
+        if (name) name.textContent = user.displayName || user.email || 'Usuário conectado';
+        if (email) email.textContent = user.email || 'Nuvem conectada';
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindLoginPatch);
+  else bindLoginPatch();
+})();
+</script>
