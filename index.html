@@ -6970,26 +6970,20 @@ body[data-theme="senna_brasil"] .hdr{
           <summary aria-label="Menu" class="hambBtn"><span class="hambLines"></span></summary>
           <div class="hambMenu">
             <button class="btn menuItem" id="btnAgendaScreen" type="button">Agenda</button>
-            <button class="btn menuItem" id="btnPay">Regras de pagamento</button>
-            <button class="btn menuItem" id="btnNewSurgery">Modo Cirurgião</button>
-            <button class="btn menuItem" id="btnCRMMode">Pacientes &amp; Leads</button>
-            <button class="btn menuItem" id="btnUndo">Desfazer</button>
-            <button class="btn menuItem" id="btnSaveNow">Salvar agora</button>
-            <button class="btn menuItem" id="btnDayH">Altura do dia</button>
-            <button class="btn menuItem" id="btnBonusRules">Bonificação</button>
-            <button class="btn menuItem" id="btnSurgeryCenter">Cirurgias</button>
-            <button class="btn menuItem" id="btnPatientCRM">Pacientes &amp; Leads</button>
-            <button class="btn menuItem" id="btnDashboardCenter">Dashboard</button>
+            <button class="btn menuItem" id="btnNewSurgery" type="button">Modo Cirurgião</button>
+            <button class="btn menuItem" id="btnPatientRegisterScreen" type="button">Cadastro de pacientes</button>
+            <button class="btn menuItem" id="btnCRMMode" type="button">Controle Comercial</button>
+            <button class="btn menuItem" id="btnTheme" type="button">Tema</button>
             <button class="btn menuItem" id="btnAdminCenter" type="button">Administração</button>
             <button class="btn menuItem" id="btnAuditCenter" type="button">Auditoria</button>
-            <button class="btn menuItem" id="btnTheme">Tema</button>
+            <button class="btn menuItem" id="btnSaveNow" type="button">Salvar agora</button>
+            <button class="btn menuItem" id="btnUndo" type="button">Desfazer</button>
             <button class="btn menuItem" id="btnToggleCalendarEvents" type="button">Ocultar eventos</button>
-            <button class="btn menuItem" id="btnBackupCenter">Backups</button>
-            <button class="btn menuItem" id="btnImport">Importar</button>
-            <button class="btn menuItem" id="btnExport">Exportar</button>
-            <button class="btn menuItem headerMenuLoginGhost" id="btnLogin">Cadastro/Login</button>
-            <button class="btn danger menuItem" id="btnReset">Zerar</button>
+            <button class="btn menuItem" id="btnBackupCenter" type="button">Conta / Nuvem</button>
+            <button class="btn danger menuItem" id="btnReset" type="button">Zerar</button>
+            <button class="btn menuItem hiddenCompatibilityBtn" id="btnDashboardCenter" type="button" style="display:none!important">Dashboard</button>
             <input accept="application/json" hidden id="fileImport" type="file" />
+          </div>
           </div>
         </details>
         <div class="primaryButtons">
@@ -7089,7 +7083,7 @@ body[data-theme="senna_brasil"] .hdr{
       <section class="card section" id="crmPageCard">
         <div class="sectionHead">
           <div>
-            <div class="ttl">Pacientes & Leads</div>
+            <div class="ttl">Controle Comercial</div>
             <div class="sub">CRM comercial, acompanhamento e aquecimento de leads</div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -7099,7 +7093,27 @@ body[data-theme="senna_brasil"] .hdr{
           </div>
         </div>
         <div class="padded">
-          <div class="crmHero">
+          <div class="commercialDashboardPanel" id="commercialDashboardPanel">
+              <div class="commercialDashHead">
+                <div>
+                  <div class="crmTitle">Controle Comercial</div>
+                  <div class="crmSub">Dashboard comercial, produtividade médica, conversão e propostas de ação.</div>
+                </div>
+                <button class="smallBtn primary" id="commercialRefresh" type="button">Atualizar</button>
+              </div>
+              <div class="commercialKpis" id="commercialKpis"></div>
+              <div class="commercialCharts">
+                <div class="commercialChartBox"><div class="themeSectionTitle">Produtividade médica mensal</div><div id="commercialDoctorChart"></div></div>
+                <div class="commercialChartBox"><div class="themeSectionTitle">Conversão: tráfego pago x orgânico</div><div id="commercialConversionChart"></div></div>
+                <div class="commercialChartBox"><div class="themeSectionTitle">Conversão após recontato</div><div id="commercialRecontactChart"></div></div>
+              </div>
+              <div class="commercialObsBox">
+                <div class="lbl">Observações / propostas de ações</div>
+                <textarea class="input" id="commercialActionNotes" rows="3" placeholder="Ações comerciais, ajustes de campanha, propostas para recontato e melhoria de conversão..."></textarea>
+                <div class="mFoot"><button class="smallBtn primary" id="commercialSaveNotes" type="button">Salvar observações</button></div>
+              </div>
+            </div>
+            <div class="crmHero">
             <div class="crmPanel">
               <div class="crmTitle">Central de relacionamento</div>
               <div class="crmSub">Pacientes convertidos, pacotes de acompanhamento e carteira de leads não convertidos com alertas de recontato para a equipe comercial.</div>
@@ -7210,6 +7224,10 @@ body[data-theme="senna_brasil"] .hdr{
               <div class="month" id="monthLabel">—</div>
               <div class="note" id="monthNote" style="display:none"></div>
             </div>
+            <div class="agendaRulesInlineControls" id="agendaRulesInlineControls">
+              <button class="smallBtn primary" id="btnPay" type="button">Regras de pagamento</button>
+              <button class="smallBtn" id="btnBonusRules" type="button">Bonificação</button>
+            </div>
           </div>
         </div>
 
@@ -7228,6 +7246,7 @@ body[data-theme="senna_brasil"] .hdr{
             <div class="ttl">Retrospecto cirúrgico geral</div>
             <div class="sub">Pagamentos de todos os pacientes operados</div>
           </div>
+          <div id="surgeonAddSurgeryDock"><button class="smallBtn primary" id="btnSurgeryCenter" type="button">Adicionar cirurgia</button></div>
         </div>
         <div class="padded">
           <div class="surgeryStats">
@@ -7677,6 +7696,11 @@ body[data-theme="senna_brasil"] .hdr{
           <div class="themeSectionTitle">Temas pré-definidos</div>
           <div class="themeGrid" id="themeGrid"></div>
         </div>
+        <div class="themeDayHeightDock" id="themeDayHeightDock">
+          <div class="themeSectionTitle">Ajuste visual do calendário</div>
+          <div class="helper">A função Altura do dia fica concentrada aqui, junto das opções de tema.</div>
+          <button class="mBtn" id="btnDayH" type="button">Altura do dia</button>
+        </div>
         <div>
           <div class="themeSectionTitle">Seletor livre de cores</div>
           <div class="customThemeGrid">
@@ -7868,6 +7892,10 @@ body[data-theme="senna_brasil"] .hdr{
           <button class="mBtn primary" id="btnCreateBackupNow" type="button">Criar backup na nuvem</button>
           <button class="mBtn" id="btnExportBackupPack" type="button">Baixar JSON</button>
           <button class="mBtn" id="btnRefreshBackups" type="button">Atualizar lista</button>
+          <span id="backupImportExportDock" style="display:contents">
+            <button class="mBtn" id="btnImport" type="button">Importar</button>
+            <button class="mBtn" id="btnExport" type="button">Exportar</button>
+          </span>
         </div>
         <div class="themeSectionTitle">Backups disponíveis</div>
         <div class="backupList" id="backupList"></div>
@@ -11343,13 +11371,13 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       document.body.classList.toggle('crm-mode', on);
       const b1 = UI.el('btnPatientCRM');
       if (b1) {
-        b1.textContent = on ? 'Sair de Pacientes & Leads' : 'Pacientes & Leads';
+        b1.textContent = on ? 'Sair de Controle Comercial' : 'Controle Comercial';
         b1.classList.toggle('modeActive', on);
         b1.setAttribute('aria-pressed', on ? 'true' : 'false');
       }
       const b2 = UI.el('btnCRMMode');
       if (b2) {
-        b2.textContent = on ? 'Sair Pacientes & Leads' : 'Pacientes & Leads';
+        b2.textContent = on ? 'Sair Controle Comercial' : 'Controle Comercial';
         b2.classList.toggle('modeActive', on);
         b2.setAttribute('aria-pressed', on ? 'true' : 'false');
       }
@@ -11621,7 +11649,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const commercial = UI.el('crmCommercialBox');
       const m = crmMetrics();
       const totalUrgent = m.dueToday.length + m.overdue.length;
-      const badgeText = totalUrgent ? `Pacientes & Leads 🔴${totalUrgent}` : 'Pacientes & Leads';
+      const badgeText = totalUrgent ? `Controle Comercial 🔴${totalUrgent}` : 'Controle Comercial';
       const b1 = UI.el('btnPatientCRM'); if (b1 && !state.ui?.crmMode) b1.textContent = badgeText;
       const b2 = UI.el('btnCRMMode'); if (b2 && !state.ui?.crmMode) b2.textContent = badgeText;
       if (box){
@@ -13499,8 +13527,8 @@ html, body{
       btnAgendaScreen:'Agenda',
       btnPay:'Regras',
       btnNewSurgery:'Cirurgião',
-      btnCRMMode:'Pacientes',
-      btnPatientCRM:'Pacientes',
+      btnCRMMode:'Controle Comercial',
+      btnPatientCRM:'Controle Comercial',
       btnDashboardCenter:'Dashboard',
       btnAdminCenter:'Administração',
       btnAuditCenter:'Auditoria',
@@ -13537,6 +13565,251 @@ html, body{
       if(!wrap || !wrap.open) return;
       if(!wrap.contains(ev.target)) wrap.removeAttribute('open');
     }, true);
+  });
+})();
+</script>
+
+
+
+<!-- =========================================================
+     CADASTRO DE PACIENTES — TELA INDEPENDENTE
+========================================================= -->
+<div class="ov" id="ovPatientRegister">
+  <div class="modal patientRegisterModal" style="width:min(1240px,100%)">
+    <div class="mHead">
+      <h3>Cadastro de pacientes</h3>
+      <button class="closeX" id="patientRegisterClose" type="button">✕</button>
+    </div>
+    <div class="patientRegisterLayout">
+      <div class="patientRegisterForm cardLikePanel">
+        <div class="themeSectionTitle">Identificação</div>
+        <input type="hidden" id="cadId">
+        <div class="crmFormGrid3">
+          <div><div class="lbl">Nome do contato</div><input class="input" id="cadName" placeholder="Nome completo"></div>
+          <div><div class="lbl">Data de nascimento</div><input class="input" id="cadBirth" type="date"></div>
+          <div><div class="lbl">CPF</div><input class="input" id="cadCpf" placeholder="000.000.000-00"></div>
+        </div>
+        <div class="crmFormGrid3">
+          <div><div class="lbl">E-mail</div><input class="input" id="cadEmail" type="email" placeholder="email@exemplo.com"></div>
+          <div><div class="lbl">Celular / WhatsApp</div><input class="input" id="cadPhone" placeholder="(00) 00000-0000"></div>
+          <div><div class="lbl">Paciente ou lead?</div><select class="input" id="cadType"><option value="patient">Paciente convertido</option><option value="lead">Lead ainda não convertido</option></select></div>
+        </div>
+        <div style="margin-top:10px"><div class="lbl">Endereço</div><input class="input" id="cadAddress" placeholder="Rua, número, bairro, cidade"></div>
+        <div class="crmFormGrid3">
+          <div><div class="lbl">Origem do lead</div><input class="input" id="cadOrigin" placeholder="Google, Instagram, indicação..."></div>
+          <div><div class="lbl">Indicação / orgânico</div><input class="input" id="cadReferral" placeholder="Nome de quem indicou ou orgânico"></div>
+          <div><div class="lbl">Médico(s) responsável(is)</div><select class="input" id="cadDoctor" multiple size="3"></select></div>
+        </div>
+        <div class="crmFormGrid3">
+          <div><div class="lbl">Data da primeira consulta</div><input class="input" id="cadFirstConsult" type="date"></div>
+          <div><div class="lbl">Data da última consulta</div><input class="input" id="cadLastConsult" type="date"></div>
+          <div><div class="lbl">Quanto já gastou (R$)</div><input class="input" id="cadAmountPaid" type="number" min="0" step="0.01" placeholder="0,00"></div>
+        </div>
+        <div class="crmFormGrid3">
+          <div><div class="lbl">Programação de recontato</div><input class="input" id="cadNextContact" type="date"></div>
+          <div><div class="lbl">Recorrência de recontato (dias)</div><input class="input" id="cadRecurrenceDays" type="number" min="0" step="1" placeholder="Ex: 7, 15, 30"></div>
+          <div><div class="lbl">Avisar dias antes</div><input class="input" id="cadReminderDays" type="number" min="0" step="1" value="0"></div>
+        </div>
+        <div class="helper" id="cadRecontactRuleHint">Paciente convertido: o recontato pode ser calculado a partir da última consulta. Lead não convertido: a data é livre.</div>
+        <div style="margin-top:10px"><div class="lbl">Observações</div><textarea class="input" id="cadNotes" rows="4" placeholder="Digitação livre, histórico, proposta, objeções, conduta comercial..."></textarea></div>
+        <div class="cadHistoryBox" id="cadHistoryBox"></div>
+        <div class="mFoot">
+          <button class="mBtn ghost" id="cadClear" type="button">Limpar</button>
+          <button class="mBtn primary" id="cadSave" type="button">Salvar cadastro</button>
+        </div>
+      </div>
+
+      <div class="patientRegisterSearch cardLikePanel">
+        <div class="themeSectionTitle">Busca e relatórios</div>
+        <div class="crmFormGrid3">
+          <div><div class="lbl">Nome</div><input class="input" id="cadFilterName" placeholder="Buscar por nome"></div>
+          <div><div class="lbl">Médico(s)</div><select class="input" id="cadFilterDoctors" multiple size="3"></select></div>
+          <div><div class="lbl">Tipo</div><select class="input" id="cadFilterType"><option value="all">Todos</option><option value="patient">Pacientes</option><option value="lead">Leads</option></select></div>
+        </div>
+        <div class="crmFormGrid3">
+          <div><div class="lbl">Período inicial</div><input class="input" id="cadFilterFrom" type="date"></div>
+          <div><div class="lbl">Período final</div><input class="input" id="cadFilterTo" type="date"></div>
+          <div><div class="lbl">Base do período</div><select class="input" id="cadFilterBasis"><option value="lastConsult">Última consulta</option><option value="firstConsult">Primeira consulta</option><option value="createdAt">Cadastro</option><option value="lastContact">Último recontato</option></select></div>
+        </div>
+        <div class="mFoot">
+          <button class="smallBtn primary" id="cadSearchUpdate" type="button">Atualizar busca</button>
+          <button class="smallBtn" id="cadReportDownload" type="button">Download relatório</button>
+          <button class="smallBtn" id="cadReportPrint" type="button">Imprimir relatório</button>
+        </div>
+        <div class="cadReportBox" id="cadReportBox"></div>
+        <div class="crmList cadSearchResults" id="cadSearchResults"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<style id="COMMERCIAL_CADASTRO_PATCH_V4_CSS">
+/* Ajustes estruturais solicitados: menu limpo, telas separadas e posicionamento de funções */
+.hiddenCompatibilityBtn{display:none !important;}
+.agendaRulesInlineControls{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:10px;flex-wrap:wrap;}
+body.crm-mode .agendaRulesInlineControls,
+body.surgeon-mode .agendaRulesInlineControls{display:none !important;}
+#surgeonAddSurgeryDock{display:none;}
+body.surgeon-mode #surgeonAddSurgeryDock{display:flex;}
+#crmExitMode{display:none !important;}
+#crmPageCard .crmFormPanel{display:none !important;}
+#crmPageCard .sectionHead .ttl{font-size:18px;}
+#crmPageCard .crmCreateBtn{display:inline-flex !important;}
+#crmPageCard .crmCreatePatient::after{content:'';}
+.commercialDashboardPanel{border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.035));padding:14px;margin-bottom:14px;box-shadow:0 14px 34px rgba(0,0,0,.18)}
+.commercialDashHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.commercialKpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.commercialKpi{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.08);padding:12px}
+.commercialKpi .k{font-size:12px;color:var(--mut);font-weight:950}.commercialKpi .v{font-size:22px;font-weight:1000;margin-top:4px}
+.commercialCharts{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.commercialChartBox{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.06);padding:12px;min-height:160px}
+.commercialBarRow{display:grid;grid-template-columns:minmax(90px,1fr) 2fr auto;gap:8px;align-items:center;margin:8px 0;font-size:12px;font-weight:900}
+.commercialBarTrack{height:12px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden;border:1px solid var(--line)}
+.commercialBarFill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--acc),var(--good));min-width:3px}
+.commercialObsBox{margin-top:12px}
+.patientRegisterModal{max-height:calc(100dvh - 44px) !important;}
+.patientRegisterLayout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:14px;align-items:start}
+.cardLikePanel{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.025));padding:14px}
+.cadHistoryBox{margin-top:10px;border:1px dashed var(--line);border-radius:14px;padding:10px;background:rgba(255,255,255,.05);font-size:12px;color:var(--mut);line-height:1.55}
+.cadHistoryBox b{color:var(--txt)}
+.cadSearchResults{max-height:50dvh}.cadResultCard{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.06)}
+.cadResultTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}.cadResultName{font-weight:1000;font-size:15px}.cadResultMeta{font-size:12px;color:var(--mut);line-height:1.5;margin-top:4px}
+.cadReportBox{margin-top:12px;border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.05);font-size:12px;line-height:1.55;overflow:auto}
+.cadReportTable{width:100%;border-collapse:collapse;min-width:640px}.cadReportTable th,.cadReportTable td{padding:8px;border-bottom:1px solid var(--line);text-align:left}.cadReportTable th{font-weight:1000;color:var(--txt)}
+body[data-theme="senna_brasil"] .commercialDashboardPanel,
+body[data-theme="senna_brasil"] .commercialChartBox,
+body[data-theme="senna_brasil"] .commercialKpi,
+body[data-theme="senna_brasil"] .cardLikePanel,
+body[data-theme="senna_brasil"] .cadReportBox,
+body[data-theme="senna_brasil"] .cadResultCard{background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,249,218,.88)) !important;color:#071225 !important;border-color:rgba(7,18,37,.16) !important;}
+body[data-theme="senna_brasil"] :where(.commercialDashboardPanel,.cardLikePanel,.cadReportBox,.cadResultCard) *{text-shadow:none !important;}
+@media(max-width:980px){.patientRegisterLayout{grid-template-columns:1fr}.commercialCharts{grid-template-columns:1fr}.crmFormGrid3,.crmFormGrid{grid-template-columns:1fr !important}.agendaRulesInlineControls{justify-content:flex-start}.patientRegisterModal{max-height:calc(100dvh - 20px) !important}}
+@media print{body.printingCadReport *{visibility:hidden !important}body.printingCadReport #cadReportBox,body.printingCadReport #cadReportBox *{visibility:visible !important}body.printingCadReport #cadReportBox{position:fixed;left:0;top:0;width:100%;background:#fff;color:#000;padding:20px}}
+</style>
+
+<script id="COMMERCIAL_CADASTRO_PATCH_V4_JS">
+(function(){
+  function ready(fn){ if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  function $(id){ return document.getElementById(id); }
+  function val(id){ return ($(id) && $(id).value || '').trim(); }
+  function setVal(id,v){ if($(id)) $(id).value = v == null ? '' : String(v); }
+  function esc(s){ try { return escapeHtml(String(s||'')); } catch(e){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); } }
+  function money(n){ try { return fmtMoney(Number(n||0)); } catch(e){ return 'R$ ' + Number(n||0).toFixed(2).replace('.',','); } }
+  function br(d){ try { return d ? formatDateBR(String(d).slice(0,10)) : '—'; } catch(e){ return d || '—'; } }
+  function today(){ return new Date().toISOString().slice(0,10); }
+  function addDays(dateStr, days){ if(!dateStr || !Number(days)) return ''; const d=new Date(dateStr+'T12:00:00'); d.setDate(d.getDate()+Number(days)); return d.toISOString().slice(0,10); }
+  function crm(){ if(!Array.isArray(state.crm)) state.crm=[]; return state.crm; }
+  function docs(){ try { return doctorsEnsure(); } catch(e){ return Array.from(new Set(crm().map(x=>x.doctor).filter(Boolean))); } }
+  function selectedValues(sel){ return Array.from(sel?.selectedOptions||[]).map(o=>o.value).filter(Boolean); }
+  function doctorListOf(item){ return Array.isArray(item.doctors) && item.doctors.length ? item.doctors : String(item.doctor||'').split(/[,;]+/).map(x=>x.trim()).filter(Boolean); }
+  function hasAnyDoctor(item, selected){ if(!selected.length) return true; const itemDocs = doctorListOf(item).map(x=>x.toLowerCase()); return selected.some(d => itemDocs.includes(d.toLowerCase())); }
+  function ensureSelects(){
+    const opts = docs().map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join('');
+    ['cadDoctor','cadFilterDoctors'].forEach(id=>{ const el=$(id); if(el) el.innerHTML=opts; });
+  }
+  function setMulti(id, values){ const set=new Set((values||[]).map(String)); const el=$(id); if(!el) return; Array.from(el.options).forEach(o=>o.selected=set.has(o.value)); }
+  function clearCad(){ ['cadId','cadName','cadBirth','cadCpf','cadEmail','cadPhone','cadAddress','cadOrigin','cadReferral','cadFirstConsult','cadLastConsult','cadAmountPaid','cadNextContact','cadRecurrenceDays','cadReminderDays','cadNotes'].forEach(id=>setVal(id,'')); setVal('cadReminderDays','0'); setVal('cadType','patient'); setMulti('cadDoctor',[]); renderCadHistory(null); }
+  function renderCadHistory(item){
+    const box=$('cadHistoryBox'); if(!box) return;
+    if(!item){ box.innerHTML='Ao acessar um cadastro, aqui aparecerão os recontatos realizados, datas, histórico e total gasto.'; return; }
+    const hist=Array.isArray(item.recontactHistory)?item.recontactHistory:[];
+    const timeline=Array.isArray(item.timeline)?item.timeline:[];
+    const contactTimeline=timeline.filter(x=>String(x.text||x.type||'').toLowerCase().includes('contato'));
+    const all=[...hist.map(x=>({at:x.at||x.date,text:x.note||'Recontato registrado'})),...contactTimeline].sort((a,b)=>String(a.at||'').localeCompare(String(b.at||'')));
+    box.innerHTML=`<b>Total gasto:</b> ${money(item.amountPaid||0)}<br><b>Última consulta:</b> ${br(item.lastConsult||item.lastContact||'')}<br><b>Recontatos:</b> ${all.length}<br>` + (all.length? all.map(x=>`• ${br(x.at)} — ${esc(x.text||'Contato')}`).join('<br>') : 'Nenhum recontato registrado ainda.');
+  }
+  function loadCad(id){
+    ensureSelects(); const item=crm().find(x=>x.id===id); if(!item) return;
+    setVal('cadId', item.id); setVal('cadName', item.name); setVal('cadBirth', item.birthDate||''); setVal('cadCpf', item.cpf||''); setVal('cadEmail', item.email||''); setVal('cadPhone', item.phone||''); setVal('cadAddress', item.address||''); setVal('cadOrigin', item.origin||''); setVal('cadReferral', item.referral||''); setVal('cadType', item.type==='lead'?'lead':'patient'); setMulti('cadDoctor', doctorListOf(item)); setVal('cadFirstConsult', item.firstConsult||item.firstContact||''); setVal('cadLastConsult', item.lastConsult||item.lastContact||''); setVal('cadAmountPaid', item.amountPaid||0); setVal('cadNextContact', item.nextContact||''); setVal('cadRecurrenceDays', item.recurrenceDays||0); setVal('cadReminderDays', item.reminderDays||0); setVal('cadNotes', item.notes||''); renderCadHistory(item);
+  }
+  function saveCad(){
+    const name=val('cadName'); if(!name){ alert('Informe o nome do contato.'); return; }
+    const type=val('cadType')==='lead'?'lead':'patient'; const id=val('cadId') || (typeof uid==='function'?uid():('cad_'+Date.now()));
+    const old=crm().find(x=>x.id===id)||{}; const doctors=selectedValues($('cadDoctor')); const recurrence=Number(val('cadRecurrenceDays')||0); let next=val('cadNextContact');
+    if(type==='patient' && val('cadLastConsult') && recurrence){ next = addDays(val('cadLastConsult'), recurrence); }
+    const now=new Date().toISOString();
+    const item=Object.assign({}, old, { id, type, name, birthDate:val('cadBirth'), cpf:val('cadCpf'), email:val('cadEmail'), phone:val('cadPhone'), address:val('cadAddress'), origin:val('cadOrigin'), referral:val('cadReferral'), doctors, doctor:doctors.join(', '), firstConsult:val('cadFirstConsult'), firstContact:val('cadFirstConsult') || old.firstContact || '', lastConsult:val('cadLastConsult'), lastContact:val('cadLastConsult') || old.lastContact || '', amountPaid:Number(val('cadAmountPaid')||0), nextContact:next, recurrenceDays:recurrence, reminderDays:Number(val('cadReminderDays')||0), notes:val('cadNotes'), status: old.status || (type==='lead'?'novo':'ativo'), updatedAt:now, createdAt:old.createdAt||now });
+    item.timeline=Array.isArray(old.timeline)?old.timeline:[];
+    item.timeline.push({at:now,type:'cadastro',text:(old.id?'Cadastro atualizado':'Cadastro criado')+' pela tela independente'});
+    const idx=crm().findIndex(x=>x.id===id); if(idx>=0) state.crm[idx]=item; else state.crm.push(item);
+    try{ doctors.forEach(d=>ensureDoctorName(d)); }catch(e){}
+    try{ pushHistorySnapshot(); }catch(e){}
+    try{ agoraV2Audit?.(old.id?'Cadastro atualizado':'Cadastro criado','crm',name,'Tela independente de cadastro',id); }catch(e){}
+    try{ save(); }catch(e){}
+    try{ renderCRMPanel(); }catch(e){}
+    renderCadSearch(); renderCommercialDashboard(); loadCad(id); alert('Cadastro salvo.');
+  }
+  function cadDateFor(item,basis){ return basis==='firstConsult' ? (item.firstConsult||item.firstContact||'') : basis==='createdAt' ? String(item.createdAt||'').slice(0,10) : basis==='lastContact' ? (item.lastContact||'') : (item.lastConsult||item.lastContact||''); }
+  function cadFiltered(){
+    const q=val('cadFilterName').toLowerCase(); const docsSel=selectedValues($('cadFilterDoctors')); const type=val('cadFilterType')||'all'; const from=val('cadFilterFrom'); const to=val('cadFilterTo'); const basis=val('cadFilterBasis')||'lastConsult';
+    return crm().filter(item=>{
+      if(q && !String(item.name||'').toLowerCase().includes(q)) return false;
+      if(type!=='all' && (item.type==='lead'?'lead':'patient')!==type) return false;
+      if(!hasAnyDoctor(item,docsSel)) return false;
+      const d=cadDateFor(item,basis); if(from && (!d || d<from)) return false; if(to && (!d || d>to)) return false;
+      return true;
+    }).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'pt-BR'));
+  }
+  function renderCadSearch(){
+    const list=$('cadSearchResults'); if(!list) return; ensureSelects();
+    const arr=cadFiltered();
+    list.innerHTML = arr.length ? arr.map(item=>`<div class="cadResultCard"><div class="cadResultTop"><div><div class="cadResultName">${esc(item.name)}</div><div class="cadResultMeta">${esc(item.phone||'Sem celular')} · ${esc(doctorListOf(item).join(', ')||'Sem médico')}<br>${item.type==='lead'?'Lead':'Paciente'} · Última consulta: ${br(item.lastConsult||item.lastContact||'')} · Total: ${money(item.amountPaid||0)}</div></div><button class="smallBtn primary" type="button" data-cad-edit="${esc(item.id)}">Editar</button></div></div>`).join('') : '<div class="crmEmpty">Nenhum cadastro encontrado.</div>';
+    renderCadReport(arr);
+  }
+  function renderCadReport(arr){
+    const box=$('cadReportBox'); if(!box) return; arr=arr||cadFiltered();
+    const byDoc={}; arr.forEach(item=>{ const ds=doctorListOf(item); (ds.length?ds:['Sem médico']).forEach(d=>{ byDoc[d]=byDoc[d]||{count:0,total:0,names:[]}; byDoc[d].count++; byDoc[d].total+=Number(item.amountPaid||0); byDoc[d].names.push(item.name||'Sem nome'); }); });
+    const rows=Object.entries(byDoc).sort((a,b)=>a[0].localeCompare(b[0],'pt-BR')).map(([doc,x])=>`<tr><td>${esc(doc)}</td><td>${x.count}</td><td>${money(x.total)}</td><td>${esc(x.names.join(', '))}</td></tr>`).join('');
+    box.innerHTML=`<div class="themeSectionTitle">Relatório do período por médico</div><table class="cadReportTable"><thead><tr><th>Médico</th><th>Pacientes/leads</th><th>Faturamento</th><th>Cadastros</th></tr></thead><tbody>${rows||'<tr><td colspan="4">Sem dados no período.</td></tr>'}</tbody></table>`;
+  }
+  function csvEscape(v){ return '"'+String(v||'').replace(/"/g,'""')+'"'; }
+  function downloadCadReport(){ const arr=cadFiltered(); const lines=[['Médico','Nome','Tipo','Telefone','Email','CPF','Primeira consulta','Última consulta','Total gasto','Origem'].join(';')]; arr.forEach(item=>{ const ds=doctorListOf(item).join(', '); lines.push([ds,item.name,item.type==='lead'?'Lead':'Paciente',item.phone,item.email,item.cpf,item.firstConsult||item.firstContact,item.lastConsult||item.lastContact,item.amountPaid,item.origin].map(csvEscape).join(';')); }); const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='relatorio_cadastro_pacientes.csv'; a.click(); URL.revokeObjectURL(a.href); }
+  function printCadReport(){ document.body.classList.add('printingCadReport'); setTimeout(()=>{ window.print(); setTimeout(()=>document.body.classList.remove('printingCadReport'),250); },50); }
+  function openPatientRegister(id){ ensureSelects(); clearCad(); if(id) loadCad(id); renderCadSearch(); try{ UI.open('ovPatientRegister'); }catch(e){ $('ovPatientRegister')?.classList.add('open'); } }
+  function classifyOrigin(item){ const s=String((item.origin||'')+' '+(item.referral||'')).toLowerCase(); return /(google|ads|tr[áa]fego|facebook|instagram|meta|pago|campanha)/.test(s)?'Pago':'Orgânico'; }
+  function monthBounds(){ const now=new Date(); return {from:new Date(now.getFullYear(),now.getMonth(),1).toISOString().slice(0,10), to:new Date(now.getFullYear(),now.getMonth()+1,0).toISOString().slice(0,10)}; }
+  function renderBars(id, rows){ const el=$(id); if(!el) return; const max=Math.max(1,...rows.map(r=>Number(r.value)||0)); el.innerHTML=rows.length?rows.map(r=>`<div class="commercialBarRow"><div>${esc(r.label)}</div><div class="commercialBarTrack"><div class="commercialBarFill" style="width:${Math.max(3,(Number(r.value)||0)/max*100)}%"></div></div><div>${esc(r.display??r.value)}</div></div>`).join(''):'<div class="crmEmpty">Sem dados.</div>'; }
+  function renderCommercialDashboard(){
+    const panel=$('commercialDashboardPanel'); if(!panel) return; const data=crm(); const mb=monthBounds(); const monthItems=data.filter(x=>{const d=x.lastConsult||x.lastContact||x.firstConsult||x.firstContact||String(x.createdAt||'').slice(0,10); return d>=mb.from && d<=mb.to;});
+    const patients=data.filter(x=>x.type!=='lead'); const leads=data.filter(x=>x.type==='lead' && x.status!=='convertido'); const paid=patients.reduce((a,b)=>a+Number(b.amountPaid||0),0); const due=data.filter(x=>x.nextContact && x.nextContact<today() && x.status!=='perdido' && x.status!=='convertido');
+    const k=$('commercialKpis'); if(k) k.innerHTML=[['Pacientes no consultório',patients.length],['Leads abertos',leads.length],['Atendimentos no mês',monthItems.length],['Faturamento cadastrado',money(paid)],['Recontatos atrasados',due.length]].map(x=>`<div class="commercialKpi"><div class="k">${x[0]}</div><div class="v">${x[1]}</div></div>`).join('');
+    const byDoc={}; monthItems.forEach(item=>{ (doctorListOf(item).length?doctorListOf(item):['Sem médico']).forEach(d=>{ byDoc[d]=byDoc[d]||{count:0,total:0}; byDoc[d].count++; byDoc[d].total+=Number(item.amountPaid||0); }); });
+    renderBars('commercialDoctorChart', Object.entries(byDoc).map(([doc,x])=>({label:doc,value:x.count,display:`${x.count} · ${money(x.total)}`})) );
+    const conv={Pago:{lead:0,patient:0},Orgânico:{lead:0,patient:0}}; data.forEach(item=>{ const o=classifyOrigin(item); conv[o][item.type==='lead'?'lead':'patient']++; });
+    renderBars('commercialConversionChart', Object.entries(conv).map(([o,x])=>({label:o,value:x.patient,display:`${x.patient}/${x.patient+x.lead}`})) );
+    const withRec=data.filter(x=>(x.recontactHistory||[]).length || (x.timeline||[]).some(t=>String(t.text||'').toLowerCase().includes('contato'))); const recConv=withRec.filter(x=>x.type!=='lead' || x.status==='convertido').length;
+    renderBars('commercialRecontactChart', [{label:'Convertidos após recontato',value:recConv,display:String(recConv)},{label:'Em recontato',value:Math.max(0,withRec.length-recConv),display:String(Math.max(0,withRec.length-recConv))}]);
+    const obs=$('commercialActionNotes'); if(obs && document.activeElement!==obs) obs.value=state.commercialActionNotes||'';
+  }
+  ready(function(){
+    // menu labels and exact requested flow are already in HTML; bind new actions
+    $('btnPatientRegisterScreen')?.addEventListener('click', function(){ openPatientRegister(); });
+    $('patientRegisterClose')?.addEventListener('click', function(){ try{UI.close('ovPatientRegister')}catch(e){$('ovPatientRegister')?.classList.remove('open')} });
+    $('cadSave')?.addEventListener('click', saveCad); $('cadClear')?.addEventListener('click', clearCad); $('cadSearchUpdate')?.addEventListener('click', renderCadSearch); $('cadReportDownload')?.addEventListener('click', downloadCadReport); $('cadReportPrint')?.addEventListener('click', printCadReport);
+    ['cadFilterName','cadFilterType','cadFilterFrom','cadFilterTo','cadFilterBasis','cadFilterDoctors'].forEach(id=>$(id)?.addEventListener('input', renderCadSearch));
+    $('cadType')?.addEventListener('change', function(){ const h=$('cadRecontactRuleHint'); if(h) h.textContent=this.value==='patient'?'Paciente convertido: se houver última consulta e recorrência, a próxima data será calculada a partir da última consulta.':'Lead não convertido: a data de recontato é livre.'; });
+    $('cadRecurrenceDays')?.addEventListener('input', function(){ if(val('cadType')==='patient' && val('cadLastConsult') && val('cadRecurrenceDays')) setVal('cadNextContact', addDays(val('cadLastConsult'), Number(val('cadRecurrenceDays')))); });
+    $('cadLastConsult')?.addEventListener('input', function(){ if(val('cadType')==='patient' && val('cadLastConsult') && val('cadRecurrenceDays')) setVal('cadNextContact', addDays(val('cadLastConsult'), Number(val('cadRecurrenceDays')))); });
+    document.addEventListener('click', function(e){ const edit=e.target.closest?.('[data-cad-edit]'); if(edit){ openPatientRegister(edit.getAttribute('data-cad-edit')); } const crmEdit=e.target.closest?.('[data-crm-edit]'); if(crmEdit && e.altKey){ openPatientRegister(crmEdit.getAttribute('data-crm-edit')); } }, true);
+    document.addEventListener('click', function(e){ const done=e.target.closest?.('[data-crm-done]'); if(done){ const item=crm().find(x=>x.id===done.getAttribute('data-crm-done')); if(item){ item.recontactHistory=Array.isArray(item.recontactHistory)?item.recontactHistory:[]; item.recontactHistory.push({at:new Date().toISOString(),note:'Contato feito'}); try{save()}catch(err){} } } }, true);
+    $('commercialRefresh')?.addEventListener('click', renderCommercialDashboard); $('commercialSaveNotes')?.addEventListener('click', function(){ state.commercialActionNotes=val('commercialActionNotes'); try{save()}catch(e){} alert('Observações salvas.'); });
+    $('btnAgendaScreen')?.addEventListener('click', function(){ try{toggleCRMMode(false)}catch(e){} try{toggleSurgeonMode(false)}catch(e){} document.body.classList.remove('crm-mode','surgeon-mode'); });
+    $('btnBackupCenter')?.addEventListener('click', function(){ const wrap=$('hambWrap'); if(wrap) wrap.removeAttribute('open'); });
+    $('adminClose')?.addEventListener('click', function(){ try{UI.close('ovAdminCenter')}catch(e){$('ovAdminCenter')?.classList.remove('open')} });
+    $('auditClose')?.addEventListener('click', function(){ try{UI.close('ovAuditCenter')}catch(e){$('ovAuditCenter')?.classList.remove('open')} });
+    // Dashboard financeiro antigo fica tecnicamente preservado, mas sem botão visível.
+    document.querySelectorAll('#crmPageCard .sectionHead .ttl').forEach(el=>{ if(el.textContent.includes('Controle Comercial')) el.textContent='Controle Comercial'; });
+    document.querySelectorAll('#crmPageCard .crmCreatePatient').forEach(b=>{ b.innerHTML='<span>✚</span> Cadastro de pacientes'; b.addEventListener('click', function(e){ e.preventDefault(); openPatientRegister(); }, true); });
+    document.querySelectorAll('#crmPageCard .crmCreateLead').forEach(b=>{ b.innerHTML='<span>✚</span> Cadastro de lead'; b.addEventListener('click', function(e){ e.preventDefault(); openPatientRegister(); setVal('cadType','lead'); }, true); });
+    ensureSelects(); renderCadSearch(); renderCommercialDashboard();
+    const originalRender = window.renderAll;
+    if(typeof renderAll==='function' && !window.__commercialCadRenderWrapped){
+      window.__commercialCadRenderWrapped=true;
+      const oldRenderAll = renderAll;
+      renderAll = function(){ const r=oldRenderAll.apply(this, arguments); setTimeout(function(){ ensureSelects(); renderCadSearch(); renderCommercialDashboard(); },0); return r; };
+    }
   });
 })();
 </script>
@@ -13929,7 +14202,7 @@ html, body{
   .chipMark{width:7px!important;height:7px!important;border-radius:3px!important;}
   .sideOut{min-height:calc(var(--cellH) * 6 + 24px)!important;border-radius:10px!important;padding:4px 0!important;}
 
-  /* CRM / Pacientes & Leads no celular */
+  /* CRM / Controle Comercial no celular */
   .crmHero,.crmFormGrid,.crmFormGrid3,.crmToolbar,.crmStats,.summaryGrid,.row2,.row3{
     display:grid!important;
     grid-template-columns:1fr!important;
@@ -15263,3 +15536,278 @@ html, body{
   new MutationObserver(bind).observe(document.documentElement, {childList:true, subtree:true});
 })();
 </script>
+
+<style id="COMMERCIAL_MENU_NO_HINT_PATCH">#hamburgerPortalMenu::after{content:none!important;display:none!important}.hambWrap>.hambMenu #btnDashboardCenter{display:none!important}</style>
+
+<!-- =========================================================
+     PATCH FINAL — CADASTRO INDEPENDENTE / CONTROLE COMERCIAL
+     Revisão ponto a ponto sem alterar funções centrais
+========================================================= -->
+<style id="COMMERCIAL_FINAL_REVIEW_PATCH_CSS">
+/* 1. Nomenclatura e menu limpo */
+#btnDashboardCenter,
+.dashboardLauncher,
+button[data-action="dashboard"],
+.hambMenu .menuItem.hiddenCompatibilityBtn{display:none!important;}
+#crmExitMode{display:none!important;}
+
+/* 2. Regra de pagamento só na Agenda */
+body.crm-mode #btnPay,
+body.crm-mode #btnBonusRules,
+body.crm-mode .agendaRulesInlineControls,
+body.surgeon-mode #btnPay,
+body.surgeon-mode #btnBonusRules,
+body.surgeon-mode .agendaRulesInlineControls{display:none!important;}
+.agendaRulesInlineControls{display:flex!important;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:10px auto 0;}
+
+/* 3. Adicionar cirurgia só no modo cirurgião */
+#btnSurgeryCenter,#surgeonAddSurgeryDock{display:none!important;}
+body.surgeon-mode #surgeonAddSurgeryDock{display:flex!important;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;}
+body.surgeon-mode #btnSurgeryCenter{display:inline-flex!important;}
+
+/* 4. Altura do dia dentro de Tema */
+#themeDayHeightDock{display:flex;gap:8px;align-items:center;justify-content:flex-start;flex-wrap:wrap;margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:14px;background:rgba(255,255,255,.05)}
+.hambMenu #btnDayH{display:none!important;}
+
+/* 5. Importar/exportar somente em Backups */
+#backupImportExportDock{display:flex;gap:8px;align-items:center;justify-content:flex-start;flex-wrap:wrap;margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:14px;background:rgba(255,255,255,.05)}
+.hambMenu #btnImport,.hambMenu #btnExport{display:none!important;}
+
+/* 6. Administração/Auditoria com fechamento acima de tudo */
+#ovAdminCenter,#ovAuditCenter{z-index:90050!important;}
+#adminClose,#auditClose{display:inline-flex!important;align-items:center!important;justify-content:center!important;position:relative!important;z-index:2!important;}
+
+/* 7. Cadastro independente: tela confortável e editável */
+#ovPatientRegister{z-index:90040!important;}
+.patientRegisterModal{width:min(1280px,100%)!important;max-height:calc(100dvh - 42px)!important;overflow:auto!important;}
+.patientRegisterLayout{display:grid!important;grid-template-columns:minmax(0,1.12fr) minmax(330px,.88fr)!important;gap:14px!important;align-items:start!important;}
+.crmFormGrid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.cadSearchResults{display:flex;flex-direction:column;gap:10px;margin-top:12px;max-height:48dvh;overflow:auto;}
+.cadResultCard{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.06);padding:12px;}
+.cadResultTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.cadResultName{font-weight:1000;font-size:15px;color:var(--txt);}
+.cadResultMeta{font-size:12px;line-height:1.55;color:var(--mut);margin-top:4px;}
+.cadHistoryBox,.cadReportBox{border:1px dashed var(--line);border-radius:14px;background:rgba(255,255,255,.05);padding:10px;margin-top:10px;font-size:12px;line-height:1.55;color:var(--mut);overflow:auto;}
+.cadReportBox b,.cadHistoryBox b{color:var(--txt);}
+
+/* 8. Controle Comercial como dashboard operacional */
+#crmPageCard .sectionHead .ttl{font-size:18px!important;}
+#crmPageCard .crmFormPanel{display:none!important;}
+.commercialDashboardPanel{display:block!important;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.035));padding:14px;margin-bottom:14px;box-shadow:0 14px 34px rgba(0,0,0,.16);}
+.commercialDashHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+.commercialKpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px;}
+.commercialKpi{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.08);padding:12px;}
+.commercialKpi .k{font-size:12px;color:var(--mut);font-weight:950;}.commercialKpi .v{font-size:22px;font-weight:1000;margin-top:4px;color:var(--txt);}
+.commercialCharts{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;}
+.commercialChartBox{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.06);padding:12px;min-height:160px;}
+.commercialBarRow{display:grid;grid-template-columns:minmax(90px,1fr) 2fr auto;gap:8px;align-items:center;margin:8px 0;font-size:12px;font-weight:900;}
+.commercialBarTrack{height:12px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden;border:1px solid var(--line);}
+.commercialBarFill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--acc),var(--good));min-width:3px;}
+.commercialObsBox{margin-top:12px;}
+
+/* 9. Menu na sequência solicitada, sem repetidos */
+.hambMenu{max-height:calc(100dvh - 76px)!important;overflow:auto!important;}
+.hambMenu .menuItem{width:100%!important;min-width:100%!important;}
+
+@media(max-width:920px){
+  .patientRegisterLayout{grid-template-columns:1fr!important;}
+  .crmFormGrid3{grid-template-columns:1fr!important;}
+  .commercialBarRow{grid-template-columns:1fr;}
+  .commercialBarRow > div:last-child{text-align:left!important;}
+}
+body[data-theme="light"] .cadResultName,
+body[data-theme="paper"] .cadResultName,
+body[data-theme="windows_xp"] .cadResultName,
+body[data-theme="toy_story"] .cadResultName,
+body[data-theme="light"] .commercialKpi .v,
+body[data-theme="paper"] .commercialKpi .v,
+body[data-theme="windows_xp"] .commercialKpi .v,
+body[data-theme="toy_story"] .commercialKpi .v{color:#0b1220!important;}
+</style>
+
+<script id="COMMERCIAL_FINAL_REVIEW_PATCH_JS">
+(function(){
+  function ready(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
+  const $ = id => document.getElementById(id);
+  const fmtBRL = n => (Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+  function closeMenu(){ const w=$('hambWrap'); if(w) w.removeAttribute('open'); const p=$('hamburgerPortalMenu'); if(p) p.classList.remove('open'); }
+  function call(name, fallback){ try{ if(typeof window[name]==='function') return window[name](); }catch(e){console.error(e);} if(fallback) fallback(); }
+  function openOv(id){ const ov=$(id); if(ov){ ov.classList.add('open'); ov.scrollTop=0; const m=ov.querySelector('.modal'); if(m) m.scrollTop=0; } }
+  function closeOv(id){ const ov=$(id); if(ov) ov.classList.remove('open'); }
+  function badge(label){ const b=$('activeScreenBadge'); if(b){ b.textContent=label; b.title='Tela/função atual: '+label; } }
+
+  function currentDoctors(){
+    const names = new Set(['Dr. Caio','Dra. Bruna','Dr. Helber','Dra. Thaís Marcondes Jacomini','Dra. Fernanda Oyakawa']);
+    try{ (window.state?.crmDoctors||[]).forEach(d=>names.add(typeof d==='string'?d:d?.name)); }catch(e){}
+    try{ (window.state?.doctors||[]).forEach(d=>names.add(typeof d==='string'?d:d?.name)); }catch(e){}
+    try{ (window.crm||[]).forEach(c=>{ if(c.doctor) names.add(c.doctor); if(Array.isArray(c.doctors)) c.doctors.forEach(x=>names.add(x)); }); }catch(e){}
+    return [...names].filter(Boolean).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  }
+  function fillSelect(sel, multi){
+    if(!sel) return; const old=[...sel.selectedOptions].map(o=>o.value); sel.innerHTML='';
+    currentDoctors().forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent=n; if(old.includes(n)) o.selected=true; sel.appendChild(o); });
+    if(!multi && !sel.value && sel.options[0]) sel.options[0].selected=true;
+  }
+  function crmList(){ try{return Array.isArray(window.crm)?window.crm:(Array.isArray(window.state?.crm)?window.state.crm:[]);}catch(e){return [];} }
+  function normalizeCadFromCRM(c){
+    return {
+      id:c.id||c._id||String(Date.now()), name:c.name||c.fullName||'', birth:c.birth||c.birthDate||'', cpf:c.cpf||'', email:c.email||'', phone:c.phone||'', address:c.address||'',
+      type:(c.type==='lead'||c.status==='lead'||c.converted===false)?'lead':'patient', origin:c.origin||'', referral:c.referral||'',
+      doctors:Array.isArray(c.doctors)?c.doctors:(c.doctor?[c.doctor]:[]), firstConsult:c.firstConsult||c.firstContact||'', lastConsult:c.lastConsult||c.lastContact||'',
+      amountPaid:c.amountPaid||c.paid||0, nextContact:c.nextContact||'', recurrenceDays:c.recurrenceDays||'', reminderDays:c.reminderDays||0, notes:c.notes||'',
+      contacts:Array.isArray(c.contacts)?c.contacts:(Array.isArray(c.recontacts)?c.recontacts:[]), createdAt:c.createdAt||''
+    };
+  }
+  function cadStore(){
+    try{ const a=JSON.parse(localStorage.getItem('cadastrosPacientesV1')||'[]'); return Array.isArray(a)?a:[]; }catch(e){return []}
+  }
+  function saveCadStore(arr){ try{ localStorage.setItem('cadastrosPacientesV1', JSON.stringify(arr)); }catch(e){} }
+  function allCad(){
+    const map=new Map();
+    crmList().map(normalizeCadFromCRM).forEach(x=>{ if(x.id) map.set(String(x.id), x); });
+    cadStore().forEach(x=>{ if(x.id) map.set(String(x.id), {...(map.get(String(x.id))||{}), ...x}); });
+    return [...map.values()];
+  }
+  function selectedValues(sel){ return sel ? [...sel.selectedOptions].map(o=>o.value).filter(Boolean) : []; }
+  function clearCad(){
+    ['cadId','cadName','cadBirth','cadCpf','cadEmail','cadPhone','cadAddress','cadOrigin','cadReferral','cadFirstConsult','cadLastConsult','cadAmountPaid','cadNextContact','cadRecurrenceDays','cadReminderDays','cadNotes'].forEach(id=>{ const e=$(id); if(e) e.value=''; });
+    if($('cadType')) $('cadType').value='patient';
+    fillSelect($('cadDoctor'), true);
+    renderCadHistory(null); renderCadSearch();
+  }
+  function readCad(){
+    return {id:$('cadId')?.value || ('cad_'+Date.now()), name:$('cadName')?.value||'', birth:$('cadBirth')?.value||'', cpf:$('cadCpf')?.value||'', email:$('cadEmail')?.value||'', phone:$('cadPhone')?.value||'', address:$('cadAddress')?.value||'', type:$('cadType')?.value||'patient', origin:$('cadOrigin')?.value||'', referral:$('cadReferral')?.value||'', doctors:selectedValues($('cadDoctor')), firstConsult:$('cadFirstConsult')?.value||'', lastConsult:$('cadLastConsult')?.value||'', amountPaid:Number($('cadAmountPaid')?.value||0), nextContact:$('cadNextContact')?.value||'', recurrenceDays:Number($('cadRecurrenceDays')?.value||0), reminderDays:Number($('cadReminderDays')?.value||0), notes:$('cadNotes')?.value||'', updatedAt:new Date().toISOString(), contacts:($('cadId')?.value ? (allCad().find(x=>String(x.id)===$('cadId').value)?.contacts||[]) : [])};
+  }
+  function writeCad(x){
+    if(!x) return; fillSelect($('cadDoctor'), true);
+    const set=(id,v)=>{ const e=$(id); if(e) e.value=v||''; };
+    set('cadId',x.id); set('cadName',x.name); set('cadBirth',x.birth); set('cadCpf',x.cpf); set('cadEmail',x.email); set('cadPhone',x.phone); set('cadAddress',x.address); set('cadOrigin',x.origin); set('cadReferral',x.referral); set('cadFirstConsult',x.firstConsult); set('cadLastConsult',x.lastConsult); set('cadAmountPaid',x.amountPaid||0); set('cadNextContact',x.nextContact); set('cadRecurrenceDays',x.recurrenceDays); set('cadReminderDays',x.reminderDays||0); set('cadNotes',x.notes);
+    if($('cadType')) $('cadType').value=x.type||'patient';
+    const ds=new Set(x.doctors||[]); [...($('cadDoctor')?.options||[])].forEach(o=>o.selected=ds.has(o.value));
+    renderCadHistory(x);
+  }
+  function saveCadFinal(){
+    const x=readCad(); if(!x.name){ alert('Informe o nome do contato.'); return; }
+    const arr=cadStore(); const i=arr.findIndex(y=>String(y.id)===String(x.id)); if(i>=0) arr[i]={...arr[i],...x}; else arr.push({...x,createdAt:new Date().toISOString()}); saveCadStore(arr);
+    try{ if(typeof window.agoraV2Audit==='function') window.agoraV2Audit('Cadastro de pacientes','Salvou/atualizou cadastro',x.name); }catch(e){}
+    renderCadSearch(); renderCadReport(); alert('Cadastro salvo.');
+  }
+  function renderCadHistory(x){
+    const box=$('cadHistoryBox'); if(!box) return; if(!x){ box.innerHTML='Histórico de recontatos: nenhum cadastro selecionado.'; return; }
+    const contacts=Array.isArray(x.contacts)?x.contacts:[];
+    const list=contacts.length?contacts.map(c=>`<div>• ${esc(c.date||c.at||'sem data')} — ${esc(c.note||c.result||'recontato registrado')}</div>`).join(''):'Nenhum recontato registrado.';
+    box.innerHTML=`<b>Recontatos realizados:</b> ${contacts.length}<br>${list}`;
+  }
+  function filteredCad(){
+    let arr=allCad(); const name=($('cadFilterName')?.value||'').toLowerCase().trim(); const docs=selectedValues($('cadFilterDoctors')); const type=$('cadFilterType')?.value||'all'; const from=$('cadFilterFrom')?.value||''; const to=$('cadFilterTo')?.value||''; const basis=$('cadFilterBasis')?.value||'lastConsult';
+    return arr.filter(x=>{
+      if(name && !String(x.name||'').toLowerCase().includes(name)) return false;
+      if(type!=='all' && x.type!==type) return false;
+      if(docs.length && !docs.some(d=>(x.doctors||[]).includes(d))) return false;
+      const d=x[basis]||''; if(from && (!d || d<from)) return false; if(to && (!d || d>to)) return false; return true;
+    });
+  }
+  function renderCadSearch(){
+    fillSelect($('cadFilterDoctors'), true);
+    const box=$('cadSearchResults'); if(!box) return; const arr=filteredCad();
+    box.innerHTML = arr.length? arr.map(x=>`<div class="cadResultCard"><div class="cadResultTop"><div><div class="cadResultName">${esc(x.name||'Sem nome')}</div><div class="cadResultMeta">${x.type==='lead'?'Lead ainda não convertido':'Paciente convertido'} · ${esc((x.doctors||[]).join(', ')||'sem médico')}<br>Última consulta: ${esc(x.lastConsult||'-')} · Gasto: ${fmtBRL(x.amountPaid)}<br>Recontatos: ${(x.contacts||[]).length}</div></div><button class="smallBtn" data-cad-edit="${esc(x.id)}">Editar</button></div></div>`).join('') : '<div class="helper">Nenhum cadastro encontrado para os filtros.</div>';
+    box.querySelectorAll('[data-cad-edit]').forEach(b=>b.addEventListener('click',()=>writeCad(allCad().find(x=>String(x.id)===String(b.dataset.cadEdit)))));
+  }
+  function renderCadReport(){
+    const box=$('cadReportBox'); if(!box) return; const arr=filteredCad(); const by={};
+    arr.forEach(x=>{ const docs=(x.doctors&&x.doctors.length)?x.doctors:['Sem médico']; docs.forEach(d=>{ by[d]=by[d]||{n:0,total:0}; by[d].n++; by[d].total+=Number(x.amountPaid)||0; }); });
+    const rows=Object.entries(by).sort((a,b)=>a[0].localeCompare(b[0],'pt-BR')).map(([d,v])=>`<tr><td>${esc(d)}</td><td>${v.n}</td><td>${fmtBRL(v.total)}</td></tr>`).join('');
+    box.innerHTML=`<b>Relatório do período</b><br>Total filtrado: ${arr.length}<br><br><table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left">Médico</th><th style="text-align:left">Pacientes</th><th style="text-align:left">Faturamento</th></tr></thead><tbody>${rows||'<tr><td colspan="3">Sem dados</td></tr>'}</tbody></table>`;
+  }
+  function downloadCadReport(){
+    const arr=filteredCad(); const csv=['Nome;Tipo;Medicos;Primeira consulta;Ultima consulta;Valor;Recontatos'].concat(arr.map(x=>[x.name,x.type,(x.doctors||[]).join('|'),x.firstConsult,x.lastConsult,x.amountPaid,(x.contacts||[]).length].map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(';'))).join('\n');
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download='relatorio_cadastro_pacientes.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }
+  function printCadReport(){ renderCadReport(); const html=$('cadReportBox')?.innerHTML||''; const w=window.open('','_blank'); if(w){ w.document.write('<html><head><title>Relatório</title></head><body>'+html+'</body></html>'); w.document.close(); w.print(); } }
+
+  function ensureMenu(){
+    const menu=document.querySelector('#hambWrap .hambMenu'); if(!menu) return;
+    const order=[
+      ['btnAgendaScreen','Agenda',()=>{ badge('Agenda'); try{toggleCRMMode(false)}catch(e){} try{toggleSurgeonMode(false)}catch(e){} document.body.classList.remove('crm-mode','surgeon-mode'); }],
+      ['btnNewSurgery','Modo Cirurgião',()=>{ badge('Modo Cirurgião'); call('toggleSurgeonMode'); }],
+      ['btnPatientRegisterScreen','Cadastro de pacientes',()=>{ badge('Cadastro de pacientes'); if(typeof window.openPatientRegister==='function') window.openPatientRegister(); else openOv('ovPatientRegister'); }],
+      ['btnCRMMode','Controle Comercial',()=>{ badge('Controle Comercial'); call('toggleCRMMode'); setTimeout(()=>renderCommercialDashboardFinal(),150); }],
+      ['btnTheme','Tema',()=>{ badge('Tema'); call('openThemeSelector',()=>openOv('ovThemeSelector')); }],
+      ['btnAdminCenter','Administração',()=>{ badge('Administração'); call('openAdminCenter',()=>openOv('ovAdminCenter')); }],
+      ['btnAuditCenter','Auditoria',()=>{ badge('Auditoria'); call('openAuditCenter',()=>openOv('ovAuditCenter')); }],
+      ['btnSaveNow','Salvar agora',()=>{ badge('Salvar'); call('saveCloudNow',()=>call('save')); }],
+      ['btnUndo','Desfazer',()=>{ badge('Desfazer'); const b=$('btnUndo'); if(b) b.click(); }],
+      ['btnToggleCalendarEvents','Ocultar Eventos',()=>{ badge('Ocultar Eventos'); call('openHideOptions',()=>{ const b=$('btnToggleCalendarEvents'); if(b) b.click(); }); }],
+      ['btnBackupCenter','Conta / Nuvem',()=>{ badge('Conta / Nuvem'); call('openBackupCenter',()=>openOv('ovBackupCenter')); }],
+      ['btnReset','Zerar',()=>{ badge('Zerar'); const b=$('btnReset'); if(b) b.click(); }]
+    ];
+    menu.innerHTML='';
+    order.forEach(([id,label,fn])=>{ const btn=document.createElement('button'); btn.className='btn menuItem'+(id==='btnReset'?' danger':''); btn.id=id; btn.type='button'; btn.textContent=label; btn.addEventListener('click',ev=>{ ev.preventDefault(); ev.stopPropagation(); closeMenu(); setTimeout(fn,20); }); menu.appendChild(btn); });
+    let file=$('fileImport'); if(!file){ file=document.createElement('input'); file.type='file'; file.hidden=true; file.accept='application/json'; file.id='fileImport'; menu.appendChild(file); }
+  }
+
+  function ensureAgendaControls(){
+    let dock=$('agendaRulesInlineControls');
+    if(!dock){
+      const head=document.querySelector('.mainCalendarCard .sectionHead')||document.querySelector('.mainCalendarCard');
+      if(head){ dock=document.createElement('div'); dock.id='agendaRulesInlineControls'; dock.className='agendaRulesInlineControls'; head.appendChild(dock); }
+    }
+    if(dock){
+      let pay=$('btnPay'); if(!pay){ pay=document.createElement('button'); pay.id='btnPay'; pay.type='button'; pay.className='smallBtn primary'; pay.textContent='Regras de pagamento'; pay.addEventListener('click',()=>{ call('renderRulesEditor'); call('renderPayableRulesEditor'); openOv('ovPay'); }); }
+      let bonus=$('btnBonusRules'); if(!bonus){ bonus=document.createElement('button'); bonus.id='btnBonusRules'; bonus.type='button'; bonus.className='smallBtn'; bonus.textContent='Bonificação'; bonus.addEventListener('click',()=>{ call('renderBonusRulesEditor'); openOv('ovBonusRules'); }); }
+      dock.appendChild(pay); dock.appendChild(bonus);
+    }
+  }
+  function ensureSurgeryDock(){
+    let dock=$('surgeonAddSurgeryDock');
+    if(!dock){ const card=document.querySelector('#surgeonRetrospectCard .sectionHead')||document.querySelector('#surgeryPreviewList')?.parentElement; if(card){ dock=document.createElement('div'); dock.id='surgeonAddSurgeryDock'; card.appendChild(dock); } }
+    if(dock){ let b=$('btnSurgeryCenter'); if(!b){ b=document.createElement('button'); b.id='btnSurgeryCenter'; b.type='button'; b.className='smallBtn primary'; b.textContent='Adicionar cirurgia'; b.addEventListener('click',()=>call('openSurgeryCenter',()=>openOv('ovSurgeryCenter'))); } b.textContent='Adicionar cirurgia'; dock.appendChild(b); }
+  }
+  function ensureThemeDayHeight(){
+    const modal=$('ovThemeSelector')?.querySelector('.modal')||$('ovThemeSelector'); if(!modal) return;
+    let dock=$('themeDayHeightDock'); if(!dock){ dock=document.createElement('div'); dock.id='themeDayHeightDock'; dock.innerHTML='<b>Altura do dia</b>'; modal.appendChild(dock); }
+    let b=$('btnDayH'); if(!b){ b=document.createElement('button'); b.id='btnDayH'; b.type='button'; b.className='smallBtn'; b.textContent='Altura do dia'; b.addEventListener('click',()=>openOv('ovDayH')); }
+    dock.appendChild(b);
+  }
+  function ensureBackupImportExport(){
+    const modal=$('ovBackupCenter')?.querySelector('.modal')||$('ovBackupCenter'); if(!modal) return;
+    let dock=$('backupImportExportDock'); if(!dock){ dock=document.createElement('div'); dock.id='backupImportExportDock'; dock.innerHTML='<b>Importar / Exportar</b>'; modal.appendChild(dock); }
+    let imp=$('btnImport'); if(!imp){ imp=document.createElement('button'); imp.id='btnImport'; imp.type='button'; imp.className='smallBtn'; imp.textContent='Importar'; imp.addEventListener('click',()=>$('fileImport')?.click()); }
+    let exp=$('btnExport'); if(!exp){ exp=document.createElement('button'); exp.id='btnExport'; exp.type='button'; exp.className='smallBtn'; exp.textContent='Exportar'; exp.addEventListener('click',()=>call('exportData')); }
+    dock.appendChild(imp); dock.appendChild(exp);
+  }
+  function bindClosers(){
+    [['adminClose','ovAdminCenter'],['auditClose','ovAuditCenter'],['patientRegisterClose','ovPatientRegister']].forEach(([b,o])=>{ const el=$(b); if(el && el.dataset.finalClose!=='1'){ el.dataset.finalClose='1'; el.addEventListener('click',e=>{e.preventDefault(); closeOv(o);}, true); } });
+  }
+  function renderCommercialDashboardFinal(){
+    const crmCard=$('crmPageCard'); if(!crmCard) return;
+    let panel=$('commercialDashboardPanel'); if(!panel){ panel=document.createElement('div'); panel.id='commercialDashboardPanel'; panel.className='commercialDashboardPanel'; const pad=crmCard.querySelector('.padded')||crmCard; pad.insertBefore(panel,pad.firstChild); }
+    const arr=allCad(); const patients=arr.filter(x=>x.type!=='lead'); const leads=arr.filter(x=>x.type==='lead'); const doctors=currentDoctors();
+    const byDoc=doctors.map(d=>({d, n:patients.filter(x=>(x.doctors||[]).includes(d)).length, total:patients.filter(x=>(x.doctors||[]).includes(d)).reduce((s,x)=>s+(Number(x.amountPaid)||0),0)})).filter(x=>x.n||x.total);
+    const max=Math.max(1,...byDoc.map(x=>x.n));
+    const bars=byDoc.length?byDoc.map(x=>`<div class="commercialBarRow"><div>${esc(x.d)}</div><div class="commercialBarTrack"><div class="commercialBarFill" style="width:${Math.max(3,Math.round(x.n/max*100))}%"></div></div><div>${x.n} · ${fmtBRL(x.total)}</div></div>`).join(''):'<div class="helper">Sem atendimentos por médico no período atual.</div>';
+    const paid=leads.filter(x=>/google|instagram|meta|ads|tráfego|trafego/i.test((x.origin||''))).length; const org=leads.length-paid;
+    panel.innerHTML=`<div class="commercialDashHead"><div><div class="sectionHead" style="border:0;padding:0"><div><div class="ttl">Controle Comercial</div><div class="sub">Dashboard comercial, produtividade médica e conversões</div></div></div></div><button class="smallBtn primary" id="commercialRefreshBtn" type="button">Atualizar</button></div><div class="commercialKpis"><div class="commercialKpi"><div class="k">Pacientes no consultório</div><div class="v">${patients.length}</div></div><div class="commercialKpi"><div class="k">Leads ativos</div><div class="v">${leads.length}</div></div><div class="commercialKpi"><div class="k">Faturamento cadastrado</div><div class="v">${fmtBRL(patients.reduce((s,x)=>s+(Number(x.amountPaid)||0),0))}</div></div><div class="commercialKpi"><div class="k">Conversão geral</div><div class="v">${arr.length?Math.round(patients.length/arr.length*100):0}%</div></div></div><div class="commercialCharts"><div class="commercialChartBox"><b>Produtividade médica financeira e atendimentos</b>${bars}</div><div class="commercialChartBox"><b>Conversão por origem</b><div class="commercialBarRow"><div>Tráfego pago</div><div class="commercialBarTrack"><div class="commercialBarFill" style="width:${leads.length?Math.max(3,Math.round(paid/leads.length*100)):3}%"></div></div><div>${paid}</div></div><div class="commercialBarRow"><div>Orgânico/indicação</div><div class="commercialBarTrack"><div class="commercialBarFill" style="width:${leads.length?Math.max(3,Math.round(org/leads.length*100)):3}%"></div></div><div>${org}</div></div><div class="commercialObsBox"><div class="lbl">Observações / proposta de ações</div><textarea class="input" id="commercialActionNotes" rows="4" placeholder="Ações comerciais, campanhas, ajustes de recontato, prioridades..."></textarea><button class="smallBtn primary" id="commercialSaveNotes" type="button" style="margin-top:8px">Salvar observações</button></div></div></div>`;
+    $('commercialRefreshBtn')?.addEventListener('click',renderCommercialDashboardFinal);
+  }
+
+  ready(function(){
+    ensureMenu(); ensureAgendaControls(); ensureSurgeryDock(); ensureThemeDayHeight(); ensureBackupImportExport(); bindClosers();
+    fillSelect($('cadDoctor'), true); fillSelect($('cadFilterDoctors'), true);
+    ['cadFilterName','cadFilterDoctors','cadFilterType','cadFilterFrom','cadFilterTo','cadFilterBasis'].forEach(id=>$(id)?.addEventListener('input',()=>{renderCadSearch();renderCadReport();}));
+    $('cadSearchUpdate')?.addEventListener('click',()=>{renderCadSearch();renderCadReport();});
+    $('cadSave')?.addEventListener('click',saveCadFinal);
+    $('cadClear')?.addEventListener('click',clearCad);
+    $('cadReportDownload')?.addEventListener('click',downloadCadReport);
+    $('cadReportPrint')?.addEventListener('click',printCadReport);
+    $('cadType')?.addEventListener('change',()=>{ const h=$('cadRecontactRuleHint'); if(h) h.textContent = $('cadType').value==='patient' ? 'Paciente convertido: o recontato é contado a partir da última consulta.' : 'Lead ainda não convertido: a data de recontato é livre.'; });
+    renderCadSearch(); renderCadReport(); renderCommercialDashboardFinal();
+    document.body.addEventListener('click',function(e){ if(e.target && e.target.id==='btnCRMMode') setTimeout(renderCommercialDashboardFinal,200); },true);
+    new MutationObserver(function(){ bindClosers(); }).observe(document.documentElement,{childList:true,subtree:true});
+  });
+})();
+</script>
+
+</body>
+</html>
