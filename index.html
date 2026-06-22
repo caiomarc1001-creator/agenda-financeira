@@ -6107,88 +6107,6 @@ body{
 
 </style>
 
-<style id="calendar-responsive-v4-final-css">
-  /* Correção pós-login: contraste fixo e estado do mês sempre visível. */
-  .mainCalendarCard .month{
-    display:inline-flex !important;
-    visibility:visible !important;
-    opacity:1 !important;
-    color:#ffffff !important;
-    -webkit-text-fill-color:#ffffff !important;
-    background:#081225 !important;
-    border:1px solid rgba(255,255,255,.24) !important;
-    text-shadow:0 2px 4px rgba(0,0,0,.9) !important;
-  }
-
-  /* Mais largura útil para o calendário no PC. */
-  .container{
-    width:calc(100% - 12px) !important;
-    max-width:1920px !important;
-    grid-template-columns:minmax(200px,clamp(210px,17vw,260px)) minmax(0,1fr) !important;
-    gap:8px !important;
-    padding:6px 6px 18px !important;
-  }
-  .sidebarCol{min-width:0 !important;width:100% !important}
-  .mainCol{min-width:0 !important;width:100% !important}
-  .mainCalendarCard :where(.dowShell,.calFrame){
-    grid-template-columns:30px minmax(0,1fr) 30px !important;
-    gap:4px !important;
-    padding-left:5px !important;
-    padding-right:5px !important;
-  }
-  .mainCalendarCard :where(.dowRow,.grid){gap:4px !important}
-
-  /* Barras verticais mais baixas: mais calendário dentro da tela. */
-  body[data-theme="senna_brasil"] .hdr,
-  body[data-theme="senna_mclaren"] .hdr{
-    min-height:66px !important;
-    padding:5px 9px 9px !important;
-  }
-  .headerAligned{gap:7px !important}
-  .compactBrand h1{font-size:clamp(13px,1.05vw,16px) !important;max-width:280px !important}
-  .hdr :where(.btn,.statusPill,.hambBtn){min-height:36px !important;height:36px !important;max-height:36px !important}
-  .hdr .btn{padding-left:11px !important;padding-right:11px !important;font-size:11.5px !important}
-  .mainCalendarCard > .sectionHead{min-height:48px !important;padding:4px 9px !important}
-  .mainCalendarCard .monthRow{min-height:38px !important}
-  .mainCalendarCard .month{min-width:min(290px,72%) !important;padding:5px 14px !important;font-size:clamp(20px,1.85vw,27px) !important}
-
-  /* Faixa de alertas realmente menor em largura e altura. */
-  .crmGlobalAlertStrip{
-    width:min(960px,calc(100% - 20px)) !important;
-    margin:4px auto 0 !important;
-    gap:5px !important;
-  }
-  .crmAlertTile{min-height:44px !important;padding:5px 8px !important;border-radius:11px !important}
-  .crmAlertTile .big{font-size:15px !important}
-  .crmAlertTile .small{font-size:9.5px !important;line-height:1.15 !important}
-
-  @media(max-width:1100px){
-    .container{grid-template-columns:1fr !important;width:100% !important;padding:6px 8px 18px !important}
-    .mainCol{order:1 !important}
-    .sidebarCol{order:2 !important}
-    .headerAligned{grid-template-columns:minmax(0,1fr) auto !important;grid-template-areas:"brand dock" "nav nav" !important}
-    .toolbarCenter{grid-area:nav !important;overflow-x:auto !important;width:100% !important}
-    .compactBrand{grid-area:brand !important}
-    .saveDock{grid-area:dock !important}
-    .crmGlobalAlertStrip{width:calc(100% - 16px) !important}
-  }
-  @media(min-width:768px) and (max-width:1100px){
-    .mainCalendarCard .day{height:100px !important;min-height:100px !important}
-    .sidebarCol{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px !important}
-    .sidebarCol > *{min-width:0 !important}
-  }
-  @media(max-width:767px){
-    .container{padding-left:4px !important;padding-right:4px !important}
-    .headerAligned{gap:5px !important}
-    .compactBrand h1{max-width:190px !important;font-size:12px !important}
-    .saveDock{max-width:44vw !important}
-    .mainCalendarCard .month{min-width:min(230px,70%) !important;font-size:18px !important;padding:4px 8px !important}
-    .mainCalendarCard :where(.dowShell,.calFrame){grid-template-columns:24px minmax(0,1fr) 24px !important;gap:3px !important;padding-left:2px !important;padding-right:2px !important}
-    .mainCalendarCard :where(.dowRow,.grid){gap:3px !important}
-    .crmGlobalAlertStrip{grid-template-columns:1fr !important;width:calc(100% - 10px) !important}
-  }
-</style>
-
 <style id="MASTER_STABILITY_PATCH">
 
 /* =========================================================
@@ -8080,7 +7998,7 @@ body[data-theme="senna_brasil"] .hdr{
 
     const DEFAULTS = {
       theme:'senna_brasil',
-      cellH:128,
+      cellH:100,
       view:(() => { const d = new Date(); return { y:d.getFullYear(), m:d.getMonth() }; })(),
       selDate:todayISO(),
       events:[],
@@ -8187,6 +8105,10 @@ body[data-theme="senna_brasil"] .hdr{
       const usedDoctors = s.crm.map(x => (x && x.doctor ? String(x.doctor).trim() : '')).filter(Boolean);
       s.doctors = Array.from(new Set([...baseDoctors, ...existingDoctors, ...usedDoctors].map(x => String(x || '').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
       s.ui = { summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, hideCalendarEvents:false, paymentRowsCollapsed:{}, payableRowsCollapsed:{}, ...(s.ui || {}) };
+      if (!s.ui.responsiveCalendar100V1) {
+        s.cellH = 100;
+        s.ui.responsiveCalendar100V1 = true;
+      }
       s.ui.paymentRowsCollapsed = s.ui.paymentRowsCollapsed || {};
       s.ui.payableRowsCollapsed = s.ui.payableRowsCollapsed || {};
       s.customTheme = { bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', alertColor:'#ff5d5d', alertIntensity:1.35, crmFormBg:'#22304f', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, manualAlertHighlight:false, presetOverrides:{}, ...(s.customTheme || {}) };
@@ -9163,6 +9085,8 @@ body[data-theme="senna_brasil"] .hdr{
         monthLabel.style.display = 'inline-flex';
         monthLabel.style.visibility = 'visible';
         monthLabel.style.opacity = '1';
+        monthLabel.style.setProperty('color','#ffffff','important');
+        monthLabel.style.setProperty('-webkit-text-fill-color','#ffffff','important');
       }
       const monthNote = UI.el('monthNote');
       if (monthNote) monthNote.textContent = '';
@@ -15745,24 +15669,111 @@ body[data-theme="senna_brasil"] .hdr::after{
   @media(max-width:820px){.compactBrand{min-width:150px !important}.compactBrand h1{max-width:230px !important;font-size:13px !important}body[data-theme="senna_brasil"] :where(.toolbarCenter,.saveDock),body[data-theme="senna_mclaren"] :where(.toolbarCenter,.saveDock){transform:none !important}}
 </style>
 
-<style id="calendar-responsive-v4-authoritative-css">
-  .mainCalendarCard .month{display:inline-flex !important;visibility:visible !important;opacity:1 !important;color:#fff !important;-webkit-text-fill-color:#fff !important;background:#081225 !important;border:1px solid rgba(255,255,255,.24) !important;text-shadow:0 2px 4px rgba(0,0,0,.9) !important}
-  .container{width:calc(100% - 12px) !important;max-width:1920px !important;grid-template-columns:minmax(200px,clamp(210px,17vw,260px)) minmax(0,1fr) !important;gap:8px !important;padding:6px 6px 18px !important}
-  .sidebarCol,.mainCol{min-width:0 !important;width:100% !important}
-  .mainCalendarCard :where(.dowShell,.calFrame){grid-template-columns:30px minmax(0,1fr) 30px !important;gap:4px !important;padding-left:5px !important;padding-right:5px !important}
-  .mainCalendarCard :where(.dowRow,.grid){grid-template-columns:repeat(7,minmax(0,1fr)) !important;gap:4px !important}
-  body[data-theme="senna_brasil"] .hdr,body[data-theme="senna_mclaren"] .hdr{min-height:66px !important;padding:5px 9px 9px !important}
-  .headerAligned{gap:7px !important}.compactBrand h1{font-size:clamp(13px,1.05vw,16px) !important;max-width:280px !important}
-  .hdr :where(.btn,.statusPill,.hambBtn){min-height:36px !important;height:36px !important;max-height:36px !important}
-  .hdr .btn{padding-left:11px !important;padding-right:11px !important;font-size:11.5px !important}
-  .mainCalendarCard > .sectionHead{display:flex !important;position:relative !important;top:auto !important;min-height:48px !important;padding:4px 9px !important;background:linear-gradient(180deg,#0b1220,#111827) !important;border-bottom:3px solid var(--acc) !important}
-  .mainCalendarCard .monthRow{display:flex !important;min-height:38px !important;align-items:center !important;justify-content:center !important;visibility:visible !important;opacity:1 !important}
-  .mainCalendarCard .month{min-width:min(290px,72%) !important;padding:5px 14px !important;border-radius:14px !important;font-size:clamp(20px,1.85vw,27px) !important;line-height:1.05 !important;white-space:nowrap !important}
+<style id="calendar-responsive-v3-final-css">
+  /* Cabeçalho mais compacto para devolver altura útil ao calendário. */
+  body[data-theme="senna_brasil"] .hdr,
+  body[data-theme="senna_mclaren"] .hdr{
+    min-height:76px !important;
+    padding-top:7px !important;
+    padding-bottom:14px !important;
+  }
+  body[data-theme="senna_brasil"] .headerAligned,
+  body[data-theme="senna_mclaren"] .headerAligned{min-height:50px !important}
+  body[data-theme="senna_brasil"] :where(.toolbarCenter,.saveDock),
+  body[data-theme="senna_mclaren"] :where(.toolbarCenter,.saveDock){transform:translateY(-2px) !important}
+
+  /* O mês permanece sempre visível e destacado em qualquer tema. */
+  .mainCalendarCard > .sectionHead{
+    display:flex !important;
+    min-height:58px !important;
+    padding:7px 12px !important;
+    background:linear-gradient(180deg,#0b1220,#111827) !important;
+    border-bottom:3px solid var(--acc) !important;
+  }
+  .mainCalendarCard .monthRow{
+    display:flex !important;
+    min-height:42px !important;
+    align-items:center !important;
+    justify-content:center !important;
+    visibility:visible !important;
+    opacity:1 !important;
+  }
+  .mainCalendarCard .month{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    min-width:min(330px,80%) !important;
+    padding:6px 18px !important;
+    border-radius:14px !important;
+    background:rgba(3,8,20,.58) !important;
+    color:var(--custom-month-color,#ffffff) !important;
+    -webkit-text-fill-color:var(--custom-month-color,#ffffff) !important;
+    text-shadow:0 2px 3px #000,0 0 2px #fff !important;
+    font-size:clamp(22px,2.15vw,31px) !important;
+    line-height:1.05 !important;
+    white-space:nowrap !important;
+  }
   .mainCalendarCard .sectionHead .note{display:none !important}
+
+  /* Calendário de 100 px no PC e adaptação segura em telas menores. */
+  .container{
+    width:min(100%,1920px) !important;
+    max-width:100% !important;
+    padding:8px 12px 24px !important;
+    grid-template-columns:minmax(230px,clamp(250px,20vw,320px)) minmax(0,1fr) !important;
+    gap:12px !important;
+  }
+  .sidebarCol,.mainCol,.mainCalendarCard{min-width:0 !important;max-width:100% !important}
+  .mainCalendarCard :where(.dowShell,.calFrame){
+    grid-template-columns:36px minmax(0,1fr) 36px !important;
+    gap:6px !important;
+    padding-left:8px !important;
+    padding-right:8px !important;
+  }
+  .mainCalendarCard :where(.dowRow,.grid){grid-template-columns:repeat(7,minmax(0,1fr)) !important;gap:6px !important}
   .mainCalendarCard .day{height:var(--cellH) !important;min-height:var(--cellH) !important;max-width:100% !important;overflow:hidden !important}
-  .crmGlobalAlertStrip{width:min(960px,calc(100% - 20px)) !important;margin:4px auto 0 !important;gap:5px !important}
-  .crmAlertTile{min-height:44px !important;padding:5px 8px !important;border-radius:11px !important}.crmAlertTile .big{font-size:15px !important}.crmAlertTile .small{font-size:9.5px !important;line-height:1.15 !important}
-  @media(max-width:1100px){.container{grid-template-columns:1fr !important;width:100% !important;padding:6px 8px 18px !important}.mainCol{order:1 !important}.sidebarCol{order:2 !important}.headerAligned{grid-template-columns:minmax(0,1fr) auto !important;grid-template-areas:"brand dock" "nav nav" !important}.toolbarCenter{grid-area:nav !important;overflow-x:auto !important;width:100% !important}.compactBrand{grid-area:brand !important}.saveDock{grid-area:dock !important}.crmGlobalAlertStrip{width:calc(100% - 16px) !important}}
-  @media(min-width:768px) and (max-width:1100px){.mainCalendarCard .day{height:100px !important;min-height:100px !important}.sidebarCol{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px !important}.sidebarCol>*{min-width:0 !important}}
-  @media(max-width:767px){.container{padding-left:4px !important;padding-right:4px !important}.compactBrand h1{max-width:190px !important;font-size:12px !important}.saveDock{max-width:44vw !important}.mainCalendarCard .month{min-width:min(230px,70%) !important;font-size:18px !important;padding:4px 8px !important}.mainCalendarCard :where(.dowShell,.calFrame){grid-template-columns:24px minmax(0,1fr) 24px !important;gap:3px !important;padding-left:2px !important;padding-right:2px !important}.mainCalendarCard :where(.dowRow,.grid){gap:3px !important}.mainCalendarCard .day{height:clamp(64px,var(--cellH),78px) !important;min-height:clamp(64px,var(--cellH),78px) !important}.crmGlobalAlertStrip{grid-template-columns:1fr !important;width:calc(100% - 10px) !important}}
+
+  /* Alertas de leads mais compactos e menos largos. */
+  .crmGlobalAlertStrip{
+    width:min(1180px,calc(100% - 24px)) !important;
+    margin:6px auto 0 !important;
+    gap:6px !important;
+  }
+  .crmAlertTile{min-height:52px !important;padding:7px 10px !important;border-radius:13px !important}
+  .crmAlertTile .big{font-size:clamp(15px,1.15vw,19px) !important}
+  .crmAlertTile .small{font-size:10px !important;margin-top:2px !important}
+
+  @media(max-width:1180px){
+    .container{grid-template-columns:1fr !important;padding:8px 10px 22px !important}
+    .mainCol{order:1 !important;width:100% !important}
+    .sidebarCol{order:2 !important;width:100% !important}
+    .headerAligned{grid-template-columns:minmax(0,1fr) auto !important;grid-template-areas:"brand dock" "nav nav" !important;gap:7px !important}
+    .toolbarCenter{grid-area:nav !important;width:100% !important;overflow-x:auto !important}
+    .saveDock{grid-area:dock !important}
+    .compactBrand{grid-area:brand !important}
+    .crmGlobalAlertStrip{width:calc(100% - 20px) !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+  }
+  @media(max-width:767px){
+    body[data-theme="senna_brasil"] .hdr,body[data-theme="senna_mclaren"] .hdr{min-height:68px !important;padding:6px 8px 10px !important}
+    .compactBrand{min-width:0 !important}
+    .compactBrand h1{max-width:210px !important;font-size:12.5px !important;line-height:1.05 !important}
+    .mainCalendarCard > .sectionHead{min-height:50px !important;padding:5px 8px !important}
+    .mainCalendarCard .monthRow{min-height:38px !important}
+    .mainCalendarCard .month{min-width:min(250px,76%) !important;font-size:20px !important;padding:5px 10px !important}
+    .mainCalendarCard :where(.dowShell,.calFrame){grid-template-columns:28px minmax(0,1fr) 28px !important;gap:4px !important;padding-left:4px !important;padding-right:4px !important}
+    .mainCalendarCard :where(.dowRow,.grid){gap:4px !important}
+    .mainCalendarCard .day{height:clamp(64px,var(--cellH),78px) !important;min-height:clamp(64px,var(--cellH),78px) !important;padding:4px !important}
+    .mainCalendarCard .chip{font-size:8.5px !important;padding:3px 4px !important}
+    .crmGlobalAlertStrip{grid-template-columns:1fr !important;width:calc(100% - 14px) !important;margin-top:5px !important}
+    .crmAlertTile{min-height:46px !important;padding:6px 9px !important}
+  }
+  @media(max-width:420px){
+    .container{padding-left:5px !important;padding-right:5px !important}
+    .mainCalendarCard :where(.dowShell,.calFrame){grid-template-columns:24px minmax(0,1fr) 24px !important;gap:3px !important;padding-left:2px !important;padding-right:2px !important}
+    .mainCalendarCard :where(.dowRow,.grid){gap:3px !important}
+    .mainCalendarCard .day{height:clamp(58px,var(--cellH),68px) !important;min-height:clamp(58px,var(--cellH),68px) !important;padding:3px !important}
+    .mainCalendarCard .month{font-size:18px !important}
+  }
 </style>
