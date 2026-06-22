@@ -6970,30 +6970,24 @@ body[data-theme="senna_brasil"] .hdr{
           <summary aria-label="Menu" class="hambBtn"><span class="hambLines"></span></summary>
           <div class="hambMenu">
             <button class="btn menuItem" id="btnAgendaScreen" type="button">Agenda</button>
-            <button class="btn menuItem" id="btnPay">Regras de pagamento</button>
             <button class="btn menuItem" id="btnNewSurgery">Modo Cirurgião</button>
-            <button class="btn menuItem" id="btnCRMMode">Pacientes &amp; Leads</button>
-            <button class="btn menuItem" id="btnUndo">Desfazer</button>
-            <button class="btn menuItem" id="btnSaveNow">Salvar agora</button>
-            <button class="btn menuItem" id="btnDayH">Altura do dia</button>
-            <button class="btn menuItem" id="btnBonusRules">Bonificação</button>
-            <button class="btn menuItem" id="btnSurgeryCenter">Cirurgias</button>
-            <button class="btn menuItem" id="btnPatientCRM">Pacientes &amp; Leads</button>
-            <button class="btn menuItem" id="btnDashboardCenter">Dashboard</button>
+            <button class="btn menuItem" id="btnPatientRegister" type="button">Cadastro de pacientes</button>
+            <button class="btn menuItem" id="btnCommercialControl" type="button">Controle Comercial</button>
+            <button class="btn menuItem" id="btnTheme">Tema</button>
             <button class="btn menuItem" id="btnAdminCenter" type="button">Administração</button>
             <button class="btn menuItem" id="btnAuditCenter" type="button">Auditoria</button>
-            <button class="btn menuItem" id="btnTheme">Tema</button>
+            <button class="btn menuItem" id="btnSaveNow">Salvar agora</button>
+            <button class="btn menuItem" id="btnUndo">Desfazer</button>
             <button class="btn menuItem" id="btnToggleCalendarEvents" type="button">Ocultar eventos</button>
-            <button class="btn menuItem" id="btnBackupCenter">Backups</button>
-            <button class="btn menuItem" id="btnImport">Importar</button>
-            <button class="btn menuItem" id="btnExport">Exportar</button>
-            <button class="btn menuItem headerMenuLoginGhost" id="btnLogin">Cadastro/Login</button>
+            <button class="btn menuItem headerMenuLoginGhost" id="btnLogin">Conta / Nuvem</button>
             <button class="btn danger menuItem" id="btnReset">Zerar</button>
+            <button id="btnDashboardCenter" type="button" hidden aria-hidden="true">Dashboard desativado</button>
             <input accept="application/json" hidden id="fileImport" type="file" />
           </div>
         </details>
         <div class="primaryButtons">
           <button class="btn primary" id="btnNew">Novo</button>
+          <button class="btn" id="btnPay">Regras de pagamento</button>
           <button class="btn primary guestOnly" id="btnLoginTop" type="button">Cadastro/Login</button>
           <button class="btn activeScreenBadge" id="activeScreenBadge" type="button" aria-live="polite">Agenda</button>
         </div>
@@ -7070,8 +7064,9 @@ body[data-theme="senna_brasil"] .hdr{
             <div class="sub">Pacientes operados, convênios e recebimentos</div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-            <button class="smallBtn primary" id="btnNewSurgeryRecord" type="button">Nova cirurgia</button>
-            <button class="smallBtn" id="btnOpenSurgeryCenter" type="button">Central</button>
+            <button class="smallBtn primary" id="btnNewSurgeryRecord" type="button">Adicionar cirurgia</button>
+            <button class="smallBtn compatibilityOnly" id="btnSurgeryCenter" type="button" aria-hidden="true">Central de cirurgias</button>
+            <button class="smallBtn compatibilityOnly" id="btnOpenSurgeryCenter" type="button" aria-hidden="true">Central</button>
             <button class="smallBtn" id="btnToggleSurgeries" type="button">Recolher</button>
           </div>
         </div>
@@ -7089,13 +7084,12 @@ body[data-theme="senna_brasil"] .hdr{
       <section class="card section" id="crmPageCard">
         <div class="sectionHead">
           <div>
-            <div class="ttl">Pacientes & Leads</div>
-            <div class="sub">CRM comercial, acompanhamento e aquecimento de leads</div>
+            <div class="ttl" id="crmScreenTitle">Controle Comercial</div>
+            <div class="sub" id="crmScreenSubtitle">Dashboard comercial, acompanhamento e aquecimento de leads</div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
             <button class="smallBtn primary crmCreateBtn crmCreatePatient" id="crmNewPatient" type="button"><span>✚</span> Novo paciente</button>
             <button class="smallBtn crmCreateBtn crmCreateLead" id="crmNewLead" type="button"><span>✚</span> Novo lead</button>
-            <button class="smallBtn danger" id="crmExitMode" type="button">Sair</button>
           </div>
         </div>
         <div class="padded">
@@ -7109,6 +7103,12 @@ body[data-theme="senna_brasil"] .hdr{
                 <div class="crmStat"><div class="k">Leads abertos</div><div class="v" id="crmStatLeads">0</div></div>
                 <div class="crmStat"><div class="k">Recontatos hoje/atrasados</div><div class="v" id="crmStatDue">0</div></div>
                 <div class="crmStat"><div class="k">Valores pagos</div><div class="v" id="crmStatPaid">R$ 0,00</div></div>
+              </div>
+              <div id="crmAnalytics" class="commercialAnalytics"></div>
+              <div class="commercialActionsBox">
+                <div class="lbl">Observações e propostas de ações comerciais</div>
+                <textarea class="input" id="crmActionNotes" rows="3" placeholder="Registre campanhas, ajustes de abordagem e próximas ações..."></textarea>
+                <div class="mFoot"><button class="mBtn primary" id="crmSaveActionNotes" type="button">Salvar observações</button></div>
               </div>
               <div class="crmTabs">
                 <button class="crmTab active" id="crmTabPatients" type="button">Pacientes</button>
@@ -7124,10 +7124,20 @@ body[data-theme="senna_brasil"] .hdr{
                 <div><div class="lbl">Telefone / WhatsApp</div><input class="input" id="crmPhone" placeholder="(00) 00000-0000"></div>
               </div>
               <div class="crmFormGrid3">
+                <div><div class="lbl">Data de nascimento</div><input class="input" id="crmBirthDate" type="date"></div>
+                <div><div class="lbl">CPF</div><input class="input" id="crmCpf" placeholder="000.000.000-00"></div>
+                <div><div class="lbl">E-mail</div><input class="input" id="crmEmail" type="email" placeholder="paciente@exemplo.com"></div>
+              </div>
+              <div class="crmFormGrid">
+                <div><div class="lbl">Endereço</div><input class="input" id="crmAddress" placeholder="Rua, número, bairro e cidade"></div>
+                <div><div class="lbl">Indicação / origem orgânica</div><input class="input" id="crmReferral" placeholder="Nome de quem indicou ou canal orgânico"></div>
+              </div>
+              <div class="crmFormGrid3">
                 <div><div class="lbl">Origem do lead</div><input class="input" id="crmOrigin" placeholder="Google, Instagram, WhatsApp, indicação..."></div>
                 <div><div class="lbl">Médico responsável</div><select class="input" id="crmDoctor"><option value="">Selecione o médico</option></select></div>
                 <div><div class="lbl">Responsável comercial</div><input class="input" id="crmOwner" placeholder="Equipe / secretária"></div>
               </div>
+              <div style="margin-top:10px"><div class="lbl">Outros médicos que atenderam</div><input class="input" id="crmAdditionalDoctors" placeholder="Separe os nomes por vírgula"></div>
               <div class="crmDoctorManager">
                 <div class="crmDoctorManagerHead">
                   <div>
@@ -7162,6 +7172,11 @@ body[data-theme="senna_brasil"] .hdr{
                 <div><div class="lbl">Último contato</div><input class="input" id="crmLastContact" type="date"></div>
                 <div><div class="lbl">Avisar dias antes</div><input class="input" id="crmReminderDays" type="number" min="0" step="1" value="0"></div>
               </div>
+              <div class="crmFormGrid3">
+                <div><div class="lbl">Primeira consulta</div><input class="input" id="crmFirstConsultation" type="date"></div>
+                <div><div class="lbl">Última consulta</div><input class="input" id="crmLastConsultation" type="date"></div>
+                <div><div class="lbl">Total gasto</div><input class="input" id="crmTotalSpent" type="number" min="0" step="0.01" placeholder="0,00"></div>
+              </div>
               <div style="margin-top:10px"><div class="lbl">Procedimentos realizados / histórico de interesse</div><textarea class="input" id="crmProcedures" rows="2"></textarea></div>
               <div style="margin-top:10px"><div class="lbl">Observações e histórico comercial</div><textarea class="input" id="crmNotes" rows="3" placeholder="Motivos de não conversão, objeções, próximos passos, observações clínicas/comerciais..."></textarea></div>
               <div class="mFoot">
@@ -7175,6 +7190,11 @@ body[data-theme="senna_brasil"] .hdr{
                 <div><div class="lbl">Pesquisar</div><input class="input" id="crmSearch" placeholder="Nome, telefone, origem, médico, procedimento..."></div>
                 <div><div class="lbl">Filtro rápido</div><select class="input" id="crmQuickFilter"><option value="all">Todos</option><option value="due">Recontato hoje/atrasado</option><option value="active">Ativos</option><option value="lost">Perdidos</option><option value="renew">Renovação</option></select></div>
               </div>
+              <div class="crmDoctorFilters commercialCombinedFilters">
+                <div><div class="lbl">Médico</div><select class="input" id="crmListDoctor"><option value="all">Todos os médicos</option></select></div>
+                <div><div class="lbl">Período inicial</div><input class="input" id="crmListFrom" type="date"></div>
+                <div><div class="lbl">Período final</div><input class="input" id="crmListTo" type="date"></div>
+              </div>
               <div class="crmOverdueBox" id="crmOverdueBox"></div>
               <div class="crmList" id="crmList"></div>
 
@@ -7185,11 +7205,13 @@ body[data-theme="senna_brasil"] .hdr{
                     <div class="crmDoctorReportSub">Filtre o período para saber quais e quantos pacientes/leads cada médico atendeu ou acompanhou.</div>
                   </div>
                   <button class="smallBtn" id="crmDoctorPeriodThisMonth" type="button">Mês atual</button>
+                  <button class="smallBtn" id="crmPrintReport" type="button">Imprimir relatório</button>
+                  <button class="smallBtn" id="crmDownloadReport" type="button">Baixar CSV</button>
                 </div>
                 <div class="crmDoctorFilters">
                   <div><div class="lbl">Data inicial</div><input class="input" id="crmDoctorPeriodFrom" type="date"></div>
                   <div><div class="lbl">Data final</div><input class="input" id="crmDoctorPeriodTo" type="date"></div>
-                  <div><div class="lbl">Considerar data de</div><select class="input" id="crmDoctorPeriodBasis"><option value="lastContact">Último contato / atendimento</option><option value="firstContact">Primeiro contato</option><option value="packageStart">Início do pacote</option><option value="createdAt">Cadastro criado</option><option value="updatedAt">Última atualização</option></select></div>
+                <div><div class="lbl">Considerar data de</div><select class="input" id="crmDoctorPeriodBasis"><option value="lastConsultation">Última consulta</option><option value="firstConsultation">Primeira consulta</option><option value="lastContact">Último contato / atendimento</option><option value="firstContact">Primeiro contato</option><option value="packageStart">Início do pacote</option><option value="createdAt">Cadastro criado</option><option value="updatedAt">Última atualização</option></select></div>
                   <div><div class="lbl">Tipo</div><select class="input" id="crmDoctorPeriodType"><option value="all">Pacientes e leads</option><option value="patient">Somente pacientes</option><option value="lead">Somente leads</option></select></div>
                   <div class="span2"><div class="lbl">Médico</div><select class="input" id="crmDoctorPeriodDoctor"><option value="all">Todos os médicos</option></select></div>
                 </div>
@@ -7523,6 +7545,7 @@ body[data-theme="senna_brasil"] .hdr{
       <div id="rulesHost" style="margin-top:12px"></div>
       <div class="mFoot">
         <button class="mBtn" id="addRule">+ Adicionar regra de recebimento</button>
+        <button class="mBtn" id="btnBonusRules" type="button">Regras de bonificação</button>
       </div>
       <div class="themeSectionTitle" style="margin-top:18px;color:var(--bad)">Regras de contas a pagar</div>
       <div id="payableRulesHost" style="margin-top:12px"></div>
@@ -7586,6 +7609,9 @@ body[data-theme="senna_brasil"] .hdr{
         </details>
         <div class="small">Recuperação de senha: digite seu e-mail acima e clique em “Recuperar senha”.</div>
         <div class="small" id="cloudUserStatus">Status: não conectado.</div>
+        <div class="mFoot">
+          <button class="mBtn" id="btnBackupCenter" type="button">Backups, importar e exportar</button>
+        </div>
         <div class="mFoot authOnly">
           <button class="mBtn" id="btnSyncLocalToCloud" type="button">Enviar dados atuais para nuvem</button>
           <button class="mBtn danger" id="btnSignOut" type="button">Sair</button>
@@ -7628,6 +7654,7 @@ body[data-theme="senna_brasil"] .hdr{
         <div class="mFoot">
           <button class="mBtn primary" id="btnUpdateProfile" type="button">Salvar nome</button>
           <button class="mBtn" id="btnChangePassword" type="button">Trocar senha</button>
+          <button class="mBtn" id="btnBackupCenterAccount" type="button">Backups, importar e exportar</button>
           <button class="mBtn danger" id="btnSignOutAccount" type="button">Logout</button>
         </div>
       </div>
@@ -7697,6 +7724,11 @@ body[data-theme="senna_brasil"] .hdr{
             <div><div class="lbl">Botões degradê 2</div><input class="input" id="customButtonBg2" type="color" value="#8b5cf6"></div>
             <div><div class="lbl">Texto dos botões</div><input class="input" id="customButtonText" type="color" value="#ffffff"></div>
           </div>
+        </div>
+        <div class="accountPanel">
+          <div class="themeSectionTitle">Altura dos dias do calendário</div>
+          <div class="helper">Ajuste a altura sem sair da área de temas.</div>
+          <div class="mFoot"><button class="mBtn" id="btnDayH" type="button">Ajustar altura do dia</button></div>
         </div>
         <div class="mFoot">
           <button class="mBtn" id="btnApplyAccentColor" type="button">Aplicar destaque</button>
@@ -7867,6 +7899,8 @@ body[data-theme="senna_brasil"] .hdr{
         <div class="backupToolbar">
           <button class="mBtn primary" id="btnCreateBackupNow" type="button">Criar backup na nuvem</button>
           <button class="mBtn" id="btnExportBackupPack" type="button">Baixar JSON</button>
+          <button class="mBtn" id="btnImport" type="button">Importar dados</button>
+          <button class="mBtn" id="btnExport" type="button">Exportar estado atual</button>
           <button class="mBtn" id="btnRefreshBackups" type="button">Atualizar lista</button>
         </div>
         <div class="themeSectionTitle">Backups disponíveis</div>
@@ -8211,7 +8245,7 @@ body[data-theme="senna_brasil"] .hdr{
       const label = UI.el('cloudUserStatus');
       if (label) label.textContent = message;
       const loginBtn = UI.el('btnLogin');
-      if (loginBtn) loginBtn.textContent = currentUser ? 'Conta / Nuvem' : 'Cadastro/Login';
+      if (loginBtn) loginBtn.textContent = 'Conta / Nuvem';
       syncUserHeader();
     }
 
@@ -11325,7 +11359,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const set = (id,val='') => { const el = UI.el(id); if (el) el.value = val; };
       const title = UI.el('crmFormTitle'); if (title) title.textContent = isLead ? 'Cadastrar lead não convertido' : 'Cadastrar paciente';
       crmRefreshDoctorSelects();
-      set('crmName'); set('crmPhone'); set('crmOrigin'); set('crmDoctor'); set('crmOwner'); set('crmInterest'); set('crmPackage'); set('crmPackageMonths'); set('crmPackageStart'); set('crmAmountPaid'); set('crmNextContact'); set('crmRecurrenceDays'); set('crmFirstContact', todayISO()); set('crmLastContact'); set('crmReminderDays','0'); set('crmProcedures'); set('crmNotes');
+      set('crmName'); set('crmPhone'); set('crmBirthDate'); set('crmCpf'); set('crmEmail'); set('crmAddress'); set('crmReferral'); set('crmOrigin'); set('crmDoctor'); set('crmAdditionalDoctors'); set('crmOwner'); set('crmInterest'); set('crmPackage'); set('crmPackageMonths'); set('crmPackageStart'); set('crmAmountPaid'); set('crmTotalSpent'); set('crmNextContact'); set('crmRecurrenceDays'); set('crmFirstContact', todayISO()); set('crmLastContact'); set('crmFirstConsultation'); set('crmLastConsultation'); set('crmReminderDays','0'); set('crmProcedures'); set('crmNotes');
       set('crmType', isLead ? 'lead' : 'patient');
       set('crmStatus', isLead ? 'novo' : 'ativo');
     }
@@ -11376,8 +11410,14 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         type,
         name,
         phone:(UI.el('crmPhone')?.value || '').trim(),
+        birthDate:UI.el('crmBirthDate')?.value || '',
+        cpf:(UI.el('crmCpf')?.value || '').trim(),
+        email:(UI.el('crmEmail')?.value || '').trim(),
+        address:(UI.el('crmAddress')?.value || '').trim(),
+        referral:(UI.el('crmReferral')?.value || '').trim(),
         origin:(UI.el('crmOrigin')?.value || '').trim(),
         doctor:(UI.el('crmDoctor')?.value || '').trim(),
+        additionalDoctors:(UI.el('crmAdditionalDoctors')?.value || '').split(',').map(x=>x.trim()).filter(Boolean),
         owner:(UI.el('crmOwner')?.value || '').trim(),
         interest:(UI.el('crmInterest')?.value || '').trim(),
         status:(UI.el('crmStatus')?.value || (type === 'lead' ? 'novo' : 'ativo')),
@@ -11386,17 +11426,26 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         packageMonths:Number(UI.el('crmPackageMonths')?.value || 0),
         packageStart:UI.el('crmPackageStart')?.value || '',
         amountPaid:Number(UI.el('crmAmountPaid')?.value || 0),
+        totalSpent:Number(UI.el('crmTotalSpent')?.value || UI.el('crmAmountPaid')?.value || 0),
         nextContact:UI.el('crmNextContact')?.value || '',
         recurrenceDays:Number(UI.el('crmRecurrenceDays')?.value || 0),
         firstContact:UI.el('crmFirstContact')?.value || '',
         lastContact:UI.el('crmLastContact')?.value || '',
+        firstConsultation:UI.el('crmFirstConsultation')?.value || '',
+        lastConsultation:UI.el('crmLastConsultation')?.value || '',
         reminderDays:Number(UI.el('crmReminderDays')?.value || 0),
         notes:(UI.el('crmNotes')?.value || '').trim(),
         updatedAt:now,
         createdAt: CRMForm.editingId ? ((state.crm.find(x=>x.id===CRMForm.editingId)||{}).createdAt || now) : now
       };
+      if (type !== 'lead' && model.recurrenceDays > 0 && model.lastConsultation) {
+        const recontactBase = parseISO(model.lastConsultation);
+        recontactBase.setDate(recontactBase.getDate() + model.recurrenceDays);
+        model.nextContact = iso(recontactBase);
+      }
       const old = state.crm.find(x => x.id === model.id);
       if (old && old.history) model.history = old.history;
+      model.contactHistory = Array.isArray(old?.contactHistory) ? old.contactHistory : [];
       const idx = state.crm.findIndex(x => x.id === model.id);
       if (idx >= 0) state.crm[idx] = model; else state.crm.push(model);
       CRMForm.tab = type;
@@ -11409,6 +11458,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       crmEnsure();
       const item = state.crm.find(x => x.id === id);
       if (!item) return;
+      setCommercialView('register');
       CRMForm.editingId = id;
       CRMForm.tab = item.type === 'lead' ? 'lead' : 'patient';
       UI.el('crmTabPatients')?.classList.toggle('active', CRMForm.tab === 'patient');
@@ -11418,7 +11468,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       crmRefreshDoctorSelects(item.doctor);
       const set = (id,val='') => { const el = UI.el(id); if (el) el.value = val; };
       UI.el('crmFormTitle').textContent = 'Editando: ' + (item.name || 'cadastro');
-      set('crmName', item.name); set('crmPhone', item.phone); set('crmOrigin', item.origin); set('crmDoctor', item.doctor); set('crmOwner', item.owner); set('crmInterest', item.interest); set('crmType', item.type); set('crmStatus', item.status); set('crmProcedures', item.procedures); set('crmPackage', item.packageName); set('crmPackageMonths', item.packageMonths); set('crmPackageStart', item.packageStart); set('crmAmountPaid', item.amountPaid); set('crmNextContact', item.nextContact); set('crmRecurrenceDays', item.recurrenceDays); set('crmFirstContact', item.firstContact); set('crmLastContact', item.lastContact); set('crmReminderDays', item.reminderDays ?? 0); set('crmNotes', item.notes);
+      set('crmName', item.name); set('crmPhone', item.phone); set('crmBirthDate', item.birthDate); set('crmCpf', item.cpf); set('crmEmail', item.email); set('crmAddress', item.address); set('crmReferral', item.referral); set('crmOrigin', item.origin); set('crmDoctor', item.doctor); set('crmAdditionalDoctors', (item.additionalDoctors || []).join(', ')); set('crmOwner', item.owner); set('crmInterest', item.interest); set('crmType', item.type); set('crmStatus', item.status); set('crmProcedures', item.procedures); set('crmPackage', item.packageName); set('crmPackageMonths', item.packageMonths); set('crmPackageStart', item.packageStart); set('crmAmountPaid', item.amountPaid); set('crmTotalSpent', item.totalSpent ?? item.amountPaid); set('crmNextContact', item.nextContact); set('crmRecurrenceDays', item.recurrenceDays); set('crmFirstContact', item.firstContact); set('crmLastContact', item.lastContact); set('crmFirstConsultation', item.firstConsultation); set('crmLastConsultation', item.lastConsultation); set('crmReminderDays', item.reminderDays ?? 0); set('crmNotes', item.notes);
       document.getElementById('crmPageCard')?.scrollIntoView({behavior:'smooth', block:'start'});
     }
     function deleteCRMEntry(id){
@@ -11447,11 +11497,13 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const item = state.crm.find(x => x.id === id);
       if (!item) return;
       const days = Number(item.recurrenceDays || 0) || 7;
-      const d = parseISO(todayISO());
+      const d = parseISO(item.type !== 'lead' && item.lastConsultation ? item.lastConsultation : todayISO());
       d.setDate(d.getDate() + days);
       pushHistorySnapshot();
       item.lastContact = todayISO();
       item.nextContact = iso(d);
+      item.contactHistory = Array.isArray(item.contactHistory) ? item.contactHistory : [];
+      item.contactHistory.push({at:new Date().toISOString(), type:'reagendamento', nextContact:item.nextContact});
       item.status = item.type === 'lead' ? 'recontatar' : (item.status || 'ativo');
       item.updatedAt = new Date().toISOString();
       save();
@@ -11461,6 +11513,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const due = crmDueText(item);
       const cls = crmBadgeClass(item);
       const end = crmEndDate(item);
+      const contactDates = (item.contactHistory || []).slice(-8).map(h=>h.at ? new Date(h.at).toLocaleDateString('pt-BR') : '').filter(Boolean);
       const contactLabel = item.type === 'lead' ? 'Próximo recontato' : 'Retorno / consulta';
       const badges = [`<span class="crmBadge ${cls}">${item.type === 'lead' ? 'Lead' : 'Paciente'} · ${escapeHtml(crmStatusLabel(item.status))}</span>`];
       if (item.origin) badges.push(`<span class="crmBadge info">Origem: ${escapeHtml(item.origin)}</span>`);
@@ -11476,8 +11529,9 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
           <div class="crmTimeBox"><div class="k">${contactLabel}</div><div class="v">${item.nextContact ? formatDateBR(item.nextContact) : '—'}</div></div>
           <div class="crmTimeBox"><div class="k">Pacote</div><div class="v">${escapeHtml(crmPackageText(item))}</div></div>
           <div class="crmTimeBox"><div class="k">Fim pacote</div><div class="v">${end ? formatDateBR(end) : '—'}</div></div>
-          <div class="crmTimeBox"><div class="k">Valor pago</div><div class="v">${fmtMoney(item.amountPaid || 0)}</div></div>
+          <div class="crmTimeBox"><div class="k">Total gasto</div><div class="v">${fmtMoney(item.totalSpent ?? item.amountPaid ?? 0)}</div></div>
         </div>
+        <div class="crmMeta" style="margin-top:8px"><b>Recontatos registrados:</b> ${(item.contactHistory || []).length}${contactDates.length ? ` (${escapeHtml(contactDates.join(', '))})` : ''}${item.lastConsultation ? ` · Última consulta: ${formatDateBR(item.lastConsultation)}` : ''}${item.additionalDoctors?.length ? ` · Outros médicos: ${escapeHtml(item.additionalDoctors.join(', '))}` : ''}</div>
         ${item.repositionedAt ? `<div class="crmRepositionNote">Paciente reposicionado como lead não convertido em ${escapeHtml(formatDateBR(String(item.repositionedAt).slice(0,10)))}.</div>` : ''}
         ${item.notes ? `<div class="crmMeta" style="margin-top:10px"><b>Obs.:</b> ${escapeHtml(item.notes)}</div>` : ''}
         <div class="crmActions">
@@ -11544,9 +11598,11 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       if (!item) return;
       pushHistorySnapshot();
       item.lastContact = todayISO();
+      item.contactHistory = Array.isArray(item.contactHistory) ? item.contactHistory : [];
+      item.contactHistory.push({at:new Date().toISOString(), type:'contato_realizado', previousNextContact:item.nextContact || ''});
       const rec = Number(item.recurrenceDays || 0);
       if (rec > 0) {
-        const d = parseISO(todayISO());
+        const d = parseISO(item.type !== 'lead' && item.lastConsultation ? item.lastConsultation : todayISO());
         d.setDate(d.getDate() + rec);
         item.nextContact = iso(d);
       } else {
@@ -11585,6 +11641,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       d.setDate(d.getDate() + Number(days || 0));
       item.lastContact = todayISO();
       item.nextContact = iso(d);
+      item.contactHistory = Array.isArray(item.contactHistory) ? item.contactHistory : [];
+      item.contactHistory.push({at:new Date().toISOString(), type:'adiamento', days:Number(days || 0), nextContact:item.nextContact});
       item.status = item.type === 'lead' ? 'recontatar' : (item.status || 'ativo');
       item.updatedAt = new Date().toISOString();
       save();
@@ -11655,6 +11713,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       return iso(d);
     }
     function crmReportDate(item, basis){
+      if (basis === 'lastConsultation') return crmNormalizeDateForReport(item.lastConsultation || item.lastContact);
+      if (basis === 'firstConsultation') return crmNormalizeDateForReport(item.firstConsultation || item.firstContact);
       if (basis === 'firstContact') return crmNormalizeDateForReport(item.firstContact);
       if (basis === 'packageStart') return crmNormalizeDateForReport(item.packageStart);
       if (basis === 'createdAt') return crmNormalizeDateForReport(item.createdAt);
@@ -11760,7 +11820,12 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       if (quick === 'active') arr = arr.filter(x => ['ativo','novo','negociacao','recontatar'].includes(x.status));
       if (quick === 'lost') arr = arr.filter(x => x.status === 'perdido');
       if (quick === 'renew') arr = arr.filter(x => x.status === 'renovacao' || (crmEndDate(x) && crmDaysUntil(crmEndDate(x)) <= 30));
-      if (q) arr = arr.filter(x => [x.name,x.phone,x.origin,x.doctor,x.owner,x.interest,x.procedures,x.notes].join(' ').toLowerCase().includes(q));
+      if (q) arr = arr.filter(x => [x.name,x.phone,x.cpf,x.email,x.address,x.referral,x.origin,x.doctor,(x.additionalDoctors||[]).join(' '),x.owner,x.interest,x.procedures,x.notes].join(' ').toLowerCase().includes(q));
+      const listDoctor = UI.el('crmListDoctor')?.value || 'all';
+      const listFrom = UI.el('crmListFrom')?.value || '';
+      const listTo = UI.el('crmListTo')?.value || '';
+      if (listDoctor !== 'all') arr = arr.filter(x => x.doctor === listDoctor || (x.additionalDoctors || []).includes(listDoctor));
+      if (listFrom || listTo) arr = arr.filter(x => { const d = crmNormalizeDateForReport(x.lastConsultation || x.lastContact || x.firstConsultation || x.firstContact || x.createdAt); return d && (!listFrom || d >= listFrom) && (!listTo || d <= listTo); });
       arr = arr.slice().sort((a,b) => {
         const pa = crmIsDue(a) ? 0 : 1; const pb = crmIsDue(b) ? 0 : 1;
         if (pa !== pb) return pa - pb;
@@ -12554,8 +12619,114 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       tbody.innerHTML = rows.length ? rows.map(x => `<tr><td>${escapeHtml(agoraV2DateBR(x.at))}</td><td><span class="agoraAuditBadge ${escapeAttr(x.entity)}">${escapeHtml(x.entity || 'geral')}</span></td><td>${escapeHtml(x.action || '')}</td><td>${escapeHtml(x.target || '')}</td><td>${escapeHtml(x.user || '')}</td><td>${escapeHtml(x.details || '')}</td></tr>`).join('') : '<tr><td colspan="6">Nenhum registro encontrado.</td></tr>';
     }
     function openAuditCenter(){ renderAuditCenter(); UI.open('ovAuditCenter'); }
+
+    function crmAllDoctors(item){
+      return Array.from(new Set([item?.doctor, ...((item?.additionalDoctors || []))].map(x=>String(x || '').trim()).filter(Boolean)));
+    }
+
+    function refreshCommercialDoctorFilter(){
+      const sel = UI.el('crmListDoctor');
+      if (!sel) return;
+      const current = sel.value || 'all';
+      const names = Array.from(new Set([...(doctorsEnsure() || []), ...state.crm.flatMap(crmAllDoctors)])).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      sel.innerHTML = '<option value="all">Todos os médicos</option>' + names.map(n=>`<option value="${escapeAttr(n)}">${escapeHtml(n)}</option>`).join('');
+      sel.value = names.includes(current) ? current : 'all';
+    }
+
+    function commercialSourceGroup(item){
+      const source = `${item?.origin || ''} ${item?.referral || ''}`.toLowerCase();
+      return /(google|instagram|facebook|meta|ads|tr[aá]fego|pago|patrocin)/i.test(source) ? 'Tráfego pago' : 'Orgânico / indicação';
+    }
+
+    function commercialBar(label, value, max, suffix=''){
+      const pct = max > 0 ? Math.max(4, Math.round((value / max) * 100)) : 0;
+      return `<div class="commercialBarRow"><div class="commercialBarLabel"><span>${escapeHtml(label)}</span><b>${escapeHtml(String(value))}${suffix}</b></div><div class="commercialBarTrack"><span style="width:${pct}%"></span></div></div>`;
+    }
+
+    function renderCommercialAnalytics(){
+      const host = UI.el('crmAnalytics');
+      if (!host) return;
+      crmEnsure();
+      const items = state.crm || [];
+      const patients = items.filter(x=>x.type !== 'lead');
+      const leads = items.filter(x=>x.type === 'lead');
+      const viewY = Number(state.view?.y ?? new Date().getFullYear());
+      const viewM = Number(state.view?.m ?? new Date().getMonth());
+      const monthStart = iso(new Date(viewY,viewM,1));
+      const monthEnd = iso(new Date(viewY,viewM+1,0));
+      const monthlyItems = items.filter(x=>{ const d=crmNormalizeDateForReport(x.lastConsultation || x.lastContact || x.firstConsultation || x.firstContact || x.createdAt); return d && d>=monthStart && d<=monthEnd; });
+      const byDoctor = new Map();
+      monthlyItems.forEach(item => crmAllDoctors(item).forEach(doc => {
+        if (!byDoctor.has(doc)) byDoctor.set(doc,{attended:0,patients:0,total:0});
+        const row = byDoctor.get(doc); row.attended += 1; if(item.type !== 'lead') row.patients += 1; row.total += Number(item.totalSpent ?? item.amountPaid ?? 0);
+      }));
+      const doctors = Array.from(byDoctor.entries()).sort((a,b)=>b[1].total-a[1].total || b[1].attended-a[1].attended);
+      const maxAttended = Math.max(1,...doctors.map(([,x])=>x.attended));
+      const paidBase = items.filter(x=>commercialSourceGroup(x)==='Tráfego pago');
+      const organicBase = items.filter(x=>commercialSourceGroup(x)!=='Tráfego pago');
+      const sourceRate = arr => arr.length ? Math.round((arr.filter(x=>x.type !== 'lead').length / arr.length) * 100) : 0;
+      const contacted = items.filter(x=>(x.contactHistory || []).length || x.lastContact);
+      const recontactRate = contacted.length ? Math.round((contacted.filter(x=>x.type !== 'lead').length / contacted.length) * 100) : 0;
+      host.innerHTML = `<div class="themeSectionTitle">Indicadores comerciais</div>
+        <div class="commercialKpis">
+          <div class="commercialKpi"><span>Total no consultório</span><b>${patients.length}</b></div>
+          <div class="commercialKpi"><span>Conversão geral</span><b>${items.length ? Math.round((patients.length/items.length)*100) : 0}%</b></div>
+          <div class="commercialKpi"><span>Conversão após recontato</span><b>${recontactRate}%</b></div>
+          <div class="commercialKpi"><span>Receita registrada</span><b>${fmtMoney(patients.reduce((s,x)=>s+Number(x.totalSpent ?? x.amountPaid ?? 0),0))}</b></div>
+        </div>
+        <div class="commercialChartGrid">
+          <div class="commercialChart"><h4>Produtividade médica no mês exibido</h4>${doctors.length ? doctors.map(([doc,x])=>commercialBar(`${doc} · ${x.patients} paciente(s)`,x.attended,maxAttended)).join('') : '<div class="helper">Sem dados por médico neste mês.</div>'}</div>
+          <div class="commercialChart"><h4>Conversão por origem</h4>${commercialBar('Tráfego pago',sourceRate(paidBase),100,'%')}${commercialBar('Orgânico / indicação',sourceRate(organicBase),100,'%')}</div>
+        </div>`;
+      const notes = UI.el('crmActionNotes');
+      if (notes && document.activeElement !== notes) notes.value = state.crmActionNotes || '';
+    }
+
+    function setCommercialView(view){
+      const target = view === 'register' ? 'register' : 'dashboard';
+      document.body.dataset.crmView = target;
+      state.ui = state.ui || {};
+      state.ui.crmMode = true;
+      state.ui.surgeonMode = false;
+      const title = UI.el('crmScreenTitle');
+      const subtitle = UI.el('crmScreenSubtitle');
+      if (title) title.textContent = target === 'register' ? 'Cadastro de pacientes' : 'Controle Comercial';
+      if (subtitle) subtitle.textContent = target === 'register' ? 'Cadastro independente de pacientes e leads' : 'Dashboard, filtros, relatórios e acompanhamento comercial';
+      const badge = UI.el('activeScreenBadge');
+      if (badge) badge.textContent = target === 'register' ? 'Cadastro de pacientes' : 'Controle Comercial';
+      applySurgeonMode(); applyCRMMode(); renderAll();
+      document.getElementById('crmPageCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+
+    function crmReportRowsForExport(){
+      const from = UI.el('crmDoctorPeriodFrom')?.value || '';
+      const to = UI.el('crmDoctorPeriodTo')?.value || '';
+      const basis = UI.el('crmDoctorPeriodBasis')?.value || 'lastContact';
+      const type = UI.el('crmDoctorPeriodType')?.value || 'all';
+      const doctor = UI.el('crmDoctorPeriodDoctor')?.value || 'all';
+      return state.crm.filter(item => {
+        if(type==='patient' && item.type==='lead') return false;
+        if(type==='lead' && item.type!=='lead') return false;
+        if(doctor!=='all' && !crmAllDoctors(item).includes(doctor)) return false;
+        const d=crmReportDate(item,basis); return d && (!from || d>=from) && (!to || d<=to);
+      }).map(item=>({date:crmReportDate(item,basis),doctor:crmAllDoctors(item).join(' / ') || 'Não informado',name:item.name||'',type:item.type==='lead'?'Lead':'Paciente',status:crmStatusLabel(item.status),amount:Number(item.totalSpent ?? item.amountPaid ?? 0)}));
+    }
+
+    function downloadCommercialReport(){
+      const rows=crmReportRowsForExport();
+      const csv=[['Data','Médico(s)','Paciente/Lead','Tipo','Status','Faturamento'],...rows.map(x=>[x.date,x.doctor,x.name,x.type,x.status,x.amount.toFixed(2).replace('.',',')])]
+        .map(row=>row.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(';')).join('\n');
+      const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`relatorio_comercial_${todayISO()}.csv`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    }
+
+    function printCommercialReport(){
+      const rows=crmReportRowsForExport();
+      const win=window.open('','_blank','width=1000,height=760'); if(!win) return alert('Permita pop-ups para imprimir o relatório.');
+      win.document.write(`<html><head><meta charset="utf-8"><title>Relatório comercial</title><style>body{font:14px Arial;padding:24px;color:#111}table{width:100%;border-collapse:collapse}th,td{padding:8px;border:1px solid #bbb;text-align:left}h1{font-size:22px}</style></head><body><h1>Relatório comercial</h1><p>Gerado em ${new Date().toLocaleString('pt-BR')} · ${rows.length} registro(s)</p><table><thead><tr><th>Data</th><th>Médico(s)</th><th>Nome</th><th>Tipo</th><th>Status</th><th>Faturamento</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${escapeHtml(formatDateBR(x.date))}</td><td>${escapeHtml(x.doctor)}</td><td>${escapeHtml(x.name)}</td><td>${x.type}</td><td>${escapeHtml(x.status)}</td><td>${fmtMoney(x.amount)}</td></tr>`).join('')}</tbody></table><script>window.onload=()=>window.print()<\/script></body></html>`); win.document.close();
+    }
+
     const agoraV2OriginalRenderAll = renderAll;
-    renderAll = function(){ agoraV2Ensure(); agoraV2OriginalRenderAll(); renderAdminCenter(); };
+    renderAll = function(){ agoraV2Ensure(); state.crmActionNotes = state.crmActionNotes || ''; agoraV2OriginalRenderAll(); renderAdminCenter(); refreshCommercialDoctorFilter(); renderCommercialAnalytics(); };
 
     bindEvents();
 
@@ -12570,6 +12741,18 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     UI.el('auditFilterEntity')?.addEventListener('change', renderAuditCenter);
     UI.el('auditSearch')?.addEventListener('input', renderAuditCenter);
     UI.el('auditClear')?.addEventListener('click', () => { if(UI.el('auditFilterEntity')) UI.el('auditFilterEntity').value='all'; if(UI.el('auditSearch')) UI.el('auditSearch').value=''; renderAuditCenter(); });
+    UI.el('btnPatientRegister')?.addEventListener('click', () => { setCRMTab('patient'); clearCRMForm('patient'); setCommercialView('register'); });
+    UI.el('btnCommercialControl')?.addEventListener('click', () => setCommercialView('dashboard'));
+    UI.el('crmNewPatient')?.addEventListener('click', () => setCommercialView('register'));
+    UI.el('crmNewLead')?.addEventListener('click', () => setCommercialView('register'));
+    UI.el('btnAgendaScreen')?.addEventListener('click', () => { delete document.body.dataset.crmView; });
+    UI.el('crmListDoctor')?.addEventListener('change', renderCRMPanel);
+    UI.el('crmListFrom')?.addEventListener('change', renderCRMPanel);
+    UI.el('crmListTo')?.addEventListener('change', renderCRMPanel);
+    UI.el('crmSaveActionNotes')?.addEventListener('click', () => { state.crmActionNotes = UI.el('crmActionNotes')?.value || ''; pushHistorySnapshot(); save(); setSaveStatus('saved','Observações comerciais salvas'); });
+    UI.el('crmDownloadReport')?.addEventListener('click', downloadCommercialReport);
+    UI.el('crmPrintReport')?.addEventListener('click', printCommercialReport);
+    UI.el('btnBackupCenterAccount')?.addEventListener('click', () => { UI.close('ovAccount'); openBackupCenter(); });
     preparePasswordFieldsForSafeAutofill();
     bindHamburgerAutoHide();
     clearSensitiveAuthFields();
@@ -13540,6 +13723,39 @@ html, body{
   });
 })();
 </script>
+
+<style id="commercial-control-v1-css">
+  .compatibilityOnly{display:none !important}
+  #btnNewSurgeryRecord{display:none}
+  body.surgeon-mode #btnNewSurgeryRecord{display:inline-flex}
+  body.surgeon-mode #btnPay,
+  body.crm-mode #btnPay{display:none !important}
+  body.crm-mode .container{grid-template-columns:1fr !important}
+  body.crm-mode .mainCol{display:none !important}
+  body.crm-mode .sidebarCol{width:100% !important;max-width:100% !important}
+  body.crm-mode[data-crm-view="register"] #crmPageCard .crmHero > .crmPanel:not(.crmFormPanel){display:none !important}
+  body.crm-mode[data-crm-view="register"] #crmPageCard .crmFormPanel{grid-column:1/-1;width:100%;max-width:100%}
+  body.crm-mode[data-crm-view="dashboard"] #crmPageCard .crmFormPanel{display:none !important}
+  body.crm-mode[data-crm-view="dashboard"] #crmPageCard .crmHero{grid-template-columns:1fr !important}
+  body.crm-mode[data-crm-view="register"] #crmNewPatient,
+  body.crm-mode[data-crm-view="register"] #crmNewLead{display:none !important}
+  .commercialAnalytics{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+  .commercialKpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:10px}
+  .commercialKpi{padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.055);display:grid;gap:5px}
+  .commercialKpi span{font-size:11px;color:var(--mut);font-weight:900}
+  .commercialKpi b{font-size:20px;color:var(--txt)}
+  .commercialChartGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  .commercialChart{padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04)}
+  .commercialChart h4{margin:0 0 12px;color:var(--txt)}
+  .commercialBarRow{display:grid;gap:5px;margin:9px 0}
+  .commercialBarLabel{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--txt)}
+  .commercialBarTrack{height:9px;border-radius:999px;background:rgba(127,127,127,.18);overflow:hidden}
+  .commercialBarTrack span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--acc),var(--good))}
+  .commercialActionsBox{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04)}
+  .commercialCombinedFilters{margin:10px 0 12px}
+  @media(max-width:900px){.commercialKpis,.commercialChartGrid{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.commercialKpis,.commercialChartGrid{grid-template-columns:1fr}}
+</style>
 
 </body>
 </html>
