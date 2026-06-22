@@ -6962,7 +6962,7 @@ body[data-theme="senna_brasil"] .hdr{
   <header class="hdr">
     <div class="headerAligned">
       <div class="compactBrand">
-        <h1>Agenda de Plantões &amp; Produtividade</h1>
+        <h1>Agenda de Plantões e Produtividade</h1>
         
       </div>
       <div class="toolbarCenter">
@@ -7138,20 +7138,6 @@ body[data-theme="senna_brasil"] .hdr{
                 <div><div class="lbl">Responsável comercial</div><input class="input" id="crmOwner" placeholder="Equipe / secretária"></div>
               </div>
               <div style="margin-top:10px"><div class="lbl">Outros médicos que atenderam</div><input class="input" id="crmAdditionalDoctors" placeholder="Separe os nomes por vírgula"></div>
-              <div class="crmDoctorManager">
-                <div class="crmDoctorManagerHead">
-                  <div>
-                    <div class="themeSectionTitle">Equipe médica</div>
-                    <div class="crmSub">Adicione ou remova médicos da lista usada nos cadastros e relatórios.</div>
-                  </div>
-                </div>
-                <div class="crmDoctorManagerGrid">
-                  <div><div class="lbl">Adicionar médico</div><input class="input" id="crmDoctorNewName" placeholder="Ex: Dra. Nome Sobrenome"></div>
-                  <div class="crmDoctorManagerActions"><button class="smallBtn primary" id="crmDoctorAddBtn" type="button">Adicionar</button></div>
-                  <div><div class="lbl">Remover médico</div><select class="input" id="crmDoctorRemoveSelect"></select></div>
-                  <div class="crmDoctorManagerActions"><button class="smallBtn danger" id="crmDoctorRemoveBtn" type="button">Remover</button></div>
-                </div>
-              </div>
               <div class="crmFormGrid3">
                 <div><div class="lbl">Tipo</div><select class="input" id="crmType"><option value="patient">Paciente convertido</option><option value="lead">Lead não convertido</option></select></div>
                 <div><div class="lbl">Status do lead/paciente</div><select class="input" id="crmStatus"><option value="ativo">Ativo</option><option value="renovacao">Renovação</option><option value="expirado">Expirado</option><option value="novo">Novo lead</option><option value="negociacao">Em negociação</option><option value="recontatar">Recontatar</option><option value="sem_resposta">Sem resposta</option><option value="perdido">Perdido</option><option value="convertido">Convertido</option></select></div>
@@ -7523,11 +7509,11 @@ body[data-theme="senna_brasil"] .hdr{
   <div class="ov" id="ovDayH">
     <div class="modal">
       <div class="mHead">
-        <h3>Altura do dia</h3>
+        <h3>Ajustar dimensão da data no calendário</h3>
         <button class="closeX" id="dayHClose">✕</button>
       </div>
       <div style="margin-top:12px">
-        <div class="lbl">Altura: <span id="dayHVal">—</span></div>
+          <div class="lbl">Altura de cada data: <span id="dayHVal">—</span></div>
         <input class="input" id="dayHRange" max="220" min="90" step="1" type="range" />
       </div>
       <div class="mFoot"><button class="mBtn primary" id="dayHOk">Fechar</button></div>
@@ -7726,9 +7712,9 @@ body[data-theme="senna_brasil"] .hdr{
           </div>
         </div>
         <div class="accountPanel">
-          <div class="themeSectionTitle">Altura dos dias do calendário</div>
-          <div class="helper">Ajuste a altura sem sair da área de temas.</div>
-          <div class="mFoot"><button class="mBtn" id="btnDayH" type="button">Ajustar altura do dia</button></div>
+          <div class="themeSectionTitle">Dimensão das datas do calendário</div>
+          <div class="helper">Ajuste a altura das datas sem sair da área de temas.</div>
+          <div class="mFoot"><button class="mBtn" id="btnDayH" type="button">Ajustar dimensão da data no calendário</button></div>
         </div>
         <div class="mFoot">
           <button class="mBtn" id="btnApplyAccentColor" type="button">Aplicar destaque</button>
@@ -8932,8 +8918,9 @@ body[data-theme="senna_brasil"] .hdr{
       o.acc = UI.el('customAcc').value;
       o.manualAccentColor = true;
       save();
-      applyTheme();
+      renderAll();
       renderThemeGrid();
+      setSaveStatus('saved','Destaque aplicado');
     }
 
     function applyAlertHighlightFromInputs(){
@@ -8942,9 +8929,9 @@ body[data-theme="senna_brasil"] .hdr{
       o.alertIntensity = Number(UI.el('customAlertIntensity')?.value || 1.35);
       o.manualAlertHighlight = true;
       save();
-      applyTheme();
-      renderCRMAlerts?.();
+      renderAll();
       renderThemeGrid();
+      setSaveStatus('saved','Alertas comerciais aplicados');
     }
 
     function applyCRMFormBgFromInputs(){
@@ -8952,8 +8939,9 @@ body[data-theme="senna_brasil"] .hdr{
       o.crmFormBg = UI.el('customCRMFormBg')?.value || '#22304f';
       o.manualCRMFormBg = true;
       save();
-      applyTheme();
+      renderAll();
       renderThemeGrid();
+      setSaveStatus('saved','Fundo do CRM aplicado');
     }
 
     function disableManualAccentColor(){
@@ -8972,8 +8960,9 @@ body[data-theme="senna_brasil"] .hdr{
       o.modalText = UI.el('customModalText').value;
       o.manualTextColors = true;
       save();
-      applyTheme();
+      renderAll();
       renderThemeGrid();
+      setSaveStatus('saved','Cores de texto aplicadas');
     }
 
     function disableManualTextColors(){
@@ -8994,8 +8983,9 @@ body[data-theme="senna_brasil"] .hdr{
       o.buttonText = UI.el('customButtonText').value;
       o.manualButtonColors = true;
       save();
-      applyTheme();
+      renderAll();
       renderThemeGrid();
+      setSaveStatus('saved','Cores dos botões aplicadas');
     }
 
     function disableManualButtonColors(){
@@ -12905,6 +12895,126 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
 })();
 </script>
 
+<!-- AJUSTES V2: HEADER, CALENDÁRIO, MODAIS E TEMA -->
+<style id="requested-improvements-v2-css">
+  /* Nome completo, em até duas linhas, sem reticências. */
+  .compactBrand{
+    min-width:220px !important;
+    overflow:visible !important;
+  }
+  .compactBrand h1{
+    width:100% !important;
+    max-width:320px !important;
+    white-space:normal !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
+    line-height:1.05 !important;
+    font-size:clamp(14px,1.25vw,18px) !important;
+    text-wrap:balance !important;
+  }
+  body[data-theme="senna_brasil"] .hdr,
+  body[data-theme="senna_mclaren"] .hdr{
+    min-height:92px !important;
+    padding-top:10px !important;
+    padding-bottom:22px !important;
+  }
+  body[data-theme="senna_brasil"] .headerAligned,
+  body[data-theme="senna_mclaren"] .headerAligned{
+    min-height:58px !important;
+    align-items:center !important;
+  }
+  body[data-theme="senna_brasil"] :where(.toolbarCenter,.saveDock),
+  body[data-theme="senna_mclaren"] :where(.toolbarCenter,.saveDock){
+    transform:translateY(-4px) !important;
+  }
+
+  /* Remove o espaço vazio e impede a barra do mês de cobrir a primeira semana. */
+  .mainCol{
+    padding-top:0 !important;
+    margin-top:0 !important;
+    align-self:start !important;
+  }
+  .mainCalendarCard{
+    padding-top:0 !important;
+    margin-top:0 !important;
+    overflow:visible !important;
+  }
+  .mainCalendarCard > .sectionHead{
+    position:relative !important;
+    top:auto !important;
+    margin-top:0 !important;
+    transform:none !important;
+    z-index:3 !important;
+  }
+  .mainCalendarCard .dowShell,
+  .mainCalendarCard .calFrame,
+  .mainCalendarCard .dowRow,
+  .mainCalendarCard .grid{
+    position:relative !important;
+    top:auto !important;
+    margin-top:0 !important;
+    overflow:visible !important;
+  }
+  .mainCalendarCard .day{
+    min-height:var(--cellH) !important;
+    height:var(--cellH) !important;
+    transform:none !important;
+  }
+  .mainCalendarCard .day:hover{
+    transform:none !important;
+  }
+
+  /* A janela de dimensão abre acima do seletor de temas. */
+  #ovThemeSelector.open{z-index:700000 !important}
+  #ovThemeSelector.open .modal{z-index:700001 !important}
+  #ovDayH.open{z-index:800000 !important;background:rgba(3,8,20,.72) !important}
+  #ovDayH.open .modal{z-index:800001 !important}
+
+  /* Reativa visualmente os controles de personalização diante dos hotfixes antigos. */
+  body[data-manual-accent="on"] :where(.btn,.mBtn,.smallBtn,.crmTab):not(.danger){
+    border-color:var(--acc) !important;
+  }
+  body[data-manual-buttons="on"] :where(.btn,.mBtn,.smallBtn,.crmTab):not(.danger){
+    background:linear-gradient(135deg,var(--custom-button-bg-1),var(--custom-button-bg-2)) !important;
+    color:var(--custom-button-text) !important;
+    -webkit-text-fill-color:var(--custom-button-text) !important;
+    border-color:var(--custom-button-border) !important;
+    box-shadow:0 9px 22px var(--custom-button-shadow) !important;
+  }
+  body[data-manual-colors="on"] .month{
+    color:var(--custom-month-color) !important;
+    -webkit-text-fill-color:var(--custom-month-color) !important;
+  }
+  body[data-manual-colors="on"] .modal,
+  body[data-manual-colors="on"] .modal :where(h1,h2,h3,h4,p,span,div,label,small,strong,b){
+    color:var(--custom-modal-text-color) !important;
+  }
+  .crmFormPanel{background:linear-gradient(180deg,var(--crm-form-bg),rgba(255,255,255,.035)) !important}
+
+  @media(max-width:820px){
+    .compactBrand{min-width:150px !important}
+    .compactBrand h1{max-width:230px !important;font-size:13px !important}
+    body[data-theme="senna_brasil"] :where(.toolbarCenter,.saveDock),
+    body[data-theme="senna_mclaren"] :where(.toolbarCenter,.saveDock){transform:none !important}
+  }
+</style>
+<script id="requested-improvements-v2-js">
+(function(){
+  function closeLateModal(id){
+    var ov=document.getElementById(id);
+    if(ov) ov.classList.remove('open');
+  }
+  document.addEventListener('click',function(event){
+    if(event.target.closest && event.target.closest('#adminClose')){
+      event.preventDefault(); event.stopPropagation(); closeLateModal('ovAdminCenter'); return;
+    }
+    if(event.target.closest && event.target.closest('#auditClose')){
+      event.preventDefault(); event.stopPropagation(); closeLateModal('ovAuditCenter');
+    }
+  },true);
+})();
+</script>
+
 
 
 <!-- =========================================================
@@ -15508,3 +15618,25 @@ body[data-theme="senna_brasil"] .hdr::after{
   new MutationObserver(bind).observe(document.documentElement, {childList:true, subtree:true});
 })();
 </script>
+
+<style id="requested-improvements-v2-final-css">
+  .compactBrand{min-width:220px !important;overflow:visible !important}
+  .compactBrand h1{width:100% !important;max-width:320px !important;white-space:normal !important;overflow:visible !important;text-overflow:clip !important;line-height:1.05 !important;font-size:clamp(14px,1.25vw,18px) !important;text-wrap:balance !important}
+  body[data-theme="senna_brasil"] .hdr,body[data-theme="senna_mclaren"] .hdr{min-height:92px !important;padding-top:10px !important;padding-bottom:22px !important}
+  body[data-theme="senna_brasil"] .headerAligned,body[data-theme="senna_mclaren"] .headerAligned{min-height:58px !important;align-items:center !important}
+  body[data-theme="senna_brasil"] :where(.toolbarCenter,.saveDock),body[data-theme="senna_mclaren"] :where(.toolbarCenter,.saveDock){transform:translateY(-4px) !important}
+  .mainCol{padding-top:0 !important;margin-top:0 !important;align-self:start !important}
+  .mainCalendarCard{padding-top:0 !important;margin-top:0 !important;overflow:visible !important}
+  .mainCalendarCard > .sectionHead{position:relative !important;top:auto !important;margin-top:0 !important;transform:none !important;z-index:3 !important}
+  .mainCalendarCard :where(.dowShell,.calFrame,.dowRow,.grid){position:relative !important;top:auto !important;margin-top:0 !important;overflow:visible !important}
+  .mainCalendarCard .day{min-height:var(--cellH) !important;height:var(--cellH) !important;transform:none !important}
+  .mainCalendarCard .day:hover{transform:none !important}
+  #ovThemeSelector.open{z-index:700000 !important} #ovThemeSelector.open .modal{z-index:700001 !important}
+  #ovDayH.open{z-index:800000 !important;background:rgba(3,8,20,.72) !important} #ovDayH.open .modal{z-index:800001 !important}
+  body[data-manual-accent="on"] :where(.btn,.mBtn,.smallBtn,.crmTab):not(.danger){border-color:var(--acc) !important}
+  body[data-manual-buttons="on"] :where(.btn,.mBtn,.smallBtn,.crmTab):not(.danger){background:linear-gradient(135deg,var(--custom-button-bg-1),var(--custom-button-bg-2)) !important;color:var(--custom-button-text) !important;-webkit-text-fill-color:var(--custom-button-text) !important;border-color:var(--custom-button-border) !important;box-shadow:0 9px 22px var(--custom-button-shadow) !important}
+  body[data-manual-colors="on"] .month{color:var(--custom-month-color) !important;-webkit-text-fill-color:var(--custom-month-color) !important}
+  body[data-manual-colors="on"] .modal,body[data-manual-colors="on"] .modal :where(h1,h2,h3,h4,p,span,div,label,small,strong,b){color:var(--custom-modal-text-color) !important}
+  .crmFormPanel{background:linear-gradient(180deg,var(--crm-form-bg),rgba(255,255,255,.035)) !important}
+  @media(max-width:820px){.compactBrand{min-width:150px !important}.compactBrand h1{max-width:230px !important;font-size:13px !important}body[data-theme="senna_brasil"] :where(.toolbarCenter,.saveDock),body[data-theme="senna_mclaren"] :where(.toolbarCenter,.saveDock){transform:none !important}}
+</style>
