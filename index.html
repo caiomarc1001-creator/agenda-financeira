@@ -6970,29 +6970,25 @@ body[data-theme="senna_brasil"] .hdr{
           <summary aria-label="Menu" class="hambBtn"><span class="hambLines"></span></summary>
           <div class="hambMenu">
             <button class="btn menuItem" id="btnAgendaScreen" type="button">Agenda</button>
-            <button class="btn menuItem" id="btnNewSurgery" type="button">Modo Cirurgião</button>
-            <button class="btn menuItem" id="btnCadastroPacientes" type="button">Cadastro de pacientes</button>
-            <button class="btn menuItem" id="btnCRMMode" type="button">Controle Comercial</button>
-            <button class="btn menuItem" id="btnTheme" type="button">Tema</button>
+            <button class="btn menuItem" id="btnPay">Regras de pagamento</button>
+            <button class="btn menuItem" id="btnNewSurgery">Modo Cirurgião</button>
+            <button class="btn menuItem" id="btnCRMMode">Pacientes &amp; Leads</button>
+            <button class="btn menuItem" id="btnUndo">Desfazer</button>
+            <button class="btn menuItem" id="btnSaveNow">Salvar agora</button>
+            <button class="btn menuItem" id="btnDayH">Altura do dia</button>
+            <button class="btn menuItem" id="btnBonusRules">Bonificação</button>
+            <button class="btn menuItem" id="btnSurgeryCenter">Cirurgias</button>
+            <button class="btn menuItem" id="btnPatientCRM">Pacientes &amp; Leads</button>
+            <button class="btn menuItem" id="btnDashboardCenter">Dashboard</button>
             <button class="btn menuItem" id="btnAdminCenter" type="button">Administração</button>
             <button class="btn menuItem" id="btnAuditCenter" type="button">Auditoria</button>
-            <button class="btn menuItem" id="btnSaveNow" type="button">Salvar agora</button>
-            <button class="btn menuItem" id="btnUndo" type="button">Desfazer</button>
+            <button class="btn menuItem" id="btnTheme">Tema</button>
             <button class="btn menuItem" id="btnToggleCalendarEvents" type="button">Ocultar eventos</button>
-            <button class="btn menuItem headerMenuLoginGhost" id="btnLogin" type="button">Conta / Nuvem</button>
-            <button class="btn danger menuItem" id="btnReset" type="button">Zerar</button>
-            <div class="legacyMenuParking" aria-hidden="true">
-              <button class="btn menuItem" id="btnPay" type="button">Regras de pagamento</button>
-              <button class="btn menuItem" id="btnBonusRules" type="button">Bonificação</button>
-              <button class="btn menuItem" id="btnSurgeryCenter" type="button">Cirurgias</button>
-              <button class="btn menuItem" id="btnPatientCRM" type="button">Controle Comercial</button>
-              <button class="btn menuItem" id="btnDashboardCenter" type="button">Dashboard</button>
-              <button class="btn menuItem" id="btnDayH" type="button">Altura do dia</button>
-              <button class="btn menuItem" id="btnBackupCenter" type="button">Backups</button>
-              <button class="btn menuItem" id="btnImport" type="button">Importar</button>
-              <button class="btn menuItem" id="btnExport" type="button">Exportar</button>
-            </div>
-            
+            <button class="btn menuItem" id="btnBackupCenter">Backups</button>
+            <button class="btn menuItem" id="btnImport">Importar</button>
+            <button class="btn menuItem" id="btnExport">Exportar</button>
+            <button class="btn menuItem headerMenuLoginGhost" id="btnLogin">Cadastro/Login</button>
+            <button class="btn danger menuItem" id="btnReset">Zerar</button>
             <input accept="application/json" hidden id="fileImport" type="file" />
           </div>
         </details>
@@ -7074,7 +7070,7 @@ body[data-theme="senna_brasil"] .hdr{
             <div class="sub">Pacientes operados, convênios e recebimentos</div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-            <button class="smallBtn primary" id="btnNewSurgeryRecord" type="button">Adicionar cirurgia</button>
+            <button class="smallBtn primary" id="btnNewSurgeryRecord" type="button">Nova cirurgia</button>
             <button class="smallBtn" id="btnOpenSurgeryCenter" type="button">Central</button>
             <button class="smallBtn" id="btnToggleSurgeries" type="button">Recolher</button>
           </div>
@@ -7093,7 +7089,7 @@ body[data-theme="senna_brasil"] .hdr{
       <section class="card section" id="crmPageCard">
         <div class="sectionHead">
           <div>
-            <div class="ttl">Controle Comercial</div>
+            <div class="ttl">Pacientes & Leads</div>
             <div class="sub">CRM comercial, acompanhamento e aquecimento de leads</div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -7723,60 +7719,53 @@ body[data-theme="senna_brasil"] .hdr{
   <div class="ov" id="ovSurgeryCenter">
     <div class="modal" style="width:min(1120px,100%)">
       <div class="mHead">
-        <h3>Adicionar Cirurgia</h3>
+        <h3>Controle cirúrgico · pacientes operados</h3>
         <button class="closeX" id="surgeryClose" type="button">✕</button>
       </div>
       <div class="form">
-        <div class="helper">Cadastre a cirurgia com os campos essenciais. Use os filtros abaixo para localizar pacientes por período e gerar relatório em Word (.doc).</div>
+        <div class="helper">Registre cada paciente operado com hospital, convênio/particular, função na cirurgia e status visual de pagamento. Esses dados ficam dentro do mesmo arquivo da agenda e seguem o login do usuário.</div>
         <div class="surgeryFilterBar">
           <div><div class="lbl">Filtro por texto</div><input class="input" id="surgerySearch" placeholder="Paciente, hospital, plano, atendimento..."></div>
           <div><div class="lbl">Status</div><select class="input" id="surgeryStatusFilter"><option value="all">Todos</option><option value="unpaid">Não pagos</option><option value="expected">Previstos</option><option value="billed">Faturados</option><option value="overdue">Pendentes</option><option value="denied">Glosados</option><option value="paid">Pagos</option></select></div>
           <div><div class="lbl">Mês</div><select class="input" id="surgeryMonthFilter"><option value="current">Mês visível</option><option value="all">Todos os meses</option></select></div>
-          <div><div class="lbl">Data inicial</div><input class="input" id="surgeryDateFrom" type="date"></div>
-          <div><div class="lbl">Data final</div><input class="input" id="surgeryDateTo" type="date"></div>
-          <div><div class="lbl">Categoria</div><select class="input" id="surgeryCategoryFilter"><option value="all">Todas</option><option value="convenio">Convênio</option><option value="particular">Particular</option></select></div>
-          <div><div class="lbl">Hospital</div><input class="input" id="surgeryHospitalFilter" placeholder="Filtrar hospital"></div>
-          <div><div class="lbl">Relatório</div><button class="mBtn primary" id="btnSurgeryDocReport" type="button">Baixar relatório .doc</button></div>
         </div>
 
         <div class="accountPanel">
           <div class="row3">
-            <div><div class="lbl">Nome</div><input class="input" id="surgPatient" placeholder="Nome completo"></div>
-            <div><div class="lbl">Data de Nascimento</div><input class="input" id="surgBirthDate" type="date"></div>
-            <div><div class="lbl">Data do Procedimento</div><input class="input" id="surgDate" type="date"></div>
-            <div><div class="lbl">Hospital do Procedimento</div><input class="input" id="surgHospital" placeholder="Hospital onde foi operado"></div>
-            <div><div class="lbl">Atendimento</div><input class="input" id="surgAttendance" placeholder="Número do atendimento"></div>
+            <div><div class="lbl">Data da cirurgia</div><input class="input" id="surgDate" type="date"></div>
+            <div><div class="lbl">Nome do paciente</div><input class="input" id="surgPatient" placeholder="Nome completo"></div>
+            <div><div class="lbl">Nº atendimento</div><input class="input" id="surgAttendance" placeholder="Atendimento / guia / conta"></div>
           </div>
-          <div style="margin-top:10px"><div class="lbl">Detalhes do procedimento</div><textarea class="input" id="surgProcedures" rows="3" placeholder="Descrição livre do procedimento"></textarea></div>
+          <div style="margin-top:10px"><div class="lbl">Procedimentos realizados</div><textarea class="input" id="surgProcedures" rows="3" placeholder="Ex: colecistectomia videolaparoscópica, hernioplastia..."></textarea></div>
           <div class="row3" style="margin-top:10px">
-            <div><div class="lbl">Categoria</div><select class="input" id="surgPaymentType"><option value="convenio">Convênio</option><option value="particular">Particular</option></select></div>
-            <div><div class="lbl">Convênio</div><input class="input" id="surgInsuranceName" placeholder="Ex: Unimed, SulAmérica, Bradesco"></div>
-            <div><div class="lbl">Plano de Saúde</div><input class="input" id="surgHealthPlan" placeholder="Plano / produto"></div>
+            <div><div class="lbl">Particular ou convênio</div><select class="input" id="surgPaymentType"><option value="convenio">Convênio</option><option value="particular">Particular</option></select></div>
+            <div><div class="lbl">Plano de saúde</div><input class="input" id="surgHealthPlan" placeholder="Ex: Unimed, SulAmérica, Bradesco"></div>
+            <div><div class="lbl">Hospital</div><input class="input" id="surgHospital" placeholder="Hospital onde foi operado"></div>
           </div>
           <div class="row3" style="margin-top:10px">
-            <div><div class="lbl">Atuação</div><select class="input" id="surgRole"><option value="principal">Cirurgião</option><option value="auxiliar">Auxiliar</option></select></div>
-            <div><div class="lbl">Status</div><select class="input" id="surgPaymentStatus"><option value="unpaid">Não Pago</option><option value="paid">Pago</option></select></div>
+            <div><div class="lbl">Atuação</div><select class="input" id="surgRole"><option value="principal">Cirurgião principal</option><option value="auxiliar">Auxiliar</option></select></div>
+            <div><div class="lbl">Status financeiro</div><select class="input" id="surgPaymentStatus"><option value="unpaid">Não pago</option><option value="expected">Previsto</option><option value="billed">Faturado</option><option value="overdue">Pendente</option><option value="denied">Glosado</option><option value="paid">Pago</option></select></div>
             <div><div class="lbl">Valor previsto</div><input class="input" id="surgAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
           </div>
           <div class="surgeryFinanceGrid">
-            <div><div class="lbl">Valor Pago</div><input class="input" id="surgReceivedAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
+            <div><div class="lbl">Valor recebido</div><input class="input" id="surgReceivedAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
             <div><div class="lbl">Valor glosado</div><input class="input" id="surgDeniedAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
             <div><div class="lbl">Data faturamento</div><input class="input" id="surgBillingDate" type="date"></div>
             <div><div class="lbl">Previsão pagamento</div><input class="input" id="surgExpectedPayDate" type="date"></div>
           </div>
           <div class="row2" style="margin-top:10px">
-            <div><div class="lbl">Data do Pagamento</div><input class="input" id="surgPaidDate" type="date"></div>
+            <div><div class="lbl">Data pagamento efetivo</div><input class="input" id="surgPaidDate" type="date"></div>
             <div><div class="lbl">Observações financeiras</div><input class="input" id="surgFinanceNote" placeholder="Ex: recurso, glosa parcial, previsão do convênio..."></div>
           </div>
-          <div style="margin-top:10px"><div class="lbl">Observações Gerais</div><textarea class="input" id="surgNotes" rows="2" placeholder="Observações gerais"></textarea></div>
+          <div style="margin-top:10px"><div class="lbl">Observações</div><textarea class="input" id="surgNotes" rows="2" placeholder="Ex: aguardando faturamento, guia enviada, glosa, recurso..."></textarea></div>
           <div class="mFoot">
             <button class="mBtn ghost" id="surgClear" type="button">Limpar formulário</button>
-            <button class="mBtn primary" id="surgSave" type="button">Salvar cirurgia</button>
+            <button class="mBtn primary" id="surgSave" type="button">Salvar paciente operado</button>
           </div>
         </div>
 
         <div>
-          <div class="themeSectionTitle">Cirurgias cadastradas</div>
+          <div class="themeSectionTitle">Pacientes cadastrados</div>
           <div class="surgeryList" id="surgeryFullList"></div>
         </div>
       </div>
@@ -10937,21 +10926,13 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const search = String(UI.el('surgerySearch')?.value || '').trim().toLowerCase();
       const status = UI.el('surgeryStatusFilter')?.value || 'all';
       const monthMode = UI.el('surgeryMonthFilter')?.value || 'current';
-      const dateFrom = UI.el('surgeryDateFrom')?.value || '';
-      const dateTo = UI.el('surgeryDateTo')?.value || '';
-      const category = UI.el('surgeryCategoryFilter')?.value || 'all';
-      const hospitalFilter = String(UI.el('surgeryHospitalFilter')?.value || '').trim().toLowerCase();
       const { start, end } = currentMonthRangeISO();
 
       return (state.surgeries || [])
         .filter(s => {
           const d = String(s.date || '');
           if (monthMode === 'current' && (d < start || d > end)) return false;
-          if (dateFrom && d < dateFrom) return false;
-          if (dateTo && d > dateTo) return false;
           if (status !== 'all' && s.paymentStatus !== status) return false;
-          if (category !== 'all' && s.paymentType !== category) return false;
-          if (hospitalFilter && !String(s.hospital || '').toLowerCase().includes(hospitalFilter)) return false;
           if (search) {
             const hay = [s.patientName,s.attendanceNumber,s.procedures,s.paymentType,s.healthPlan,s.hospital,s.role,s.paymentStatus,s.financeNote,s.notes].join(' ').toLowerCase();
             if (!hay.includes(search)) return false;
@@ -10968,7 +10949,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const received = Number(s.receivedAmount || (paid ? amount : 0) || 0);
       const denied = Number(s.deniedAmount || 0);
       const diff = Math.max(0, amount - received - denied);
-      const conv = s.paymentType === 'particular' ? 'Particular' : `Convênio${s.insuranceName ? ' · ' + escapeHtml(s.insuranceName) : ''}${s.healthPlan ? ' · ' + escapeHtml(s.healthPlan) : ''}`;
+      const conv = s.paymentType === 'particular' ? 'Particular' : `Convênio${s.healthPlan ? ' · ' + escapeHtml(s.healthPlan) : ''}`;
       const timeline = [
         s.date ? `Cirurgia: ${formatDateBR(s.date)}` : '',
         s.billingDate ? `Faturado: ${formatDateBR(s.billingDate)}` : '',
@@ -11051,8 +11032,6 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     function clearSurgeryForm(){
       SurgeryForm.editingId = null;
       UI.el('surgDate').value = state.selDate || todayISO();
-      if (UI.el('surgBirthDate')) UI.el('surgBirthDate').value = '';
-      if (UI.el('surgInsuranceName')) UI.el('surgInsuranceName').value = '';
       UI.el('surgPatient').value = '';
       UI.el('surgAttendance').value = '';
       UI.el('surgProcedures').value = '';
@@ -11095,8 +11074,6 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         id: SurgeryForm.editingId || uid(),
         date: UI.el('surgDate').value || todayISO(),
         patientName,
-        birthDate: UI.el('surgBirthDate')?.value || '',
-        insuranceName: UI.el('surgInsuranceName')?.value.trim() || '',
         attendanceNumber: UI.el('surgAttendance').value.trim(),
         procedures: UI.el('surgProcedures').value.trim(),
         paymentType: UI.el('surgPaymentType').value,
@@ -11128,8 +11105,6 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       SurgeryForm.editingId = id;
       UI.el('surgDate').value = s.date || todayISO();
       UI.el('surgPatient').value = s.patientName || '';
-      if (UI.el('surgBirthDate')) UI.el('surgBirthDate').value = s.birthDate || '';
-      if (UI.el('surgInsuranceName')) UI.el('surgInsuranceName').value = s.insuranceName || '';
       UI.el('surgAttendance').value = s.attendanceNumber || '';
       UI.el('surgProcedures').value = s.procedures || '';
       UI.el('surgPaymentType').value = s.paymentType || 'convenio';
@@ -11180,35 +11155,6 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       host.querySelectorAll('.surgery-edit').forEach(btn => btn.addEventListener('click', () => editSurgery(btn.dataset.id)));
       host.querySelectorAll('.surgery-delete').forEach(btn => btn.addEventListener('click', () => deleteSurgery(btn.dataset.id)));
       host.querySelectorAll('.surgery-open').forEach(btn => btn.addEventListener('click', () => openSurgeryCenter(false)));
-    }
-
-
-    function exportSurgeryDocReport(){
-      const items = filteredSurgeries();
-      const rows = items.map(s => `
-        <tr>
-          <td>${escapeHtml(s.patientName || '')}</td>
-          <td>${escapeHtml(s.attendanceNumber || '')}</td>
-          <td>${formatDateBR(s.date || '')}</td>
-          <td>${escapeHtml(s.hospital || '')}</td>
-          <td>${surgeryPaymentLabel(s.paymentStatus || 'unpaid')}</td>
-        </tr>`).join('');
-      const htmlDoc = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-        body{font-family:Arial,sans-serif} h1{font-size:18pt} table{width:100%;border-collapse:collapse} td,th{border:1px solid #999;padding:6px;font-size:10pt} th{background:#eee}
-      </style></head><body>
-        <h1>Relatório cirúrgico</h1>
-        <p>Gerado em ${new Date().toLocaleString('pt-BR')}</p>
-        <table><thead><tr><th>Nome do paciente</th><th>Atendimento</th><th>Data da cirurgia</th><th>Hospital</th><th>Status de pagamento</th></tr></thead><tbody>
-        ${rows || '<tr><td colspan="5">Nenhum registro encontrado</td></tr>'}
-        </tbody></table>
-      
-
-      </body></html>`;
-      const blob = new Blob(['\ufeff', htmlDoc], {type:'application/msword'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `relatorio-cirurgias-${todayISO()}.doc`;
-      document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
     }
 
     function toggleSurgeriesPanel(){
@@ -11397,13 +11343,13 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       document.body.classList.toggle('crm-mode', on);
       const b1 = UI.el('btnPatientCRM');
       if (b1) {
-        b1.textContent = on ? 'Sair de Controle Comercial' : 'Controle Comercial';
+        b1.textContent = on ? 'Sair de Pacientes & Leads' : 'Pacientes & Leads';
         b1.classList.toggle('modeActive', on);
         b1.setAttribute('aria-pressed', on ? 'true' : 'false');
       }
       const b2 = UI.el('btnCRMMode');
       if (b2) {
-        b2.textContent = on ? 'Sair Controle Comercial' : 'Controle Comercial';
+        b2.textContent = on ? 'Sair Pacientes & Leads' : 'Pacientes & Leads';
         b2.classList.toggle('modeActive', on);
         b2.setAttribute('aria-pressed', on ? 'true' : 'false');
       }
@@ -11675,7 +11621,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const commercial = UI.el('crmCommercialBox');
       const m = crmMetrics();
       const totalUrgent = m.dueToday.length + m.overdue.length;
-      const badgeText = totalUrgent ? `Controle Comercial 🔴${totalUrgent}` : 'Controle Comercial';
+      const badgeText = totalUrgent ? `Pacientes & Leads 🔴${totalUrgent}` : 'Pacientes & Leads';
       const b1 = UI.el('btnPatientCRM'); if (b1 && !state.ui?.crmMode) b1.textContent = badgeText;
       const b2 = UI.el('btnCRMMode'); if (b2 && !state.ui?.crmMode) b2.textContent = badgeText;
       if (box){
@@ -12290,8 +12236,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('surgeryClose').addEventListener('click', () => UI.close('ovSurgeryCenter'));
       UI.el('surgSave').addEventListener('click', saveSurgery);
       UI.el('surgClear').addEventListener('click', clearSurgeryForm);
-      ['surgerySearch','surgeryStatusFilter','surgeryMonthFilter','surgeryDateFrom','surgeryDateTo','surgeryCategoryFilter','surgeryHospitalFilter'].forEach(id => UI.el(id)?.addEventListener('input', renderSurgeryPanel));
-      UI.el('btnSurgeryDocReport')?.addEventListener('click', exportSurgeryDocReport);
+      ['surgerySearch','surgeryStatusFilter','surgeryMonthFilter'].forEach(id => UI.el(id).addEventListener('input', renderSurgeryPanel));
       UI.el('btnToggleSummary').addEventListener('click', toggleSummaryPanel);
       UI.el('btnTogglePayments').addEventListener('click', togglePaymentsPanel);
       UI.el('btnTogglePayables').addEventListener('click', togglePayablesPanel);
@@ -13984,7 +13929,7 @@ html, body{
   .chipMark{width:7px!important;height:7px!important;border-radius:3px!important;}
   .sideOut{min-height:calc(var(--cellH) * 6 + 24px)!important;border-radius:10px!important;padding:4px 0!important;}
 
-  /* CRM / Controle Comercial no celular */
+  /* CRM / Pacientes & Leads no celular */
   .crmHero,.crmFormGrid,.crmFormGrid3,.crmToolbar,.crmStats,.summaryGrid,.row2,.row3{
     display:grid!important;
     grid-template-columns:1fr!important;
@@ -15288,6 +15233,35 @@ html, body{
   #btnUndo{min-width:104px !important;}
   #btnNew{min-width:92px !important;}
 }
+
+
+/* =========================================================
+   CORREÇÃO CIRÚRGICA — REMOVER EFEITO TRANSVERSAL DA HEADER
+   Mantém menu, botões, login, calendário e funções intactos.
+========================================================= */
+body[data-theme="senna_brasil"]::before{
+  background:linear-gradient(180deg,
+    #ffd700 0 52%,
+    #009739 52% 60%,
+    #ffffff 60% 64%,
+    #0b1d6b 64% 78%,
+    transparent 78%
+  ) !important;
+}
+body[data-theme="senna_brasil"] .hdr{
+  background:#ffd700 !important;
+  box-shadow:none !important;
+  filter:none !important;
+}
+body[data-theme="senna_brasil"] .hdr::before{
+  background:linear-gradient(90deg,#009739 0 42%,#ffffff 42% 46%,#0b1d6b 46% 100%) !important;
+  box-shadow:none !important;
+  filter:none !important;
+}
+body[data-theme="senna_brasil"] .hdr::after{
+  display:none !important;
+  content:none !important;
+}
 </style>
 <script id="modal-top-master-fix-js">
 (function(){
@@ -15316,158 +15290,5 @@ html, body{
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
   else bind();
   new MutationObserver(bind).observe(document.documentElement, {childList:true, subtree:true});
-})();
-</script>
-
-
-<!-- =========================================================
-     PATCH PREMIUM v10 — LOGIN FIREBASE EXISTENTE RESTAURADO
-     Escopo: somente autenticação e abertura/fechamento do modal.
-     Não altera calendário, Firestore, CRM, financeiro ou renderização.
-========================================================= -->
-<script id="premium-v10-login-existing-users-patch">
-(function(){
-  'use strict';
-  const $ = (id) => document.getElementById(id);
-
-  function setAuthMsg(msg){
-    const a = $('cloudUserStatus');
-    const b = $('cloudHint');
-    if (a) a.textContent = msg;
-    if (b && msg) b.textContent = msg;
-  }
-
-  function openLoginModalSafe(){
-    const ov = $('ovLogin');
-    if (!ov) return;
-    ov.classList.add('open');
-    const email = $('loginEmail');
-    const pass = $('loginPassword');
-    if (email && !email.value && window.firebase?.auth?.().currentUser?.email) email.value = window.firebase.auth().currentUser.email;
-    setTimeout(() => (email?.value ? pass : email)?.focus?.(), 50);
-  }
-
-  function closeLoginModalSafe(){
-    $('ovLogin')?.classList.remove('open');
-  }
-
-  function humanAuthError(err){
-    const code = err?.code || '';
-    const raw = err?.message || String(err || '');
-    const map = {
-      'auth/invalid-email': 'E-mail inválido.',
-      'auth/user-disabled': 'Este usuário foi desativado no Firebase.',
-      'auth/user-not-found': 'Usuário não encontrado neste projeto Firebase.',
-      'auth/wrong-password': 'Senha incorreta.',
-      'auth/invalid-login-credentials': 'E-mail ou senha incorretos.',
-      'auth/invalid-credential': 'E-mail ou senha incorretos.',
-      'auth/too-many-requests': 'Muitas tentativas. Aguarde alguns minutos e tente novamente.',
-      'auth/network-request-failed': 'Falha de rede. Verifique a conexão.',
-      'auth/unauthorized-domain': 'Este domínio não está autorizado no Firebase Authentication.',
-      'auth/operation-not-allowed': 'Login por e-mail/senha não está habilitado no Firebase Authentication.'
-    };
-    return map[code] || raw;
-  }
-
-  async function waitFirebaseCompat(){
-    const started = Date.now();
-    while (Date.now() - started < 10000) {
-      if (window.firebase && firebase.apps && firebase.auth && firebase.firestore) {
-        if (!firebase.apps.length && window.FIREBASE_CONFIG) firebase.initializeApp(window.FIREBASE_CONFIG);
-        return firebase;
-      }
-      await new Promise(r => setTimeout(r, 120));
-    }
-    throw new Error('Firebase não carregou. Recarregue a página e tente novamente.');
-  }
-
-  async function signInExistingUserSafe(ev){
-    if (ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      ev.stopImmediatePropagation?.();
-    }
-
-    const emailEl = $('loginEmail');
-    const passEl = $('loginPassword');
-    const btn = $('btnSignIn');
-    const email = String(emailEl?.value || '').trim().toLowerCase();
-    const pass = String(passEl?.value || '');
-
-    if (!email || !pass) {
-      setAuthMsg('Informe e-mail e senha.');
-      alert('Informe e-mail e senha.');
-      return false;
-    }
-
-    try {
-      if (btn) { btn.disabled = true; btn.textContent = 'Entrando...'; }
-      setAuthMsg('Entrando com usuário existente...');
-
-      const fb = await waitFirebaseCompat();
-      const auth = fb.auth();
-      try { await auth.setPersistence(fb.auth.Auth.Persistence.LOCAL); } catch(_) {}
-
-      await auth.signInWithEmailAndPassword(email, pass);
-
-      if (passEl) passEl.value = '';
-      closeLoginModalSafe();
-      setAuthMsg('Login realizado. Carregando dados da nuvem...');
-      return false;
-    } catch (err) {
-      console.error('[LOGIN v10] Falha no login existente:', err);
-      const msg = humanAuthError(err);
-      setAuthMsg('Erro ao entrar: ' + msg);
-      alert('Erro ao entrar: ' + msg);
-      return false;
-    } finally {
-      if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
-    }
-  }
-
-  async function resetPasswordSafe(ev){
-    if (ev) { ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation?.(); }
-    const email = String($('loginEmail')?.value || '').trim().toLowerCase();
-    if (!email) return alert('Digite seu e-mail para recuperar a senha.');
-    try {
-      const fb = await waitFirebaseCompat();
-      await fb.auth().sendPasswordResetEmail(email);
-      alert('E-mail de recuperação enviado. Verifique sua caixa de entrada.');
-    } catch (err) {
-      alert('Erro ao recuperar senha: ' + humanAuthError(err));
-    }
-  }
-
-  function bindLoginPatch(){
-    $('btnLogin')?.addEventListener('click', openLoginModalSafe, true);
-    $('btnLoginTop')?.addEventListener('click', openLoginModalSafe, true);
-    $('loginClose')?.addEventListener('click', function(e){ e.preventDefault(); closeLoginModalSafe(); }, true);
-
-    const btn = $('btnSignIn');
-    if (btn) btn.addEventListener('click', signInExistingUserSafe, true);
-
-    const form = $('authForm');
-    if (form) form.addEventListener('submit', signInExistingUserSafe, true);
-
-    const pass = $('loginPassword');
-    if (pass) pass.addEventListener('keydown', function(e){ if (e.key === 'Enter') signInExistingUserSafe(e); }, true);
-
-    const reset = $('btnPasswordReset');
-    if (reset) reset.addEventListener('click', resetPasswordSafe, true);
-
-    if (window.firebase && firebase.auth) {
-      firebase.auth().onAuthStateChanged(function(user){
-        if (!user) return;
-        document.body.dataset.auth = 'on';
-        const name = $('userDisplayName');
-        const email = $('userDisplayEmail');
-        if (name) name.textContent = user.displayName || user.email || 'Usuário conectado';
-        if (email) email.textContent = user.email || 'Nuvem conectada';
-      });
-    }
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindLoginPatch);
-  else bindLoginPatch();
 })();
 </script>
