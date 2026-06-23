@@ -6207,8 +6207,6 @@ body{
     --ui-menu-bg:linear-gradient(180deg,#3e382e,#211d17);--ui-menu-border:#ab9b7e;--ui-menu-button-bg:linear-gradient(180deg,#fffdf7,#ded1b9);--ui-menu-button-text:#332b21;--ui-menu-button-border:#a79678;
   }
 
-  body[data-manual-colors="on"]{--ui-text:var(--custom-modal-text-color,var(--txt));--ui-muted:var(--custom-modal-placeholder-color,var(--mut))}
-
   /* Campos claros e legíveis, inclusive em temas escuros. */
   body :where(
     input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
@@ -8178,6 +8176,8 @@ body[data-theme="senna_brasil"] .hdr{
       surgeries:[],
       crm:[],
       doctors:['Dr. Caio Marcondes Jacomini','Dra. Bruna','Dr. Helber','Dra. Thaís Marcondes Jacomini','Dra. Fernanda Oyakawa'],
+      hospitals:[],
+      insurances:[],
       ui:{ summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, hideCalendarEvents:false, paymentRowsCollapsed:{}, payableRowsCollapsed:{} },
       customTheme:{ bg0:'#0b0f19', bg1:'#1c2740', card:'#22304f', line:'#5b7fc9', txt:'#f5f7fb', mut:'#b8c4de', acc:'#3b82f6', good:'#39d98a', month:'#0b1220', modalText:'#0b1220', buttonBg:'#3b82f6', buttonBg1:'#3b82f6', buttonBg2:'#8b5cf6', buttonText:'#ffffff', alertColor:'#ff5d5d', alertIntensity:1.35, crmFormBg:'#22304f', manualTextColors:false, manualButtonColors:false, manualAccentColor:false, manualAlertHighlight:false, presetOverrides:{} },
       _meta:{ updatedAt:'', updatedBy:'local' }
@@ -8271,9 +8271,12 @@ body[data-theme="senna_brasil"] .hdr{
       s.surgeries = Array.isArray(s.surgeries) ? s.surgeries : [];
       s.crm = Array.isArray(s.crm) ? s.crm : [];
       const baseDoctors = ['Dr. Caio Marcondes Jacomini','Dra. Bruna','Dr. Helber','Dra. Thaís Marcondes Jacomini','Dra. Fernanda Oyakawa'];
-      const existingDoctors = Array.isArray(s.doctors) ? s.doctors : [];
-      const usedDoctors = s.crm.map(x => (x && x.doctor ? String(x.doctor).trim() : '')).filter(Boolean);
-      s.doctors = Array.from(new Set([...baseDoctors, ...existingDoctors, ...usedDoctors].map(x => String(x || '').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      const hasSavedDoctorCatalog = !!obj && Array.isArray(obj.doctors);
+      const usedDoctors = s.crm.flatMap(x => [x?.doctor, ...((x?.additionalDoctors || []))]).map(x => String(x || '').trim()).filter(Boolean);
+      const existingDoctors = hasSavedDoctorCatalog ? obj.doctors : [...baseDoctors, ...usedDoctors];
+      s.doctors = Array.from(new Set(existingDoctors.map(x => String(x || '').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      s.hospitals = Array.from(new Set((Array.isArray(s.hospitals) ? s.hospitals : []).map(x => String(x || '').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      s.insurances = Array.from(new Set((Array.isArray(s.insurances) ? s.insurances : []).map(x => String(x || '').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
       s.ui = { summaryCollapsed:false, paymentsCollapsed:false, surgeriesCollapsed:false, surgeonMode:false, crmMode:false, hideCalendarEvents:false, paymentRowsCollapsed:{}, payableRowsCollapsed:{}, ...(s.ui || {}) };
       if (!s.ui.responsiveCalendar100V1) {
         s.cellH = 100;
@@ -11434,8 +11437,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     const CORE_DOCTORS = ['Dr. Caio Marcondes Jacomini','Dra. Bruna','Dr. Helber','Dra. Thaís Marcondes Jacomini','Dra. Fernanda Oyakawa'];
     function doctorsEnsure(){
       state.doctors = Array.isArray(state.doctors) ? state.doctors : [];
-      const crmDoctors = Array.isArray(state.crm) ? state.crm.map(x => (x?.doctor || '').trim()).filter(Boolean) : [];
-      state.doctors = Array.from(new Set([...CORE_DOCTORS, ...state.doctors, ...crmDoctors].map(x => String(x || '').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      state.doctors = Array.from(new Set(state.doctors.map(x => String(x || '').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
       return state.doctors;
     }
     function ensureDoctorName(name){
@@ -12962,6 +12964,33 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     UI.el('crmDownloadReport')?.addEventListener('click', downloadCommercialReport);
     UI.el('crmPrintReport')?.addEventListener('click', printCommercialReport);
     UI.el('btnBackupCenterAccount')?.addEventListener('click', () => { UI.close('ovAccount'); openBackupCenter(); });
+
+    /* Ponte controlada para os aprimoramentos administrativos carregados ao final do HTML. */
+    const adminCatalogBridgeBindings = {
+      state:{get:()=>state,set:value=>{state=value;}},
+      UI:{get:()=>UI},
+      save:{get:()=>save},
+      escapeHtml:{get:()=>escapeHtml},
+      escapeAttr:{get:()=>escapeAttr},
+      pushHistorySnapshot:{get:()=>pushHistorySnapshot},
+      agoraV2Audit:{get:()=>agoraV2Audit},
+      renderCRMPanel:{get:()=>renderCRMPanel},
+      renderSurgeryPanel:{get:()=>renderSurgeryPanel},
+      setSaveStatus:{get:()=>setSaveStatus},
+      doctorsEnsure:{get:()=>doctorsEnsure,set:value=>{doctorsEnsure=value;}},
+      crmRefreshDoctorSelects:{get:()=>crmRefreshDoctorSelects,set:value=>{crmRefreshDoctorSelects=value;}},
+      renderAdminCenter:{get:()=>renderAdminCenter,set:value=>{renderAdminCenter=value;}},
+      agoraV2ArrayAdd:{get:()=>agoraV2ArrayAdd,set:value=>{agoraV2ArrayAdd=value;}},
+      agoraV2ArrayRemove:{get:()=>agoraV2ArrayRemove,set:value=>{agoraV2ArrayRemove=value;}},
+      renderAll:{get:()=>renderAll,set:value=>{renderAll=value;}},
+      renderRulesEditor:{get:()=>renderRulesEditor,set:value=>{renderRulesEditor=value;}},
+      renderPayableRulesEditor:{get:()=>renderPayableRulesEditor,set:value=>{renderPayableRulesEditor=value;}},
+      renderBonusRulesEditor:{get:()=>renderBonusRulesEditor,set:value=>{renderBonusRulesEditor=value;}}
+    };
+    Object.entries(adminCatalogBridgeBindings).forEach(([name,descriptor])=>{
+      Object.defineProperty(window,name,{configurable:true,enumerable:false,get:descriptor.get,set:descriptor.set});
+    });
+
     preparePasswordFieldsForSafeAutofill();
     bindHamburgerAutoHide();
     clearSensitiveAuthFields();
@@ -13113,6 +13142,67 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
   mo.observe(document.documentElement, {childList:true, subtree:true, attributes:true, attributeFilter:['open','class','style']});
 })();
 </script>
+
+<style id="theme-components-v2-final-css">
+  /* O tema personalizado também participa da mesma linguagem semântica. */
+  body[data-theme="custom"]{
+    --ui-window-bg:linear-gradient(180deg,color-mix(in srgb,var(--card) 96%,white 4%),color-mix(in srgb,var(--card) 88%,var(--bg0) 12%));
+    --ui-panel-bg:linear-gradient(180deg,color-mix(in srgb,var(--card) 94%,white 6%),color-mix(in srgb,var(--card) 84%,var(--bg1) 16%));
+    --ui-text:var(--txt);--ui-muted:var(--mut);--ui-border:var(--line);--ui-focus:var(--acc);
+    --ui-field-bg:#f8fbff;--ui-field-text:#101827;--ui-placeholder:#5b687b;
+    --ui-menu-bg:linear-gradient(180deg,color-mix(in srgb,var(--card) 94%,white 6%),color-mix(in srgb,var(--card) 82%,var(--bg0) 18%));
+    --ui-menu-border:var(--line);--ui-menu-button-bg:linear-gradient(180deg,#ffffff,#e5edf8);--ui-menu-button-text:#101827;--ui-menu-button-border:var(--line);
+  }
+
+  /* Administração e auditoria: nomes e hierarquia tipográfica coerentes em todos os temas. */
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(#ovAdminCenter,#ovAuditCenter) :where(.agoraV2BoxTitle,.agoraV2Name,.agoraTimelineTitle){
+    color:var(--ui-text) !important;
+    -webkit-text-fill-color:var(--ui-text) !important;
+    text-shadow:none !important;
+  }
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(#ovAdminCenter,#ovAuditCenter) :where(.agoraV2BoxSub,.agoraV2Meta,.agoraTimelineDate,.crmEmpty){
+    color:var(--ui-muted) !important;
+    -webkit-text-fill-color:var(--ui-muted) !important;
+    text-shadow:none !important;
+  }
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) #ovAdminCenter .agoraV2Box{
+    background:var(--ui-panel-bg) !important;
+    border-color:var(--ui-border) !important;
+    color:var(--ui-text) !important;
+  }
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) #ovAdminCenter .agoraV2Row{
+    background:color-mix(in srgb,var(--ui-text) 6%,transparent) !important;
+    border-color:var(--ui-border) !important;
+  }
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) #ovAdminCenter .adminCatalogActions .smallBtn:not(.danger){
+    background:var(--ui-menu-button-bg) !important;
+    color:var(--ui-menu-button-text) !important;
+    -webkit-text-fill-color:var(--ui-menu-button-text) !important;
+    border-color:var(--ui-menu-button-border) !important;
+    text-shadow:none !important;
+  }
+
+  /* Todos os botões de fechar usam fundo claro e símbolo escuro legível. */
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) .modal :where(.closeX,#loginClose){
+    background:var(--ui-field-bg) !important;
+    color:var(--ui-field-text) !important;
+    -webkit-text-fill-color:var(--ui-field-text) !important;
+    border-color:var(--ui-border) !important;
+    text-shadow:none !important;
+    box-shadow:0 7px 18px color-mix(in srgb,var(--ui-border) 24%,transparent),inset 0 1px 0 rgba(255,255,255,.76) !important;
+    opacity:1 !important;
+  }
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) .modal :where(.closeX,#loginClose)::before,
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) .modal :where(.closeX,#loginClose)::after{
+    background:var(--ui-field-text) !important;
+    color:var(--ui-field-text) !important;
+    -webkit-text-fill-color:var(--ui-field-text) !important;
+  }
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) .modal :where(.closeX,#loginClose):hover{
+    filter:brightness(.96) saturate(1.05) !important;
+    border-color:var(--ui-focus) !important;
+  }
+</style>
 
 <!-- AJUSTES V2: HEADER, CALENDÁRIO, MODAIS E TEMA -->
 <style id="requested-improvements-v2-css">
@@ -13703,14 +13793,14 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       </div>
       <div class="agoraV2Box">
         <div class="agoraV2BoxTitle">Hospitais</div>
-        <div class="agoraV2BoxSub">Base para futuras regras financeiras, filtros e auditoria.</div>
+        <div class="agoraV2BoxSub">Disponível em cirurgias, filtros, agenda e regras financeiras.</div>
         <input class="input" id="adminHospitalName" placeholder="Nome do hospital">
         <div class="mFoot"><button class="mBtn primary" id="adminAddHospital" type="button">Adicionar hospital</button></div>
         <div class="agoraV2List" id="adminHospitalsList"></div>
       </div>
       <div class="agoraV2Box">
         <div class="agoraV2BoxTitle">Convênios</div>
-        <div class="agoraV2BoxSub">Base para cadastro cirúrgico e relatórios futuros.</div>
+        <div class="agoraV2BoxSub">Disponível no cadastro cirúrgico, filtros e relatórios.</div>
         <input class="input" id="adminInsuranceName" placeholder="Nome do convênio">
         <div class="mFoot"><button class="mBtn primary" id="adminAddInsurance" type="button">Adicionar convênio</button></div>
         <div class="agoraV2List" id="adminInsurancesList"></div>
@@ -16006,10 +16096,294 @@ body[data-theme="senna_brasil"] .hdr::after{
 
   html :is(#theme-ui-a,body):is(#theme-ui-b,body) .modal{background:var(--ui-window-bg) !important;border-color:var(--ui-border) !important;color:var(--ui-text) !important}
   html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(.crmFormPanel,.crmPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,.surgeonModeSearchPanel,.accountPanel,.agoraV2Box){background:var(--ui-panel-bg) !important;border-color:var(--ui-border) !important;color:var(--ui-text) !important}
-  html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(.modal,.crmFormPanel,.crmPanel,.surgeonModeSearchPanel,.accountPanel) :where(.lbl,label,h1,h2,h3,h4,.ttl,.crmTitle,.themeTitle){color:var(--ui-text) !important;-webkit-text-fill-color:var(--ui-text) !important;text-shadow:none !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(.modal,.crmFormPanel,.crmPanel,.surgeonModeSearchPanel,.accountPanel) :where(.lbl,label,h1,h2,h3,h4,.ttl,.crmTitle,.themeTitle,.themeSectionTitle){color:var(--ui-text) !important;-webkit-text-fill-color:var(--ui-text) !important;text-shadow:none !important}
   html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(.modal,.crmFormPanel,.crmPanel,.surgeonModeSearchPanel,.accountPanel) :where(.helper,.crmSub,.sub,.small){color:var(--ui-muted) !important;-webkit-text-fill-color:var(--ui-muted) !important}
+
+  /* A personalização de texto de modal fica restrita às janelas; não vaza para o cadastro. */
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body)[data-manual-colors="on"] .modal :where(.lbl,label,h1,h2,h3,h4,.ttl,.themeTitle,.themeSectionTitle){color:var(--custom-modal-text-color,var(--ui-text)) !important;-webkit-text-fill-color:var(--custom-modal-text-color,var(--ui-text)) !important}
+
+  /* Contraste explícito das legendas sobre o painel azul-claro do Windows XP. */
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body)[data-theme="windows_xp"] #crmPageCard .crmFormPanel :where(.lbl,label,.themeSectionTitle){color:#07205a !important;-webkit-text-fill-color:#07205a !important;text-shadow:none !important}
 
   html :is(#theme-ui-a,body):is(#theme-ui-b,body) #hamburgerPortalMenu,html :is(#theme-ui-a,body):is(#theme-ui-b,body) .hambMenu.masterFloatingMenu{background:var(--ui-menu-bg) !important;border-color:var(--ui-menu-border) !important;color:var(--ui-menu-button-text) !important}
   html :is(#theme-ui-a,body):is(#theme-ui-b,body) #hamburgerPortalMenu :where(.btn,.menuItem),html :is(#theme-ui-a,body):is(#theme-ui-b,body) .hambMenu.masterFloatingMenu :where(.btn,.menuItem){background:var(--ui-menu-button-bg) !important;color:var(--ui-menu-button-text) !important;-webkit-text-fill-color:var(--ui-menu-button-text) !important;border-color:var(--ui-menu-button-border) !important;text-shadow:none !important}
   html :is(#theme-ui-a,body):is(#theme-ui-b,body) #hamburgerPortalMenu :where(.btn,.menuItem):hover,html :is(#theme-ui-a,body):is(#theme-ui-b,body) .hambMenu.masterFloatingMenu :where(.btn,.menuItem):hover{filter:brightness(.97) saturate(1.08) !important;box-shadow:0 7px 18px color-mix(in srgb,var(--ui-menu-border) 28%,transparent) !important}
+</style>
+
+<style id="admin-catalogs-v2-final-css">
+  .agoraV2Row .adminCatalogActions{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+  .agoraV2Row .adminCatalogActions .smallBtn{min-width:76px}
+  .agoraV2Row .adminCatalogActions .danger{color:#fff !important;-webkit-text-fill-color:#fff !important}
+  @media(max-width:620px){.agoraV2Row{align-items:flex-start !important}.agoraV2Row .adminCatalogActions{width:100%;justify-content:stretch}.agoraV2Row .adminCatalogActions .smallBtn{flex:1}}
+</style>
+
+<script id="admin-catalogs-v2-final-js">
+(function(){
+  const catalogLabels = {
+    doctor:{single:'médico',plural:'Médicos'},
+    hospital:{single:'hospital',plural:'Hospitais'},
+    insurance:{single:'convênio',plural:'Convênios'}
+  };
+
+  function catalogNormalize(value){ return String(value || '').trim().replace(/\s+/g,' '); }
+  function catalogSame(a,b){ return catalogNormalize(a).localeCompare(catalogNormalize(b),'pt-BR',{sensitivity:'base'}) === 0; }
+  function catalogSort(values){
+    const out=[];
+    (values || []).map(catalogNormalize).filter(Boolean).forEach(value => { if(!out.some(x=>catalogSame(x,value))) out.push(value); });
+    return out.sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  }
+  function catalogArray(kind){
+    if(kind === 'doctor') return state.doctors;
+    if(kind === 'hospital') return state.hospitals;
+    return state.insurances;
+  }
+  function catalogSetArray(kind, values){
+    const clean=catalogSort(values);
+    if(kind === 'doctor') state.doctors=clean;
+    else if(kind === 'hospital') state.hospitals=clean;
+    else state.insurances=clean;
+  }
+  function catalogEnsure(){
+    state.doctors=Array.isArray(state.doctors)?state.doctors:[];
+    state.hospitals=Array.isArray(state.hospitals)?state.hospitals:[];
+    state.insurances=Array.isArray(state.insurances)?state.insurances:[];
+    if(!state.adminCatalogsV2Initialized){
+      const surgeryHospitals=(state.surgeries || []).map(x=>x?.hospital);
+      const ruleHospitals=[...(state.payRules || []).map(x=>x?.name),...(state.payableRules || []).map(x=>x?.name),...(state.bonusRules || []).map(x=>x?.locationName)];
+      const surgeryInsurances=(state.surgeries || []).map(x=>x?.insuranceProvider || x?.insurance || x?.convenio);
+      state.hospitals=catalogSort([...state.hospitals,...surgeryHospitals,...ruleHospitals]);
+      state.insurances=catalogSort([...state.insurances,...surgeryInsurances]);
+      state.doctors=catalogSort(state.doctors);
+      state.adminCatalogsV2Initialized=true;
+      save();
+    } else {
+      state.doctors=catalogSort(state.doctors);
+      state.hospitals=catalogSort(state.hospitals);
+      state.insurances=catalogSort(state.insurances);
+    }
+  }
+
+  doctorsEnsure=function(){ catalogEnsure(); return state.doctors; };
+
+  function catalogOption(select,value,text){
+    const opt=document.createElement('option');
+    opt.value=value;
+    opt.textContent=text;
+    select.appendChild(opt);
+  }
+  function catalogFillSelect(id, values, mode, selectedValue){
+    const select=UI.el(id); if(!select) return;
+    const current=selectedValue !== undefined ? String(selectedValue || '') : String(select.value || '');
+    select.innerHTML='';
+    if(mode === 'all') catalogOption(select,'all','Todos os médicos');
+    else if(mode === 'empty') catalogOption(select,'','Selecione o médico');
+    values.forEach(value=>catalogOption(select,value,value));
+    if(current && current !== 'all' && !values.some(value=>catalogSame(value,current))){
+      catalogOption(select,current,current+' (histórico)');
+    }
+    if([...select.options].some(opt=>opt.value===current)) select.value=current;
+    else select.value=mode === 'all' ? 'all' : '';
+  }
+  function catalogBuildDatalist(id, values){
+    let list=UI.el(id);
+    if(!list){ list=document.createElement('datalist'); list.id=id; document.body.appendChild(list); }
+    list.innerHTML='';
+    values.forEach(value=>{ const opt=document.createElement('option'); opt.value=value; list.appendChild(opt); });
+  }
+  function catalogAttachList(selector,listId){
+    document.querySelectorAll(selector).forEach(input=>input.setAttribute('list',listId));
+  }
+  function refreshCatalogOptions(){
+    catalogEnsure();
+    catalogBuildDatalist('catalogHospitalsOptions',state.hospitals);
+    catalogBuildDatalist('catalogInsurancesOptions',state.insurances);
+    catalogBuildDatalist('catalogDoctorsOptions',state.doctors);
+    catalogAttachList('#surgHospital,#surgeryHospitalFilter,#evName,#rulesHost input[data-k="name"],#payableRulesHost input[data-k="name"],.bonus-location','catalogHospitalsOptions');
+    catalogAttachList('#surgInsurance','catalogInsurancesOptions');
+    catalogAttachList('#crmAdditionalDoctors','catalogDoctorsOptions');
+    catalogFillSelect('crmDoctor',state.doctors,'empty');
+    catalogFillSelect('crmListDoctor',state.doctors,'all');
+    catalogFillSelect('crmDoctorPeriodDoctor',state.doctors,'all');
+    const removeSelect=UI.el('crmDoctorRemoveSelect');
+    if(removeSelect) catalogFillSelect('crmDoctorRemoveSelect',state.doctors,'none');
+  }
+
+  crmRefreshDoctorSelects=function(selectedDoctor){
+    catalogEnsure();
+    catalogFillSelect('crmDoctor',state.doctors,'empty',selectedDoctor !== undefined ? selectedDoctor : UI.el('crmDoctor')?.value || '');
+    if(UI.el('crmDoctorRemoveSelect')) catalogFillSelect('crmDoctorRemoveSelect',state.doctors,'none');
+  };
+
+  function catalogItemMeta(kind){
+    if(kind === 'doctor') return 'Disponível nos cadastros, filtros e relatórios médicos';
+    if(kind === 'hospital') return 'Disponível em cirurgias, agenda, filtros e regras financeiras';
+    return 'Disponível em cirurgias, filtros e relatórios';
+  }
+  function catalogListHtml(items,kind){
+    if(!(items || []).length) return '<div class="crmEmpty">Nenhum item cadastrado.</div>';
+    return items.map(value=>`<div class="agoraV2Row"><div><div class="agoraV2Name">${escapeHtml(value)}</div><div class="agoraV2Meta">${escapeHtml(catalogItemMeta(kind))}</div></div><div class="adminCatalogActions"><button class="smallBtn" type="button" data-catalog-edit="${kind}" data-catalog-name="${escapeAttr(value)}">Editar</button><button class="smallBtn danger" type="button" data-catalog-remove="${kind}" data-catalog-name="${escapeAttr(value)}">Excluir</button></div></div>`).join('');
+  }
+  renderAdminCenter=function(){
+    catalogEnsure();
+    const doctorList=UI.el('adminDoctorsList'); if(doctorList) doctorList.innerHTML=catalogListHtml(state.doctors,'doctor');
+    const hospitalList=UI.el('adminHospitalsList'); if(hospitalList) hospitalList.innerHTML=catalogListHtml(state.hospitals,'hospital');
+    const insuranceList=UI.el('adminInsurancesList'); if(insuranceList) insuranceList.innerHTML=catalogListHtml(state.insurances,'insurance');
+    refreshCatalogOptions();
+  };
+
+  function catalogReferenceCount(kind,value){
+    let total=0;
+    const eq=x=>catalogSame(x,value);
+    if(kind === 'doctor'){
+      (state.crm || []).forEach(item=>{ if(eq(item.doctor)) total++; total+=(item.additionalDoctors || []).filter(eq).length; });
+      (state.surgeries || []).forEach(item=>{ if(eq(item.doctor || item.surgeon || item.assistantDoctor)) total++; });
+    } else if(kind === 'hospital'){
+      (state.surgeries || []).forEach(item=>{ if(eq(item.hospital)) total++; });
+      (state.events || []).forEach(item=>{ if(eq(item.name)) total++; });
+      (state.payRules || []).forEach(item=>{ if(eq(item.name)) total++; });
+      (state.payableRules || []).forEach(item=>{ if(eq(item.name)) total++; });
+      (state.bonusRules || []).forEach(item=>{ if(eq(item.locationName)) total++; });
+    } else {
+      (state.surgeries || []).forEach(item=>{ if(eq(item.insuranceProvider || item.insurance || item.convenio)) total++; });
+    }
+    return total;
+  }
+  function catalogRenameReferences(kind,oldValue,newValue){
+    const rename=(obj,key)=>{ if(obj && catalogSame(obj[key],oldValue)) obj[key]=newValue; };
+    if(kind === 'doctor'){
+      (state.crm || []).forEach(item=>{ rename(item,'doctor'); item.additionalDoctors=(item.additionalDoctors || []).map(value=>catalogSame(value,oldValue)?newValue:value); });
+      (state.surgeries || []).forEach(item=>{ ['doctor','surgeon','assistantDoctor'].forEach(key=>rename(item,key)); });
+    } else if(kind === 'hospital'){
+      (state.surgeries || []).forEach(item=>rename(item,'hospital'));
+      (state.events || []).forEach(item=>rename(item,'name'));
+      (state.payRules || []).forEach(item=>rename(item,'name'));
+      (state.payableRules || []).forEach(item=>rename(item,'name'));
+      (state.bonusRules || []).forEach(item=>rename(item,'locationName'));
+    } else {
+      (state.surgeries || []).forEach(item=>['insuranceProvider','insurance','convenio'].forEach(key=>rename(item,key)));
+    }
+  }
+  function catalogAfterChange(message){
+    save();
+    renderAdminCenter();
+    renderCRMPanel?.();
+    renderSurgeryPanel?.();
+    refreshCatalogOptions();
+    setSaveStatus?.('saved',message);
+  }
+  function catalogAdd(kind,value){
+    catalogEnsure();
+    const name=catalogNormalize(value); const label=catalogLabels[kind];
+    if(!name){ alert(`Informe o nome do ${label.single}.`); return false; }
+    const items=catalogArray(kind);
+    if(items.some(item=>catalogSame(item,name))){ alert(`${label.single[0].toUpperCase()+label.single.slice(1)} já cadastrado.`); return false; }
+    pushHistorySnapshot();
+    catalogSetArray(kind,[...items,name]);
+    agoraV2Audit?.(`${label.single[0].toUpperCase()+label.single.slice(1)} adicionado`,'admin',name,'Catálogo administrativo');
+    catalogAfterChange(`${label.single} adicionado`);
+    return true;
+  }
+  const catalogEditorConfig={
+    doctor:{input:'adminDoctorName',button:'adminAddDoctor',addLabel:'Adicionar médico'},
+    hospital:{input:'adminHospitalName',button:'adminAddHospital',addLabel:'Adicionar hospital'},
+    insurance:{input:'adminInsuranceName',button:'adminAddInsurance',addLabel:'Adicionar convênio'}
+  };
+  function catalogResetEditor(kind){
+    const config=catalogEditorConfig[kind]; if(!config) return;
+    const input=UI.el(config.input); const button=UI.el(config.button);
+    if(input){ input.value=''; delete input.dataset.catalogEditing; }
+    if(button) button.textContent=config.addLabel;
+  }
+  function catalogBeginEdit(kind,oldValue){
+    const config=catalogEditorConfig[kind]; if(!config) return;
+    const input=UI.el(config.input); const button=UI.el(config.button);
+    if(input){ input.value=oldValue; input.dataset.catalogEditing=oldValue; input.focus(); input.select(); }
+    if(button) button.textContent='Salvar alteração';
+  }
+  function catalogEdit(kind,oldValue,newValue){
+    catalogEnsure();
+    const label=catalogLabels[kind];
+    const next=catalogNormalize(newValue);
+    if(!next){ alert(`Informe o novo nome do ${label.single}.`); return false; }
+    if(catalogSame(next,oldValue)){ catalogResetEditor(kind); return true; }
+    const items=catalogArray(kind);
+    if(items.some(item=>!catalogSame(item,oldValue) && catalogSame(item,next))){ alert(`${label.single[0].toUpperCase()+label.single.slice(1)} já cadastrado.`); return false; }
+    pushHistorySnapshot();
+    catalogSetArray(kind,items.map(item=>catalogSame(item,oldValue)?next:item));
+    catalogRenameReferences(kind,oldValue,next);
+    agoraV2Audit?.(`${label.single[0].toUpperCase()+label.single.slice(1)} editado`,'admin',next,`Nome anterior: ${oldValue}`);
+    catalogAfterChange(`${label.single} atualizado`);
+    catalogResetEditor(kind);
+    return true;
+  }
+  function catalogRemove(kind,value){
+    catalogEnsure();
+    const label=catalogLabels[kind]; const references=catalogReferenceCount(kind,value);
+    const historyNotice=references ? `\n\nHá ${references} registro(s) histórico(s) usando este nome. Eles serão preservados; apenas a opção para novos cadastros será excluída.` : '';
+    if(!confirm(`Excluir ${label.single} “${value}” da lista administrativa?${historyNotice}`)) return;
+    pushHistorySnapshot();
+    catalogSetArray(kind,catalogArray(kind).filter(item=>!catalogSame(item,value)));
+    agoraV2Audit?.(`${label.single[0].toUpperCase()+label.single.slice(1)} excluído`,'admin',value,references ? `${references} referência(s) histórica(s) preservada(s)` : 'Sem referências históricas');
+    catalogAfterChange(`${label.single} excluído`);
+  }
+
+  agoraV2ArrayAdd=catalogAdd;
+  agoraV2ArrayRemove=catalogRemove;
+
+  const catalogOriginalRenderAll=renderAll;
+  renderAll=function(){ const result=catalogOriginalRenderAll.apply(this,arguments); refreshCatalogOptions(); return result; };
+  if(typeof renderRulesEditor === 'function'){
+    const original=renderRulesEditor; renderRulesEditor=function(){ const result=original.apply(this,arguments); refreshCatalogOptions(); return result; };
+  }
+  if(typeof renderPayableRulesEditor === 'function'){
+    const original=renderPayableRulesEditor; renderPayableRulesEditor=function(){ const result=original.apply(this,arguments); refreshCatalogOptions(); return result; };
+  }
+  if(typeof renderBonusRulesEditor === 'function'){
+    const original=renderBonusRulesEditor; renderBonusRulesEditor=function(){ const result=original.apply(this,arguments); refreshCatalogOptions(); return result; };
+  }
+
+  document.addEventListener('click',function(event){
+    const addButton=event.target.closest('#adminAddDoctor,#adminAddHospital,#adminAddInsurance');
+    if(addButton){
+      event.preventDefault();
+      const map={adminAddDoctor:['doctor','adminDoctorName'],adminAddHospital:['hospital','adminHospitalName'],adminAddInsurance:['insurance','adminInsuranceName']};
+      const [kind,inputId]=map[addButton.id]; const input=UI.el(inputId);
+      const editing=input?.dataset.catalogEditing || '';
+      const changed=editing ? catalogEdit(kind,editing,input?.value || '') : catalogAdd(kind,input?.value || '');
+      if(changed && !editing && input) input.value='';
+      return;
+    }
+    const editButton=event.target.closest('[data-catalog-edit]');
+    if(editButton){ event.preventDefault(); catalogBeginEdit(editButton.dataset.catalogEdit,editButton.dataset.catalogName); return; }
+    const removeButton=event.target.closest('[data-catalog-remove]');
+    if(removeButton){ event.preventDefault(); catalogRemove(removeButton.dataset.catalogRemove,removeButton.dataset.catalogName); return; }
+    if(event.target.closest('#adminClose')){ event.preventDefault(); UI.close('ovAdminCenter'); return; }
+    if(event.target.closest('#auditClose')){ event.preventDefault(); UI.close('ovAuditCenter'); }
+  });
+  document.addEventListener('keydown',function(event){
+    const map={adminDoctorName:['doctor','adminDoctorName'],adminHospitalName:['hospital','adminHospitalName'],adminInsuranceName:['insurance','adminInsuranceName']};
+    const config=map[event.target?.id]; if(!config) return;
+    if(event.key === 'Escape'){ event.preventDefault(); catalogResetEditor(config[0]); return; }
+    if(event.key !== 'Enter') return;
+    event.preventDefault();
+    const editing=event.target.dataset.catalogEditing || '';
+    const changed=editing ? catalogEdit(config[0],editing,event.target.value) : catalogAdd(config[0],event.target.value);
+    if(changed && !editing) event.target.value='';
+  });
+
+  catalogEnsure();
+  renderAdminCenter();
+  refreshCatalogOptions();
+})();
+</script>
+
+<style id="theme-components-v2-authoritative-css">
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(#ovAdminCenter,#ovAuditCenter) :where(.agoraV2BoxTitle,.agoraV2Name,.agoraTimelineTitle){color:var(--ui-text) !important;-webkit-text-fill-color:var(--ui-text) !important;text-shadow:none !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(#ovAdminCenter,#ovAuditCenter) :where(.agoraV2BoxSub,.agoraV2Meta,.agoraTimelineDate,.crmEmpty){color:var(--ui-muted) !important;-webkit-text-fill-color:var(--ui-muted) !important;text-shadow:none !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) #ovAdminCenter .agoraV2Box{background:var(--ui-panel-bg) !important;border-color:var(--ui-border) !important;color:var(--ui-text) !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) #ovAdminCenter .agoraV2Row{background:color-mix(in srgb,var(--ui-text) 6%,transparent) !important;border-color:var(--ui-border) !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) #ovAdminCenter .adminCatalogActions .smallBtn:not(.danger){background:var(--ui-menu-button-bg) !important;color:var(--ui-menu-button-text) !important;-webkit-text-fill-color:var(--ui-menu-button-text) !important;border-color:var(--ui-menu-button-border) !important;text-shadow:none !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) .modal :where(.closeX,#loginClose){background:var(--ui-field-bg) !important;color:var(--ui-field-text) !important;-webkit-text-fill-color:var(--ui-field-text) !important;border-color:var(--ui-border) !important;text-shadow:none !important;box-shadow:0 7px 18px color-mix(in srgb,var(--ui-border) 24%,transparent),inset 0 1px 0 rgba(255,255,255,.76) !important;opacity:1 !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) .modal :where(.closeX,#loginClose)::before,html :is(#theme-ui-a,body):is(#theme-ui-b,body) .modal :where(.closeX,#loginClose)::after{background:var(--ui-field-text) !important;color:var(--ui-field-text) !important;-webkit-text-fill-color:var(--ui-field-text) !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) .modal :where(.closeX,#loginClose):hover{filter:brightness(.96) saturate(1.05) !important;border-color:var(--ui-focus) !important}
 </style>
