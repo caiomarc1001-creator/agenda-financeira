@@ -6107,6 +6107,174 @@ body{
 
 </style>
 
+<style id="theme-accessibility-v1-final-css">
+  /*
+    Camada semântica final dos temas.
+    Mantém os controles de digitação claros em todos os temas e impede que
+    estilos antigos fixem cores escuras ou o amarelo do menu globalmente.
+  */
+  body{
+    --ui-window-bg:linear-gradient(180deg,rgba(255,255,255,.98),rgba(239,246,255,.97));
+    --ui-panel-bg:linear-gradient(180deg,rgba(255,255,255,.94),rgba(232,241,252,.92));
+    --ui-text:#0b172a;
+    --ui-muted:#46566d;
+    --ui-border:rgba(30,64,110,.26);
+    --ui-field-bg:#f8fbff;
+    --ui-field-text:#101827;
+    --ui-placeholder:#5b687b;
+    --ui-menu-bg:linear-gradient(180deg,#f8fbff,#deebfb);
+    --ui-menu-border:#70a6dc;
+    --ui-menu-button-bg:linear-gradient(180deg,#ffffff,#d8ebff);
+    --ui-menu-button-text:#0b2545;
+    --ui-menu-button-border:#6fa9df;
+    --ui-focus:var(--acc,#2583d8);
+  }
+
+  body[data-theme="light"]{
+    --ui-window-bg:linear-gradient(180deg,#ffffff,#edf5ff);--ui-panel-bg:linear-gradient(180deg,#f9fcff,#e5f1ff);
+    --ui-text:#10233f;--ui-muted:#4a5f79;--ui-border:#8db5dc;--ui-field-bg:#f8fbff;--ui-field-text:#10233f;--ui-placeholder:#60728a;
+    --ui-menu-bg:linear-gradient(180deg,#fafdff,#dceeff);--ui-menu-border:#69a7df;--ui-menu-button-bg:linear-gradient(180deg,#ffffff,#cfe7ff);--ui-menu-button-text:#0c3158;--ui-menu-button-border:#72ace0;
+  }
+  body[data-theme="paper"]{
+    --ui-window-bg:linear-gradient(180deg,#fffefb,#f1eee7);--ui-panel-bg:linear-gradient(180deg,#fffefa,#ece8de);
+    --ui-text:#202934;--ui-muted:#5d636b;--ui-border:#b5aa99;--ui-field-bg:#fffefa;--ui-field-text:#202934;--ui-placeholder:#6e716f;
+    --ui-menu-bg:linear-gradient(180deg,#fffefb,#ece8dd);--ui-menu-border:#aa9e8a;--ui-menu-button-bg:linear-gradient(180deg,#ffffff,#e9e3d7);--ui-menu-button-text:#28313a;--ui-menu-button-border:#b7aa95;
+  }
+  body[data-theme="windows_xp"]{
+    --ui-window-bg:linear-gradient(180deg,#ffffff,#ddecff);--ui-panel-bg:linear-gradient(180deg,#f9fcff,#d7eaff);
+    --ui-text:#07205a;--ui-muted:#405b87;--ui-border:#4d8ad1;--ui-field-bg:#ffffff;--ui-field-text:#071d48;--ui-placeholder:#5a6d8e;
+    --ui-menu-bg:linear-gradient(180deg,#f7fbff,#c9e2ff);--ui-menu-border:#1f67c9;--ui-menu-button-bg:linear-gradient(180deg,#ffffff,#b9dcff);--ui-menu-button-text:#07357e;--ui-menu-button-border:#3c82d4;
+  }
+  body[data-theme="toy_story"]{
+    --ui-window-bg:linear-gradient(180deg,#ffffff,#e7f5ff);--ui-panel-bg:linear-gradient(180deg,#fffdf4,#dff2ff);
+    --ui-text:#102b4d;--ui-muted:#46627e;--ui-border:#4da8df;--ui-field-bg:#ffffff;--ui-field-text:#10243e;--ui-placeholder:#5e7187;
+    --ui-menu-bg:linear-gradient(180deg,#eaf8ff,#bfe9ff);--ui-menu-border:#1688ca;--ui-menu-button-bg:linear-gradient(180deg,#ffffff,#ffe88b);--ui-menu-button-text:#0c3d67;--ui-menu-button-border:#e4a900;
+  }
+  body[data-theme="nasa"]{
+    --ui-window-bg:linear-gradient(180deg,#ffffff,#e4f1ff);--ui-panel-bg:linear-gradient(180deg,#f9fcff,#dbeaff);
+    --ui-text:#071f49;--ui-muted:#405b7d;--ui-border:#3974b8;--ui-field-bg:#ffffff;--ui-field-text:#071a3a;--ui-placeholder:#5b6c84;
+    --ui-menu-bg:linear-gradient(180deg,#f9fcff,#d7e9ff);--ui-menu-border:#2868ae;--ui-menu-button-bg:linear-gradient(180deg,#ffffff,#cfe4ff);--ui-menu-button-text:#092d5a;--ui-menu-button-border:#4f89c8;
+  }
+  body[data-theme="sonic"]{
+    --ui-window-bg:linear-gradient(180deg,#f9fdff,#dcedff);--ui-panel-bg:linear-gradient(180deg,#f4fbff,#d6ebff);
+    --ui-text:#07265e;--ui-muted:#3e5e89;--ui-border:#2679d7;--ui-field-bg:#ffffff;--ui-field-text:#071e49;--ui-placeholder:#5d7190;
+    --ui-menu-bg:linear-gradient(180deg,#e9f7ff,#a9d8ff);--ui-menu-border:#0669ce;--ui-menu-button-bg:linear-gradient(180deg,#ffffff,#9bd3ff);--ui-menu-button-text:#063e87;--ui-menu-button-border:#1475d1;
+  }
+  body[data-theme="senna_brasil"],body[data-theme="senna_mclaren"],body[data-theme="senna_capacete"]{
+    --ui-window-bg:linear-gradient(180deg,#fffdf4,#efe4b9);--ui-panel-bg:linear-gradient(180deg,#fffdf2,#e8ddb1);
+    --ui-text:#071d33;--ui-muted:#40566b;--ui-border:#8e7d38;--ui-field-bg:#fffef8;--ui-field-text:#071a2f;--ui-placeholder:#5d6871;
+    --ui-menu-bg:linear-gradient(180deg,#fffced,#f3df65);--ui-menu-border:#126b45;--ui-menu-button-bg:linear-gradient(180deg,#fffef7,#f7e36e);--ui-menu-button-text:#07213c;--ui-menu-button-border:#7b8f35;
+  }
+
+  body[data-theme="ocean"]{
+    --ui-window-bg:linear-gradient(180deg,#0d304b,#071d30);--ui-panel-bg:linear-gradient(180deg,#123b58,#09283e);
+    --ui-text:#effcff;--ui-muted:#c4e8f2;--ui-border:#4bb6dd;--ui-field-bg:#effbff;--ui-field-text:#08233a;--ui-placeholder:#587082;
+    --ui-menu-bg:linear-gradient(180deg,#0d3857,#071f34);--ui-menu-border:#48c6ed;--ui-menu-button-bg:linear-gradient(180deg,#f3fdff,#bcecff);--ui-menu-button-text:#07304c;--ui-menu-button-border:#52bfe3;
+  }
+  body[data-theme="violet"]{
+    --ui-window-bg:linear-gradient(180deg,#38215b,#1c1032);--ui-panel-bg:linear-gradient(180deg,#442969,#261541);
+    --ui-text:#faf7ff;--ui-muted:#dfd2f3;--ui-border:#a98bd8;--ui-field-bg:#faf7ff;--ui-field-text:#26163d;--ui-placeholder:#746580;
+    --ui-menu-bg:linear-gradient(180deg,#3c235f,#201238);--ui-menu-border:#ac8ae3;--ui-menu-button-bg:linear-gradient(180deg,#fdfaff,#ddc9ff);--ui-menu-button-text:#321a52;--ui-menu-button-border:#ac89df;
+  }
+  body[data-theme="gold"]{
+    --ui-window-bg:linear-gradient(180deg,#392b0d,#1d1506);--ui-panel-bg:linear-gradient(180deg,#443515,#271d09);
+    --ui-text:#fff9df;--ui-muted:#e9ddb4;--ui-border:#d6b743;--ui-field-bg:#fffdf1;--ui-field-text:#2c230c;--ui-placeholder:#776e50;
+    --ui-menu-bg:linear-gradient(180deg,#42320d,#211805);--ui-menu-border:#e0bd37;--ui-menu-button-bg:linear-gradient(180deg,#fffdf1,#f4db78);--ui-menu-button-text:#332608;--ui-menu-button-border:#d1aa26;
+  }
+  body[data-theme="emerald"]{
+    --ui-window-bg:linear-gradient(180deg,#123b2d,#081f18);--ui-panel-bg:linear-gradient(180deg,#174936,#0b2b20);
+    --ui-text:#f0fff8;--ui-muted:#c8ead9;--ui-border:#47ba8b;--ui-field-bg:#f1fff8;--ui-field-text:#0b2a20;--ui-placeholder:#5d766b;
+    --ui-menu-bg:linear-gradient(180deg,#123d2e,#08241b);--ui-menu-border:#43c38f;--ui-menu-button-bg:linear-gradient(180deg,#f3fff9,#bfeeda);--ui-menu-button-text:#0b3a29;--ui-menu-button-border:#49b88b;
+  }
+  body[data-theme="dark"],body[data-theme="graphite"]{
+    --ui-window-bg:linear-gradient(180deg,#303640,#1c2129);--ui-panel-bg:linear-gradient(180deg,#363d48,#232932);
+    --ui-text:#f7fafc;--ui-muted:#d4dae2;--ui-border:#7f8b9b;--ui-field-bg:#f5f7fa;--ui-field-text:#17202b;--ui-placeholder:#66717f;
+    --ui-menu-bg:linear-gradient(180deg,#303641,#1a1f27);--ui-menu-border:#8894a3;--ui-menu-button-bg:linear-gradient(180deg,#ffffff,#dbe1e8);--ui-menu-button-text:#1a222d;--ui-menu-button-border:#8e99a7;
+  }
+  body[data-theme="tesla"]{
+    --ui-window-bg:linear-gradient(180deg,#311a20,#171014);--ui-panel-bg:linear-gradient(180deg,#402129,#211318);
+    --ui-text:#fff7f8;--ui-muted:#e8ced3;--ui-border:#bf5f71;--ui-field-bg:#fff8f9;--ui-field-text:#32151c;--ui-placeholder:#7c6268;
+    --ui-menu-bg:linear-gradient(180deg,#3b1d24,#1c1014);--ui-menu-border:#d35a70;--ui-menu-button-bg:linear-gradient(180deg,#fffafa,#f1cbd2);--ui-menu-button-text:#461722;--ui-menu-button-border:#c76879;
+  }
+  body[data-theme="sexta_13"],body[data-theme="resident_evil_2"]{
+    --ui-window-bg:linear-gradient(180deg,#35191b,#160b0c);--ui-panel-bg:linear-gradient(180deg,#421d20,#211011);
+    --ui-text:#fff7f7;--ui-muted:#e9cccc;--ui-border:#bc4f55;--ui-field-bg:#fff8f8;--ui-field-text:#321416;--ui-placeholder:#7c6264;
+    --ui-menu-bg:linear-gradient(180deg,#3d181b,#190a0b);--ui-menu-border:#d34850;--ui-menu-button-bg:linear-gradient(180deg,#fffafa,#efc7c9);--ui-menu-button-text:#48171a;--ui-menu-button-border:#c85c62;
+  }
+  body[data-theme="game_of_thrones"]{
+    --ui-window-bg:linear-gradient(180deg,#3b352b,#1e1a15);--ui-panel-bg:linear-gradient(180deg,#474035,#28231d);
+    --ui-text:#fffaf0;--ui-muted:#e0d7c7;--ui-border:#a9987b;--ui-field-bg:#fffaf1;--ui-field-text:#29231b;--ui-placeholder:#756e63;
+    --ui-menu-bg:linear-gradient(180deg,#3e382e,#211d17);--ui-menu-border:#ab9b7e;--ui-menu-button-bg:linear-gradient(180deg,#fffdf7,#ded1b9);--ui-menu-button-text:#332b21;--ui-menu-button-border:#a79678;
+  }
+
+  body[data-manual-colors="on"]{--ui-text:var(--custom-modal-text-color,var(--txt));--ui-muted:var(--custom-modal-placeholder-color,var(--mut))}
+
+  /* Campos claros e legíveis, inclusive em temas escuros. */
+  body :where(
+    input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+    select,textarea,.input
+  ){
+    background:var(--ui-field-bg) !important;
+    color:var(--ui-field-text) !important;
+    -webkit-text-fill-color:var(--ui-field-text) !important;
+    border-color:var(--ui-border) !important;
+    caret-color:var(--ui-field-text) !important;
+    color-scheme:light !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+  body :where(input,textarea,.input)::placeholder{
+    color:var(--ui-placeholder) !important;
+    -webkit-text-fill-color:var(--ui-placeholder) !important;
+    opacity:1 !important;
+  }
+  body select option{background:var(--ui-field-bg) !important;color:var(--ui-field-text) !important}
+  body input:-webkit-autofill,body input:-webkit-autofill:hover,body input:-webkit-autofill:focus{
+    -webkit-box-shadow:0 0 0 1000px var(--ui-field-bg) inset !important;
+    -webkit-text-fill-color:var(--ui-field-text) !important;
+  }
+  body :where(input,select,textarea,.input):focus{
+    border-color:var(--ui-focus) !important;
+    outline:2px solid var(--ui-focus) !important;
+    outline-offset:1px !important;
+    box-shadow:0 0 0 4px color-mix(in srgb,var(--ui-focus) 20%,transparent) !important;
+  }
+  body :where(input,select,textarea,.input):disabled{opacity:.68 !important;cursor:not-allowed}
+
+  /* Janelas e painéis acompanham a família de cores do tema ativo. */
+  body .modal{background:var(--ui-window-bg) !important;border-color:var(--ui-border) !important;color:var(--ui-text) !important}
+  body :where(.crmFormPanel,.crmPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,.surgeonModeSearchPanel,.accountPanel,.agoraV2Box){
+    background:var(--ui-panel-bg) !important;border-color:var(--ui-border) !important;color:var(--ui-text) !important;
+  }
+  body :where(.modal,.crmFormPanel,.crmPanel,.surgeonModeSearchPanel,.accountPanel) :where(.lbl,label,h1,h2,h3,h4,.ttl,.crmTitle,.themeTitle){
+    color:var(--ui-text) !important;-webkit-text-fill-color:var(--ui-text) !important;text-shadow:none !important;
+  }
+  body :where(.modal,.crmFormPanel,.crmPanel,.surgeonModeSearchPanel,.accountPanel) :where(.helper,.crmSub,.sub,.small){
+    color:var(--ui-muted) !important;-webkit-text-fill-color:var(--ui-muted) !important;
+  }
+
+  /* O menu deixa de ser amarelo fixo e passa a usar a paleta do tema. */
+  body #hamburgerPortalMenu,
+  body .hambMenu.masterFloatingMenu{
+    background:var(--ui-menu-bg) !important;
+    border-color:var(--ui-menu-border) !important;
+    color:var(--ui-menu-button-text) !important;
+  }
+  body #hamburgerPortalMenu :where(.btn,.menuItem),
+  body .hambMenu.masterFloatingMenu :where(.btn,.menuItem){
+    background:var(--ui-menu-button-bg) !important;
+    color:var(--ui-menu-button-text) !important;
+    -webkit-text-fill-color:var(--ui-menu-button-text) !important;
+    border-color:var(--ui-menu-button-border) !important;
+    text-shadow:none !important;
+  }
+  body #hamburgerPortalMenu :where(.btn,.menuItem):hover,
+  body .hambMenu.masterFloatingMenu :where(.btn,.menuItem):hover{
+    filter:brightness(.97) saturate(1.08) !important;
+    box-shadow:0 7px 18px color-mix(in srgb,var(--ui-menu-border) 28%,transparent) !important;
+  }
+</style>
+
 <style id="MASTER_STABILITY_PATCH">
 
 /* =========================================================
@@ -15813,4 +15981,35 @@ body[data-theme="senna_brasil"] .hdr::after{
   #surgeryReportSummary{margin-top:0 !important;padding:8px 10px !important}
   @media(max-width:980px){.surgeonModeSearchPanel .surgeryFilterBar{grid-template-columns:repeat(2,minmax(0,1fr)) !important}}
   @media(max-width:620px){.surgeonModeSearchPanel .surgeryFilterBar,#ovSurgeryCenter .row2,#ovSurgeryCenter .row3{grid-template-columns:1fr !important}}
+</style>
+
+<style id="theme-accessibility-v1-authoritative-css">
+  /* Reaplicação autoritativa no fim do documento contra hotfixes antigos. */
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(
+    input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+    select,textarea,.input
+  ){
+    background:var(--ui-field-bg) !important;
+    color:var(--ui-field-text) !important;
+    -webkit-text-fill-color:var(--ui-field-text) !important;
+    border-color:var(--ui-border) !important;
+    caret-color:var(--ui-field-text) !important;
+    color-scheme:light !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(input,textarea,.input)::placeholder{color:var(--ui-placeholder) !important;-webkit-text-fill-color:var(--ui-placeholder) !important;opacity:1 !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) select option{background:var(--ui-field-bg) !important;color:var(--ui-field-text) !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) input:-webkit-autofill,html :is(#theme-ui-a,body):is(#theme-ui-b,body) input:-webkit-autofill:hover,html :is(#theme-ui-a,body):is(#theme-ui-b,body) input:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px var(--ui-field-bg) inset !important;-webkit-text-fill-color:var(--ui-field-text) !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(input,select,textarea,.input):focus{border-color:var(--ui-focus) !important;outline:2px solid var(--ui-focus) !important;outline-offset:1px !important;box-shadow:0 0 0 4px color-mix(in srgb,var(--ui-focus) 20%,transparent) !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(input,select,textarea,.input):disabled{opacity:.68 !important;cursor:not-allowed}
+
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) .modal{background:var(--ui-window-bg) !important;border-color:var(--ui-border) !important;color:var(--ui-text) !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(.crmFormPanel,.crmPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,.surgeonModeSearchPanel,.accountPanel,.agoraV2Box){background:var(--ui-panel-bg) !important;border-color:var(--ui-border) !important;color:var(--ui-text) !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(.modal,.crmFormPanel,.crmPanel,.surgeonModeSearchPanel,.accountPanel) :where(.lbl,label,h1,h2,h3,h4,.ttl,.crmTitle,.themeTitle){color:var(--ui-text) !important;-webkit-text-fill-color:var(--ui-text) !important;text-shadow:none !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) :where(.modal,.crmFormPanel,.crmPanel,.surgeonModeSearchPanel,.accountPanel) :where(.helper,.crmSub,.sub,.small){color:var(--ui-muted) !important;-webkit-text-fill-color:var(--ui-muted) !important}
+
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) #hamburgerPortalMenu,html :is(#theme-ui-a,body):is(#theme-ui-b,body) .hambMenu.masterFloatingMenu{background:var(--ui-menu-bg) !important;border-color:var(--ui-menu-border) !important;color:var(--ui-menu-button-text) !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) #hamburgerPortalMenu :where(.btn,.menuItem),html :is(#theme-ui-a,body):is(#theme-ui-b,body) .hambMenu.masterFloatingMenu :where(.btn,.menuItem){background:var(--ui-menu-button-bg) !important;color:var(--ui-menu-button-text) !important;-webkit-text-fill-color:var(--ui-menu-button-text) !important;border-color:var(--ui-menu-button-border) !important;text-shadow:none !important}
+  html :is(#theme-ui-a,body):is(#theme-ui-b,body) #hamburgerPortalMenu :where(.btn,.menuItem):hover,html :is(#theme-ui-a,body):is(#theme-ui-b,body) .hambMenu.masterFloatingMenu :where(.btn,.menuItem):hover{filter:brightness(.97) saturate(1.08) !important;box-shadow:0 7px 18px color-mix(in srgb,var(--ui-menu-border) 28%,transparent) !important}
 </style>
