@@ -7071,6 +7071,21 @@ body[data-theme="senna_brasil"] .hdr{
           </div>
         </div>
         <div class="padded" id="surgeriesBody">
+          <div class="surgeonModeSearchPanel" id="surgeonModeSearchPanel">
+            <div class="themeSectionTitle">Busca de pacientes por período</div>
+            <div class="surgeryFilterBar">
+              <div><div class="lbl">Buscar paciente</div><input class="input" id="surgerySearch" placeholder="Nome, atendimento, hospital, convênio ou plano..."></div>
+              <div><div class="lbl">Data inicial</div><input class="input" id="surgeryPeriodFrom" type="date"></div>
+              <div><div class="lbl">Data final</div><input class="input" id="surgeryPeriodTo" type="date"></div>
+              <div><div class="lbl">Hospital</div><input class="input" id="surgeryHospitalFilter" placeholder="Filtrar hospital"></div>
+              <div><div class="lbl">Categoria</div><select class="input" id="surgeryCategoryFilter"><option value="all">Todas</option><option value="convenio">Convênio</option><option value="particular">Particular</option></select></div>
+              <div><div class="lbl">Atuação</div><select class="input" id="surgeryRoleFilter"><option value="all">Todas</option><option value="principal">Cirurgião</option><option value="auxiliar">Auxiliar</option></select></div>
+              <div><div class="lbl">Status</div><select class="input" id="surgeryStatusFilter"><option value="all">Todos</option><option value="unpaid">Não Pago</option><option value="paid">Pago</option></select></div>
+              <div class="surgeryReportAction"><button class="mBtn" id="surgeryDownloadDoc" type="button">Baixar relatório .doc</button></div>
+            </div>
+            <div class="helper" id="surgeryReportSummary"></div>
+            <div class="surgeryList" id="surgeryFullList"></div>
+          </div>
           <div class="surgeryStats">
             <div class="surgeryMini"><div class="k">Cirurgias no mês</div><div class="v" id="surgCountMonth">0</div></div>
             <div class="surgeryMini"><div class="k">Pendentes</div><div class="v" id="surgPendingMonth">0</div></div>
@@ -7737,55 +7752,42 @@ body[data-theme="senna_brasil"] .hdr{
   <div class="ov" id="ovSurgeryCenter">
     <div class="modal" style="width:min(1120px,100%)">
       <div class="mHead">
-        <h3>Controle cirúrgico · pacientes operados</h3>
+        <h3>Adicionar Cirurgia</h3>
         <button class="closeX" id="surgeryClose" type="button">✕</button>
       </div>
       <div class="form">
-        <div class="helper">Registre cada paciente operado com hospital, convênio/particular, função na cirurgia e status visual de pagamento. Esses dados ficam dentro do mesmo arquivo da agenda e seguem o login do usuário.</div>
-        <div class="surgeryFilterBar">
-          <div><div class="lbl">Filtro por texto</div><input class="input" id="surgerySearch" placeholder="Paciente, hospital, plano, atendimento..."></div>
-          <div><div class="lbl">Status</div><select class="input" id="surgeryStatusFilter"><option value="all">Todos</option><option value="unpaid">Não pagos</option><option value="expected">Previstos</option><option value="billed">Faturados</option><option value="overdue">Pendentes</option><option value="denied">Glosados</option><option value="paid">Pagos</option></select></div>
-          <div><div class="lbl">Mês</div><select class="input" id="surgeryMonthFilter"><option value="current">Mês visível</option><option value="all">Todos os meses</option></select></div>
-        </div>
-
-        <div class="accountPanel">
+        <div class="accountPanel surgeryRegistrationPanel">
           <div class="row3">
-            <div><div class="lbl">Data da cirurgia</div><input class="input" id="surgDate" type="date"></div>
-            <div><div class="lbl">Nome do paciente</div><input class="input" id="surgPatient" placeholder="Nome completo"></div>
-            <div><div class="lbl">Nº atendimento</div><input class="input" id="surgAttendance" placeholder="Atendimento / guia / conta"></div>
-          </div>
-          <div style="margin-top:10px"><div class="lbl">Procedimentos realizados</div><textarea class="input" id="surgProcedures" rows="3" placeholder="Ex: colecistectomia videolaparoscópica, hernioplastia..."></textarea></div>
-          <div class="row3" style="margin-top:10px">
-            <div><div class="lbl">Particular ou convênio</div><select class="input" id="surgPaymentType"><option value="convenio">Convênio</option><option value="particular">Particular</option></select></div>
-            <div><div class="lbl">Plano de saúde</div><input class="input" id="surgHealthPlan" placeholder="Ex: Unimed, SulAmérica, Bradesco"></div>
-            <div><div class="lbl">Hospital</div><input class="input" id="surgHospital" placeholder="Hospital onde foi operado"></div>
+            <div><div class="lbl">Nome</div><input class="input" id="surgPatient" placeholder="Nome completo"></div>
+            <div><div class="lbl">Data de Nascimento</div><input class="input" id="surgBirthDate" type="date"></div>
+            <div><div class="lbl">Data do Procedimento</div><input class="input" id="surgDate" type="date"></div>
           </div>
           <div class="row3" style="margin-top:10px">
-            <div><div class="lbl">Atuação</div><select class="input" id="surgRole"><option value="principal">Cirurgião principal</option><option value="auxiliar">Auxiliar</option></select></div>
-            <div><div class="lbl">Status financeiro</div><select class="input" id="surgPaymentStatus"><option value="unpaid">Não pago</option><option value="expected">Previsto</option><option value="billed">Faturado</option><option value="overdue">Pendente</option><option value="denied">Glosado</option><option value="paid">Pago</option></select></div>
-            <div><div class="lbl">Valor previsto</div><input class="input" id="surgAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
-          </div>
-          <div class="surgeryFinanceGrid">
-            <div><div class="lbl">Valor recebido</div><input class="input" id="surgReceivedAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
-            <div><div class="lbl">Valor glosado</div><input class="input" id="surgDeniedAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
-            <div><div class="lbl">Data faturamento</div><input class="input" id="surgBillingDate" type="date"></div>
-            <div><div class="lbl">Previsão pagamento</div><input class="input" id="surgExpectedPayDate" type="date"></div>
+            <div><div class="lbl">Hospital do Procedimento</div><input class="input" id="surgHospital" placeholder="Hospital"></div>
+            <div><div class="lbl">Atendimento</div><input class="input" id="surgAttendance" placeholder="Número do atendimento"></div>
+            <div><div class="lbl">Categoria</div><select class="input" id="surgPaymentType"><option value="convenio">Convênio</option><option value="particular">Particular</option></select></div>
           </div>
           <div class="row2" style="margin-top:10px">
-            <div><div class="lbl">Data pagamento efetivo</div><input class="input" id="surgPaidDate" type="date"></div>
-            <div><div class="lbl">Observações financeiras</div><input class="input" id="surgFinanceNote" placeholder="Ex: recurso, glosa parcial, previsão do convênio..."></div>
+            <div><div class="lbl">Convênio</div><input class="input" id="surgInsurance" placeholder="Nome do convênio"></div>
+            <div><div class="lbl">Plano de Saúde</div><input class="input" id="surgHealthPlan" placeholder="Nome do plano"></div>
           </div>
-          <div style="margin-top:10px"><div class="lbl">Observações</div><textarea class="input" id="surgNotes" rows="2" placeholder="Ex: aguardando faturamento, guia enviada, glosa, recurso..."></textarea></div>
+          <div style="margin-top:10px"><div class="lbl">Detalhes do procedimento</div><textarea class="input" id="surgProcedures" rows="3" placeholder="Descrição livre do procedimento"></textarea></div>
+          <div class="row3" style="margin-top:10px">
+            <div><div class="lbl">Atuação</div><select class="input" id="surgRole"><option value="principal">Cirurgião</option><option value="auxiliar">Auxiliar</option></select></div>
+            <div><div class="lbl">Status</div><select class="input" id="surgPaymentStatus"><option value="unpaid">Não Pago</option><option value="paid">Pago</option></select></div>
+            <div><div class="lbl">Valor Previsto</div><input class="input" id="surgAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
+          </div>
+          <div class="row2" style="margin-top:10px">
+            <div><div class="lbl">Valor Pago</div><input class="input" id="surgReceivedAmount" type="number" min="0" step="0.01" placeholder="0,00"></div>
+            <div><div class="lbl">Data do Pagamento</div><input class="input" id="surgPaidDate" type="date"></div>
+          </div>
+          <div style="margin-top:10px"><div class="lbl">Observações Gerais</div><textarea class="input" id="surgNotes" rows="3" placeholder="Observações gerais"></textarea></div>
           <div class="mFoot">
             <button class="mBtn ghost" id="surgClear" type="button">Limpar formulário</button>
-            <button class="mBtn primary" id="surgSave" type="button">Salvar paciente operado</button>
+            <button class="mBtn primary" id="surgSave" type="button">Salvar cirurgia</button>
           </div>
         </div>
 
-        <div>
-          <div class="themeSectionTitle">Pacientes cadastrados</div>
-          <div class="surgeryList" id="surgeryFullList"></div>
-        </div>
       </div>
     </div>
   </div>
@@ -10956,15 +10958,13 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     const SurgeryForm = { editingId:null };
 
     function surgeryPaymentLabel(status){
-      const map = { paid:'Pago', unpaid:'Não pago', expected:'Previsto', billed:'Faturado', overdue:'Pendente', denied:'Glosado' };
-      return map[status] || 'Não pago';
+      return status === 'paid' ? 'Pago' : 'Não Pago';
     }
     function surgeryPaymentIcon(status){
-      const map = { paid:'●', unpaid:'○', expected:'◌', billed:'◐', overdue:'!', denied:'×' };
-      return map[status] || '○';
+      return status === 'paid' ? '●' : '○';
     }
     function surgeryPaymentClass(status){
-      return ['paid','unpaid','expected','billed','overdue','denied'].includes(status) ? status : 'unpaid';
+      return status === 'paid' ? 'paid' : 'unpaid';
     }
     function surgeryRoleLabel(role){ return role === 'auxiliar' ? 'Auxiliar' : 'Cirurgião principal'; }
 
@@ -10977,16 +10977,23 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     function filteredSurgeries(){
       const search = String(UI.el('surgerySearch')?.value || '').trim().toLowerCase();
       const status = UI.el('surgeryStatusFilter')?.value || 'all';
-      const monthMode = UI.el('surgeryMonthFilter')?.value || 'current';
-      const { start, end } = currentMonthRangeISO();
+      const from = UI.el('surgeryPeriodFrom')?.value || '';
+      const to = UI.el('surgeryPeriodTo')?.value || '';
+      const hospital = String(UI.el('surgeryHospitalFilter')?.value || '').trim().toLowerCase();
+      const category = UI.el('surgeryCategoryFilter')?.value || 'all';
+      const role = UI.el('surgeryRoleFilter')?.value || 'all';
 
       return (state.surgeries || [])
         .filter(s => {
           const d = String(s.date || '');
-          if (monthMode === 'current' && (d < start || d > end)) return false;
-          if (status !== 'all' && s.paymentStatus !== status) return false;
+          if (from && d < from) return false;
+          if (to && d > to) return false;
+          if (status !== 'all' && surgeryPaymentClass(s.paymentStatus) !== status) return false;
+          if (category !== 'all' && s.paymentType !== category) return false;
+          if (role !== 'all' && s.role !== role) return false;
+          if (hospital && !String(s.hospital || '').toLowerCase().includes(hospital)) return false;
           if (search) {
-            const hay = [s.patientName,s.attendanceNumber,s.procedures,s.paymentType,s.healthPlan,s.hospital,s.role,s.paymentStatus,s.financeNote,s.notes].join(' ').toLowerCase();
+            const hay = [s.patientName,s.attendanceNumber,s.birthDate,s.procedures,s.paymentType,s.insuranceProvider,s.healthPlan,s.hospital,s.role,s.paymentStatus,s.notes].join(' ').toLowerCase();
             if (!hay.includes(search)) return false;
           }
           return true;
@@ -10994,18 +11001,39 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')) || String(a.patientName || '').localeCompare(String(b.patientName || '')));
     }
 
+    function downloadSurgeryDocReport(){
+      const items = filteredSurgeries();
+      if (!items.length) return alert('Nenhuma cirurgia encontrada para os filtros selecionados.');
+      const from = UI.el('surgeryPeriodFrom')?.value || '';
+      const to = UI.el('surgeryPeriodTo')?.value || '';
+      const period = from || to ? `${from ? formatDateBR(from) : 'início'} até ${to ? formatDateBR(to) : 'hoje'}` : 'Todos os períodos';
+      const rows = items.map(s => `<tr>
+        <td>${escapeHtml(s.patientName || '')}</td>
+        <td>${escapeHtml(s.attendanceNumber || '')}</td>
+        <td>${escapeHtml(formatDateBR(s.date || ''))}</td>
+        <td>${escapeHtml(s.hospital || '')}</td>
+        <td>${escapeHtml(surgeryPaymentLabel(surgeryPaymentClass(s.paymentStatus)))}</td>
+      </tr>`).join('');
+      const docHtml = `<!doctype html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>Relatório de Cirurgias</title><style>body{font-family:Arial,sans-serif;color:#111;padding:24px}h1{font-size:22px;margin:0 0 6px}p{margin:0 0 18px;color:#444}table{width:100%;border-collapse:collapse;font-size:11pt}th,td{border:1px solid #555;padding:7px;text-align:left;vertical-align:top}th{background:#e8eef8;font-weight:bold}</style></head><body><h1>Relatório de Cirurgias</h1><p>Período: ${escapeHtml(period)} · ${items.length} registro(s)</p><table><thead><tr><th>Nome do paciente</th><th>Atendimento</th><th>Data da cirurgia</th><th>Hospital</th><th>Status de pagamento</th></tr></thead><tbody>${rows}</tbody></table></body></html>`;
+      const blob = new Blob(['\ufeff', docHtml], {type:'application/msword'});
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `relatorio_cirurgias_${todayISO()}.doc`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    }
+
     function surgeryCardHtml(s, compact=false){
       const status = surgeryPaymentClass(s.paymentStatus || 'unpaid');
       const paid = status === 'paid';
       const amount = Number(s.amount || 0);
       const received = Number(s.receivedAmount || (paid ? amount : 0) || 0);
-      const denied = Number(s.deniedAmount || 0);
-      const diff = Math.max(0, amount - received - denied);
-      const conv = s.paymentType === 'particular' ? 'Particular' : `Convênio${s.healthPlan ? ' · ' + escapeHtml(s.healthPlan) : ''}`;
+      const diff = Math.max(0, amount - received);
+      const conv = s.paymentType === 'particular' ? 'Particular' : `Convênio${s.insuranceProvider ? ' · ' + escapeHtml(s.insuranceProvider) : ''}${s.healthPlan ? ' · ' + escapeHtml(s.healthPlan) : ''}`;
       const timeline = [
         s.date ? `Cirurgia: ${formatDateBR(s.date)}` : '',
-        s.billingDate ? `Faturado: ${formatDateBR(s.billingDate)}` : '',
-        s.expectedPayDate ? `Previsto: ${formatDateBR(s.expectedPayDate)}` : '',
         s.paidDate ? `Pago: ${formatDateBR(s.paidDate)}` : ''
       ].filter(Boolean).map(x => `<span>${escapeHtml(x)}</span>`).join('');
       return `
@@ -11024,11 +11052,10 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
           <div class="surgeryMoneyLine">
             <span>Previsto: <b>${fmtMoney(amount)}</b></span>
             <span>Recebido: <b>${fmtMoney(received)}</b></span>
-            ${denied ? `<span>Glosa: <b>${fmtMoney(denied)}</b></span>` : ''}
             ${diff ? `<span>Diferença: <b>${fmtMoney(diff)}</b></span>` : ''}
           </div>
           ${timeline ? `<div class="surgeryTimeline">${timeline}</div>` : ''}
-          ${(!compact && s.financeNote) ? `<div class="small"><b>Financeiro:</b> ${escapeHtml(s.financeNote)}</div>` : ''}
+          ${(!compact && s.birthDate) ? `<div class="small"><b>Nascimento:</b> ${escapeHtml(formatDateBR(s.birthDate))}</div>` : ''}
           <div class="surgeryActions">
             <button class="smallBtn surgery-toggle-pay" data-id="${escapeAttr(s.id)}" type="button">Marcar como ${paid ? 'não pago' : 'pago'}</button>
             <button class="smallBtn surgery-edit" data-id="${escapeAttr(s.id)}" type="button">Editar</button>
@@ -11042,7 +11069,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const paid = all.filter(s => s.paymentStatus === 'paid');
       const unpaid = all.filter(s => s.paymentStatus !== 'paid');
       const paidValue = paid.reduce((a,s) => a + Number(s.receivedAmount || s.amount || 0), 0);
-      const unpaidValue = unpaid.reduce((a,s) => a + Math.max(0, Number(s.amount || 0) - Number(s.receivedAmount || 0) - Number(s.deniedAmount || 0)), 0);
+      const unpaidValue = unpaid.reduce((a,s) => a + Math.max(0, Number(s.amount || 0) - Number(s.receivedAmount || 0)), 0);
       if (UI.el('surgAllPaidValue')) UI.el('surgAllPaidValue').textContent = fmtMoney(paidValue);
       if (UI.el('surgAllUnpaidValue')) UI.el('surgAllUnpaidValue').textContent = fmtMoney(unpaidValue);
       if (UI.el('surgAllPaidCount')) UI.el('surgAllPaidCount').textContent = String(paid.length);
@@ -11056,9 +11083,9 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const { start, end } = currentMonthRangeISO();
       const monthItems = (state.surgeries || []).filter(s => String(s.date || '') >= start && String(s.date || '') <= end);
       const paidValue = monthItems.filter(s => s.paymentStatus === 'paid').reduce((a,s) => a + Number(s.receivedAmount || s.amount || 0), 0);
-      const unpaidValue = monthItems.filter(s => s.paymentStatus !== 'paid').reduce((a,s) => a + Math.max(0, Number(s.amount || 0) - Number(s.receivedAmount || 0) - Number(s.deniedAmount || 0)), 0);
+      const unpaidValue = monthItems.filter(s => surgeryPaymentClass(s.paymentStatus) !== 'paid').reduce((a,s) => a + Math.max(0, Number(s.amount || 0) - Number(s.receivedAmount || 0)), 0);
       UI.el('surgCountMonth').textContent = String(monthItems.length);
-      UI.el('surgPendingMonth').textContent = String(monthItems.filter(s => s.paymentStatus !== 'paid').length);
+      UI.el('surgPendingMonth').textContent = String(monthItems.filter(s => surgeryPaymentClass(s.paymentStatus) !== 'paid').length);
       UI.el('surgPaidValue').textContent = fmtMoney(paidValue);
       UI.el('surgUnpaidValue').textContent = fmtMoney(unpaidValue);
       renderSurgeryRetrospect();
@@ -11078,6 +11105,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         const items = filteredSurgeries();
         full.innerHTML = items.length ? items.map(s => surgeryCardHtml(s, false)).join('') : '<div class="helper">Nenhum registro encontrado para os filtros atuais.</div>';
         bindSurgeryListActions(full);
+        const reportSummary = UI.el('surgeryReportSummary');
+        if (reportSummary) reportSummary.innerHTML = `<b>${items.length}</b> cirurgia(s) encontrada(s) com os filtros atuais.`;
       }
     }
 
@@ -11085,26 +11114,23 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       SurgeryForm.editingId = null;
       UI.el('surgDate').value = state.selDate || todayISO();
       UI.el('surgPatient').value = '';
+      UI.el('surgBirthDate').value = '';
       UI.el('surgAttendance').value = '';
       UI.el('surgProcedures').value = '';
       UI.el('surgPaymentType').value = 'convenio';
+      UI.el('surgInsurance').value = '';
       UI.el('surgHealthPlan').value = '';
       UI.el('surgHospital').value = '';
       UI.el('surgRole').value = 'principal';
       UI.el('surgAmount').value = '';
       UI.el('surgReceivedAmount').value = '';
-      UI.el('surgDeniedAmount').value = '';
-      UI.el('surgBillingDate').value = '';
-      UI.el('surgExpectedPayDate').value = '';
       UI.el('surgPaidDate').value = '';
       UI.el('surgPaymentStatus').value = 'unpaid';
-      UI.el('surgFinanceNote').value = '';
       UI.el('surgNotes').value = '';
     }
 
     function openSurgeryCenter(newForm=false){
       if (newForm) clearSurgeryForm();
-      if (UI.el('surgeryMonthFilter')) UI.el('surgeryMonthFilter').value = 'current';
       renderSurgeryPanel();
       UI.open('ovSurgeryCenter');
     }
@@ -11126,20 +11152,18 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         id: SurgeryForm.editingId || uid(),
         date: UI.el('surgDate').value || todayISO(),
         patientName,
+        birthDate: UI.el('surgBirthDate').value || '',
         attendanceNumber: UI.el('surgAttendance').value.trim(),
         procedures: UI.el('surgProcedures').value.trim(),
         paymentType: UI.el('surgPaymentType').value,
+        insuranceProvider: UI.el('surgPaymentType').value === 'particular' ? '' : UI.el('surgInsurance').value.trim(),
         healthPlan: UI.el('surgPaymentType').value === 'particular' ? '' : UI.el('surgHealthPlan').value.trim(),
         hospital: UI.el('surgHospital').value.trim(),
         role: UI.el('surgRole').value,
         amount: Number(UI.el('surgAmount').value || 0),
         receivedAmount: Number(UI.el('surgReceivedAmount').value || 0),
-        deniedAmount: Number(UI.el('surgDeniedAmount').value || 0),
-        billingDate: UI.el('surgBillingDate').value || '',
-        expectedPayDate: UI.el('surgExpectedPayDate').value || '',
         paidDate: UI.el('surgPaidDate').value || '',
-        paymentStatus: UI.el('surgPaymentStatus').value,
-        financeNote: UI.el('surgFinanceNote').value.trim(),
+        paymentStatus: UI.el('surgPaymentStatus').value === 'paid' ? 'paid' : 'unpaid',
         notes: UI.el('surgNotes').value.trim(),
         updatedAt: new Date().toISOString()
       };
@@ -11157,20 +11181,18 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       SurgeryForm.editingId = id;
       UI.el('surgDate').value = s.date || todayISO();
       UI.el('surgPatient').value = s.patientName || '';
+      UI.el('surgBirthDate').value = s.birthDate || '';
       UI.el('surgAttendance').value = s.attendanceNumber || '';
       UI.el('surgProcedures').value = s.procedures || '';
       UI.el('surgPaymentType').value = s.paymentType || 'convenio';
+      UI.el('surgInsurance').value = s.insuranceProvider || '';
       UI.el('surgHealthPlan').value = s.healthPlan || '';
       UI.el('surgHospital').value = s.hospital || '';
       UI.el('surgRole').value = s.role || 'principal';
       UI.el('surgAmount').value = Number(s.amount || 0) || '';
       UI.el('surgReceivedAmount').value = Number(s.receivedAmount || 0) || '';
-      UI.el('surgDeniedAmount').value = Number(s.deniedAmount || 0) || '';
-      UI.el('surgBillingDate').value = s.billingDate || '';
-      UI.el('surgExpectedPayDate').value = s.expectedPayDate || '';
       UI.el('surgPaidDate').value = s.paidDate || '';
-      UI.el('surgPaymentStatus').value = s.paymentStatus || 'unpaid';
-      UI.el('surgFinanceNote').value = s.financeNote || '';
+      UI.el('surgPaymentStatus').value = surgeryPaymentClass(s.paymentStatus);
       UI.el('surgNotes').value = s.notes || '';
       UI.open('ovSurgeryCenter');
     }
@@ -12319,7 +12341,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('surgeryClose').addEventListener('click', () => UI.close('ovSurgeryCenter'));
       UI.el('surgSave').addEventListener('click', saveSurgery);
       UI.el('surgClear').addEventListener('click', clearSurgeryForm);
-      ['surgerySearch','surgeryStatusFilter','surgeryMonthFilter'].forEach(id => UI.el(id).addEventListener('input', renderSurgeryPanel));
+      ['surgerySearch','surgeryPeriodFrom','surgeryPeriodTo','surgeryHospitalFilter','surgeryCategoryFilter','surgeryRoleFilter','surgeryStatusFilter'].forEach(id => UI.el(id)?.addEventListener('input', renderSurgeryPanel));
+      UI.el('surgeryDownloadDoc')?.addEventListener('click', downloadSurgeryDocReport);
       UI.el('btnToggleSummary').addEventListener('click', toggleSummaryPanel);
       UI.el('btnTogglePayments').addEventListener('click', togglePaymentsPanel);
       UI.el('btnTogglePayables').addEventListener('click', togglePayablesPanel);
@@ -15776,4 +15799,18 @@ body[data-theme="senna_brasil"] .hdr::after{
     .mainCalendarCard .day{height:clamp(58px,var(--cellH),68px) !important;min-height:clamp(58px,var(--cellH),68px) !important;padding:3px !important}
     .mainCalendarCard .month{font-size:18px !important}
   }
+</style>
+
+<style id="surgeon-mode-v2-final-css">
+  #ovSurgeryCenter .modal{width:min(1180px,100%) !important}
+  .surgeonModeSearchPanel{display:none;margin-bottom:14px;padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.045)}
+  body.surgeon-mode .surgeonModeSearchPanel{display:block !important}
+  .surgeonModeSearchPanel .surgeryFilterBar{display:grid !important;grid-template-columns:repeat(4,minmax(160px,1fr)) !important;gap:9px !important;align-items:end !important}
+  .surgeonModeSearchPanel .surgeryReportAction{display:flex !important;align-items:flex-end !important;height:100% !important}
+  .surgeonModeSearchPanel .surgeryReportAction .mBtn{width:100% !important;min-height:42px !important}
+  #ovSurgeryCenter .surgeryRegistrationPanel{margin-top:4px !important}
+  #ovSurgeryCenter .surgeryRegistrationPanel textarea{resize:vertical !important}
+  #surgeryReportSummary{margin-top:0 !important;padding:8px 10px !important}
+  @media(max-width:980px){.surgeonModeSearchPanel .surgeryFilterBar{grid-template-columns:repeat(2,minmax(0,1fr)) !important}}
+  @media(max-width:620px){.surgeonModeSearchPanel .surgeryFilterBar,#ovSurgeryCenter .row2,#ovSurgeryCenter .row3{grid-template-columns:1fr !important}}
 </style>
