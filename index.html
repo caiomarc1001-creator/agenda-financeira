@@ -16387,3 +16387,65 @@ body[data-theme="senna_brasil"] .hdr::after{
   html :is(#theme-ui-a,body):is(#theme-ui-b,body) .modal :where(.closeX,#loginClose)::before,html :is(#theme-ui-a,body):is(#theme-ui-b,body) .modal :where(.closeX,#loginClose)::after{background:var(--ui-field-text) !important;color:var(--ui-field-text) !important;-webkit-text-fill-color:var(--ui-field-text) !important}
   html :is(#theme-ui-a,body):is(#theme-ui-b,body) .modal :where(.closeX,#loginClose):hover{filter:brightness(.96) saturate(1.05) !important;border-color:var(--ui-focus) !important}
 </style>
+
+<style id="global-legibility-v1-final-css">
+  /* Contraste próprio do cabeçalho, independente da cor usada nos cards. */
+  body{--ui-header-text:#f8fbff;--ui-header-muted:rgba(248,251,255,.78)}
+  body[data-theme="light"],body[data-theme="paper"]{--ui-header-text:#10233f;--ui-header-muted:#50647d}
+  body[data-theme="senna_brasil"],body[data-theme="senna_mclaren"]{--ui-header-text:#071d33;--ui-header-muted:#344d63}
+  body[data-theme="windows_xp"],body[data-theme="toy_story"],body[data-theme="nasa"],body[data-theme="sonic"],body[data-theme="senna_capacete"]{--ui-header-text:#ffffff;--ui-header-muted:rgba(255,255,255,.82)}
+  body[data-theme="custom"]{--ui-header-text:var(--txt);--ui-header-muted:var(--mut)}
+
+  html :is(#legibility-a,body):is(#legibility-b,body) .hdr .compactBrand :where(h1,p){color:var(--ui-header-text) !important;-webkit-text-fill-color:var(--ui-header-text) !important;text-shadow:0 1px 2px rgba(0,0,0,.24) !important}
+  html :is(#legibility-a,body):is(#legibility-b,body) .hdr .compactBrand p{color:var(--ui-header-muted) !important;-webkit-text-fill-color:var(--ui-header-muted) !important}
+
+  /* Superfícies funcionais recebem texto da própria paleta sem depender de --txt global. */
+  html :is(#legibility-a,body):is(#legibility-b,body) :where(
+    .crmPanel,.crmFormPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,
+    .commercialAnalytics,.commercialKpi,.commercialChart,.commercialActionsBox,
+    .dashboardPanel,.dashboardCard,.dashboardMini,.dashboardLegendItem,.dashboardChartRow,
+    .surgeryMini,.surgeryCard,.surgeryDateGroup,.surgeonModeSearchPanel,
+    .backupMetaBox,.backupItem,.backupWarn,.accountPanel,.agoraV2Box,.agoraV2Row,
+    .sumBox,.payRow,.modal
+  ){color:var(--ui-text) !important;border-color:var(--ui-border) !important}
+
+  /* Títulos, nomes, valores e números principais. */
+  html :is(#legibility-a,body):is(#legibility-b,body) :where(
+    .crmPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,.commercialAnalytics,
+    .dashboardPanel,.dashboardCard,.dashboardMini,.surgeryMini,.surgeryCard,
+    .backupMetaBox,.backupItem,.accountPanel,.modal
+  ) :where(
+    h1,h2,h3,h4,h5,h6,.ttl,.themeSectionTitle,.crmTitle,.crmName,.crmOverdueTitle,
+    .crmStat .v,.crmTimeBox .v,.crmCommercialMini .v,.commercialKpi b,.commercialBarLabel,
+    .crmDoctorReportTitle,.crmDoctorTile .doc,.crmDoctorTable th,
+    .dashEyebrow,.dashTitle,.dashboardCard .v,.dashboardRow .name,.dashboardRow .amount,
+    .dashboardMini .v,.dashboardLegendName,.dashboardLegendValue,.dashboardChartLabel,.dashboardChartValue,
+    .surgeryMini .v,.surgeryDateTitle,.surgeryMoneyLine b,.backupMetaBox .v,.backupTitle,
+    .agoraV2BoxTitle,.agoraV2Name,.agoraTimelineTitle,.agoraTimelineText,.payRowTop .a,.payRowTop .b,.sumBox .val
+  ){color:var(--ui-text) !important;-webkit-text-fill-color:var(--ui-text) !important;text-shadow:none !important}
+
+  /* Legendas e textos secundários com contraste, sem parecerem desabilitados. */
+  html :is(#legibility-a,body):is(#legibility-b,body) :where(
+    .crmPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,.commercialAnalytics,
+    .dashboardPanel,.dashboardCard,.dashboardMini,.surgeryMini,.surgeryCard,
+    .backupMetaBox,.backupItem,.accountPanel,.modal
+  ) :where(
+    p,small,.sub,.small,.helper,.crmSub,.crmMeta,.crmOverdueSub,.crmOverdueMeta,
+    .crmStat .k,.crmTimeBox .k,.crmCommercialMini .k,.commercialKpi span,
+    .crmDoctorReportSub,.crmDoctorTile .mini,.crmDoctorTable td,.crmDoctorEmpty,.crmEmpty,
+    .dashSub,.dashboardCard .k,.dashboardCard .s,.dashboardRow .meta,.dashboardMini .k,.dashboardFooterNote,.dashboardPeriodHint,
+    .surgeryMini .k,.surgeryMeta,.surgeryTimeline span,.surgeryMoneyLine,
+    .backupMetaBox .k,.backupInfo,.agoraV2BoxSub,.agoraV2Meta,.agoraTimelineDate,.sumBox .lbl
+  ){color:var(--ui-muted) !important;-webkit-text-fill-color:var(--ui-muted) !important;text-shadow:none !important;opacity:1 !important}
+
+  /* Cartões internos e trilhas de gráficos permanecem distinguíveis nos temas claros e escuros. */
+  html :is(#legibility-a,body):is(#legibility-b,body) :where(.commercialKpi,.commercialChart,.commercialActionsBox,.crmTimeBox,.crmDoctorTile,.dashboardMini,.dashboardLegendItem,.dashboardChartRow,.surgeryMini,.backupMetaBox){background:color-mix(in srgb,var(--ui-text) 5%,transparent) !important;border-color:var(--ui-border) !important}
+  html :is(#legibility-a,body):is(#legibility-b,body) :where(.commercialBarTrack,.dashboardChartTrack){background:color-mix(in srgb,var(--ui-text) 14%,transparent) !important;border-color:var(--ui-border) !important}
+
+  /* Tabelas e listas administrativas/auditoria. */
+  html :is(#legibility-a,body):is(#legibility-b,body) :where(.crmDoctorTable,.agoraAuditTable) th{background:var(--ui-field-bg) !important;color:var(--ui-field-text) !important;-webkit-text-fill-color:var(--ui-field-text) !important;border-color:var(--ui-border) !important}
+  html :is(#legibility-a,body):is(#legibility-b,body) :where(.crmDoctorTable,.agoraAuditTable) td{color:var(--ui-text) !important;-webkit-text-fill-color:var(--ui-text) !important;border-color:var(--ui-border) !important}
+
+  /* Abas e botões neutros dentro de superfícies claras nunca ficam com texto branco apagado. */
+  html :is(#legibility-a,body):is(#legibility-b,body) :where(.crmPanel,.modal) :where(.crmTab,.smallBtn,.mBtn,.btn):not(.primary):not(.danger):not(.modeActive){color:var(--ui-menu-button-text) !important;-webkit-text-fill-color:var(--ui-menu-button-text) !important;background:var(--ui-menu-button-bg) !important;border-color:var(--ui-menu-button-border) !important;text-shadow:none !important}
+</style>
