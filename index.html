@@ -7247,7 +7247,7 @@ body[data-theme="senna_brasil"] .hdr{
               <div><div class="lbl">Categoria</div><select class="input" id="surgeryCategoryFilter"><option value="all">Todas</option><option value="convenio">Convênio</option><option value="particular">Particular</option></select></div>
               <div><div class="lbl">Atuação</div><select class="input" id="surgeryRoleFilter"><option value="all">Todas</option><option value="principal">Cirurgião</option><option value="auxiliar">Auxiliar</option></select></div>
               <div><div class="lbl">Status</div><select class="input" id="surgeryStatusFilter"><option value="all">Todos</option><option value="unpaid">Não Pago</option><option value="paid">Pago</option></select></div>
-              <div class="surgeryReportAction"><button class="mBtn" id="surgeryDownloadDoc" type="button">Baixar relatório .doc</button></div>
+              <div class="surgeryReportAction"><button class="mBtn" id="surgeryDownloadDoc" type="button">Baixar DOC</button><button class="mBtn" id="surgeryDownloadPdf" type="button">Baixar PDF</button></div>
             </div>
             <div class="helper" id="surgeryReportSummary"></div>
             <div class="surgeryList" id="surgeryFullList"></div>
@@ -7286,15 +7286,33 @@ body[data-theme="senna_brasil"] .hdr{
                 <div class="crmStat"><div class="k">Valores pagos</div><div class="v" id="crmStatPaid">R$ 0,00</div></div>
               </div>
               <div id="crmAnalytics" class="commercialAnalytics"></div>
-              <div class="commercialActionsBox">
-                <div class="lbl">Observações e propostas de ações comerciais</div>
-                <textarea class="input" id="crmActionNotes" rows="3" placeholder="Registre campanhas, ajustes de abordagem e próximas ações..."></textarea>
-                <div class="mFoot"><button class="mBtn primary" id="crmSaveActionNotes" type="button">Salvar observações</button></div>
+              <div class="crmOverdueBox crmOverdueCompact" id="crmOverdueBox"></div>
+            </div>
+
+            <div class="crmPanel crmDoctorSectionPanel" id="crmDoctorSection">
+              <div class="crmDoctorReportHead">
+                <div>
+                  <div class="crmDoctorReportTitle">Controle por período · atendimento por médico</div>
+                  <div class="crmDoctorReportSub">Filtre o período para saber quais e quantos pacientes/leads cada médico atendeu ou acompanhou.</div>
+                </div>
+                <button class="smallBtn" id="crmToggleDoctorReport" type="button">Recolher</button>
               </div>
-              <div class="crmTabs">
-                <button class="crmTab active" id="crmTabPatients" type="button">Pacientes</button>
-                <button class="crmTab" id="crmTabLeads" type="button">Leads não convertidos</button>
-                <button class="crmTab" id="crmTabDue" type="button">Recontatos</button>
+              <div class="crmDoctorReport" id="crmDoctorReportBox">
+                <div class="crmDoctorReportActions">
+                  <button class="smallBtn" id="crmDoctorPeriodThisMonth" type="button">Mês atual</button>
+                  <button class="smallBtn" id="crmPrintReport" type="button">Imprimir</button>
+                  <button class="smallBtn" id="crmDownloadReport" type="button">Baixar CSV</button>
+                  <button class="smallBtn" id="crmDownloadDoc" type="button">Baixar DOC</button>
+                  <button class="smallBtn" id="crmDownloadPdf" type="button">Baixar PDF</button>
+                </div>
+                <div class="crmDoctorFilters">
+                  <div><div class="lbl">Data inicial</div><input class="input" id="crmDoctorPeriodFrom" type="date"></div>
+                  <div><div class="lbl">Data final</div><input class="input" id="crmDoctorPeriodTo" type="date"></div>
+                  <div><div class="lbl">Considerar data de</div><select class="input" id="crmDoctorPeriodBasis"><option value="lastConsultation">Última consulta</option><option value="firstConsultation">Primeira consulta</option><option value="lastContact">Último contato / atendimento</option><option value="firstContact">Primeiro contato</option><option value="packageStart">Início do pacote</option><option value="createdAt">Cadastro criado</option><option value="updatedAt">Última atualização</option></select></div>
+                  <div><div class="lbl">Tipo</div><select class="input" id="crmDoctorPeriodType"><option value="all">Pacientes e leads</option><option value="patient">Somente pacientes</option><option value="lead">Somente leads</option></select></div>
+                  <div class="span2"><div class="lbl">Médico</div><select class="input" id="crmDoctorPeriodDoctor"><option value="all">Todos os médicos</option></select></div>
+                </div>
+                <div id="crmDoctorPeriodReport"></div>
               </div>
             </div>
 
@@ -7321,7 +7339,7 @@ body[data-theme="senna_brasil"] .hdr{
               <div style="margin-top:10px"><div class="lbl">Outros médicos que atenderam</div><input class="input" id="crmAdditionalDoctors" placeholder="Separe os nomes por vírgula"></div>
               <div class="crmFormGrid3">
                 <div><div class="lbl">Tipo</div><select class="input" id="crmType"><option value="patient">Paciente convertido</option><option value="lead">Lead não convertido</option></select></div>
-                <div><div class="lbl">Status do lead/paciente</div><select class="input" id="crmStatus"><option value="ativo">Ativo</option><option value="renovacao">Renovação</option><option value="expirado">Expirado</option><option value="novo">Novo lead</option><option value="negociacao">Em negociação</option><option value="recontatar">Recontatar</option><option value="sem_resposta">Sem resposta</option><option value="perdido">Perdido</option><option value="convertido">Convertido</option></select></div>
+                <div><div class="lbl">Status do paciente</div><select class="input" id="crmStatus"><option value="convertido">Paciente convertido</option><option value="nao_convertido">Paciente não convertido</option></select></div>
                 <div><div class="lbl">Interesse / procedimento</div><input class="input" id="crmInterest" placeholder="Emagrecimento, cirurgia, gastro..."></div>
               </div>
               <div class="crmFormGrid3">
@@ -7352,39 +7370,23 @@ body[data-theme="senna_brasil"] .hdr{
               </div>
             </div>
 
-            <div class="crmPanel">
+            <div class="crmPanel crmSearchSection" id="crmSearchSection">
+              <div class="themeSectionTitle">Pesquisa e lista de pacientes</div>
+              <div class="crmTabs crmSearchTabs">
+                <button class="crmTab active" id="crmTabPatients" type="button">Pacientes</button>
+                <button class="crmTab" id="crmTabLeads" type="button">Leads não convertidos</button>
+                <button class="crmTab" id="crmTabDue" type="button">Recontatos</button>
+              </div>
               <div class="crmToolbar">
                 <div><div class="lbl">Pesquisar</div><input class="input" id="crmSearch" placeholder="Nome, telefone, origem, médico, procedimento..."></div>
-                <div><div class="lbl">Filtro rápido</div><select class="input" id="crmQuickFilter"><option value="all">Todos</option><option value="due">Recontato hoje/atrasado</option><option value="active">Ativos</option><option value="lost">Perdidos</option><option value="renew">Renovação</option></select></div>
+                <div><div class="lbl">Filtro rápido</div><select class="input" id="crmQuickFilter"><option value="all">Todos</option><option value="converted">Convertidos</option><option value="not_converted">Não convertidos</option><option value="due">Recontato hoje/atrasado</option></select></div>
               </div>
               <div class="crmDoctorFilters commercialCombinedFilters">
                 <div><div class="lbl">Médico</div><select class="input" id="crmListDoctor"><option value="all">Todos os médicos</option></select></div>
                 <div><div class="lbl">Período inicial</div><input class="input" id="crmListFrom" type="date"></div>
                 <div><div class="lbl">Período final</div><input class="input" id="crmListTo" type="date"></div>
               </div>
-              <div class="crmOverdueBox" id="crmOverdueBox"></div>
               <div class="crmList" id="crmList"></div>
-
-              <div class="crmDoctorReport" id="crmDoctorReportBox">
-                <div class="crmDoctorReportHead">
-                  <div>
-                    <div class="crmDoctorReportTitle">Controle por período · atendimento por médico</div>
-                    <div class="crmDoctorReportSub">Filtre o período para saber quais e quantos pacientes/leads cada médico atendeu ou acompanhou.</div>
-                  </div>
-                  <button class="smallBtn" id="crmDoctorPeriodThisMonth" type="button">Mês atual</button>
-                  <button class="smallBtn" id="crmPrintReport" type="button">Imprimir relatório</button>
-                  <button class="smallBtn" id="crmDownloadReport" type="button">Baixar CSV</button>
-                </div>
-                <div class="crmDoctorFilters">
-                  <div><div class="lbl">Data inicial</div><input class="input" id="crmDoctorPeriodFrom" type="date"></div>
-                  <div><div class="lbl">Data final</div><input class="input" id="crmDoctorPeriodTo" type="date"></div>
-                <div><div class="lbl">Considerar data de</div><select class="input" id="crmDoctorPeriodBasis"><option value="lastConsultation">Última consulta</option><option value="firstConsultation">Primeira consulta</option><option value="lastContact">Último contato / atendimento</option><option value="firstContact">Primeiro contato</option><option value="packageStart">Início do pacote</option><option value="createdAt">Cadastro criado</option><option value="updatedAt">Última atualização</option></select></div>
-                  <div><div class="lbl">Tipo</div><select class="input" id="crmDoctorPeriodType"><option value="all">Pacientes e leads</option><option value="patient">Somente pacientes</option><option value="lead">Somente leads</option></select></div>
-                  <div class="span2"><div class="lbl">Médico</div><select class="input" id="crmDoctorPeriodDoctor"><option value="all">Todos os médicos</option></select></div>
-                </div>
-                <div id="crmDoctorPeriodReport"></div>
-              </div>
-
             </div>
           </div>
         </div>
@@ -11172,6 +11174,43 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')) || String(a.patientName || '').localeCompare(String(b.patientName || '')));
     }
 
+    function pdfSafeText(value){
+      return String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\x20-\x7E]/g,' ').replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)');
+    }
+    function pdfFixed(value,size){
+      const text=pdfSafeText(value);
+      return text.length>size ? text.slice(0,Math.max(1,size-1))+'~' : text.padEnd(size,' ');
+    }
+    function downloadTablePdf(filename,title,subtitle,headers,rows,widths){
+      const headerLine=headers.map((value,index)=>pdfFixed(value,widths[index])).join(' | ');
+      const separator=widths.map(size=>'-'.repeat(size)).join('-+-');
+      const dataLines=rows.map(row=>row.map((value,index)=>pdfFixed(value,widths[index])).join(' | '));
+      const allLines=[pdfSafeText(title),pdfSafeText(subtitle),'',headerLine,separator,...dataLines];
+      const perPage=46;
+      const pages=[];
+      for(let index=0;index<allLines.length;index+=perPage) pages.push(allLines.slice(index,index+perPage));
+      if(!pages.length) pages.push([pdfSafeText(title)]);
+      const objects=[];
+      objects[1]='<< /Type /Catalog /Pages 2 0 R >>';
+      const pageIds=pages.map((_,index)=>4+(index*2));
+      objects[2]=`<< /Type /Pages /Kids [${pageIds.map(id=>`${id} 0 R`).join(' ')}] /Count ${pages.length} >>`;
+      objects[3]='<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>';
+      pages.forEach((lines,pageIndex)=>{
+        const pageId=4+(pageIndex*2),contentId=pageId+1;
+        const content=['BT','/F1 8 Tf','32 806 Td','11 TL',...lines.map((line,index)=>`${index?'T* ':''}(${pdfSafeText(line)}) Tj`),'ET'].join('\n');
+        objects[pageId]=`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 842 842] /Resources << /Font << /F1 3 0 R >> >> /Contents ${contentId} 0 R >>`;
+        objects[contentId]=`<< /Length ${content.length} >>\nstream\n${content}\nendstream`;
+      });
+      let pdf='%PDF-1.4\n'; const offsets=[0];
+      for(let id=1;id<objects.length;id++){ offsets[id]=pdf.length; pdf+=`${id} 0 obj\n${objects[id]}\nendobj\n`; }
+      const xref=pdf.length;
+      pdf+=`xref\n0 ${objects.length}\n0000000000 65535 f \n`;
+      for(let id=1;id<objects.length;id++) pdf+=`${String(offsets[id]).padStart(10,'0')} 00000 n \n`;
+      pdf+=`trailer\n<< /Size ${objects.length} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
+      const blob=new Blob([pdf],{type:'application/pdf'}); const link=document.createElement('a');
+      link.href=URL.createObjectURL(blob); link.download=filename; document.body.appendChild(link); link.click(); link.remove(); setTimeout(()=>URL.revokeObjectURL(link.href),1000);
+    }
+
     function downloadSurgeryDocReport(){
       const items = filteredSurgeries();
       if (!items.length) return alert('Nenhuma cirurgia encontrada para os filtros selecionados.');
@@ -11194,6 +11233,15 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       link.click();
       link.remove();
       setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    }
+
+    function downloadSurgeryPdfReport(){
+      const items=filteredSurgeries();
+      if(!items.length) return alert('Nenhuma cirurgia encontrada para os filtros selecionados.');
+      const from=UI.el('surgeryPeriodFrom')?.value || '',to=UI.el('surgeryPeriodTo')?.value || '';
+      const period=from || to ? `${from?formatDateBR(from):'início'} até ${to?formatDateBR(to):'hoje'}` : 'Todos os períodos';
+      const rows=items.map(s=>[s.patientName||'',s.attendanceNumber||'',formatDateBR(s.date||''),s.hospital||'',surgeryPaymentLabel(surgeryPaymentClass(s.paymentStatus))]);
+      downloadTablePdf(`relatorio_cirurgias_${todayISO()}.pdf`,'Relatório de Cirurgias',`${period} · ${items.length} registro(s)`,['Paciente','Atendimento','Data','Hospital','Pagamento'],rows,[26,15,12,24,16]);
     }
 
     function surgeryCardHtml(s, compact=false){
@@ -11544,7 +11592,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       return `${item.packageName || 'Pacote'} · faltam ${days} dia(s)`;
     }
     function crmStatusLabel(status){
-      const map = { ativo:'Ativo', renovacao:'Renovação', expirado:'Expirado', novo:'Novo lead', negociacao:'Em negociação', recontatar:'Recontatar', sem_resposta:'Sem resposta', perdido:'Perdido', convertido:'Convertido' };
+      const map = { ativo:'Paciente convertido', renovacao:'Paciente convertido', expirado:'Paciente convertido', novo:'Paciente não convertido', negociacao:'Paciente não convertido', recontatar:'Paciente não convertido', sem_resposta:'Paciente não convertido', perdido:'Paciente não convertido', convertido:'Paciente convertido', nao_convertido:'Paciente não convertido' };
       return map[status] || status || '—';
     }
     function crmBadgeClass(item){
@@ -11571,7 +11619,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       crmRefreshDoctorSelects();
       set('crmName'); set('crmPhone'); set('crmBirthDate'); set('crmCpf'); set('crmEmail'); set('crmAddress'); set('crmReferral'); set('crmOrigin'); set('crmDoctor'); set('crmAdditionalDoctors'); set('crmOwner'); set('crmInterest'); set('crmPackage'); set('crmPackageMonths'); set('crmPackageStart'); set('crmAmountPaid'); set('crmTotalSpent'); set('crmNextContact'); set('crmRecurrenceDays'); set('crmFirstContact', todayISO()); set('crmLastContact'); set('crmFirstConsultation'); set('crmLastConsultation'); set('crmReminderDays','0'); set('crmProcedures'); set('crmNotes');
       set('crmType', isLead ? 'lead' : 'patient');
-      set('crmStatus', isLead ? 'novo' : 'ativo');
+      set('crmStatus', isLead ? 'nao_convertido' : 'convertido');
     }
     function setCRMTab(type){
       crmEnsure();
@@ -11678,7 +11726,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       crmRefreshDoctorSelects(item.doctor);
       const set = (id,val='') => { const el = UI.el(id); if (el) el.value = val; };
       UI.el('crmFormTitle').textContent = 'Editando: ' + (item.name || 'cadastro');
-      set('crmName', item.name); set('crmPhone', item.phone); set('crmBirthDate', item.birthDate); set('crmCpf', item.cpf); set('crmEmail', item.email); set('crmAddress', item.address); set('crmReferral', item.referral); set('crmOrigin', item.origin); set('crmDoctor', item.doctor); set('crmAdditionalDoctors', (item.additionalDoctors || []).join(', ')); set('crmOwner', item.owner); set('crmInterest', item.interest); set('crmType', item.type); set('crmStatus', item.status); set('crmProcedures', item.procedures); set('crmPackage', item.packageName); set('crmPackageMonths', item.packageMonths); set('crmPackageStart', item.packageStart); set('crmAmountPaid', item.amountPaid); set('crmTotalSpent', item.totalSpent ?? item.amountPaid); set('crmNextContact', item.nextContact); set('crmRecurrenceDays', item.recurrenceDays); set('crmFirstContact', item.firstContact); set('crmLastContact', item.lastContact); set('crmFirstConsultation', item.firstConsultation); set('crmLastConsultation', item.lastConsultation); set('crmReminderDays', item.reminderDays ?? 0); set('crmNotes', item.notes);
+      set('crmName', item.name); set('crmPhone', item.phone); set('crmBirthDate', item.birthDate); set('crmCpf', item.cpf); set('crmEmail', item.email); set('crmAddress', item.address); set('crmReferral', item.referral); set('crmOrigin', item.origin); set('crmDoctor', item.doctor); set('crmAdditionalDoctors', (item.additionalDoctors || []).join(', ')); set('crmOwner', item.owner); set('crmInterest', item.interest); set('crmType', item.type); set('crmStatus', item.type === 'lead' || item.status === 'nao_convertido' ? 'nao_convertido' : 'convertido'); set('crmProcedures', item.procedures); set('crmPackage', item.packageName); set('crmPackageMonths', item.packageMonths); set('crmPackageStart', item.packageStart); set('crmAmountPaid', item.amountPaid); set('crmTotalSpent', item.totalSpent ?? item.amountPaid); set('crmNextContact', item.nextContact); set('crmRecurrenceDays', item.recurrenceDays); set('crmFirstContact', item.firstContact); set('crmLastContact', item.lastContact); set('crmFirstConsultation', item.firstConsultation); set('crmLastConsultation', item.lastConsultation); set('crmReminderDays', item.reminderDays ?? 0); set('crmNotes', item.notes);
       document.getElementById('crmPageCard')?.scrollIntoView({behavior:'smooth', block:'start'});
     }
     function deleteCRMEntry(id){
@@ -11695,7 +11743,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       if (!item) return;
       pushHistorySnapshot();
       item.type = 'patient';
-      item.status = 'ativo';
+      item.status = 'convertido';
       item.convertedAt = new Date().toISOString();
       item.updatedAt = item.convertedAt;
       CRMForm.tab = 'patient';
@@ -11730,11 +11778,13 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       if (crmIsDue(item)) badges.push(`<span class="crmBadge bad">🔔 ${escapeHtml(due)}</span>`);
       else if (item.nextContact) badges.push(`<span class="crmBadge warn">${escapeHtml(due)}</span>`);
       if (item.type !== 'lead' && end) { const left = crmDaysUntil(end); if (left !== null && left <= 30) badges.push(`<span class="crmBadge warn">⚠ Pacote ${left < 0 ? 'expirado há ' + Math.abs(left) + ' dia(s)' : 'vence em ' + left + ' dia(s)'}</span>`); }
-      return `<div class="crmCard ${crmIsDue(item) ? 'crmDueLate' : ''}">
-        <div class="crmCardTop">
+      return `<details class="crmCard ${crmIsDue(item) ? 'crmDueLate' : ''}">
+        <summary class="crmCardSummary">
           <div><div class="crmName">${escapeHtml(item.name || 'Sem nome')}</div><div class="crmMeta">${escapeHtml(item.phone || 'Sem WhatsApp')} · ${escapeHtml(item.doctor || 'Médico não definido')}<br>${escapeHtml(item.interest || item.procedures || 'Sem interesse/procedimento definido')}</div></div>
           <div class="crmBadgeRow">${badges.join('')}</div>
-        </div>
+          <span class="crmExpandHint" aria-hidden="true"></span>
+        </summary>
+        <div class="crmCardDetails">
         <div class="crmTimeline">
           <div class="crmTimeBox"><div class="k">${contactLabel}</div><div class="v">${item.nextContact ? formatDateBR(item.nextContact) : '—'}</div></div>
           <div class="crmTimeBox"><div class="k">Pacote</div><div class="v">${escapeHtml(crmPackageText(item))}</div></div>
@@ -11757,7 +11807,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
           <button class="smallBtn" type="button" data-crm-delay="15" data-crm-delay-id="${escapeAttr(item.id)}">+15 dias</button>
           <button class="smallBtn" type="button" data-crm-delay="30" data-crm-delay-id="${escapeAttr(item.id)}">+30 dias</button>
         </div>
-      </div>`;
+        </div>
+      </details>`;
     }
     function crmOverdueContactHtml(item){
       const daysLate = Math.abs(crmDaysUntil(item.nextContact) || 0);
@@ -12027,9 +12078,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       setTxt('crmStatPatients', String(patients.length)); setTxt('crmStatLeads', String(leads.length)); setTxt('crmStatDue', String(due.length)); setTxt('crmStatPaid', fmtMoney(paid));
       let arr = CRMForm.tab === 'lead' ? leads : (CRMForm.tab === 'due' ? due : patients);
       if (quick === 'due') arr = arr.filter(crmIsDue);
-      if (quick === 'active') arr = arr.filter(x => ['ativo','novo','negociacao','recontatar'].includes(x.status));
-      if (quick === 'lost') arr = arr.filter(x => x.status === 'perdido');
-      if (quick === 'renew') arr = arr.filter(x => x.status === 'renovacao' || (crmEndDate(x) && crmDaysUntil(crmEndDate(x)) <= 30));
+      if (quick === 'converted') arr = arr.filter(x => x.type !== 'lead' || x.status === 'convertido');
+      if (quick === 'not_converted') arr = arr.filter(x => x.type === 'lead' || x.status === 'nao_convertido');
       if (q) arr = arr.filter(x => [x.name,x.phone,x.cpf,x.email,x.address,x.referral,x.origin,x.doctor,(x.additionalDoctors||[]).join(' '),x.owner,x.interest,x.procedures,x.notes].join(' ').toLowerCase().includes(q));
       const listDoctor = UI.el('crmListDoctor')?.value || 'all';
       const listFrom = UI.el('crmListFrom')?.value || '';
@@ -12513,6 +12563,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('surgClear').addEventListener('click', clearSurgeryForm);
       ['surgerySearch','surgeryPeriodFrom','surgeryPeriodTo','surgeryHospitalFilter','surgeryCategoryFilter','surgeryRoleFilter','surgeryStatusFilter'].forEach(id => UI.el(id)?.addEventListener('input', renderSurgeryPanel));
       UI.el('surgeryDownloadDoc')?.addEventListener('click', downloadSurgeryDocReport);
+      UI.el('surgeryDownloadPdf')?.addEventListener('click', downloadSurgeryPdfReport);
       UI.el('btnToggleSummary').addEventListener('click', toggleSummaryPanel);
       UI.el('btnTogglePayments').addEventListener('click', togglePaymentsPanel);
       UI.el('btnTogglePayables').addEventListener('click', togglePayablesPanel);
@@ -12930,14 +12981,40 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`relatorio_comercial_${todayISO()}.csv`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
     }
 
+    function commercialReportDocumentHtml(rows){
+      return `<!doctype html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>Relatório comercial</title><style>body{font-family:Arial,sans-serif;color:#111;padding:24px}h1{font-size:22px;margin:0 0 6px}p{margin:0 0 18px;color:#444}table{width:100%;border-collapse:collapse;font-size:10pt}th,td{border:1px solid #555;padding:7px;text-align:left;vertical-align:top}th{background:#e8eef8;font-weight:bold}</style></head><body><h1>Relatório comercial por médico</h1><p>Gerado em ${new Date().toLocaleString('pt-BR')} · ${rows.length} registro(s)</p><table><thead><tr><th>Data</th><th>Médico(s)</th><th>Paciente/Lead</th><th>Tipo</th><th>Status</th><th>Faturamento</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${escapeHtml(formatDateBR(x.date))}</td><td>${escapeHtml(x.doctor)}</td><td>${escapeHtml(x.name)}</td><td>${escapeHtml(x.type)}</td><td>${escapeHtml(x.status)}</td><td>${fmtMoney(x.amount)}</td></tr>`).join('')}</tbody></table></body></html>`;
+    }
+    function downloadCommercialDoc(){
+      const rows=crmReportRowsForExport();
+      if(!rows.length) return alert('Nenhum registro encontrado para os filtros selecionados.');
+      const blob=new Blob(['\ufeff',commercialReportDocumentHtml(rows)],{type:'application/msword'}); const link=document.createElement('a');
+      link.href=URL.createObjectURL(blob); link.download=`relatorio_comercial_${todayISO()}.doc`; document.body.appendChild(link); link.click(); link.remove(); setTimeout(()=>URL.revokeObjectURL(link.href),1000);
+    }
+    function downloadCommercialPdf(){
+      const rows=crmReportRowsForExport();
+      if(!rows.length) return alert('Nenhum registro encontrado para os filtros selecionados.');
+      const pdfRows=rows.map(x=>[formatDateBR(x.date),x.doctor,x.name,x.type,x.status,fmtMoney(x.amount)]);
+      downloadTablePdf(`relatorio_comercial_${todayISO()}.pdf`,'Relatório comercial por médico',`${rows.length} registro(s)`,['Data','Médico(s)','Paciente/Lead','Tipo','Status','Faturamento'],pdfRows,[12,23,23,10,20,15]);
+    }
+
     function printCommercialReport(){
       const rows=crmReportRowsForExport();
       const win=window.open('','_blank','width=1000,height=760'); if(!win) return alert('Permita pop-ups para imprimir o relatório.');
       win.document.write(`<html><head><meta charset="utf-8"><title>Relatório comercial</title><style>body{font:14px Arial;padding:24px;color:#111}table{width:100%;border-collapse:collapse}th,td{padding:8px;border:1px solid #bbb;text-align:left}h1{font-size:22px}</style></head><body><h1>Relatório comercial</h1><p>Gerado em ${new Date().toLocaleString('pt-BR')} · ${rows.length} registro(s)</p><table><thead><tr><th>Data</th><th>Médico(s)</th><th>Nome</th><th>Tipo</th><th>Status</th><th>Faturamento</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${escapeHtml(formatDateBR(x.date))}</td><td>${escapeHtml(x.doctor)}</td><td>${escapeHtml(x.name)}</td><td>${x.type}</td><td>${escapeHtml(x.status)}</td><td>${fmtMoney(x.amount)}</td></tr>`).join('')}</tbody></table><script>window.onload=()=>window.print()<\/script></body></html>`); win.document.close();
     }
 
+    function applyCRMDoctorReportCollapsed(){
+      state.ui=state.ui || {};
+      const collapsed=!!state.ui.crmDoctorReportCollapsed;
+      const body=UI.el('crmDoctorReportBox'); if(body) body.style.display=collapsed?'none':'';
+      const button=UI.el('crmToggleDoctorReport'); if(button){ button.textContent=collapsed?'Expandir':'Recolher'; button.setAttribute('aria-expanded',collapsed?'false':'true'); }
+    }
+    function toggleCRMDoctorReport(){
+      state.ui=state.ui || {}; state.ui.crmDoctorReportCollapsed=!state.ui.crmDoctorReportCollapsed; save(); applyCRMDoctorReportCollapsed();
+    }
+
     const agoraV2OriginalRenderAll = renderAll;
-    renderAll = function(){ agoraV2Ensure(); state.crmActionNotes = state.crmActionNotes || ''; agoraV2OriginalRenderAll(); renderAdminCenter(); refreshCommercialDoctorFilter(); renderCommercialAnalytics(); };
+    renderAll = function(){ agoraV2Ensure(); agoraV2OriginalRenderAll(); renderAdminCenter(); refreshCommercialDoctorFilter(); renderCommercialAnalytics(); applyCRMDoctorReportCollapsed(); };
 
     bindEvents();
 
@@ -12960,9 +13037,13 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     UI.el('crmListDoctor')?.addEventListener('change', renderCRMPanel);
     UI.el('crmListFrom')?.addEventListener('change', renderCRMPanel);
     UI.el('crmListTo')?.addEventListener('change', renderCRMPanel);
-    UI.el('crmSaveActionNotes')?.addEventListener('click', () => { state.crmActionNotes = UI.el('crmActionNotes')?.value || ''; pushHistorySnapshot(); save(); setSaveStatus('saved','Observações comerciais salvas'); });
     UI.el('crmDownloadReport')?.addEventListener('click', downloadCommercialReport);
+    UI.el('crmDownloadDoc')?.addEventListener('click', downloadCommercialDoc);
+    UI.el('crmDownloadPdf')?.addEventListener('click', downloadCommercialPdf);
     UI.el('crmPrintReport')?.addEventListener('click', printCommercialReport);
+    UI.el('crmToggleDoctorReport')?.addEventListener('click', toggleCRMDoctorReport);
+    UI.el('crmType')?.addEventListener('change', e => { const status=UI.el('crmStatus'); if(status) status.value=e.target.value==='lead'?'nao_convertido':'convertido'; });
+    UI.el('crmStatus')?.addEventListener('change', e => { const type=UI.el('crmType'); if(type) type.value=e.target.value==='nao_convertido'?'lead':'patient'; });
     UI.el('btnBackupCenterAccount')?.addEventListener('click', () => { UI.close('ovAccount'); openBackupCenter(); });
 
     /* Ponte controlada para os aprimoramentos administrativos carregados ao final do HTML. */
@@ -16448,4 +16529,64 @@ body[data-theme="senna_brasil"] .hdr::after{
 
   /* Abas e botões neutros dentro de superfícies claras nunca ficam com texto branco apagado. */
   html :is(#legibility-a,body):is(#legibility-b,body) :where(.crmPanel,.modal) :where(.crmTab,.smallBtn,.mBtn,.btn):not(.primary):not(.danger):not(.modeActive){color:var(--ui-menu-button-text) !important;-webkit-text-fill-color:var(--ui-menu-button-text) !important;background:var(--ui-menu-button-bg) !important;border-color:var(--ui-menu-button-border) !important;text-shadow:none !important}
+</style>
+
+<style id="commercial-layout-theme-v2-final-css">
+  /* Ordem real: dashboard, controle médico e pesquisa/lista. */
+  body.crm-mode[data-crm-view="dashboard"] #crmPageCard .crmHero{display:flex !important;flex-direction:column !important;gap:14px !important}
+  .crmDoctorSectionPanel,.crmSearchSection{width:100% !important}
+  .crmDoctorSectionPanel .crmDoctorReport{margin-top:12px !important}
+  .crmDoctorReportHead{display:flex !important;align-items:center !important;justify-content:space-between !important;gap:12px !important;flex-wrap:wrap !important}
+  .crmDoctorReportActions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .crmDoctorReportActions .smallBtn{min-height:38px}
+  .crmSearchSection>.themeSectionTitle{margin-bottom:10px}
+  .crmSearchTabs{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:10px !important;margin:0 0 14px !important;overflow:visible !important}
+  .crmSearchTabs .crmTab{width:100% !important;min-height:48px !important;font-size:14px !important;padding:11px 14px !important;justify-content:center !important}
+  .crmOverdueCompact{margin-top:14px !important;padding:9px 10px !important;max-height:180px !important;overflow:auto !important}
+  .crmOverdueCompact .crmOverdueTitle{font-size:13px !important}
+  .crmOverdueCompact .crmOverdueItem{padding:8px !important;gap:8px !important}
+
+  /* Pacientes em lista, com detalhes recolhidos por padrão. */
+  .crmList{display:flex !important;flex-direction:column !important;gap:9px !important;max-height:none !important}
+  details.crmCard{display:block !important;padding:0 !important;overflow:hidden !important}
+  .crmCardSummary{display:grid !important;grid-template-columns:minmax(0,1fr) auto auto !important;align-items:center !important;gap:12px !important;padding:13px 14px !important;cursor:pointer !important;list-style:none !important}
+  .crmCardSummary::-webkit-details-marker{display:none}
+  .crmCardSummary::marker{display:none;content:''}
+  .crmCardDetails{padding:0 14px 14px !important;border-top:1px solid var(--ui-border) !important}
+  .crmExpandHint{display:inline-flex;align-items:center;justify-content:center;min-width:138px;min-height:34px;padding:7px 10px;border-radius:999px;border:1px solid var(--ui-menu-button-border);background:var(--ui-menu-button-bg);color:var(--ui-menu-button-text);font-size:11px;font-weight:1000}
+  .crmExpandHint::before{content:'Expandir informações'}
+  details.crmCard[open] .crmExpandHint::before{content:'Recolher informações'}
+  details.crmCard[open] .crmCardSummary{background:color-mix(in srgb,var(--ui-text) 5%,transparent)}
+
+  .surgeryReportAction{display:flex !important;gap:8px !important;align-items:flex-end !important;height:100% !important}
+  .surgeryReportAction .mBtn{flex:1 1 120px !important;width:auto !important}
+
+  /* Excluir nunca se mistura ao fundo. */
+  html :is(#danger-a,body):is(#danger-b,body) :where(.danger,[data-crm-del],[data-catalog-remove]){background:linear-gradient(180deg,#c7352b,#8f1d18) !important;color:#ffffff !important;-webkit-text-fill-color:#ffffff !important;border-color:#7f1d1d !important;text-shadow:0 1px 2px rgba(0,0,0,.32) !important;opacity:1 !important}
+
+  /* Barra Senna 5% mais alta, compensada abaixo para manter o calendário. */
+  body[data-theme="senna_brasil"] .hdr{min-height:80px !important;padding-top:8px !important;padding-bottom:15px !important}
+  body[data-theme="senna_brasil"] .headerAligned{min-height:54px !important;align-items:center !important}
+  body[data-theme="senna_brasil"] .compactBrand h1{font-size:clamp(15px,1.38vw,20px) !important;font-weight:1000 !important;line-height:1.08 !important}
+  body[data-theme="senna_brasil"] :where(.toolbarCenter,.saveDock){transform:none !important;align-self:center !important}
+  body[data-theme="senna_brasil"] .primaryButtons{align-items:center !important}
+  body[data-theme="senna_brasil"] .crmGlobalAlertStrip{margin-top:2px !important}
+
+  /* NASA e Senna: nenhuma palavra branca; superfícies claras e tipografia escura. */
+  body[data-theme="nasa"]{--txt:#071f49;--mut:#405b7d;--mut2:#5b7190;--card:rgba(248,252,255,.97);--line:rgba(27,82,145,.24);--ui-header-text:#071f49;--ui-header-muted:#405b7d}
+  body[data-theme="senna_brasil"]{--txt:#071225;--mut:#34465b;--mut2:#536273;--card:rgba(255,253,238,.97);--line:rgba(7,18,37,.22);--ui-header-text:#071225;--ui-header-muted:#34465b}
+  body[data-theme="nasa"] .hdr{background:linear-gradient(180deg,#f8fbff,#cfe3ff) !important;border-bottom-color:#fc3d21 !important}
+  body[data-theme="nasa"] :where(.card,.modal,.crmPanel,.dashboardPanel,.dashboardCard,.accountPanel,.agoraV2Box),body[data-theme="senna_brasil"] :where(.card,.modal,.crmPanel,.dashboardPanel,.dashboardCard,.accountPanel,.agoraV2Box){background:var(--ui-panel-bg) !important;border-color:var(--ui-border) !important}
+  body[data-theme="nasa"] .mainCalendarCard>.sectionHead,body[data-theme="senna_brasil"] .mainCalendarCard>.sectionHead{background:var(--ui-panel-bg) !important;border-bottom-color:var(--acc) !important}
+  body[data-theme="nasa"] .mainCalendarCard .month,body[data-theme="senna_brasil"] .mainCalendarCard .month{background:color-mix(in srgb,var(--ui-text) 7%,transparent) !important;color:var(--ui-text) !important;-webkit-text-fill-color:var(--ui-text) !important;text-shadow:none !important}
+  html :is(#dark-theme-a,body):is(#dark-theme-b,body)[data-theme="nasa"] :where(h1,h2,h3,h4,h5,h6,p,span,div,label,small,strong,b,em,summary,button,a,th,td),html :is(#dark-theme-a,body):is(#dark-theme-b,body)[data-theme="senna_brasil"] :where(h1,h2,h3,h4,h5,h6,p,span,div,label,small,strong,b,em,summary,button,a,th,td){color:var(--ui-text) !important;-webkit-text-fill-color:var(--ui-text) !important;text-shadow:none !important}
+  html :is(#dark-theme-a,body):is(#dark-theme-b,body)[data-theme="nasa"] :where(.sub,.small,.helper,.crmSub,.crmMeta,.k,.agoraV2Meta,.agoraV2BoxSub),html :is(#dark-theme-a,body):is(#dark-theme-b,body)[data-theme="senna_brasil"] :where(.sub,.small,.helper,.crmSub,.crmMeta,.k,.agoraV2Meta,.agoraV2BoxSub){color:var(--ui-muted) !important;-webkit-text-fill-color:var(--ui-muted) !important}
+  body[data-theme="nasa"] :where(.btn,.mBtn,.smallBtn,.crmTab,.statusPill,.userBadge):not(.danger),body[data-theme="senna_brasil"] :where(.btn,.mBtn,.smallBtn,.crmTab,.statusPill,.userBadge):not(.danger){background:var(--ui-menu-button-bg) !important;color:var(--ui-menu-button-text) !important;-webkit-text-fill-color:var(--ui-menu-button-text) !important;border-color:var(--ui-menu-button-border) !important}
+  body[data-theme="nasa"] :where(.btn.primary,.mBtn.primary,.smallBtn.primary,.crmTab.active),body[data-theme="senna_brasil"] :where(.btn.primary,.mBtn.primary,.smallBtn.primary,.crmTab.active){background:linear-gradient(180deg,#ffe8a8,#f3cf55) !important;color:#071225 !important;-webkit-text-fill-color:#071225 !important;border-color:#b28a16 !important}
+  body[data-theme="nasa"] :where(.danger,[data-crm-del],[data-catalog-remove]),body[data-theme="senna_brasil"] :where(.danger,[data-crm-del],[data-catalog-remove]){background:linear-gradient(180deg,#fee2e2,#fca5a5) !important;color:#7f1d1d !important;-webkit-text-fill-color:#7f1d1d !important;border-color:#b91c1c !important;text-shadow:none !important}
+  body[data-theme="nasa"] .crmAlertTile.bad,body[data-theme="senna_brasil"] .crmAlertTile.bad{background:linear-gradient(135deg,#fee2e2,#fff7f7) !important}
+  body[data-theme="nasa"] .crmAlertTile.warn,body[data-theme="senna_brasil"] .crmAlertTile.warn{background:linear-gradient(135deg,#fef3c7,#fffdf3) !important}
+  body[data-theme="nasa"] .crmAlertTile.good,body[data-theme="senna_brasil"] .crmAlertTile.good{background:linear-gradient(135deg,#d1fae5,#f4fff9) !important}
+
+  @media(max-width:760px){body[data-theme="senna_brasil"] .hdr{min-height:71px !important;padding:6px 8px 11px !important}.crmSearchTabs{grid-template-columns:1fr !important}.crmCardSummary{grid-template-columns:1fr !important}.crmExpandHint{width:100%}.crmDoctorReportActions{display:grid;grid-template-columns:1fr 1fr;width:100%}.crmDoctorReportActions .smallBtn{width:100%}}
 </style>
