@@ -6107,6 +6107,145 @@ body{
 
 </style>
 
+<style id="automatic-surface-contrast-v1-css">
+  /* Text follows the real local surface, never the theme name. */
+  html :is(#contrast-a,body):is(#contrast-b,body):is(#contrast-c,body) .autoContrastSurface{
+    color:var(--auto-fg) !important;
+    -webkit-text-fill-color:var(--auto-fg) !important;
+  }
+  html :is(#contrast-a,body):is(#contrast-b,body):is(#contrast-c,body) .autoContrastSurface :where(
+    h1,h2,h3,h4,h5,h6,label,summary,strong,b,em,a,th,
+    .ttl,.month,.num,.sideMonth,.themeSectionTitle,.themeTitle,.crmTitle,.crmName,.crmOverdueTitle,
+    .v,.val,.commercialBarLabel,.crmDoctorReportTitle,.doc,.dashEyebrow,.dashTitle,
+    .name,.amount,.dashboardLegendName,.dashboardLegendValue,.dashboardChartLabel,
+    .dashboardChartValue,.surgeryDateTitle,.backupTitle,.agoraV2BoxTitle,.agoraV2Name,
+    .agoraTimelineTitle,.agoraTimelineText,.a,.b
+  ){
+    color:var(--auto-fg) !important;
+    -webkit-text-fill-color:var(--auto-fg) !important;
+    text-shadow:var(--auto-shadow) !important;
+  }
+  html :is(#contrast-a,body):is(#contrast-b,body):is(#contrast-c,body) .autoContrastSurface :where(
+    p,small,.sub,.small,.helper,.k,.lbl,.cnt,.themeDesc,.crmSub,.crmMeta,.crmOverdueSub,.crmOverdueMeta,
+    .mini,.dashSub,.meta,.dashboardFooterNote,.dashboardPeriodHint,.surgeryMeta,
+    .backupInfo,.agoraV2BoxSub,.agoraV2Meta,.agoraTimelineDate,.crmEmpty
+  ){
+    color:var(--auto-muted) !important;
+    -webkit-text-fill-color:var(--auto-muted) !important;
+    text-shadow:var(--auto-shadow) !important;
+    opacity:1 !important;
+  }
+  html :is(#contrast-a,body):is(#contrast-b,body):is(#contrast-c,body) .autoContrastControl{
+    color:var(--auto-fg) !important;
+    -webkit-text-fill-color:var(--auto-fg) !important;
+    text-shadow:var(--auto-shadow) !important;
+  }
+  html :is(#contrast-a,body):is(#contrast-b,body):is(#contrast-c,body) .autoContrastControl :where(span,b,strong,small,em){
+    color:inherit !important;
+    -webkit-text-fill-color:inherit !important;
+    text-shadow:inherit !important;
+  }
+  html :is(#contrast-a,body):is(#contrast-b,body):is(#contrast-c,body) :where(input,select,textarea).autoContrastControl::placeholder{
+    color:var(--auto-muted) !important;
+    -webkit-text-fill-color:var(--auto-muted) !important;
+    opacity:.9 !important;
+  }
+  html :is(#contrast-a,body):is(#contrast-b,body):is(#contrast-c,body) .autoContrastImage :where(h1,h2,h3,h4,h5,h6,label,p,small,strong,b,.ttl,.sub,.k,.v){
+    text-shadow:0 1px 3px var(--auto-shadow-color),0 0 8px var(--auto-shadow-color) !important;
+  }
+</style>
+
+<script id="automatic-surface-contrast-v1-js">
+(function(){
+  'use strict';
+  const surfaceSelector=[
+    '.hdr','.card','.sectionHead','.mainCalendarCard>.sectionHead','.month','.dow','.sideOut','.day','.chip',
+    '.crmGlobalAlertStrip','.crmAlertTile','.crmPanel','.crmStat','.crmCommercialBox','.crmOverdueBox',
+    '.commercialKpi','.commercialChart','.commercialActionsBox','.crmCard','.crmCardSummary','.crmCardDetails',
+    '.crmTimeBox','.crmBadge','.modal','.accountPanel','.agoraV2Box','.agoraV2Row','.dashboardPanel',
+    '.dashboardCard','.dashboardMini','.dashboardLegendItem','.dashboardChartRow','.surgeryMini','.surgeryRow',
+    '.surgeryCard','.surgeryDateGroup','.surgeonModeSearchPanel','.backupMetaBox','.backupItem','.sumBox',
+    '.payRow','.statusPill','.userBadge','.crmDoctorTile','.crmDoctorReport','.crmOverdueItem','.sideSection','.themeCard'
+  ].join(',');
+  const controlSelector='button,.btn,.mBtn,.smallBtn,.crmTab,.closeX,input,select,textarea';
+  const DARK={r:7,g:18,b:37,a:1};
+  const LIGHT={r:248,g:250,b:252,a:1};
+  const DARK_MUTED={r:54,g:69,b:91,a:1};
+  const LIGHT_MUTED={r:220,g:231,b:244,a:1};
+  let scheduled=0;
+
+  function color(value){
+    if(!value || value==='transparent') return null;
+    const hex=value.match(/^#([0-9a-f]{3,8})$/i);
+    if(hex){
+      let h=hex[1]; if(h.length===3 || h.length===4) h=h.split('').map(x=>x+x).join('');
+      if(h.length===6 || h.length===8) return {r:parseInt(h.slice(0,2),16),g:parseInt(h.slice(2,4),16),b:parseInt(h.slice(4,6),16),a:h.length===8?parseInt(h.slice(6,8),16)/255:1};
+    }
+    const rgb=value.match(/rgba?\(\s*([\d.]+)[, ]+([\d.]+)[, ]+([\d.]+)(?:\s*[,\/]\s*([\d.]+%?))?\s*\)/i);
+    if(!rgb) return null;
+    const av=rgb[4];
+    return {r:+rgb[1],g:+rgb[2],b:+rgb[3],a:av==null?1:(av.endsWith('%')?parseFloat(av)/100:+av)};
+  }
+  function blend(fg,bg){
+    const a=Math.max(0,Math.min(1,fg.a==null?1:fg.a));
+    return {r:fg.r*a+bg.r*(1-a),g:fg.g*a+bg.g*(1-a),b:fg.b*a+bg.b*(1-a),a:1};
+  }
+  function average(list){
+    if(!list.length) return {r:255,g:255,b:255,a:1};
+    return list.reduce((o,c)=>({r:o.r+c.r/list.length,g:o.g+c.g/list.length,b:o.b+c.b/list.length,a:1}),{r:0,g:0,b:0,a:1});
+  }
+  function tokens(image){
+    if(!image || image==='none') return [];
+    return (image.match(/#[0-9a-f]{3,8}|rgba?\([^)]*\)/gi)||[]).map(color).filter(Boolean);
+  }
+  function samples(element,depth){
+    if(!element || depth>7) return [{r:255,g:255,b:255,a:1}];
+    const parent=samples(element.parentElement,depth+1);
+    const style=getComputedStyle(element);
+    const own=color(style.backgroundColor);
+    const base=own?blend(own,average(parent)):average(parent);
+    const gradient=tokens(style.backgroundImage);
+    if(gradient.length) return gradient.map(c=>blend(c,base));
+    return own&&own.a>0.01?[base]:parent;
+  }
+  function channel(v){v/=255;return v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4)}
+  function luminance(c){return .2126*channel(c.r)+.7152*channel(c.g)+.0722*channel(c.b)}
+  function ratio(a,b){const x=luminance(a),y=luminance(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)}
+  function worst(fg,list){return Math.min.apply(null,list.map(bg=>ratio(fg,bg)))}
+  function decorate(element,type){
+    const list=samples(element,0);
+    const darkScore=worst(DARK,list),lightScore=worst(LIGHT,list);
+    const useLight=lightScore>darkScore;
+    const fg=useLight?LIGHT:DARK;
+    const muted=useLight?LIGHT_MUTED:DARK_MUTED;
+    const chosenScore=useLight?lightScore:darkScore;
+    element.classList.add(type==='control'?'autoContrastControl':'autoContrastSurface');
+    element.dataset.autoContrast=useLight?'light':'dark';
+    element.dataset.autoContrastRatio=chosenScore.toFixed(2);
+    element.style.setProperty('--auto-fg',`rgb(${fg.r} ${fg.g} ${fg.b})`);
+    element.style.setProperty('--auto-muted',`rgb(${muted.r} ${muted.g} ${muted.b})`);
+    element.style.setProperty('--auto-shadow',useLight?'0 1px 2px rgba(0,0,0,.62)':'0 1px 1px rgba(255,255,255,.35)');
+    element.style.setProperty('--auto-shadow-color',useLight?'rgba(0,0,0,.78)':'rgba(255,255,255,.72)');
+    if(getComputedStyle(element).backgroundImage.includes('url(')) element.classList.add('autoContrastImage');
+    else element.classList.remove('autoContrastImage');
+  }
+  function apply(){
+    scheduled=0;
+    document.querySelectorAll(surfaceSelector).forEach(el=>decorate(el,'surface'));
+    document.querySelectorAll(controlSelector).forEach(el=>decorate(el,'control'));
+  }
+  function schedule(){
+    if(scheduled) cancelAnimationFrame(scheduled);
+    scheduled=requestAnimationFrame(apply);
+  }
+  new MutationObserver(schedule).observe(document.documentElement,{subtree:true,childList:true});
+  new MutationObserver(schedule).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme','class','data-manual-colors','data-manual-buttons']});
+  addEventListener('resize',schedule,{passive:true});
+  addEventListener('load',schedule,{once:true});
+  schedule();
+})();
+</script>
+
 <style id="theme-accessibility-v1-final-css">
   /*
     Camada semântica final dos temas.
@@ -16572,21 +16711,6 @@ body[data-theme="senna_brasil"] .hdr::after{
   body[data-theme="senna_brasil"] .primaryButtons{align-items:center !important}
   body[data-theme="senna_brasil"] .crmGlobalAlertStrip{margin-top:2px !important}
 
-  /* NASA e Senna: nenhuma palavra branca; superfícies claras e tipografia escura. */
-  body[data-theme="nasa"]{--txt:#071f49;--mut:#405b7d;--mut2:#5b7190;--card:rgba(248,252,255,.97);--line:rgba(27,82,145,.24);--ui-header-text:#071f49;--ui-header-muted:#405b7d}
-  body[data-theme="senna_brasil"]{--txt:#071225;--mut:#34465b;--mut2:#536273;--card:rgba(255,253,238,.97);--line:rgba(7,18,37,.22);--ui-header-text:#071225;--ui-header-muted:#34465b}
-  body[data-theme="nasa"] .hdr{background:linear-gradient(180deg,#f8fbff,#cfe3ff) !important;border-bottom-color:#fc3d21 !important}
-  body[data-theme="nasa"] :where(.card,.modal,.crmPanel,.dashboardPanel,.dashboardCard,.accountPanel,.agoraV2Box),body[data-theme="senna_brasil"] :where(.card,.modal,.crmPanel,.dashboardPanel,.dashboardCard,.accountPanel,.agoraV2Box){background:var(--ui-panel-bg) !important;border-color:var(--ui-border) !important}
-  body[data-theme="nasa"] .mainCalendarCard>.sectionHead,body[data-theme="senna_brasil"] .mainCalendarCard>.sectionHead{background:var(--ui-panel-bg) !important;border-bottom-color:var(--acc) !important}
-  body[data-theme="nasa"] .mainCalendarCard .month,body[data-theme="senna_brasil"] .mainCalendarCard .month{background:color-mix(in srgb,var(--ui-text) 7%,transparent) !important;color:var(--ui-text) !important;-webkit-text-fill-color:var(--ui-text) !important;text-shadow:none !important}
-  html :is(#dark-theme-a,body):is(#dark-theme-b,body)[data-theme="nasa"] :where(h1,h2,h3,h4,h5,h6,p,span,div,label,small,strong,b,em,summary,button,a,th,td),html :is(#dark-theme-a,body):is(#dark-theme-b,body)[data-theme="senna_brasil"] :where(h1,h2,h3,h4,h5,h6,p,span,div,label,small,strong,b,em,summary,button,a,th,td){color:var(--ui-text) !important;-webkit-text-fill-color:var(--ui-text) !important;text-shadow:none !important}
-  html :is(#dark-theme-a,body):is(#dark-theme-b,body)[data-theme="nasa"] :where(.sub,.small,.helper,.crmSub,.crmMeta,.k,.agoraV2Meta,.agoraV2BoxSub),html :is(#dark-theme-a,body):is(#dark-theme-b,body)[data-theme="senna_brasil"] :where(.sub,.small,.helper,.crmSub,.crmMeta,.k,.agoraV2Meta,.agoraV2BoxSub){color:var(--ui-muted) !important;-webkit-text-fill-color:var(--ui-muted) !important}
-  body[data-theme="nasa"] :where(.btn,.mBtn,.smallBtn,.crmTab,.statusPill,.userBadge):not(.danger),body[data-theme="senna_brasil"] :where(.btn,.mBtn,.smallBtn,.crmTab,.statusPill,.userBadge):not(.danger){background:var(--ui-menu-button-bg) !important;color:var(--ui-menu-button-text) !important;-webkit-text-fill-color:var(--ui-menu-button-text) !important;border-color:var(--ui-menu-button-border) !important}
-  body[data-theme="nasa"] :where(.btn.primary,.mBtn.primary,.smallBtn.primary,.crmTab.active),body[data-theme="senna_brasil"] :where(.btn.primary,.mBtn.primary,.smallBtn.primary,.crmTab.active){background:linear-gradient(180deg,#ffe8a8,#f3cf55) !important;color:#071225 !important;-webkit-text-fill-color:#071225 !important;border-color:#b28a16 !important}
-  body[data-theme="nasa"] :where(.danger,[data-crm-del],[data-catalog-remove]),body[data-theme="senna_brasil"] :where(.danger,[data-crm-del],[data-catalog-remove]){background:linear-gradient(180deg,#fee2e2,#fca5a5) !important;color:#7f1d1d !important;-webkit-text-fill-color:#7f1d1d !important;border-color:#b91c1c !important;text-shadow:none !important}
-  body[data-theme="nasa"] .crmAlertTile.bad,body[data-theme="senna_brasil"] .crmAlertTile.bad{background:linear-gradient(135deg,#fee2e2,#fff7f7) !important}
-  body[data-theme="nasa"] .crmAlertTile.warn,body[data-theme="senna_brasil"] .crmAlertTile.warn{background:linear-gradient(135deg,#fef3c7,#fffdf3) !important}
-  body[data-theme="nasa"] .crmAlertTile.good,body[data-theme="senna_brasil"] .crmAlertTile.good{background:linear-gradient(135deg,#d1fae5,#f4fff9) !important}
 
   @media(max-width:760px){body[data-theme="senna_brasil"] .hdr{min-height:71px !important;padding:6px 8px 11px !important}.crmSearchTabs{grid-template-columns:1fr !important}.crmCardSummary{grid-template-columns:1fr !important}.crmExpandHint{width:100%}.crmDoctorReportActions{display:grid;grid-template-columns:1fr 1fr;width:100%}.crmDoctorReportActions .smallBtn{width:100%}}
 </style>
