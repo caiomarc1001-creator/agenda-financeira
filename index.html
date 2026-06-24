@@ -16714,3 +16714,125 @@ body[data-theme="senna_brasil"] .hdr::after{
 
   @media(max-width:760px){body[data-theme="senna_brasil"] .hdr{min-height:71px !important;padding:6px 8px 11px !important}.crmSearchTabs{grid-template-columns:1fr !important}.crmCardSummary{grid-template-columns:1fr !important}.crmExpandHint{width:100%}.crmDoctorReportActions{display:grid;grid-template-columns:1fr 1fr;width:100%}.crmDoctorReportActions .smallBtn{width:100%}}
 </style>
+
+<style id="nasa-local-contrast-and-header-v1-final-css">
+  /* NASA: only light windows/panels receive dark text. The dark calendar is untouched. */
+  html :is(#nasa-local-a,body):is(#nasa-local-b,body):is(#nasa-local-c,body)[data-theme="nasa"] :where(
+    .modal,.crmFormPanel,.crmPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,
+    .surgeonModeSearchPanel,.accountPanel,.agoraV2Box,.agoraV2Row,
+    .dashboardPanel,.dashboardCard,.dashboardMini,.commercialAnalytics,.commercialKpi,
+    .commercialChart,.commercialActionsBox,.backupMetaBox,.backupItem
+  ){
+    color:#071f49 !important;
+    -webkit-text-fill-color:#071f49 !important;
+    border-color:var(--ui-border) !important;
+  }
+  html :is(#nasa-local-a,body):is(#nasa-local-b,body):is(#nasa-local-c,body)[data-theme="nasa"] :where(
+    .modal,.crmFormPanel,.crmPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,
+    .surgeonModeSearchPanel,.accountPanel,.agoraV2Box,.agoraV2Row,
+    .dashboardPanel,.dashboardCard,.dashboardMini,.commercialAnalytics,.commercialKpi,
+    .commercialChart,.commercialActionsBox,.backupMetaBox,.backupItem
+  ) :where(
+    h1,h2,h3,h4,h5,h6,label,summary,strong,b,.lbl,.ttl,.themeSectionTitle,.themeTitle,
+    .crmTitle,.crmName,.crmOverdueTitle,.crmDoctorReportTitle,.commercialBarLabel,
+    .dashTitle,.dashEyebrow,.name,.amount,.v,.val,.agoraV2BoxTitle,.agoraV2Name
+  ){
+    color:#071f49 !important;
+    -webkit-text-fill-color:#071f49 !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+  html :is(#nasa-local-a,body):is(#nasa-local-b,body):is(#nasa-local-c,body)[data-theme="nasa"] :where(
+    .modal,.crmFormPanel,.crmPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,
+    .surgeonModeSearchPanel,.accountPanel,.agoraV2Box,.agoraV2Row,
+    .dashboardPanel,.dashboardCard,.dashboardMini,.commercialAnalytics,.commercialKpi,
+    .commercialChart,.commercialActionsBox,.backupMetaBox,.backupItem
+  ) :where(
+    p,small,.sub,.small,.helper,.k,.mini,.meta,.crmSub,.crmMeta,.crmOverdueSub,
+    .crmOverdueMeta,.dashSub,.agoraV2BoxSub,.agoraV2Meta,.backupInfo
+  ){
+    color:#405b7d !important;
+    -webkit-text-fill-color:#405b7d !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+  html :is(#nasa-local-a,body):is(#nasa-local-b,body):is(#nasa-local-c,body)[data-theme="nasa"] :where(
+    .modal,.crmFormPanel,.crmPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,
+    .surgeonModeSearchPanel,.accountPanel,.agoraV2Box,.dashboardPanel,.dashboardCard
+  ) :where(.btn,.mBtn,.smallBtn,.crmTab):not(.primary):not(.danger):not(.modeActive){
+    background:var(--ui-menu-button-bg) !important;
+    color:var(--ui-menu-button-text) !important;
+    -webkit-text-fill-color:var(--ui-menu-button-text) !important;
+    border-color:var(--ui-menu-button-border) !important;
+    text-shadow:none !important;
+  }
+  html :is(#nasa-local-a,body):is(#nasa-local-b,body):is(#nasa-local-c,body)[data-theme="nasa"] :where(
+    .modal,.crmFormPanel,.crmPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,
+    .surgeonModeSearchPanel,.accountPanel,.agoraV2Box,.dashboardPanel,.dashboardCard
+  ) :where(.btn,.mBtn,.smallBtn,.crmTab):disabled{
+    background:linear-gradient(180deg,#f8fbff,#dbeaff) !important;
+    color:#526c8b !important;
+    -webkit-text-fill-color:#526c8b !important;
+    border-color:#8eadd0 !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  /* NASA dark cards keep light typography, independently from the light panels above. */
+  html :is(#nasa-dark-a,body):is(#nasa-dark-b,body):is(#nasa-dark-c,body)[data-theme="nasa"] :where(
+    .surgeryMini,.sumBox,.payRow,.crmAlertTile,.userBadge,.statusPill
+  ){
+    color:#f8fbff !important;
+    -webkit-text-fill-color:#f8fbff !important;
+  }
+  html :is(#nasa-dark-a,body):is(#nasa-dark-b,body):is(#nasa-dark-c,body)[data-theme="nasa"] :where(
+    .surgeryMini,.sumBox,.payRow,.crmAlertTile,.userBadge,.statusPill
+  ) :where(h1,h2,h3,h4,strong,b,.v,.val,.a,.userName,.big){
+    color:#f8fbff !important;
+    -webkit-text-fill-color:#f8fbff !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.34) !important;
+    opacity:1 !important;
+  }
+  html :is(#nasa-dark-a,body):is(#nasa-dark-b,body):is(#nasa-dark-c,body)[data-theme="nasa"] :where(
+    .surgeryMini,.sumBox,.payRow,.crmAlertTile,.userBadge,.statusPill
+  ) :where(.k,.lbl,.sub,.small,.userEmail){
+    color:#c9d8eb !important;
+    -webkit-text-fill-color:#c9d8eb !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.3) !important;
+    opacity:1 !important;
+  }
+
+  /* Taller header; its internal controls stay centered between top and bottom edges. */
+  html :is(#header-height-a,body):is(#header-height-b,body) .hdr{
+    box-sizing:border-box !important;
+    min-height:112px !important;
+    padding-top:12px !important;
+    padding-bottom:12px !important;
+    display:flex !important;
+    align-items:center !important;
+  }
+  html :is(#header-height-a,body):is(#header-height-b,body) .headerAligned{
+    min-height:88px !important;
+    align-items:center !important;
+    align-content:center !important;
+  }
+  html :is(#header-height-a,body):is(#header-height-b,body) :where(.compactBrand,.toolbarCenter,.saveDock){
+    align-self:stretch !important;
+    display:flex !important;
+    align-items:center !important;
+    transform:translateY(1.5px) !important;
+  }
+  html :is(#header-height-a,body):is(#header-height-b,body) .primaryButtons{
+    align-items:center !important;
+    padding-top:0 !important;
+    padding-bottom:0 !important;
+  }
+  @media(max-width:1180px){
+    html :is(#header-height-a,body):is(#header-height-b,body) .hdr{min-height:126px !important;padding-top:10px !important;padding-bottom:10px !important}
+    html :is(#header-height-a,body):is(#header-height-b,body) .headerAligned{min-height:106px !important;align-content:center !important}
+  }
+  @media(max-width:767px){
+    html :is(#header-height-a,body):is(#header-height-b,body) .hdr{min-height:116px !important;padding-top:8px !important;padding-bottom:8px !important}
+    html :is(#header-height-a,body):is(#header-height-b,body) .headerAligned{min-height:100px !important}
+  }
+</style>
