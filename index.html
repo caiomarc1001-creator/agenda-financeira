@@ -7278,6 +7278,7 @@ body[data-theme="senna_brasil"] .hdr{
             <button class="btn menuItem" id="btnNewSurgery">Modo Cirurgião</button>
             <button class="btn menuItem" id="btnPatientRegister" type="button">Cadastro de pacientes</button>
             <button class="btn menuItem" id="btnCommercialControl" type="button">Controle Comercial</button>
+            <button class="btn menuItem" id="btnPersonalExpenses" type="button">Despesas pessoais</button>
             <button class="btn menuItem" id="btnTheme">Tema</button>
             <button class="btn menuItem" id="btnAdminCenter" type="button">Administração</button>
             <button class="btn menuItem" id="btnAuditCenter" type="button">Auditoria</button>
@@ -7526,6 +7527,47 @@ body[data-theme="senna_brasil"] .hdr{
                 <div><div class="lbl">Período final</div><input class="input" id="crmListTo" type="date"></div>
               </div>
               <div class="crmList" id="crmList"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card section" id="personalFinancePageCard">
+        <div class="sectionHead">
+          <div>
+            <div class="ttl">Despesas pessoais</div>
+            <div class="sub">Controle de finanças pessoais com faturamento vinculado da Agenda</div>
+          </div>
+          <button class="smallBtn" id="personalUseAgendaMonth" type="button">Usar mês da Agenda</button>
+        </div>
+        <div class="padded">
+          <div class="personalFinanceHero">
+            <div class="personalFinanceDashboard" id="personalFinanceDashboard"></div>
+
+            <div class="personalFinancePanel">
+              <div class="themeSectionTitle">Cadastrar despesa pessoal</div>
+              <div class="personalFinanceForm">
+                <div><div class="lbl">Descrição</div><input class="input" id="personalExpenseDesc" placeholder="Ex: escola, cartão, mercado..."></div>
+                <div><div class="lbl">Categoria</div><input class="input" id="personalExpenseCategory" placeholder="Moradia, alimentação, transporte..."></div>
+                <div><div class="lbl">Vencimento</div><input class="input" id="personalExpenseDate" type="date"></div>
+                <div><div class="lbl">Valor</div><input class="input" id="personalExpenseValue" type="number" min="0" step="0.01" placeholder="0,00"></div>
+                <div><div class="lbl">Status</div><select class="input" id="personalExpenseStatus"><option value="pending">Pendente</option><option value="paid">Pago</option></select></div>
+                <div><div class="lbl">Recorrência</div><select class="input" id="personalExpenseRecurrence"><option value="none">Não repete</option><option value="monthly">Mensal</option></select></div>
+                <div class="span2"><div class="lbl">Observações</div><input class="input" id="personalExpenseNotes" placeholder="Anotações rápidas"></div>
+              </div>
+              <div class="mFoot">
+                <button class="mBtn ghost" id="personalExpenseClear" type="button">Limpar</button>
+                <button class="mBtn primary" id="personalExpenseSave" type="button">Salvar despesa</button>
+              </div>
+            </div>
+
+            <div class="personalFinancePanel">
+              <div class="personalFinanceFilters">
+                <div><div class="lbl">Mês</div><input class="input" id="personalFinanceMonth" type="month"></div>
+                <div><div class="lbl">Pesquisar</div><input class="input" id="personalExpenseSearch" placeholder="Descrição, categoria ou observação"></div>
+                <div><div class="lbl">Status</div><select class="input" id="personalExpenseFilterStatus"><option value="all">Todas</option><option value="pending">Pendentes</option><option value="paid">Pagas</option></select></div>
+              </div>
+              <div class="personalExpenseList" id="personalExpenseList"></div>
             </div>
           </div>
         </div>
@@ -11611,6 +11653,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       state.ui.surgeonMode = !state.ui.surgeonMode;
       if (state.ui.surgeonMode) {
         state.ui.crmMode = false;
+        state.ui.personalFinanceMode = false;
         state.ui.surgeriesCollapsed = false;
         state.selDate = state.selDate || todayISO();
       }
@@ -11789,7 +11832,10 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       state.ui = state.ui || {};
       const next = typeof force === 'boolean' ? force : !state.ui.crmMode;
       state.ui.crmMode = next;
-      if (next) state.ui.surgeonMode = false;
+      if (next) {
+        state.ui.surgeonMode = false;
+        state.ui.personalFinanceMode = false;
+      }
       save();
       applySurgeonMode();
       applyCRMMode();
@@ -12661,9 +12707,13 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         state.ui = state.ui || {};
         state.ui.surgeonMode = false;
         state.ui.crmMode = false;
+        state.ui.personalFinanceMode = false;
         save();
         applySurgeonMode();
         applyCRMMode();
+        applyPersonalFinanceMode?.();
+        const badge = UI.el('activeScreenBadge');
+        if (badge) badge.textContent = 'Agenda';
         renderAll();
         document.getElementById('hambWrap')?.removeAttribute('open');
       });
@@ -13089,6 +13139,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       state.ui = state.ui || {};
       state.ui.crmMode = true;
       state.ui.surgeonMode = false;
+      state.ui.personalFinanceMode = false;
       const title = UI.el('crmScreenTitle');
       const subtitle = UI.el('crmScreenSubtitle');
       if (title) title.textContent = target === 'register' ? 'Cadastro de pacientes' : 'Controle Comercial';
@@ -13152,8 +13203,187 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       state.ui=state.ui || {}; state.ui.crmDoctorReportCollapsed=!state.ui.crmDoctorReportCollapsed; save(); applyCRMDoctorReportCollapsed();
     }
 
+    const PersonalFinanceForm = { editingId:null };
+    function personalEnsure(){
+      state.personalExpenses = Array.isArray(state.personalExpenses) ? state.personalExpenses : [];
+      state.ui = state.ui || {};
+      return state.personalExpenses;
+    }
+    function personalVisibleMonth(){
+      const raw = UI.el('personalFinanceMonth')?.value || state.ui?.personalFinanceMonth || `${state.view.y}-${String(state.view.m + 1).padStart(2,'0')}`;
+      const m = String(raw || '').match(/^(\d{4})-(\d{2})$/);
+      if (!m) return { y:state.view.y, m:state.view.m, key:`${state.view.y}-${String(state.view.m + 1).padStart(2,'0')}` };
+      return { y:Number(m[1]), m:Number(m[2]) - 1, key:`${m[1]}-${m[2]}` };
+    }
+    function personalMonthBounds(){
+      const vm = personalVisibleMonth();
+      return { ...vm, from:iso(new Date(vm.y, vm.m, 1)), to:iso(new Date(vm.y, vm.m + 1, 0)) };
+    }
+    function personalAgendaRevenueForMonth(y,m){
+      try{
+        const rows = buildRuleFinancialRows(state.payRules || [], 'receivable', y, m);
+        if (rows.length) return rows.reduce((acc,row)=>acc + Number(row.total || 0), 0);
+      }catch(e){}
+      const from = iso(new Date(y,m,1));
+      const to = iso(new Date(y,m+1,0));
+      return listOccurrencesBetween(from, to)
+        .filter(o => (o.financeKind || o.transactionKind || 'receivable') !== 'payable')
+        .reduce((acc,o)=>acc + eventTotal(o), 0);
+    }
+    function personalExpenseOccursInMonth(exp, bounds){
+      const d = String(exp.date || '');
+      if (!d) return false;
+      if (exp.recurrence === 'monthly') return d <= bounds.to;
+      return d >= bounds.from && d <= bounds.to;
+    }
+    function personalFilteredExpenses(){
+      personalEnsure();
+      const bounds = personalMonthBounds();
+      const q = String(UI.el('personalExpenseSearch')?.value || '').trim().toLowerCase();
+      const status = UI.el('personalExpenseFilterStatus')?.value || 'all';
+      return state.personalExpenses
+        .filter(exp => personalExpenseOccursInMonth(exp, bounds))
+        .filter(exp => status === 'all' || String(exp.status || 'pending') === status)
+        .filter(exp => {
+          if (!q) return true;
+          return [exp.desc, exp.category, exp.notes].some(v => String(v || '').toLowerCase().includes(q));
+        })
+        .sort((a,b)=>String(a.date || '').localeCompare(String(b.date || '')) || String(a.desc || '').localeCompare(String(b.desc || ''),'pt-BR'));
+    }
+    function personalExpenseHtml(exp){
+      const paid = String(exp.status || 'pending') === 'paid';
+      return `<details class="personalExpenseItem">
+        <summary class="personalExpenseSummary">
+          <span><b>${escapeHtml(exp.desc || 'Despesa sem descrição')}</b><small>${escapeHtml(exp.category || 'Sem categoria')} · ${formatDateBR(exp.date || '')}${exp.recurrence === 'monthly' ? ' · mensal' : ''}</small></span>
+          <strong>${fmtMoney(Number(exp.value || 0))}</strong>
+          <em class="${paid ? 'paid' : 'pending'}">${paid ? 'Pago' : 'Pendente'}</em>
+        </summary>
+        <div class="personalExpenseDetails">
+          <div class="helper">${escapeHtml(exp.notes || 'Sem observações.')}</div>
+          <div class="personalExpenseActions">
+            <button class="smallBtn" type="button" data-personal-toggle="${escapeAttr(exp.id)}">${paid ? 'Marcar pendente' : 'Marcar pago'}</button>
+            <button class="smallBtn" type="button" data-personal-edit="${escapeAttr(exp.id)}">Editar</button>
+            <button class="smallBtn danger" type="button" data-personal-delete="${escapeAttr(exp.id)}">Excluir</button>
+          </div>
+        </div>
+      </details>`;
+    }
+    function clearPersonalExpenseForm(){
+      PersonalFinanceForm.editingId = null;
+      ['personalExpenseDesc','personalExpenseCategory','personalExpenseDate','personalExpenseValue','personalExpenseNotes'].forEach(id => { const el=UI.el(id); if(el) el.value=''; });
+      if (UI.el('personalExpenseStatus')) UI.el('personalExpenseStatus').value='pending';
+      if (UI.el('personalExpenseRecurrence')) UI.el('personalExpenseRecurrence').value='none';
+      if (UI.el('personalExpenseSave')) UI.el('personalExpenseSave').textContent='Salvar despesa';
+    }
+    function savePersonalExpense(){
+      personalEnsure();
+      const desc = String(UI.el('personalExpenseDesc')?.value || '').trim();
+      const value = Number(UI.el('personalExpenseValue')?.value || 0);
+      const date = UI.el('personalExpenseDate')?.value || '';
+      if (!desc) return alert('Informe a descrição da despesa.');
+      if (!date) return alert('Informe o vencimento da despesa.');
+      if (!(value > 0)) return alert('Informe um valor maior que zero.');
+      pushHistorySnapshot();
+      const model = {
+        id:PersonalFinanceForm.editingId || uid(),
+        desc,
+        category:String(UI.el('personalExpenseCategory')?.value || '').trim(),
+        date,
+        value,
+        status:UI.el('personalExpenseStatus')?.value || 'pending',
+        recurrence:UI.el('personalExpenseRecurrence')?.value || 'none',
+        notes:String(UI.el('personalExpenseNotes')?.value || '').trim(),
+        updatedAt:new Date().toISOString()
+      };
+      const idx = state.personalExpenses.findIndex(x=>x.id===model.id);
+      if (idx >= 0) state.personalExpenses[idx] = { ...state.personalExpenses[idx], ...model };
+      else state.personalExpenses.push({ ...model, createdAt:new Date().toISOString() });
+      save();
+      clearPersonalExpenseForm();
+      renderPersonalFinance();
+    }
+    function editPersonalExpense(id){
+      const exp = personalEnsure().find(x=>x.id===id);
+      if (!exp) return;
+      PersonalFinanceForm.editingId = id;
+      if (UI.el('personalExpenseDesc')) UI.el('personalExpenseDesc').value = exp.desc || '';
+      if (UI.el('personalExpenseCategory')) UI.el('personalExpenseCategory').value = exp.category || '';
+      if (UI.el('personalExpenseDate')) UI.el('personalExpenseDate').value = exp.date || '';
+      if (UI.el('personalExpenseValue')) UI.el('personalExpenseValue').value = Number(exp.value || 0);
+      if (UI.el('personalExpenseStatus')) UI.el('personalExpenseStatus').value = exp.status || 'pending';
+      if (UI.el('personalExpenseRecurrence')) UI.el('personalExpenseRecurrence').value = exp.recurrence || 'none';
+      if (UI.el('personalExpenseNotes')) UI.el('personalExpenseNotes').value = exp.notes || '';
+      if (UI.el('personalExpenseSave')) UI.el('personalExpenseSave').textContent='Atualizar despesa';
+      UI.el('personalFinancePageCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+    function togglePersonalExpense(id){
+      const exp = personalEnsure().find(x=>x.id===id);
+      if (!exp) return;
+      pushHistorySnapshot();
+      exp.status = String(exp.status || 'pending') === 'paid' ? 'pending' : 'paid';
+      exp.updatedAt = new Date().toISOString();
+      save();
+      renderPersonalFinance();
+    }
+    function deletePersonalExpense(id){
+      const exp = personalEnsure().find(x=>x.id===id);
+      if (!exp) return;
+      if (!confirm(`Excluir a despesa "${exp.desc || 'sem descrição'}"?`)) return;
+      pushHistorySnapshot();
+      state.personalExpenses = state.personalExpenses.filter(x=>x.id!==id);
+      save();
+      renderPersonalFinance();
+    }
+    function renderPersonalFinance(){
+      const card = UI.el('personalFinancePageCard');
+      if (!card) return;
+      personalEnsure();
+      const bounds = personalMonthBounds();
+      const monthInput = UI.el('personalFinanceMonth');
+      if (monthInput && !monthInput.value) monthInput.value = bounds.key;
+      const allMonth = state.personalExpenses.filter(exp => personalExpenseOccursInMonth(exp, bounds));
+      const filtered = personalFilteredExpenses();
+      const paid = allMonth.filter(x=>String(x.status || 'pending') === 'paid').reduce((acc,x)=>acc+Number(x.value||0),0);
+      const pending = allMonth.filter(x=>String(x.status || 'pending') !== 'paid').reduce((acc,x)=>acc+Number(x.value||0),0);
+      const total = paid + pending;
+      const agendaRevenue = personalAgendaRevenueForMonth(bounds.y, bounds.m);
+      const dash = UI.el('personalFinanceDashboard');
+      if (dash) dash.innerHTML = `
+        <div class="personalFinanceKpi income"><span>Faturamento da Agenda</span><b>${fmtMoney(agendaRevenue)}</b><small>Receita vinculada ao mês selecionado</small></div>
+        <div class="personalFinanceKpi"><span>Despesas pessoais</span><b>${fmtMoney(total)}</b><small>${allMonth.length} despesa(s) no mês</small></div>
+        <div class="personalFinanceKpi paid"><span>Pagas</span><b>${fmtMoney(paid)}</b><small>Já quitadas</small></div>
+        <div class="personalFinanceKpi pending"><span>Pendentes</span><b>${fmtMoney(pending)}</b><small>Ainda em aberto</small></div>
+        <div class="personalFinanceKpi balance"><span>Saldo estimado</span><b>${fmtMoney(agendaRevenue - total)}</b><small>Faturamento da Agenda - despesas pessoais</small></div>`;
+      const list = UI.el('personalExpenseList');
+      if (list) list.innerHTML = filtered.length ? filtered.map(personalExpenseHtml).join('') : '<div class="crmEmpty">Nenhuma despesa encontrada neste mês.</div>';
+    }
+    function applyPersonalFinanceMode(){
+      const on = !!state.ui?.personalFinanceMode;
+      document.body.classList.toggle('personal-finance-mode', on);
+      const btn = UI.el('btnPersonalExpenses');
+      if (btn) btn.classList.toggle('modeActive', on);
+      const badge = UI.el('activeScreenBadge');
+      if (badge && on) badge.textContent = 'Despesas pessoais';
+    }
+    function openPersonalFinance(){
+      state.ui = state.ui || {};
+      state.ui.personalFinanceMode = true;
+      state.ui.surgeonMode = false;
+      state.ui.crmMode = false;
+      delete document.body.dataset.crmView;
+      const month = `${state.view.y}-${String(state.view.m + 1).padStart(2,'0')}`;
+      state.ui.personalFinanceMonth = state.ui.personalFinanceMonth || month;
+      save();
+      applySurgeonMode();
+      applyCRMMode();
+      applyPersonalFinanceMode();
+      renderAll();
+      document.getElementById('hambWrap')?.removeAttribute('open');
+      UI.el('personalFinancePageCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+
     const agoraV2OriginalRenderAll = renderAll;
-    renderAll = function(){ agoraV2Ensure(); agoraV2OriginalRenderAll(); renderAdminCenter(); refreshCommercialDoctorFilter(); renderCommercialAnalytics(); applyCRMDoctorReportCollapsed(); };
+    renderAll = function(){ agoraV2Ensure(); agoraV2OriginalRenderAll(); applyPersonalFinanceMode(); renderPersonalFinance(); renderAdminCenter(); refreshCommercialDoctorFilter(); renderCommercialAnalytics(); applyCRMDoctorReportCollapsed(); };
 
     bindEvents();
 
@@ -13170,9 +13400,10 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     UI.el('auditClear')?.addEventListener('click', () => { if(UI.el('auditFilterEntity')) UI.el('auditFilterEntity').value='all'; if(UI.el('auditSearch')) UI.el('auditSearch').value=''; renderAuditCenter(); });
     UI.el('btnPatientRegister')?.addEventListener('click', () => { setCRMTab('patient'); clearCRMForm('patient'); setCommercialView('register'); });
     UI.el('btnCommercialControl')?.addEventListener('click', () => setCommercialView('dashboard'));
+    UI.el('btnPersonalExpenses')?.addEventListener('click', openPersonalFinance);
     UI.el('crmNewPatient')?.addEventListener('click', () => setCommercialView('register'));
     UI.el('crmNewLead')?.addEventListener('click', () => setCommercialView('register'));
-    UI.el('btnAgendaScreen')?.addEventListener('click', () => { delete document.body.dataset.crmView; });
+    UI.el('btnAgendaScreen')?.addEventListener('click', () => { state.ui=state.ui||{}; state.ui.personalFinanceMode=false; delete document.body.dataset.crmView; });
     UI.el('crmListDoctor')?.addEventListener('change', renderCRMPanel);
     UI.el('crmListFrom')?.addEventListener('change', renderCRMPanel);
     UI.el('crmListTo')?.addEventListener('change', renderCRMPanel);
@@ -13184,6 +13415,20 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     UI.el('crmType')?.addEventListener('change', e => { const status=UI.el('crmStatus'); if(status) status.value=e.target.value==='lead'?'nao_convertido':'convertido'; });
     UI.el('crmStatus')?.addEventListener('change', e => { const type=UI.el('crmType'); if(type) type.value=e.target.value==='nao_convertido'?'lead':'patient'; });
     UI.el('btnBackupCenterAccount')?.addEventListener('click', () => { UI.close('ovAccount'); openBackupCenter(); });
+    UI.el('personalExpenseSave')?.addEventListener('click', savePersonalExpense);
+    UI.el('personalExpenseClear')?.addEventListener('click', clearPersonalExpenseForm);
+    UI.el('personalUseAgendaMonth')?.addEventListener('click', () => { const value=`${state.view.y}-${String(state.view.m + 1).padStart(2,'0')}`; if(UI.el('personalFinanceMonth')) UI.el('personalFinanceMonth').value=value; state.ui=state.ui||{}; state.ui.personalFinanceMonth=value; save(); renderPersonalFinance(); });
+    UI.el('personalFinanceMonth')?.addEventListener('change', e => { state.ui=state.ui||{}; state.ui.personalFinanceMonth=e.target.value; save(); renderPersonalFinance(); });
+    UI.el('personalExpenseSearch')?.addEventListener('input', renderPersonalFinance);
+    UI.el('personalExpenseFilterStatus')?.addEventListener('change', renderPersonalFinance);
+    UI.el('personalExpenseList')?.addEventListener('click', e => {
+      const toggle=e.target.closest('[data-personal-toggle]');
+      const edit=e.target.closest('[data-personal-edit]');
+      const del=e.target.closest('[data-personal-delete]');
+      if(toggle) togglePersonalExpense(toggle.dataset.personalToggle);
+      if(edit) editPersonalExpense(edit.dataset.personalEdit);
+      if(del) deletePersonalExpense(del.dataset.personalDelete);
+    });
 
     /* Ponte controlada para os aprimoramentos administrativos carregados ao final do HTML. */
     const adminCatalogBridgeBindings = {
@@ -14323,6 +14568,7 @@ html, body{
       btnNewSurgery:'Cirurgião',
       btnCRMMode:'Pacientes',
       btnPatientCRM:'Pacientes',
+      btnPersonalExpenses:'Despesas pessoais',
       btnDashboardCenter:'Dashboard',
       btnAdminCenter:'Administração',
       btnAuditCenter:'Auditoria',
@@ -16834,5 +17080,161 @@ body[data-theme="senna_brasil"] .hdr::after{
   @media(max-width:767px){
     html :is(#header-height-a,body):is(#header-height-b,body) .hdr{min-height:116px !important;padding-top:8px !important;padding-bottom:8px !important}
     html :is(#header-height-a,body):is(#header-height-b,body) .headerAligned{min-height:100px !important}
+  }
+</style>
+<style id="personal-expenses-and-calendar-scope-v1-final-css">
+  /* Espaçamento solicitado entre filtros, resumo e lista do Modo Cirurgião. */
+  .surgeonModeSearchPanel .surgeryFilterBar{
+    row-gap:14px !important;
+    column-gap:12px !important;
+    margin-bottom:12px !important;
+  }
+  .surgeonModeSearchPanel .surgeryReportAction{
+    gap:10px !important;
+    margin-bottom:8px !important;
+  }
+  #surgeryReportSummary{
+    display:block !important;
+    margin:12px 0 14px !important;
+    padding:9px 12px !important;
+    border-radius:12px !important;
+  }
+  #surgeryFullList{
+    margin-top:12px !important;
+  }
+  #surgeryFullList > * + *{
+    margin-top:10px !important;
+  }
+
+  /* Página final: Despesas pessoais, com roupagem da Agenda. */
+  #personalFinancePageCard{display:none !important}
+  body.personal-finance-mode .container{
+    grid-template-columns:1fr !important;
+  }
+  body.personal-finance-mode .mainCol{
+    display:none !important;
+  }
+  body.personal-finance-mode .sidebarCol{
+    width:100% !important;
+    max-width:100% !important;
+  }
+  body.personal-finance-mode .sidebarCol > .section:not(#personalFinancePageCard){
+    display:none !important;
+  }
+  body.personal-finance-mode #personalFinancePageCard{
+    display:block !important;
+    min-height:calc(100vh - 132px) !important;
+  }
+  body.personal-finance-mode #btnPersonalExpenses{
+    border-color:rgba(57,217,138,.65) !important;
+    background:linear-gradient(135deg,rgba(57,217,138,.28),rgba(96,165,250,.16)) !important;
+  }
+  .personalFinanceHero{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:14px !important;
+  }
+  .personalFinanceDashboard{
+    display:grid !important;
+    grid-template-columns:repeat(5,minmax(150px,1fr)) !important;
+    gap:12px !important;
+  }
+  .personalFinanceKpi{
+    border:1px solid var(--line) !important;
+    border-radius:18px !important;
+    padding:15px !important;
+    background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.035)) !important;
+    box-shadow:var(--shadowSoft) !important;
+  }
+  .personalFinanceKpi span,
+  .personalFinanceKpi small{
+    display:block !important;
+    color:var(--mut) !important;
+    font-weight:850 !important;
+  }
+  .personalFinanceKpi b{
+    display:block !important;
+    margin:8px 0 4px !important;
+    font-size:clamp(20px,2vw,30px) !important;
+    color:var(--txt) !important;
+  }
+  .personalFinanceKpi.income{border-color:rgba(57,217,138,.38) !important}
+  .personalFinanceKpi.income b,.personalFinanceKpi.paid b{color:var(--good) !important}
+  .personalFinanceKpi.pending b{color:var(--bad) !important}
+  .personalFinanceKpi.balance b{color:var(--acc) !important}
+  .personalFinancePanel{
+    border:1px solid var(--line) !important;
+    border-radius:20px !important;
+    padding:15px !important;
+    background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.025)) !important;
+  }
+  .personalFinanceForm,
+  .personalFinanceFilters{
+    display:grid !important;
+    grid-template-columns:repeat(3,minmax(160px,1fr)) !important;
+    gap:12px !important;
+    align-items:end !important;
+  }
+  .personalFinanceForm .span2{grid-column:span 2}
+  .personalExpenseList{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:10px !important;
+    margin-top:14px !important;
+  }
+  .personalExpenseItem{
+    border:1px solid var(--line) !important;
+    border-radius:16px !important;
+    background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.025)) !important;
+    overflow:hidden !important;
+  }
+  .personalExpenseSummary{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto auto !important;
+    gap:12px !important;
+    align-items:center !important;
+    padding:13px 14px !important;
+    cursor:pointer !important;
+    list-style:none !important;
+  }
+  .personalExpenseSummary::-webkit-details-marker{display:none}
+  .personalExpenseSummary::marker{display:none;content:""}
+  .personalExpenseSummary b{display:block;color:var(--txt) !important;font-size:15px !important}
+  .personalExpenseSummary small{display:block;color:var(--mut) !important;margin-top:3px !important;font-weight:800 !important}
+  .personalExpenseSummary strong{color:var(--txt) !important;font-size:16px !important}
+  .personalExpenseSummary em{
+    justify-self:end !important;
+    min-width:92px !important;
+    text-align:center !important;
+    border-radius:999px !important;
+    padding:7px 10px !important;
+    font-style:normal !important;
+    font-weight:1000 !important;
+    border:1px solid var(--line) !important;
+  }
+  .personalExpenseSummary em.paid{color:var(--good) !important;background:rgba(57,217,138,.12) !important;border-color:rgba(57,217,138,.34) !important}
+  .personalExpenseSummary em.pending{color:var(--bad) !important;background:rgba(255,93,93,.12) !important;border-color:rgba(255,93,93,.34) !important}
+  .personalExpenseDetails{
+    border-top:1px solid var(--line) !important;
+    padding:12px 14px 14px !important;
+  }
+  .personalExpenseActions{
+    display:flex !important;
+    gap:8px !important;
+    flex-wrap:wrap !important;
+    justify-content:flex-end !important;
+    margin-top:10px !important;
+  }
+  @media(max-width:1100px){
+    .personalFinanceDashboard{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+    .personalFinanceForm,.personalFinanceFilters{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  }
+  @media(max-width:680px){
+    .personalFinanceDashboard,.personalFinanceForm,.personalFinanceFilters{grid-template-columns:1fr !important}
+    .personalFinanceForm .span2{grid-column:auto !important}
+    .personalExpenseSummary{grid-template-columns:1fr !important}
+    .personalExpenseSummary em{justify-self:stretch !important}
+    .personalExpenseActions{justify-content:stretch !important}
+    .personalExpenseActions .smallBtn{flex:1 1 100% !important}
   }
 </style>
