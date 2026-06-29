@@ -8021,7 +8021,6 @@ body[data-theme="senna_brasil"] .hdr{
         <div class="cloudHint" id="cloudHint">
           Entre com e-mail e senha para salvar sua agenda na nuvem. Sem login, você pode testar e editar a agenda, mas nada será salvo.
         </div>
-        <div class="cloudHint" id="loginRuntimeStatus" style="display:none"></div>
         <div><div class="lbl">E-mail</div><input class="input" id="loginEmail" name="email" placeholder="voce@exemplo.com" type="email" autocomplete="username email" /></div>
         <div>
           <div class="lbl">Senha</div>
@@ -8662,100 +8661,7 @@ body[data-theme="senna_brasil"] .hdr{
 
 
     function hasFirebaseConfig(){
-      window.FIREBASE_READY = !!window.FIREBASE_READY;
-      window.FIREBASE_INIT_ERROR = window.FIREBASE_INIT_ERROR || null;
-      window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
-        apiKey: "AIzaSyBEaZ3RKRqxKh9-OOoPnBKIJhrm2aTkQq8",
-        authDomain: "agenda-financeira-4a861.firebaseapp.com",
-        projectId: "agenda-financeira-4a861",
-        storageBucket: "agenda-financeira-4a861.firebasestorage.app",
-        messagingSenderId: "129226784277",
-        appId: "1:129226784277:web:839352c980797f0421981c"
-      };
       return !!(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey && window.FIREBASE_CONFIG.projectId && window.FIREBASE_CONFIG.appId);
-    }
-
-    function setLoginRuntimeStatus(message, kind='info'){
-      const box = UI.el('loginRuntimeStatus');
-      if (!box) return;
-      box.style.display = message ? 'block' : 'none';
-      box.textContent = message || '';
-      box.style.borderColor = kind === 'error' ? 'rgba(255,93,93,.45)' : (kind === 'ok' ? 'rgba(57,217,138,.45)' : 'var(--line)');
-      box.style.background = kind === 'error' ? 'rgba(255,93,93,.12)' : (kind === 'ok' ? 'rgba(57,217,138,.10)' : '');
-    }
-
-    function loadFirebaseCompatScript(src){
-      return new Promise((resolve, reject) => {
-        if ([...document.scripts].some(s => s.src === src && s.dataset.loadedOk === '1')) return resolve(true);
-        const existing = [...document.scripts].find(s => s.src === src && s.dataset.loadingFirebase === '1');
-        if (existing) {
-          existing.addEventListener('load', () => resolve(true), { once:true });
-          existing.addEventListener('error', () => reject(new Error('Falha ao carregar ' + src)), { once:true });
-          return;
-        }
-        [...document.scripts]
-          .filter(s => s.src === src && s.dataset.loadedOk !== '1')
-          .forEach(s => s.parentNode && s.parentNode.removeChild(s));
-        const script = document.createElement('script');
-        script.src = src;
-        script.async = false;
-        script.dataset.loadingFirebase = '1';
-        script.onload = () => { script.dataset.loadedOk = '1'; resolve(true); };
-        script.onerror = () => reject(new Error('Falha ao carregar ' + src));
-        document.head.appendChild(script);
-      });
-    }
-
-    function initializeFirebaseCompatBridge(){
-      if (window.FIREBASE_READY && window.FirebaseAgenda) return true;
-      if (!window.firebase) return false;
-      const app = firebase.apps && firebase.apps.length
-        ? firebase.app()
-        : firebase.initializeApp(window.FIREBASE_CONFIG);
-      const auth = firebase.auth();
-      const db = firebase.firestore();
-      window.FirebaseAgenda = {
-        app,
-        auth,
-        db,
-        onAuthStateChanged: (callback) => auth.onAuthStateChanged(callback),
-        createUser: (email, password) => auth.createUserWithEmailAndPassword(email, password),
-        signIn: (email, password) => auth.signInWithEmailAndPassword(email, password),
-        signOut: () => auth.signOut(),
-        updateProfile: (user, data) => user.updateProfile(data),
-        sendPasswordResetEmail: (email) => auth.sendPasswordResetEmail(email),
-        updatePassword: (user, password) => user.updatePassword(password),
-        reauthWithPassword: (user, password) => {
-          const credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
-          return user.reauthenticateWithCredential(credential);
-        },
-        agendaDocRef: (uid) => db.collection("users").doc(uid).collection("agenda").doc("state"),
-        getDoc: (ref) => ref.get(),
-        setDoc: (ref, data, options) => ref.set(data, options || {}),
-        serverTimestamp: () => firebase.firestore.FieldValue.serverTimestamp()
-      };
-      window.FIREBASE_INIT_ERROR = null;
-      window.FIREBASE_READY = true;
-      window.dispatchEvent(new Event("firebase-ready"));
-      return true;
-    }
-
-    async function ensureFirebaseReady(timeoutMs = 8000){
-      if (window.FIREBASE_READY && window.FirebaseAgenda) return true;
-      if (window.firebase && initializeFirebaseCompatBridge()) return true;
-
-      const urls = [
-        'https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js',
-        'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js',
-        'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js'
-      ];
-      try {
-        for (const src of urls) await loadFirebaseCompatScript(src);
-        if (initializeFirebaseCompatBridge()) return true;
-      } catch(err) {
-        window.FIREBASE_INIT_ERROR = err;
-      }
-      return waitForFirebaseReady(timeoutMs);
     }
 
     function waitForFirebaseReady(timeoutMs = 8000){
@@ -8778,7 +8684,6 @@ body[data-theme="senna_brasil"] .hdr{
         }, 100);
       });
     }
-
     function updateCloudStatus(message){
       const label = UI.el('cloudUserStatus');
       if (label) label.textContent = message;
@@ -8987,7 +8892,7 @@ body[data-theme="senna_brasil"] .hdr{
       }
 
       try {
-        await ensureFirebaseReady();
+        await waitForFirebaseReady();
         firebaseApp = window.FirebaseAgenda.app;
         firebaseAuth = window.FirebaseAgenda.auth;
         firebaseDb = window.FirebaseAgenda.db;
@@ -9142,6 +9047,12 @@ body[data-theme="senna_brasil"] .hdr{
     }
 
     async function createAccount(){
+      try { await initFirebaseCloud(); } catch(e) { console.error(e); }
+      if (!window.FIREBASE_READY || !window.FirebaseAgenda) {
+        const msg = window.FIREBASE_INIT_ERROR?.message || 'Firebase não carregou. Verifique se o domínio GitHub está autorizado no Firebase Authentication.';
+        return alert('Firebase ainda não está pronto: ' + msg);
+      }
+
       const name = (UI.el('loginName')?.value || '').trim();
       unlockPasswordField(UI.el('loginPassword'));
       unlockPasswordField(UI.el('loginPasswordConfirm'));
@@ -9152,14 +9063,6 @@ body[data-theme="senna_brasil"] .hdr{
       if (!email || pass.length < 6) return alert('Informe e-mail e senha com pelo menos 6 caracteres.');
       if (pass !== confirmPass) return alert('A confirmação de senha não confere.');
 
-      setLoginRuntimeStatus('Conectando ao Firebase para criar conta...', 'info');
-      try { await initFirebaseCloud(); } catch(e) { console.error(e); setLoginRuntimeStatus('Erro ao iniciar Firebase: ' + (e.message || e), 'error'); }
-      if (!window.FIREBASE_READY || !window.FirebaseAgenda) {
-        const msg = window.FIREBASE_INIT_ERROR?.message || 'Firebase não carregou. Verifique se o domínio GitHub está autorizado no Firebase Authentication.';
-        setLoginRuntimeStatus('Firebase ainda não está pronto: ' + msg, 'error');
-        return alert('Firebase ainda não está pronto: ' + msg);
-      }
-
       try {
         const credential = await window.FirebaseAgenda.createUser(email, pass);
         if (name && credential.user) await window.FirebaseAgenda.updateProfile(credential.user, { displayName: name });
@@ -9169,41 +9072,32 @@ body[data-theme="senna_brasil"] .hdr{
         syncUserHeader();
         UI.el('loginPassword').value = '';
         UI.el('loginPasswordConfirm').value = '';
-        setLoginRuntimeStatus('Conta criada. Carregando dados da nuvem...', 'ok');
         UI.close('ovLogin');
       } catch (err) {
-        const msg = firebaseAuthErrorMessage(err);
-        setLoginRuntimeStatus('Erro ao criar conta: ' + msg, 'error');
-        alert('Erro ao criar conta: ' + msg);
+        alert('Erro ao criar conta: ' + firebaseAuthErrorMessage(err));
       }
     }
 
     async function signIn(){
+      try { await initFirebaseCloud(); } catch(e) { console.error(e); }
+      if (!window.FIREBASE_READY || !window.FirebaseAgenda) {
+        const msg = window.FIREBASE_INIT_ERROR?.message || 'Firebase não carregou. Verifique se o domínio GitHub está autorizado no Firebase Authentication.';
+        return alert('Firebase ainda não está pronto: ' + msg);
+      }
+
       unlockPasswordField(UI.el('loginPassword'));
       const email = UI.el('loginEmail').value.trim();
       const pass = UI.el('loginPassword').value;
       if (!email || !pass) return alert('Informe e-mail e senha.');
 
-      setLoginRuntimeStatus('Conectando ao Firebase...', 'info');
-      try { await initFirebaseCloud(); } catch(e) { console.error(e); setLoginRuntimeStatus('Erro ao iniciar Firebase: ' + (e.message || e), 'error'); }
-      if (!window.FIREBASE_READY || !window.FirebaseAgenda) {
-        const msg = window.FIREBASE_INIT_ERROR?.message || 'Firebase não carregou. Verifique se o domínio GitHub está autorizado no Firebase Authentication.';
-        setLoginRuntimeStatus('Firebase ainda não está pronto: ' + msg, 'error');
-        return alert('Firebase ainda não está pronto: ' + msg);
-      }
-
       try {
         await window.FirebaseAgenda.signIn(email, pass);
-        setLoginRuntimeStatus('Login realizado. Carregando dados da nuvem...', 'ok');
         clearSensitiveAuthFields();
         UI.close('ovLogin');
       } catch (err) {
-        const msg = firebaseAuthErrorMessage(err);
-        setLoginRuntimeStatus('Erro ao entrar: ' + msg, 'error');
-        alert('Erro ao entrar: ' + msg);
+        alert('Erro ao entrar: ' + firebaseAuthErrorMessage(err));
       }
     }
-
     async function signOut(){
       await createVersionedBackup('antes-do-logout', { silent:true, cloud:true });
       try { await initFirebaseCloud(); } catch(e) {}
@@ -17500,38 +17394,34 @@ body[data-theme="senna_brasil"] .hdr::after{
   body.crm-mode[data-crm-view="register"] .crmFormPanel{max-width:1180px !important;margin:0 auto !important}
   @media(max-width:760px){#crmPageCard .crmCleanChecks{display:grid !important;grid-template-columns:1fr !important}#crmPageCard .crmInternetOptions{display:none !important;grid-template-columns:1fr !important}#crmPageCard .crmCleanChoicePanel.internet-on .crmInternetOptions{display:grid !important}#crmPageCard .crmCleanCheck{width:100% !important;justify-content:flex-start !important}}
 </style>
-
-<style id="patient-register-check-contrast-safe-final-css">
-  /* Versão segura: sem :has(), para não travar o login/interações em navegadores sensíveis. */
-  #crmPageCard label.crmCleanCheck{
-    background:linear-gradient(180deg,#fff4dd,#d8bd91) !important;
-    color:#1b1209 !important;
-    -webkit-text-fill-color:#1b1209 !important;
-    border-color:#8a693d !important;
+<style id="patient-register-check-contrast-v1-final-css">
+  /* Contraste fixo dos botões de marcação do cadastro em todos os temas. */
+  #crmPageCard .crmCleanCheck{
+    background:linear-gradient(180deg,#fff7e5,#ead9b7) !important;
+    color:#24180e !important;
+    -webkit-text-fill-color:#24180e !important;
+    border-color:#9b7b4d !important;
     text-shadow:none !important;
-    opacity:1 !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 2px 8px rgba(0,0,0,.12) !important;
   }
-  #crmPageCard label.crmCleanCheck.is-checked{
-    background:linear-gradient(180deg,#70451f,#332012) !important;
+  #crmPageCard .crmCleanCheck *{
+    color:#24180e !important;
+    -webkit-text-fill-color:#24180e !important;
+    text-shadow:none !important;
+  }
+  #crmPageCard .crmCleanCheck:has(input:checked){
+    background:linear-gradient(180deg,#6a4323,#3d2817) !important;
     color:#ffffff !important;
     -webkit-text-fill-color:#ffffff !important;
-    border-color:#d2a35d !important;
-    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
-    box-shadow:0 0 0 3px rgba(210,163,93,.25),0 6px 16px rgba(0,0,0,.22) !important;
+    border-color:#c89a5b !important;
+    box-shadow:0 0 0 3px rgba(200,154,91,.22) !important;
   }
-  #crmPageCard label.crmCleanCheck input{
-    accent-color:#70451f !important;
-    color:initial !important;
+  #crmPageCard .crmCleanCheck:has(input:checked) *{
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.35) !important;
+  }
+  #crmPageCard .crmCleanCheck input{
+    accent-color:#6a4323 !important;
     -webkit-text-fill-color:initial !important;
-    filter:none !important;
-  }
-  #crmPageCard .crmCleanChoicePanel.internet-on .crmInternetOptions{
-    display:flex !important;
-  }
-  @media(max-width:760px){
-    #crmPageCard .crmCleanChoicePanel.internet-on .crmInternetOptions{
-      display:grid !important;
-    }
   }
 </style>
