@@ -17390,3 +17390,35 @@ body[data-theme="senna_brasil"] .hdr::after{
   body.crm-mode[data-crm-view="register"] .crmFormPanel{max-width:1180px !important;margin:0 auto !important}
   @media(max-width:760px){#crmPageCard .crmCleanChecks{display:grid !important;grid-template-columns:1fr !important}#crmPageCard .crmInternetOptions{display:none !important;grid-template-columns:1fr !important}#crmPageCard .crmCleanChoicePanel:has(#crmOriginInternet:checked) .crmInternetOptions{display:grid !important}#crmPageCard .crmCleanCheck{width:100% !important;justify-content:flex-start !important}}
 </style>
+
+<style id="patient-register-check-contrast-v1-final-css">
+  /* Contraste fixo dos botões de marcação do cadastro em todos os temas. */
+  #crmPageCard .crmCleanCheck{
+    background:linear-gradient(180deg,#fff7e5,#ead9b7) !important;
+    color:#24180e !important;
+    -webkit-text-fill-color:#24180e !important;
+    border-color:#9b7b4d !important;
+    text-shadow:none !important;
+  }
+  #crmPageCard .crmCleanCheck *{
+    color:#24180e !important;
+    -webkit-text-fill-color:#24180e !important;
+    text-shadow:none !important;
+  }
+  #crmPageCard .crmCleanCheck:has(input:checked){
+    background:linear-gradient(180deg,#6a4323,#3d2817) !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    border-color:#c89a5b !important;
+    box-shadow:0 0 0 3px rgba(200,154,91,.22) !important;
+  }
+  #crmPageCard .crmCleanCheck:has(input:checked) *{
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.35) !important;
+  }
+  #crmPageCard .crmCleanCheck input{
+    accent-color:#6a4323 !important;
+    -webkit-text-fill-color:initial !important;
+  }
+</style>
