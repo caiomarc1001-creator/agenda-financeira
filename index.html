@@ -6107,6 +6107,78 @@ body{
 
 </style>
 
+<style id="patient-register-clean-v1-final-css">
+  /* Cadastro de pacientes mais limpo: mantém só os campos essenciais visíveis. */
+  .crmHiddenLegacyFields{
+    display:none !important;
+  }
+  .crmCleanChoicePanel{
+    border:1px solid var(--line) !important;
+    border-radius:18px !important;
+    padding:13px 14px !important;
+    background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.025)) !important;
+    min-height:100% !important;
+  }
+  .crmCleanChecks,
+  .crmInternetOptions{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    gap:9px !important;
+    margin-top:9px !important;
+  }
+  .crmInternetOptions{
+    display:none !important;
+    padding-top:10px !important;
+    border-top:1px dashed var(--line) !important;
+  }
+  .crmCleanChoicePanel:has(#crmOriginInternet:checked) .crmInternetOptions{
+    display:flex !important;
+  }
+  .crmCleanCheck{
+    display:inline-flex !important;
+    align-items:center !important;
+    gap:7px !important;
+    min-height:38px !important;
+    padding:8px 11px !important;
+    border-radius:999px !important;
+    border:1px solid var(--ui-menu-button-border, var(--line)) !important;
+    background:var(--ui-menu-button-bg, linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06))) !important;
+    color:var(--ui-menu-button-text, var(--txt)) !important;
+    -webkit-text-fill-color:var(--ui-menu-button-text, var(--txt)) !important;
+    font-weight:950 !important;
+    cursor:pointer !important;
+    user-select:none !important;
+  }
+  .crmCleanCheck input{
+    width:16px !important;
+    height:16px !important;
+    accent-color:var(--acc) !important;
+  }
+  .crmCleanCheck:has(input:checked){
+    border-color:var(--acc) !important;
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 18%,transparent) !important;
+  }
+  body.crm-mode[data-crm-view="register"] .crmFormPanel{
+    max-width:1180px !important;
+    margin:0 auto !important;
+  }
+  body.crm-mode[data-crm-view="register"] .crmFormPanel .crmFormGrid,
+  body.crm-mode[data-crm-view="register"] .crmFormPanel .crmFormGrid3{
+    gap:13px !important;
+  }
+  @media(max-width:760px){
+    .crmCleanChecks,
+    .crmInternetOptions{
+      display:grid !important;
+      grid-template-columns:1fr !important;
+    }
+    .crmCleanCheck{
+      width:100% !important;
+      justify-content:flex-start !important;
+    }
+  }
+</style>
+
 <style id="automatic-surface-contrast-v1-css" media="not all">
   /* Text follows the real local surface, never the theme name. */
   html :is(#contrast-a,body):is(#contrast-b,body):is(#contrast-c,body) .autoContrastSurface{
@@ -7469,41 +7541,59 @@ body[data-theme="senna_brasil"] .hdr{
               </div>
               <div class="crmFormGrid">
                 <div><div class="lbl">Endereço</div><input class="input" id="crmAddress" placeholder="Rua, número, bairro e cidade"></div>
-                <div><div class="lbl">Indicação / origem orgânica</div><input class="input" id="crmReferral" placeholder="Nome de quem indicou ou canal orgânico"></div>
-              </div>
-              <div class="crmFormGrid3">
-                <div><div class="lbl">Origem do lead</div><input class="input" id="crmOrigin" placeholder="Google, Instagram, WhatsApp, indicação..."></div>
                 <div><div class="lbl">Médico responsável</div><select class="input" id="crmDoctor"><option value="">Selecione o médico</option></select></div>
-                <div><div class="lbl">Responsável comercial</div><input class="input" id="crmOwner" placeholder="Equipe / secretária"></div>
               </div>
-              <div style="margin-top:10px"><div class="lbl">Outros médicos que atenderam</div><input class="input" id="crmAdditionalDoctors" placeholder="Separe os nomes por vírgula"></div>
-              <div class="crmFormGrid3">
-                <div><div class="lbl">Tipo</div><select class="input" id="crmType"><option value="patient">Paciente convertido</option><option value="lead">Lead não convertido</option></select></div>
+              <div class="crmFormGrid">
+                <div class="crmCleanChoicePanel">
+                  <div class="lbl">Origem</div>
+                  <div class="crmCleanChecks">
+                    <label class="crmCleanCheck"><input type="checkbox" id="crmOriginOrganic"> Orgânico</label>
+                    <label class="crmCleanCheck"><input type="checkbox" id="crmOriginInternet"> Internet</label>
+                  </div>
+                  <div class="crmInternetOptions" id="crmInternetOptions">
+                    <label class="crmCleanCheck"><input type="checkbox" data-crm-internet="Google"> Google</label>
+                    <label class="crmCleanCheck"><input type="checkbox" data-crm-internet="Instagram"> Instagram</label>
+                    <label class="crmCleanCheck"><input type="checkbox" data-crm-internet="IA"> IA</label>
+                    <label class="crmCleanCheck"><input type="checkbox" data-crm-internet="YouTube"> YouTube</label>
+                    <label class="crmCleanCheck"><input type="checkbox" data-crm-internet="Facebook"> Facebook</label>
+                    <label class="crmCleanCheck"><input type="checkbox" data-crm-internet="TikTok"> TikTok</label>
+                    <label class="crmCleanCheck"><input type="checkbox" data-crm-internet="Outros"> Outros</label>
+                  </div>
+                  <input id="crmOrigin" type="hidden">
+                  <input id="crmReferral" type="hidden">
+                </div>
+                <div class="crmCleanChoicePanel">
+                  <div class="lbl">Interesse</div>
+                  <div class="crmCleanChecks crmInterestChecks">
+                    <label class="crmCleanCheck"><input type="checkbox" data-crm-interest="Consulta"> Consulta</label>
+                    <label class="crmCleanCheck"><input type="checkbox" data-crm-interest="Procedimento"> Procedimento</label>
+                    <label class="crmCleanCheck"><input type="checkbox" data-crm-interest="Consulta e procedimento"> Consulta e procedimento</label>
+                  </div>
+                  <input id="crmInterest" type="hidden">
+                </div>
+              </div>
+              <div class="crmFormGrid">
                 <div><div class="lbl">Status do paciente</div><select class="input" id="crmStatus"><option value="convertido">Paciente convertido</option><option value="nao_convertido">Paciente não convertido</option></select></div>
-                <div><div class="lbl">Interesse / procedimento</div><input class="input" id="crmInterest" placeholder="Emagrecimento, cirurgia, gastro..."></div>
               </div>
-              <div class="crmFormGrid3">
-                <div><div class="lbl">Pacote contratado</div><input class="input" id="crmPackage" placeholder="Trimestral, semestral, anual..."></div>
-                <div><div class="lbl">Meses fechados</div><input class="input" id="crmPackageMonths" type="number" min="0" step="1" placeholder="3, 6, 12"></div>
-                <div><div class="lbl">Início do pacote</div><input class="input" id="crmPackageStart" type="date"></div>
+              <div class="crmHiddenLegacyFields" aria-hidden="true">
+                <select id="crmType"><option value="patient">Paciente convertido</option><option value="lead">Lead não convertido</option></select>
+                <input id="crmOwner" type="hidden">
+                <input id="crmAdditionalDoctors" type="hidden">
+                <input id="crmPackage" type="hidden">
+                <input id="crmPackageMonths" type="hidden">
+                <input id="crmPackageStart" type="hidden">
+                <input id="crmAmountPaid" type="hidden">
+                <input id="crmNextContact" type="hidden">
+                <input id="crmRecurrenceDays" type="hidden">
+                <input id="crmFirstContact" type="hidden">
+                <input id="crmLastContact" type="hidden">
+                <input id="crmReminderDays" type="hidden" value="0">
+                <input id="crmFirstConsultation" type="hidden">
+                <input id="crmLastConsultation" type="hidden">
+                <input id="crmTotalSpent" type="hidden">
+                <textarea id="crmProcedures"></textarea>
+                <textarea id="crmNotes"></textarea>
               </div>
-              <div class="crmFormGrid3">
-                <div><div class="lbl">Valor pago</div><input class="input" id="crmAmountPaid" type="number" min="0" step="0.01" placeholder="0,00"></div>
-                <div><div class="lbl">Próximo contato / consulta</div><input class="input" id="crmNextContact" type="date"></div>
-                <div><div class="lbl">Recorrência recontato (dias)</div><input class="input" id="crmRecurrenceDays" type="number" min="0" step="1" placeholder="Ex: 7, 15, 30"></div>
-              </div>
-              <div class="crmFormGrid3">
-                <div><div class="lbl">Primeiro contato</div><input class="input" id="crmFirstContact" type="date"></div>
-                <div><div class="lbl">Último contato</div><input class="input" id="crmLastContact" type="date"></div>
-                <div><div class="lbl">Avisar dias antes</div><input class="input" id="crmReminderDays" type="number" min="0" step="1" value="0"></div>
-              </div>
-              <div class="crmFormGrid3">
-                <div><div class="lbl">Primeira consulta</div><input class="input" id="crmFirstConsultation" type="date"></div>
-                <div><div class="lbl">Última consulta</div><input class="input" id="crmLastConsultation" type="date"></div>
-                <div><div class="lbl">Total gasto</div><input class="input" id="crmTotalSpent" type="number" min="0" step="0.01" placeholder="0,00"></div>
-              </div>
-              <div style="margin-top:10px"><div class="lbl">Procedimentos realizados / histórico de interesse</div><textarea class="input" id="crmProcedures" rows="2"></textarea></div>
-              <div style="margin-top:10px"><div class="lbl">Observações e histórico comercial</div><textarea class="input" id="crmNotes" rows="3" placeholder="Motivos de não conversão, objeções, próximos passos, observações clínicas/comerciais..."></textarea></div>
               <div class="mFoot">
                 <button class="mBtn ghost" id="crmClear" type="button">Limpar</button>
                 <button class="mBtn primary" id="crmSave" type="button">Salvar cadastro</button>
@@ -11791,6 +11881,48 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       if (days !== null && days <= 30) return 'warn';
       return 'good';
     }
+    function resetCleanPatientChecks(){
+      ['crmOriginOrganic','crmOriginInternet'].forEach(id => { const el = UI.el(id); if (el) el.checked = false; });
+      document.querySelectorAll('[data-crm-internet],[data-crm-interest]').forEach(el => { el.checked = false; });
+      if (UI.el('crmInternetOptions')) UI.el('crmInternetOptions').style.display = 'none';
+    }
+    function syncCleanPatientFields(){
+      const organic = !!UI.el('crmOriginOrganic')?.checked;
+      const internet = !!UI.el('crmOriginInternet')?.checked;
+      const internetChannels = Array.from(document.querySelectorAll('[data-crm-internet]:checked')).map(el => el.dataset.crmInternet).filter(Boolean);
+      const interest = Array.from(document.querySelectorAll('[data-crm-interest]:checked')).map(el => el.dataset.crmInterest).filter(Boolean);
+      if (UI.el('crmInternetOptions')) UI.el('crmInternetOptions').style.display = internet ? '' : 'none';
+      if (!internet) document.querySelectorAll('[data-crm-internet]').forEach(el => { el.checked = false; });
+      const originParts = [];
+      if (organic) originParts.push('Orgânico');
+      if (internet) originParts.push(internetChannels.length ? `Internet: ${internetChannels.join(', ')}` : 'Internet');
+      if (UI.el('crmOrigin')) UI.el('crmOrigin').value = originParts.join(' | ');
+      if (UI.el('crmReferral')) UI.el('crmReferral').value = organic ? 'Orgânico' : '';
+      if (UI.el('crmInterest')) UI.el('crmInterest').value = interest.join(' | ');
+      const status = UI.el('crmStatus')?.value || 'convertido';
+      if (UI.el('crmType')) UI.el('crmType').value = status === 'nao_convertido' ? 'lead' : 'patient';
+    }
+    function restoreCleanPatientChecks(item){
+      resetCleanPatientChecks();
+      const origin = String(item?.origin || item?.referral || '');
+      const interest = String(item?.interest || '');
+      if (/org[aâã]nico/i.test(origin)) {
+        const el = UI.el('crmOriginOrganic'); if (el) el.checked = true;
+      }
+      if (/internet|google|instagram|ia|youtube|facebook|tiktok|outros/i.test(origin)) {
+        const internet = UI.el('crmOriginInternet'); if (internet) internet.checked = true;
+        document.querySelectorAll('[data-crm-internet]').forEach(el => {
+          const key = String(el.dataset.crmInternet || '').toLowerCase();
+          el.checked = origin.toLowerCase().includes(key);
+        });
+      }
+      const interestTokens = interest.split('|').map(x => x.trim().toLowerCase()).filter(Boolean);
+      document.querySelectorAll('[data-crm-interest]').forEach(el => {
+        const key = String(el.dataset.crmInterest || '').toLowerCase();
+        el.checked = interestTokens.length ? interestTokens.includes(key) : interest.toLowerCase() === key;
+      });
+      syncCleanPatientFields();
+    }
     function clearCRMForm(type){
       crmEnsure();
       CRMForm.editingId = null;
@@ -11802,6 +11934,8 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       set('crmName'); set('crmPhone'); set('crmBirthDate'); set('crmCpf'); set('crmEmail'); set('crmAddress'); set('crmReferral'); set('crmOrigin'); set('crmDoctor'); set('crmAdditionalDoctors'); set('crmOwner'); set('crmInterest'); set('crmPackage'); set('crmPackageMonths'); set('crmPackageStart'); set('crmAmountPaid'); set('crmTotalSpent'); set('crmNextContact'); set('crmRecurrenceDays'); set('crmFirstContact', todayISO()); set('crmLastContact'); set('crmFirstConsultation'); set('crmLastConsultation'); set('crmReminderDays','0'); set('crmProcedures'); set('crmNotes');
       set('crmType', isLead ? 'lead' : 'patient');
       set('crmStatus', isLead ? 'nao_convertido' : 'convertido');
+      resetCleanPatientChecks();
+      syncCleanPatientFields();
     }
     function setCRMTab(type){
       crmEnsure();
@@ -11843,6 +11977,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     }
     function saveCRMEntry(){
       crmEnsure();
+      syncCleanPatientFields();
       const name = (UI.el('crmName')?.value || '').trim();
       if (!name) return alert('Informe o nome.');
       const type = UI.el('crmType')?.value === 'lead' ? 'lead' : 'patient';
@@ -11912,6 +12047,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const set = (id,val='') => { const el = UI.el(id); if (el) el.value = val; };
       UI.el('crmFormTitle').textContent = 'Editando: ' + (item.name || 'cadastro');
       set('crmName', item.name); set('crmPhone', item.phone); set('crmBirthDate', item.birthDate); set('crmCpf', item.cpf); set('crmEmail', item.email); set('crmAddress', item.address); set('crmReferral', item.referral); set('crmOrigin', item.origin); set('crmDoctor', item.doctor); set('crmAdditionalDoctors', (item.additionalDoctors || []).join(', ')); set('crmOwner', item.owner); set('crmInterest', item.interest); set('crmType', item.type); set('crmStatus', item.type === 'lead' || item.status === 'nao_convertido' ? 'nao_convertido' : 'convertido'); set('crmProcedures', item.procedures); set('crmPackage', item.packageName); set('crmPackageMonths', item.packageMonths); set('crmPackageStart', item.packageStart); set('crmAmountPaid', item.amountPaid); set('crmTotalSpent', item.totalSpent ?? item.amountPaid); set('crmNextContact', item.nextContact); set('crmRecurrenceDays', item.recurrenceDays); set('crmFirstContact', item.firstContact); set('crmLastContact', item.lastContact); set('crmFirstConsultation', item.firstConsultation); set('crmLastConsultation', item.lastConsultation); set('crmReminderDays', item.reminderDays ?? 0); set('crmNotes', item.notes);
+      restoreCleanPatientChecks(item);
       document.getElementById('crmPageCard')?.scrollIntoView({behavior:'smooth', block:'start'});
     }
     function deleteCRMEntry(id){
@@ -12731,6 +12867,9 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       UI.el('crmTabDue')?.addEventListener('click', () => setCRMTab('due'));
       UI.el('crmSave')?.addEventListener('click', saveCRMEntry);
       UI.el('crmClear')?.addEventListener('click', () => clearCRMForm(CRMForm.tab === 'due' ? 'lead' : CRMForm.tab));
+      UI.el('crmOriginOrganic')?.addEventListener('change', syncCleanPatientFields);
+      UI.el('crmOriginInternet')?.addEventListener('change', syncCleanPatientFields);
+      document.querySelectorAll('[data-crm-internet],[data-crm-interest]').forEach(el => el.addEventListener('change', syncCleanPatientFields));
       UI.el('crmDoctorAddBtn')?.addEventListener('click', addDoctorFromCRM);
       UI.el('crmDoctorRemoveBtn')?.addEventListener('click', removeDoctorFromCRM);
       UI.el('crmSearch')?.addEventListener('input', renderCRMPanel);
@@ -17237,4 +17376,17 @@ body[data-theme="senna_brasil"] .hdr::after{
     .personalExpenseActions{justify-content:stretch !important}
     .personalExpenseActions .smallBtn{flex:1 1 100% !important}
   }
+</style>
+
+<style id="patient-register-clean-v2-final-css">
+  #crmPageCard .crmHiddenLegacyFields{display:none !important}
+  #crmPageCard .crmCleanChoicePanel{border:1px solid var(--line) !important;border-radius:18px !important;padding:13px 14px !important;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.025)) !important;min-height:100% !important}
+  #crmPageCard .crmCleanChecks,#crmPageCard .crmInternetOptions{display:flex !important;flex-wrap:wrap !important;gap:9px !important;margin-top:9px !important}
+  #crmPageCard .crmInternetOptions{display:none !important;padding-top:10px !important;border-top:1px dashed var(--line) !important}
+  #crmPageCard .crmCleanChoicePanel:has(#crmOriginInternet:checked) .crmInternetOptions{display:flex !important}
+  #crmPageCard .crmCleanCheck{display:inline-flex !important;align-items:center !important;gap:7px !important;min-height:38px !important;padding:8px 11px !important;border-radius:999px !important;border:1px solid var(--ui-menu-button-border,var(--line)) !important;background:var(--ui-menu-button-bg,linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06))) !important;color:var(--ui-menu-button-text,var(--txt)) !important;-webkit-text-fill-color:var(--ui-menu-button-text,var(--txt)) !important;font-weight:950 !important;cursor:pointer !important;user-select:none !important}
+  #crmPageCard .crmCleanCheck input{width:16px !important;height:16px !important;accent-color:var(--acc) !important}
+  #crmPageCard .crmCleanCheck:has(input:checked){border-color:var(--acc) !important;box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 18%,transparent) !important}
+  body.crm-mode[data-crm-view="register"] .crmFormPanel{max-width:1180px !important;margin:0 auto !important}
+  @media(max-width:760px){#crmPageCard .crmCleanChecks{display:grid !important;grid-template-columns:1fr !important}#crmPageCard .crmInternetOptions{display:none !important;grid-template-columns:1fr !important}#crmPageCard .crmCleanChoicePanel:has(#crmOriginInternet:checked) .crmInternetOptions{display:grid !important}#crmPageCard .crmCleanCheck{width:100% !important;justify-content:flex-start !important}}
 </style>
