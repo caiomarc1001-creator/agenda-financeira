@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 
@@ -6107,6 +6107,41 @@ body{
 
 </style>
 
+<style id="patient-register-check-contrast-v2-absolute-final-css">
+  /*
+    Regra de maior prioridade para os chips/checkboxes do cadastro.
+    Garante contraste em qualquer tema, inclusive temas com seletores antigos muito fortes.
+  */
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body):is(#crm-check-contrast-d,body) body #crmPageCard label.crmCleanCheck,
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body):is(#crm-check-contrast-d,body) body #crmPageCard .crmCleanChoicePanel label.crmCleanCheck{
+    background:linear-gradient(180deg,#fff4dd,#d8bd91) !important;
+    color:#1c1209 !important;
+    -webkit-text-fill-color:#1c1209 !important;
+    border-color:#8a693d !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body):is(#crm-check-contrast-d,body) body #crmPageCard label.crmCleanCheck:not(:has(input:checked)){
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 2px 8px rgba(0,0,0,.12) !important;
+  }
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body):is(#crm-check-contrast-d,body) body #crmPageCard label.crmCleanCheck:has(input:checked),
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body):is(#crm-check-contrast-d,body) body #crmPageCard .crmCleanChoicePanel label.crmCleanCheck:has(input:checked){
+    background:linear-gradient(180deg,#70451f,#332012) !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    border-color:#d2a35d !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
+    box-shadow:0 0 0 3px rgba(210,163,93,.25),0 6px 16px rgba(0,0,0,.22) !important;
+    opacity:1 !important;
+  }
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body):is(#crm-check-contrast-d,body) body #crmPageCard label.crmCleanCheck input{
+    accent-color:#70451f !important;
+    color:initial !important;
+    -webkit-text-fill-color:initial !important;
+    filter:none !important;
+  }
+</style>
+
 <style id="patient-register-clean-v1-final-css">
   /* Cadastro de pacientes mais limpo: mantém só os campos essenciais visíveis. */
   .crmHiddenLegacyFields{
@@ -6131,7 +6166,7 @@ body{
     padding-top:10px !important;
     border-top:1px dashed var(--line) !important;
   }
-  .crmCleanChoicePanel.internet-on .crmInternetOptions{
+  .crmCleanChoicePanel:has(#crmOriginInternet:checked) .crmInternetOptions{
     display:flex !important;
   }
   .crmCleanCheck{
@@ -6154,7 +6189,7 @@ body{
     height:16px !important;
     accent-color:var(--acc) !important;
   }
-  .crmCleanCheck.is-checked{
+  .crmCleanCheck:has(input:checked){
     border-color:var(--acc) !important;
     box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 18%,transparent) !important;
   }
@@ -8684,6 +8719,7 @@ body[data-theme="senna_brasil"] .hdr{
         }, 100);
       });
     }
+
     function updateCloudStatus(message){
       const label = UI.el('cloudUserStatus');
       if (label) label.textContent = message;
@@ -9098,6 +9134,7 @@ body[data-theme="senna_brasil"] .hdr{
         alert('Erro ao entrar: ' + firebaseAuthErrorMessage(err));
       }
     }
+
     async function signOut(){
       await createVersionedBackup('antes-do-logout', { silent:true, cloud:true });
       try { await initFirebaseCloud(); } catch(e) {}
@@ -11891,12 +11928,6 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const interest = Array.from(document.querySelectorAll('[data-crm-interest]:checked')).map(el => el.dataset.crmInterest).filter(Boolean);
       if (UI.el('crmInternetOptions')) UI.el('crmInternetOptions').style.display = internet ? '' : 'none';
       if (!internet) document.querySelectorAll('[data-crm-internet]').forEach(el => { el.checked = false; });
-      const originPanel = UI.el('crmOriginInternet')?.closest('.crmCleanChoicePanel');
-      if (originPanel) originPanel.classList.toggle('internet-on', internet);
-      document.querySelectorAll('#crmPageCard label.crmCleanCheck').forEach(label => {
-        const input = label.querySelector('input');
-        label.classList.toggle('is-checked', !!input?.checked);
-      });
       const originParts = [];
       if (organic) originParts.push('Orgânico');
       if (internet) originParts.push(internetChannels.length ? `Internet: ${internetChannels.join(', ')}` : 'Internet');
@@ -17387,13 +17418,14 @@ body[data-theme="senna_brasil"] .hdr::after{
   #crmPageCard .crmCleanChoicePanel{border:1px solid var(--line) !important;border-radius:18px !important;padding:13px 14px !important;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.025)) !important;min-height:100% !important}
   #crmPageCard .crmCleanChecks,#crmPageCard .crmInternetOptions{display:flex !important;flex-wrap:wrap !important;gap:9px !important;margin-top:9px !important}
   #crmPageCard .crmInternetOptions{display:none !important;padding-top:10px !important;border-top:1px dashed var(--line) !important}
-  #crmPageCard .crmCleanChoicePanel.internet-on .crmInternetOptions{display:flex !important}
+  #crmPageCard .crmCleanChoicePanel:has(#crmOriginInternet:checked) .crmInternetOptions{display:flex !important}
   #crmPageCard .crmCleanCheck{display:inline-flex !important;align-items:center !important;gap:7px !important;min-height:38px !important;padding:8px 11px !important;border-radius:999px !important;border:1px solid var(--ui-menu-button-border,var(--line)) !important;background:var(--ui-menu-button-bg,linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06))) !important;color:var(--ui-menu-button-text,var(--txt)) !important;-webkit-text-fill-color:var(--ui-menu-button-text,var(--txt)) !important;font-weight:950 !important;cursor:pointer !important;user-select:none !important}
   #crmPageCard .crmCleanCheck input{width:16px !important;height:16px !important;accent-color:var(--acc) !important}
-  #crmPageCard .crmCleanCheck.is-checked{border-color:var(--acc) !important;box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 18%,transparent) !important}
+  #crmPageCard .crmCleanCheck:has(input:checked){border-color:var(--acc) !important;box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 18%,transparent) !important}
   body.crm-mode[data-crm-view="register"] .crmFormPanel{max-width:1180px !important;margin:0 auto !important}
-  @media(max-width:760px){#crmPageCard .crmCleanChecks{display:grid !important;grid-template-columns:1fr !important}#crmPageCard .crmInternetOptions{display:none !important;grid-template-columns:1fr !important}#crmPageCard .crmCleanChoicePanel.internet-on .crmInternetOptions{display:grid !important}#crmPageCard .crmCleanCheck{width:100% !important;justify-content:flex-start !important}}
+  @media(max-width:760px){#crmPageCard .crmCleanChecks{display:grid !important;grid-template-columns:1fr !important}#crmPageCard .crmInternetOptions{display:none !important;grid-template-columns:1fr !important}#crmPageCard .crmCleanChoicePanel:has(#crmOriginInternet:checked) .crmInternetOptions{display:grid !important}#crmPageCard .crmCleanCheck{width:100% !important;justify-content:flex-start !important}}
 </style>
+
 <style id="patient-register-check-contrast-v1-final-css">
   /* Contraste fixo dos botões de marcação do cadastro em todos os temas. */
   #crmPageCard .crmCleanCheck{
@@ -17423,5 +17455,33 @@ body[data-theme="senna_brasil"] .hdr::after{
   #crmPageCard .crmCleanCheck input{
     accent-color:#6a4323 !important;
     -webkit-text-fill-color:initial !important;
+  }
+</style>
+
+<style id="patient-register-check-contrast-v3-last-word-css">
+  html :is(#crm-contrast-last-a,body):is(#crm-contrast-last-b,body):is(#crm-contrast-last-c,body):is(#crm-contrast-last-d,body):is(#crm-contrast-last-e,body) body #crmPageCard label.crmCleanCheck{
+    background:linear-gradient(180deg,#fff4dd,#d8bd91) !important;
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    border-color:#8a693d !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+  html :is(#crm-contrast-last-a,body):is(#crm-contrast-last-b,body):is(#crm-contrast-last-c,body):is(#crm-contrast-last-d,body):is(#crm-contrast-last-e,body) body #crmPageCard label.crmCleanCheck:not(:has(input:checked)){
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 2px 8px rgba(0,0,0,.12) !important;
+  }
+  html :is(#crm-contrast-last-a,body):is(#crm-contrast-last-b,body):is(#crm-contrast-last-c,body):is(#crm-contrast-last-d,body):is(#crm-contrast-last-e,body) body #crmPageCard label.crmCleanCheck:has(input:checked){
+    background:linear-gradient(180deg,#70451f,#332012) !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    border-color:#d2a35d !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
+    box-shadow:0 0 0 3px rgba(210,163,93,.25),0 6px 16px rgba(0,0,0,.22) !important;
+  }
+  html :is(#crm-contrast-last-a,body):is(#crm-contrast-last-b,body):is(#crm-contrast-last-c,body):is(#crm-contrast-last-d,body):is(#crm-contrast-last-e,body) body #crmPageCard label.crmCleanCheck input{
+    accent-color:#70451f !important;
+    color:initial !important;
+    -webkit-text-fill-color:initial !important;
+    filter:none !important;
   }
 </style>
