@@ -9051,8 +9051,8 @@ body[data-theme="senna_brasil"] .hdr{
     async function createAccount(){
       try { await initFirebaseCloud(); } catch(e) { console.error(e); }
       if (!window.FIREBASE_READY || !window.FirebaseAgenda) {
-        const msg = window.FIREBASE_INIT_ERROR?.message || 'Firebase n?o carregou. Verifique se o dom?nio GitHub est? autorizado no Firebase Authentication.';
-        return alert('Firebase ainda n?o est? pronto: ' + msg);
+        const msg = window.FIREBASE_INIT_ERROR?.message || 'Firebase não carregou. Verifique se o domínio GitHub está autorizado no Firebase Authentication.';
+        return alert('Firebase ainda não está pronto: ' + msg);
       }
 
       const name = (UI.el('loginName')?.value || '').trim();
@@ -9063,7 +9063,7 @@ body[data-theme="senna_brasil"] .hdr{
       const confirmPass = UI.el('loginPasswordConfirm').value;
 
       if (!email || pass.length < 6) return alert('Informe e-mail e senha com pelo menos 6 caracteres.');
-      if (pass !== confirmPass) return alert('A confirma??o de senha n?o confere.');
+      if (pass !== confirmPass) return alert('A confirmação de senha não confere.');
 
       try {
         const credential = await window.FirebaseAgenda.createUser(email, pass);
@@ -9083,8 +9083,8 @@ body[data-theme="senna_brasil"] .hdr{
     async function signIn(){
       try { await initFirebaseCloud(); } catch(e) { console.error(e); }
       if (!window.FIREBASE_READY || !window.FirebaseAgenda) {
-        const msg = window.FIREBASE_INIT_ERROR?.message || 'Firebase n?o carregou. Verifique se o dom?nio GitHub est? autorizado no Firebase Authentication.';
-        return alert('Firebase ainda n?o est? pronto: ' + msg);
+        const msg = window.FIREBASE_INIT_ERROR?.message || 'Firebase não carregou. Verifique se o domínio GitHub está autorizado no Firebase Authentication.';
+        return alert('Firebase ainda não está pronto: ' + msg);
       }
 
       unlockPasswordField(UI.el('loginPassword'));
@@ -9100,6 +9100,12 @@ body[data-theme="senna_brasil"] .hdr{
         alert('Erro ao entrar: ' + firebaseAuthErrorMessage(err));
       }
     }
+
+    window.AgendaAuthRuntime = {
+      signIn,
+      createAccount,
+      initFirebaseCloud
+    };
 
     async function signOut(){
       await createVersionedBackup('antes-do-logout', { silent:true, cloud:true });
@@ -17398,37 +17404,57 @@ body[data-theme="senna_brasil"] .hdr::after{
   @media(max-width:760px){#crmPageCard .crmCleanChecks{display:grid !important;grid-template-columns:1fr !important}#crmPageCard .crmInternetOptions{display:none !important;grid-template-columns:1fr !important}#crmPageCard .crmCleanChoicePanel.internet-on .crmInternetOptions{display:grid !important}#crmPageCard .crmCleanCheck{width:100% !important;justify-content:flex-start !important}}
 </style>
 
-<style id="patient-register-check-contrast-safe-final-css">
-  /* Versão segura: sem :has(), para não travar o login/interações em navegadores sensíveis. */
-  #crmPageCard label.crmCleanCheck{
-    background:linear-gradient(180deg,#fff4dd,#d8bd91) !important;
-    color:#1b1209 !important;
-    -webkit-text-fill-color:#1b1209 !important;
-    border-color:#8a693d !important;
-    text-shadow:none !important;
-    opacity:1 !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 2px 8px rgba(0,0,0,.12) !important;
-  }
-  #crmPageCard label.crmCleanCheck.is-checked{
-    background:linear-gradient(180deg,#70451f,#332012) !important;
-    color:#ffffff !important;
-    -webkit-text-fill-color:#ffffff !important;
-    border-color:#d2a35d !important;
-    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
-    box-shadow:0 0 0 3px rgba(210,163,93,.25),0 6px 16px rgba(0,0,0,.22) !important;
-  }
-  #crmPageCard label.crmCleanCheck input{
-    accent-color:#70451f !important;
-    color:initial !important;
-    -webkit-text-fill-color:initial !important;
-    filter:none !important;
-  }
-  #crmPageCard .crmCleanChoicePanel.internet-on .crmInternetOptions{
-    display:flex !important;
-  }
-  @media(max-width:760px){
-    #crmPageCard .crmCleanChoicePanel.internet-on .crmInternetOptions{
-      display:grid !important;
-    }
-  }
+<style id="patient-register-check-contrast-v1-final-css">
+  #crmPageCard .crmCleanCheck{background:linear-gradient(180deg,#fff7e5,#ead9b7)!important;color:#24180e!important;-webkit-text-fill-color:#24180e!important;border-color:#9b7b4d!important;text-shadow:none!important;}
+  #crmPageCard .crmCleanCheck *{color:#24180e!important;-webkit-text-fill-color:#24180e!important;text-shadow:none!important;}
+  #crmPageCard .crmCleanCheck:has(input:checked){background:linear-gradient(180deg,#6a4323,#3d2817)!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border-color:#c89a5b!important;box-shadow:0 0 0 3px rgba(200,154,91,.22)!important;}
+  #crmPageCard .crmCleanCheck:has(input:checked) *{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:0 1px 2px rgba(0,0,0,.35)!important;}
+  #crmPageCard .crmCleanCheck input{accent-color:#6a4323!important;-webkit-text-fill-color:initial!important;}
 </style>
+
+<script id="agenda-auth-click-safety-final-js">
+(function(){
+  function authRuntime(){
+    return window.AgendaAuthRuntime || null;
+  }
+  function bindAuthButton(id, method){
+    var el = document.getElementById(id);
+    if(!el || el.dataset.authSafetyBound === '1') return;
+    el.dataset.authSafetyBound = '1';
+    el.addEventListener('click', function(ev){
+      var rt = authRuntime();
+      if(!rt || typeof rt[method] !== 'function') return;
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      if(window.__agendaAuthSafetyBusy) return;
+      window.__agendaAuthSafetyBusy = true;
+      Promise.resolve(rt[method]()).finally(function(){
+        window.__agendaAuthSafetyBusy = false;
+      });
+    }, true);
+  }
+  function bindAuthForm(){
+    var form = document.getElementById('authForm');
+    if(!form || form.dataset.authSafetyBound === '1') return;
+    form.dataset.authSafetyBound = '1';
+    form.addEventListener('submit', function(ev){
+      var rt = authRuntime();
+      if(!rt || typeof rt.signIn !== 'function') return;
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      if(window.__agendaAuthSafetyBusy) return;
+      window.__agendaAuthSafetyBusy = true;
+      Promise.resolve(rt.signIn()).finally(function(){
+        window.__agendaAuthSafetyBusy = false;
+      });
+    }, true);
+  }
+  function bind(){
+    bindAuthButton('btnSignIn','signIn');
+    bindAuthButton('btnCreateAccount','createAccount');
+    bindAuthForm();
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
+  else bind();
+})();
+</script>
