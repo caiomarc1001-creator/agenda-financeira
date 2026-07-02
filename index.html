@@ -6107,6 +6107,144 @@ body{
 
 </style>
 
+<style id="internal-pages-1180-layout-v1">
+  /*
+    Largura editorial padrão para páginas internas.
+    Mantém Agenda e Modo Cirurgião fora desta regra.
+  */
+  body.crm-mode:not(.surgeon-mode) .container,
+  body.personal-finance-mode:not(.surgeon-mode) .container{
+    grid-template-columns:1fr !important;
+    max-width:min(1180px, calc(100vw - 32px)) !important;
+    width:min(1180px, calc(100vw - 32px)) !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) .sidebarCol,
+  body.personal-finance-mode:not(.surgeon-mode) .sidebarCol{
+    width:100% !important;
+    max-width:1180px !important;
+    min-width:0 !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) #crmPageCard,
+  body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard{
+    width:100% !important;
+    max-width:1180px !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    box-sizing:border-box !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) #crmPageCard > .sectionHead,
+  body.crm-mode:not(.surgeon-mode) #crmPageCard > .padded,
+  body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard > .sectionHead,
+  body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard > .padded{
+    width:100% !important;
+    max-width:1180px !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    box-sizing:border-box !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) .crmHero,
+  body.personal-finance-mode:not(.surgeon-mode) .personalFinanceHero{
+    width:100% !important;
+    max-width:100% !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    box-sizing:border-box !important;
+  }
+
+  @media(max-width:760px){
+    body.crm-mode:not(.surgeon-mode) .container,
+    body.personal-finance-mode:not(.surgeon-mode) .container{
+      width:100% !important;
+      max-width:100% !important;
+      padding-left:10px !important;
+      padding-right:10px !important;
+    }
+
+    body.crm-mode:not(.surgeon-mode) #crmPageCard,
+    body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard{
+      max-width:100% !important;
+    }
+  }
+</style>
+
+<style id="internal-pages-1180-layout-end-authority">
+  /*
+    Autoridade final de layout:
+    todas as páginas internas em 1180px.
+    Agenda e Modo Cirurgião permanecem sem alteração.
+  */
+  body.crm-mode:not(.surgeon-mode) .container,
+  body.personal-finance-mode:not(.surgeon-mode) .container{
+    grid-template-columns:1fr !important;
+    width:min(1180px, calc(100vw - 32px)) !important;
+    max-width:min(1180px, calc(100vw - 32px)) !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) .mainCol,
+  body.personal-finance-mode:not(.surgeon-mode) .mainCol{
+    display:none !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) .sidebarCol,
+  body.personal-finance-mode:not(.surgeon-mode) .sidebarCol,
+  body.crm-mode:not(.surgeon-mode) #crmPageCard,
+  body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard{
+    width:100% !important;
+    max-width:1180px !important;
+    min-width:0 !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    box-sizing:border-box !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) #crmPageCard > .sectionHead,
+  body.crm-mode:not(.surgeon-mode) #crmPageCard > .padded,
+  body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard > .sectionHead,
+  body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard > .padded{
+    width:100% !important;
+    max-width:1180px !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    box-sizing:border-box !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) .crmHero,
+  body.personal-finance-mode:not(.surgeon-mode) .personalFinanceHero,
+  body.crm-mode:not(.surgeon-mode) .crmPanel,
+  body.personal-finance-mode:not(.surgeon-mode) .personalFinancePanel,
+  body.personal-finance-mode:not(.surgeon-mode) .personalFinanceDashboard{
+    max-width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  @media(max-width:760px){
+    body.crm-mode:not(.surgeon-mode) .container,
+    body.personal-finance-mode:not(.surgeon-mode) .container{
+      width:100% !important;
+      max-width:100% !important;
+      padding-left:10px !important;
+      padding-right:10px !important;
+    }
+
+    body.crm-mode:not(.surgeon-mode) .sidebarCol,
+    body.personal-finance-mode:not(.surgeon-mode) .sidebarCol,
+    body.crm-mode:not(.surgeon-mode) #crmPageCard,
+    body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard{
+      max-width:100% !important;
+    }
+  }
+</style>
+
 <style id="theme-studio-professional-layout-v1">
   /* Organização profissional da janela de edição de temas. */
   #ovThemeSelector .themeStudioModal{
@@ -6637,6 +6775,73 @@ body{
     background:color-mix(in srgb,var(--surface-calendar-title-text) 10%,transparent) !important;
     border:1px solid color-mix(in srgb,var(--surface-calendar-title-text) 22%,transparent) !important;
     text-shadow:0 1px 2px rgba(0,0,0,.42) !important;
+  }
+</style>
+
+<style id="internal-pages-1180-layout-final-authority">
+  /*
+    Camada final de layout:
+    páginas internas com leitura em 1180px.
+    Exceções preservadas: Agenda e Modo Cirurgião.
+  */
+  body.crm-mode:not(.surgeon-mode) .container,
+  body.personal-finance-mode:not(.surgeon-mode) .container{
+    grid-template-columns:1fr !important;
+    width:min(1180px, calc(100vw - 32px)) !important;
+    max-width:min(1180px, calc(100vw - 32px)) !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) .mainCol,
+  body.personal-finance-mode:not(.surgeon-mode) .mainCol{
+    display:none !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) .sidebarCol,
+  body.personal-finance-mode:not(.surgeon-mode) .sidebarCol,
+  body.crm-mode:not(.surgeon-mode) #crmPageCard,
+  body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard{
+    width:100% !important;
+    max-width:1180px !important;
+    min-width:0 !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    box-sizing:border-box !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) #crmPageCard > .sectionHead,
+  body.crm-mode:not(.surgeon-mode) #crmPageCard > .padded,
+  body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard > .sectionHead,
+  body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard > .padded{
+    width:100% !important;
+    max-width:1180px !important;
+    box-sizing:border-box !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) .crmHero,
+  body.personal-finance-mode:not(.surgeon-mode) .personalFinanceHero,
+  body.crm-mode:not(.surgeon-mode) .crmPanel,
+  body.personal-finance-mode:not(.surgeon-mode) .personalFinancePanel{
+    max-width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  @media(max-width:760px){
+    body.crm-mode:not(.surgeon-mode) .container,
+    body.personal-finance-mode:not(.surgeon-mode) .container{
+      width:100% !important;
+      max-width:100% !important;
+      padding-left:10px !important;
+      padding-right:10px !important;
+    }
+
+    body.crm-mode:not(.surgeon-mode) .sidebarCol,
+    body.personal-finance-mode:not(.surgeon-mode) .sidebarCol,
+    body.crm-mode:not(.surgeon-mode) #crmPageCard,
+    body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard{
+      max-width:100% !important;
+    }
   }
 </style>
 
@@ -19789,5 +19994,74 @@ body[data-theme="senna_brasil"] .hdr::after{
     background:color-mix(in srgb,var(--surface-calendar-title-text) 10%,transparent) !important;
     border:1px solid color-mix(in srgb,var(--surface-calendar-title-text) 22%,transparent) !important;
     text-shadow:0 1px 2px rgba(0,0,0,.42) !important;
+  }
+</style>
+
+<style id="internal-pages-1180-layout-absolute-final">
+  /*
+    Regra definitiva de largura:
+    páginas internas em 1180px, sem alterar Agenda nem Modo Cirurgião.
+  */
+  body.crm-mode:not(.surgeon-mode) .container,
+  body.personal-finance-mode:not(.surgeon-mode) .container{
+    grid-template-columns:1fr !important;
+    width:min(1180px, calc(100vw - 32px)) !important;
+    max-width:min(1180px, calc(100vw - 32px)) !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) .mainCol,
+  body.personal-finance-mode:not(.surgeon-mode) .mainCol{
+    display:none !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) .sidebarCol,
+  body.personal-finance-mode:not(.surgeon-mode) .sidebarCol,
+  body.crm-mode:not(.surgeon-mode) #crmPageCard,
+  body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard{
+    width:100% !important;
+    max-width:1180px !important;
+    min-width:0 !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    box-sizing:border-box !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) #crmPageCard > .sectionHead,
+  body.crm-mode:not(.surgeon-mode) #crmPageCard > .padded,
+  body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard > .sectionHead,
+  body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard > .padded{
+    width:100% !important;
+    max-width:1180px !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    box-sizing:border-box !important;
+  }
+
+  body.crm-mode:not(.surgeon-mode) .crmHero,
+  body.personal-finance-mode:not(.surgeon-mode) .personalFinanceHero,
+  body.crm-mode:not(.surgeon-mode) .crmPanel,
+  body.personal-finance-mode:not(.surgeon-mode) .personalFinancePanel,
+  body.personal-finance-mode:not(.surgeon-mode) .personalFinanceDashboard{
+    max-width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  @media(max-width:760px){
+    body.crm-mode:not(.surgeon-mode) .container,
+    body.personal-finance-mode:not(.surgeon-mode) .container{
+      width:100% !important;
+      max-width:100% !important;
+      padding-left:10px !important;
+      padding-right:10px !important;
+    }
+
+    body.crm-mode:not(.surgeon-mode) .sidebarCol,
+    body.personal-finance-mode:not(.surgeon-mode) .sidebarCol,
+    body.crm-mode:not(.surgeon-mode) #crmPageCard,
+    body.personal-finance-mode:not(.surgeon-mode) #personalFinancePageCard{
+      max-width:100% !important;
+    }
   }
 </style>
