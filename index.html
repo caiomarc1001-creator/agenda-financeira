@@ -6107,6 +6107,210 @@ body{
 
 </style>
 
+<style id="theme-studio-professional-layout-v1">
+  /* Organização profissional da janela de edição de temas. */
+  #ovThemeSelector .themeStudioModal{
+    width:min(1080px,100%) !important;
+  }
+
+  #ovThemeSelector .themeStudioSubtitle{
+    margin-top:4px;
+    font-size:12px;
+    line-height:1.45;
+    color:var(--surface-panel-muted,var(--ui-muted,var(--mut))) !important;
+    -webkit-text-fill-color:var(--surface-panel-muted,var(--ui-muted,var(--mut))) !important;
+    font-weight:800;
+  }
+
+  #ovThemeSelector .themeStudioForm{
+    gap:14px !important;
+  }
+
+  #ovThemeSelector .themeStudioSection,
+  #ovThemeSelector .themeStudioDetails{
+    border:1px solid var(--surface-panel-border,var(--ui-border,var(--line))) !important;
+    border-radius:18px !important;
+    background:color-mix(in srgb,var(--surface-panel-text,var(--ui-text,#0b172a)) 5%,transparent) !important;
+    padding:14px !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+  }
+
+  #ovThemeSelector .themeStudioSectionHead{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:12px;
+  }
+
+  #ovThemeSelector .themeSectionTitle{
+    margin:0 !important;
+    font-size:clamp(14px,1vw,17px) !important;
+    line-height:1.15 !important;
+  }
+
+  #ovThemeSelector .themeStudioHint,
+  #ovThemeSelector .themeStudioDetails summary small,
+  #ovThemeSelector .themeStudioPackageGrid small{
+    display:block;
+    margin-top:3px;
+    font-size:11px;
+    line-height:1.35;
+    font-weight:800;
+    opacity:.86;
+    color:var(--surface-panel-muted,var(--ui-muted,var(--mut))) !important;
+    -webkit-text-fill-color:var(--surface-panel-muted,var(--ui-muted,var(--mut))) !important;
+  }
+
+  #ovThemeSelector .themeGrid{
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr)) !important;
+    gap:10px !important;
+  }
+
+  #ovThemeSelector .themeCard{
+    min-height:118px !important;
+    padding:13px !important;
+    border-radius:16px !important;
+  }
+
+  #ovThemeSelector .themeStudioPackageGrid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:10px;
+  }
+
+  #ovThemeSelector .themeStudioPackageGrid .mBtn{
+    display:flex !important;
+    flex-direction:column;
+    align-items:flex-start !important;
+    justify-content:center !important;
+    min-height:74px !important;
+    border-radius:16px !important;
+    text-align:left !important;
+    white-space:normal !important;
+  }
+
+  #ovThemeSelector .themeStudioPackageGrid .mBtn span{
+    font-size:13px;
+    font-weight:1000;
+    line-height:1.12;
+  }
+
+  #ovThemeSelector .themeStudioDetails{
+    padding:0 !important;
+    overflow:hidden;
+  }
+
+  #ovThemeSelector .themeStudioDetails summary{
+    list-style:none;
+    cursor:pointer;
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    font-weight:1000;
+    color:var(--surface-panel-text,var(--ui-text,#0b172a)) !important;
+    -webkit-text-fill-color:var(--surface-panel-text,var(--ui-text,#0b172a)) !important;
+  }
+
+  #ovThemeSelector .themeStudioDetails summary::-webkit-details-marker{
+    display:none;
+  }
+
+  #ovThemeSelector .themeStudioDetails summary::after{
+    content:"▾";
+    flex:0 0 auto;
+    width:30px;
+    height:30px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:999px;
+    border:1px solid var(--component-neutral-border,var(--ui-border,var(--line)));
+    background:var(--component-neutral-bg,var(--ui-menu-button-bg));
+    color:var(--component-neutral-text,var(--ui-menu-button-text)) !important;
+    -webkit-text-fill-color:var(--component-neutral-text,var(--ui-menu-button-text)) !important;
+    transition:transform .18s ease;
+  }
+
+  #ovThemeSelector .themeStudioDetails:not([open]) summary::after{
+    transform:rotate(-90deg);
+  }
+
+  #ovThemeSelector .customThemeGrid,
+  #ovThemeSelector .themeStudioToolGrid{
+    padding:0 14px 14px;
+  }
+
+  #ovThemeSelector .customThemeGrid{
+    grid-template-columns:repeat(auto-fit,minmax(155px,1fr)) !important;
+    gap:10px !important;
+  }
+
+  #ovThemeSelector .themeStudioField{
+    padding:10px;
+    border-radius:14px;
+    border:1px solid color-mix(in srgb,var(--surface-panel-border,var(--ui-border,var(--line))) 70%,transparent);
+    background:color-mix(in srgb,var(--surface-panel-text,var(--ui-text,#0b172a)) 4%,transparent);
+  }
+
+  #ovThemeSelector .themeStudioField .input[type="color"]{
+    min-height:42px !important;
+    padding:5px !important;
+    cursor:pointer;
+  }
+
+  #ovThemeSelector .themeStudioToolGrid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:10px;
+  }
+
+  #ovThemeSelector .themeStudioFooter{
+    position:sticky;
+    bottom:0;
+    z-index:3;
+    display:grid !important;
+    grid-template-columns:minmax(180px,1.35fr) minmax(170px,1fr) minmax(150px,.8fr) minmax(100px,.55fr);
+    gap:10px !important;
+    padding:12px !important;
+    margin-top:0 !important;
+    border-radius:18px !important;
+    border:1px solid var(--surface-panel-border,var(--ui-border,var(--line))) !important;
+    background:var(--surface-window-bg,var(--ui-window-bg)) !important;
+    box-shadow:0 -10px 30px rgba(0,0,0,.16);
+  }
+
+  #ovThemeSelector .themeStudioFooter .mBtn{
+    width:100% !important;
+  }
+
+  @media(max-width:820px){
+    #ovThemeSelector .themeGrid,
+    #ovThemeSelector .themeStudioPackageGrid,
+    #ovThemeSelector .customThemeGrid,
+    #ovThemeSelector .themeStudioToolGrid,
+    #ovThemeSelector .themeStudioFooter{
+      grid-template-columns:1fr !important;
+    }
+
+    #ovThemeSelector .themeStudioSection,
+    #ovThemeSelector .themeStudioDetails{
+      padding:12px !important;
+    }
+
+    #ovThemeSelector .themeStudioDetails{
+      padding:0 !important;
+    }
+
+    #ovThemeSelector .themeStudioFooter{
+      position:relative;
+      bottom:auto;
+    }
+  }
+</style>
+
 <style id="theme-surface-component-contrast-v2">
   /*
     Arquitetura visual profissional:
@@ -9408,54 +9612,83 @@ body[data-theme="senna_brasil"] .hdr{
   </div>
 
   <div class="ov" id="ovThemeSelector">
-    <div class="modal" style="width:min(980px,100%)">
+    <div class="modal themeStudioModal" style="width:min(1080px,100%)">
       <div class="mHead">
-        <h3>Temas premium</h3>
+        <div>
+          <h3>Estúdio de Tema</h3>
+          <div class="themeStudioSubtitle">Escolha um tema pronto ou ajuste a identidade visual em pacotes organizados.</div>
+        </div>
         <button class="closeX" id="themeSelectorClose">✕</button>
       </div>
-      <div class="form">
-        <div>
-          <div class="themeSectionTitle">Temas pré-definidos</div>
-          <div class="themeGrid" id="themeGrid"></div>
-        </div>
-        <div>
-          <div class="themeSectionTitle">Seletor livre de cores</div>
-          <div class="customThemeGrid">
-            <div><div class="lbl">Fundo principal</div><input class="input" id="customBg0" type="color" value="#0b0f19"></div>
-            <div><div class="lbl">Fundo secundário</div><input class="input" id="customBg1" type="color" value="#1c2740"></div>
-            <div><div class="lbl">Card</div><input class="input" id="customCard" type="color" value="#22304f"></div>
-            <div><div class="lbl">Linhas / bordas</div><input class="input" id="customLine" type="color" value="#5b7fc9"></div>
-            <div><div class="lbl">Texto</div><input class="input" id="customTxt" type="color" value="#f5f7fb"></div>
-            <div><div class="lbl">Texto secundário</div><input class="input" id="customMut" type="color" value="#b8c4de"></div>
-            <div><div class="lbl">Destaque geral</div><input class="input" id="customAcc" type="color" value="#3b82f6"></div>
-            <div><div class="lbl">Destaque dos alertas</div><input class="input" id="customAlertColor" type="color" value="#ff5d5d"></div>
-            <div><div class="lbl">Força do alerta</div><select class="input" id="customAlertIntensity"><option value="1">Normal</option><option value="1.35" selected>Forte</option><option value="1.7">Máximo</option><option value="2.25">Ultra</option><option value="3">Crítico</option></select></div>
-            <div><div class="lbl">Fundo da janela CRM</div><input class="input" id="customCRMFormBg" type="color" value="#22304f"></div>
-            <div><div class="lbl">Valor / positivo</div><input class="input" id="customGood" type="color" value="#39d98a"></div>
-            <div><div class="lbl">Cor do mês</div><input class="input" id="customMonth" type="color" value="#f5f7fb"></div>
-            <div><div class="lbl">Fonte das janelas</div><input class="input" id="customModalText" type="color" value="#10233f"></div>
-            <div><div class="lbl">Botões degradê 1</div><input class="input" id="customButtonBg1" type="color" value="#3b82f6"></div>
-            <div><div class="lbl">Botões degradê 2</div><input class="input" id="customButtonBg2" type="color" value="#8b5cf6"></div>
-            <div><div class="lbl">Texto dos botões</div><input class="input" id="customButtonText" type="color" value="#ffffff"></div>
+      <div class="form themeStudioForm">
+        <section class="themeStudioSection themeStudioPresets">
+          <div class="themeStudioSectionHead">
+            <div>
+              <div class="themeSectionTitle">Temas prontos</div>
+              <div class="themeStudioHint">Base estética completa. Depois você pode refinar detalhes abaixo.</div>
+            </div>
           </div>
-        </div>
-        <div class="accountPanel">
-          <div class="themeSectionTitle">Dimensão das datas do calendário</div>
-          <div class="helper">Ajuste a altura das datas sem sair da área de temas.</div>
-          <div class="mFoot"><button class="mBtn" id="btnDayH" type="button">Ajustar dimensão da data no calendário</button></div>
-        </div>
-        <div class="mFoot">
-          <button class="mBtn" id="btnApplyAccentColor" type="button">Aplicar destaque</button>
-          <button class="mBtn" id="btnApplyAlertHighlight" type="button">Aplicar alertas comerciais</button>
-          <button class="mBtn" id="btnApplyCRMFormBg" type="button">Aplicar fundo CRM</button>
-          <button class="mBtn" id="btnApplyTextColors" type="button">Aplicar só cores de texto</button>
-          <button class="mBtn" id="btnApplyButtonColors" type="button">Aplicar degradê dos botões</button>
+          <div class="themeGrid" id="themeGrid"></div>
+        </section>
+
+        <section class="themeStudioSection themeStudioQuick">
+          <div class="themeStudioSectionHead">
+            <div>
+              <div class="themeSectionTitle">Pacotes de edição</div>
+              <div class="themeStudioHint">Use quando quiser alterar só uma área sem bagunçar o tema inteiro.</div>
+            </div>
+          </div>
+          <div class="themeStudioPackageGrid">
+            <button class="mBtn" id="btnApplyAccentColor" type="button"><span>Destaque geral</span><small>Cor principal, seleção e foco</small></button>
+            <button class="mBtn" id="btnApplyAlertHighlight" type="button"><span>Alertas comerciais</span><small>Cor e intensidade dos alertas</small></button>
+            <button class="mBtn" id="btnApplyCRMFormBg" type="button"><span>Fundo CRM</span><small>Painel de cadastro e relacionamento</small></button>
+            <button class="mBtn" id="btnApplyTextColors" type="button"><span>Textos especiais</span><small>Mês e fontes das janelas</small></button>
+            <button class="mBtn" id="btnApplyButtonColors" type="button"><span>Botões</span><small>Degradê e texto dos botões</small></button>
+          </div>
+        </section>
+
+        <details class="themeStudioSection themeStudioDetails" open>
+          <summary>
+            <span>Personalização avançada</span>
+            <small>Editar cores individuais do tema atual</small>
+          </summary>
+          <div class="customThemeGrid">
+            <div class="themeStudioField"><div class="lbl">Fundo principal</div><input class="input" id="customBg0" type="color" value="#0b0f19"></div>
+            <div class="themeStudioField"><div class="lbl">Fundo secundário</div><input class="input" id="customBg1" type="color" value="#1c2740"></div>
+            <div class="themeStudioField"><div class="lbl">Card</div><input class="input" id="customCard" type="color" value="#22304f"></div>
+            <div class="themeStudioField"><div class="lbl">Linhas / bordas</div><input class="input" id="customLine" type="color" value="#5b7fc9"></div>
+            <div class="themeStudioField"><div class="lbl">Texto</div><input class="input" id="customTxt" type="color" value="#f5f7fb"></div>
+            <div class="themeStudioField"><div class="lbl">Texto secundário</div><input class="input" id="customMut" type="color" value="#b8c4de"></div>
+            <div class="themeStudioField"><div class="lbl">Destaque geral</div><input class="input" id="customAcc" type="color" value="#3b82f6"></div>
+            <div class="themeStudioField"><div class="lbl">Destaque dos alertas</div><input class="input" id="customAlertColor" type="color" value="#ff5d5d"></div>
+            <div class="themeStudioField"><div class="lbl">Força do alerta</div><select class="input" id="customAlertIntensity"><option value="1">Normal</option><option value="1.35" selected>Forte</option><option value="1.7">Máximo</option><option value="2.25">Ultra</option><option value="3">Crítico</option></select></div>
+            <div class="themeStudioField"><div class="lbl">Fundo da janela CRM</div><input class="input" id="customCRMFormBg" type="color" value="#22304f"></div>
+            <div class="themeStudioField"><div class="lbl">Valor / positivo</div><input class="input" id="customGood" type="color" value="#39d98a"></div>
+            <div class="themeStudioField"><div class="lbl">Cor do mês</div><input class="input" id="customMonth" type="color" value="#f5f7fb"></div>
+            <div class="themeStudioField"><div class="lbl">Fonte das janelas</div><input class="input" id="customModalText" type="color" value="#10233f"></div>
+            <div class="themeStudioField"><div class="lbl">Botões degradê 1</div><input class="input" id="customButtonBg1" type="color" value="#3b82f6"></div>
+            <div class="themeStudioField"><div class="lbl">Botões degradê 2</div><input class="input" id="customButtonBg2" type="color" value="#8b5cf6"></div>
+            <div class="themeStudioField"><div class="lbl">Texto dos botões</div><input class="input" id="customButtonText" type="color" value="#ffffff"></div>
+          </div>
+        </details>
+
+        <details class="themeStudioSection themeStudioDetails">
+          <summary>
+            <span>Manutenção e ajustes finos</span>
+            <small>Reverter partes específicas ou ajustar o calendário</small>
+          </summary>
+          <div class="themeStudioToolGrid">
+            <button class="mBtn" id="btnDayH" type="button">Ajustar dimensão da data no calendário</button>
+            <button class="mBtn" id="btnResetTextColors" type="button">Desativar cores de texto</button>
+            <button class="mBtn" id="btnResetAccentColor" type="button">Desativar destaque</button>
+            <button class="mBtn" id="btnResetButtonColors" type="button">Desativar botões manuais</button>
+          </div>
+        </details>
+
+        <div class="mFoot themeStudioFooter">
+          <button class="mBtn primary" id="btnApplyCustomTheme" type="button">Aplicar tema personalizado</button>
           <button class="mBtn" id="btnSavePresetEdit" type="button">Salvar edição no tema atual</button>
           <button class="mBtn" id="btnResetCurrentPreset" type="button">Reverter tema atual</button>
-          <button class="mBtn" id="btnResetTextColors" type="button">Desativar cores manuais</button>
-          <button class="mBtn" id="btnResetAccentColor" type="button">Desativar destaque manual</button>
-          <button class="mBtn" id="btnResetButtonColors" type="button">Desativar botões manuais</button>
-          <button class="mBtn" id="btnApplyCustomTheme" type="button">Aplicar tema personalizado</button>
           <button class="mBtn ghost" id="themeSelectorCancel" type="button">Fechar</button>
         </div>
       </div>
