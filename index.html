@@ -6107,6 +6107,335 @@ body{
 
 </style>
 
+<style id="theme-surface-component-contrast-v2">
+  /*
+    Arquitetura visual profissional:
+    1) cada tema define superfícies;
+    2) cada superfície define seu texto;
+    3) componentes consomem esses papéis visuais.
+    Assim a fonte não é "clara ou escura por tema"; ela contrasta com a superfície onde está.
+  */
+
+  body{
+    --surface-page-text:var(--txt,#f2f6ff);
+    --surface-panel-bg:var(--ui-panel-bg,linear-gradient(180deg,rgba(255,255,255,.94),rgba(232,241,252,.92)));
+    --surface-panel-text:var(--ui-text,#0b172a);
+    --surface-panel-muted:var(--ui-muted,#46566d);
+    --surface-panel-border:var(--ui-border,rgba(30,64,110,.26));
+    --surface-window-bg:var(--ui-window-bg,linear-gradient(180deg,rgba(255,255,255,.98),rgba(239,246,255,.97)));
+    --surface-window-text:var(--ui-text,#0b172a);
+    --surface-window-muted:var(--ui-muted,#46566d);
+    --surface-field-bg:var(--ui-field-bg,#f8fbff);
+    --surface-field-text:var(--ui-field-text,#101827);
+    --surface-placeholder:var(--ui-placeholder,#5b687b);
+    --surface-calendar-title-bg:linear-gradient(180deg,#0b1220,#111827);
+    --surface-calendar-title-text:#ffffff;
+    --component-neutral-bg:var(--theme-neutral-bg,var(--ui-menu-button-bg,linear-gradient(180deg,#ffffff,#e5edf8)));
+    --component-neutral-text:var(--theme-neutral-text,var(--ui-menu-button-text,#101827));
+    --component-neutral-border:var(--theme-neutral-border,var(--ui-menu-button-border,var(--line)));
+    --component-active-bg:var(--theme-active-bg,linear-gradient(135deg,var(--acc,#2563eb),#111827));
+    --component-active-text:var(--theme-active-text,#ffffff);
+    --component-active-border:var(--theme-active-border,var(--acc,#2563eb));
+    --component-choice-bg:var(--theme-choice-bg,var(--component-neutral-bg));
+    --component-choice-text:var(--theme-choice-text,var(--component-neutral-text));
+    --component-choice-border:var(--theme-choice-border,var(--component-neutral-border));
+    --component-choice-active-bg:var(--theme-choice-active-bg,var(--component-active-bg));
+    --component-choice-active-text:var(--theme-choice-active-text,var(--component-active-text));
+    --component-choice-active-border:var(--theme-choice-active-border,var(--component-active-border));
+    --component-danger-bg:linear-gradient(180deg,#c7352b,#8f1d18);
+    --component-danger-text:#ffffff;
+    --component-danger-border:#7f1d1d;
+  }
+
+  body[data-theme="light"]{
+    --surface-panel-bg:linear-gradient(180deg,#f9fcff,#e5f1ff);--surface-panel-text:#10233f;--surface-panel-muted:#4a5f79;--surface-panel-border:#8db5dc;
+    --surface-window-bg:linear-gradient(180deg,#ffffff,#edf5ff);--surface-window-text:#10233f;--surface-window-muted:#4a5f79;
+    --surface-field-bg:#f8fbff;--surface-field-text:#10233f;--surface-placeholder:#60728a;
+    --surface-calendar-title-bg:linear-gradient(180deg,#ffffff,#e8f2ff);--surface-calendar-title-text:#10233f;
+    --component-neutral-bg:linear-gradient(180deg,#ffffff,#dcecff);--component-neutral-text:#0b315f;--component-neutral-border:#76aade;
+    --component-active-bg:linear-gradient(135deg,#2563eb,#1746a2);--component-active-text:#ffffff;--component-active-border:#1746a2;
+    --component-choice-bg:linear-gradient(180deg,#ffffff,#e0efff);--component-choice-text:#0a315d;--component-choice-border:#77adda;
+    --component-choice-active-bg:linear-gradient(135deg,#2563eb,#123f91);--component-choice-active-text:#ffffff;--component-choice-active-border:#0f3b88;
+  }
+  body[data-theme="paper"]{
+    --surface-panel-bg:linear-gradient(180deg,#fffefa,#ece8de);--surface-panel-text:#202934;--surface-panel-muted:#5d636b;--surface-panel-border:#b5aa99;
+    --surface-window-bg:linear-gradient(180deg,#fffefb,#f1eee7);--surface-window-text:#202934;--surface-window-muted:#5d636b;
+    --surface-field-bg:#fffefa;--surface-field-text:#202934;--surface-placeholder:#6e716f;
+    --surface-calendar-title-bg:linear-gradient(180deg,#fffefb,#e9e3d7);--surface-calendar-title-text:#202934;
+    --component-neutral-bg:linear-gradient(180deg,#fffdf7,#e7dfd1);--component-neutral-text:#28313a;--component-neutral-border:#b7aa95;
+    --component-active-bg:linear-gradient(135deg,#6b5a42,#30271c);--component-active-text:#fffaf0;--component-active-border:#6b5a42;
+    --component-choice-bg:linear-gradient(180deg,#fffefa,#e9e1d2);--component-choice-text:#2b251d;--component-choice-border:#b8aa94;
+    --component-choice-active-bg:linear-gradient(135deg,#766246,#31281d);--component-choice-active-text:#fffaf0;--component-choice-active-border:#8b785d;
+  }
+  body[data-theme="windows_xp"]{
+    --surface-panel-bg:linear-gradient(180deg,#f9fcff,#d7eaff);--surface-panel-text:#07205a;--surface-panel-muted:#405b87;--surface-panel-border:#4d8ad1;
+    --surface-window-bg:linear-gradient(180deg,#ffffff,#ddecff);--surface-window-text:#07205a;--surface-window-muted:#405b87;
+    --surface-field-bg:#ffffff;--surface-field-text:#071d48;--surface-placeholder:#5a6d8e;
+    --surface-calendar-title-bg:linear-gradient(180deg,#0c65d8,#0846a1);--surface-calendar-title-text:#ffffff;
+    --component-neutral-bg:linear-gradient(180deg,#ffffff,#b9dcff);--component-neutral-text:#07357e;--component-neutral-border:#3c82d4;
+    --component-active-bg:linear-gradient(135deg,#2c7df0,#0a4aa8);--component-active-text:#ffffff;--component-active-border:#0a4aa8;
+    --component-choice-bg:linear-gradient(180deg,#ffffff,#cde7ff);--component-choice-text:#07205a;--component-choice-border:#3f86d6;
+    --component-choice-active-bg:linear-gradient(135deg,#2d7de0,#0a45a2);--component-choice-active-text:#ffffff;--component-choice-active-border:#063f96;
+  }
+  body[data-theme="toy_story"]{
+    --surface-panel-bg:linear-gradient(180deg,#fffdf4,#dff2ff);--surface-panel-text:#102b4d;--surface-panel-muted:#46627e;--surface-panel-border:#4da8df;
+    --surface-window-bg:linear-gradient(180deg,#ffffff,#e7f5ff);--surface-window-text:#102b4d;--surface-window-muted:#46627e;
+    --surface-field-bg:#ffffff;--surface-field-text:#10243e;--surface-placeholder:#5e7187;
+    --surface-calendar-title-bg:linear-gradient(180deg,#1e6bd6,#0f4da8);--surface-calendar-title-text:#ffffff;
+    --component-neutral-bg:linear-gradient(180deg,#fffef7,#ffe478);--component-neutral-text:#0c3d67;--component-neutral-border:#e4a900;
+    --component-active-bg:linear-gradient(135deg,#ef4444,#b91c1c);--component-active-text:#ffffff;--component-active-border:#b91c1c;
+    --component-choice-bg:linear-gradient(180deg,#ffffff,#ffe88b);--component-choice-text:#10345c;--component-choice-border:#dfa400;
+    --component-choice-active-bg:linear-gradient(135deg,#2f78d6,#114da0);--component-choice-active-text:#ffffff;--component-choice-active-border:#114da0;
+  }
+  body[data-theme="nasa"]{
+    --surface-panel-bg:linear-gradient(180deg,#f9fcff,#dbeaff);--surface-panel-text:#071f49;--surface-panel-muted:#405b7d;--surface-panel-border:#3974b8;
+    --surface-window-bg:linear-gradient(180deg,#ffffff,#e4f1ff);--surface-window-text:#071f49;--surface-window-muted:#405b7d;
+    --surface-field-bg:#ffffff;--surface-field-text:#071a3a;--surface-placeholder:#5b6c84;
+    --surface-calendar-title-bg:linear-gradient(180deg,#0b1f3a,#071426);--surface-calendar-title-text:#ffffff;
+    --component-neutral-bg:linear-gradient(180deg,#ffffff,#cfe4ff);--component-neutral-text:#092d5a;--component-neutral-border:#4f89c8;
+    --component-active-bg:linear-gradient(135deg,#0b3d91,#061f4a);--component-active-text:#ffffff;--component-active-border:#fc3d21;
+    --component-choice-bg:linear-gradient(180deg,#ffffff,#d7e9ff);--component-choice-text:#071f49;--component-choice-border:#3974b8;
+    --component-choice-active-bg:linear-gradient(135deg,#0b3d91,#081f49);--component-choice-active-text:#ffffff;--component-choice-active-border:#fc3d21;
+  }
+  body[data-theme="senna_brasil"],body[data-theme="senna_mclaren"],body[data-theme="senna_capacete"]{
+    --surface-panel-bg:linear-gradient(180deg,#fffdf2,#e8ddb1);--surface-panel-text:#071d33;--surface-panel-muted:#40566b;--surface-panel-border:#8e7d38;
+    --surface-window-bg:linear-gradient(180deg,#fffdf4,#efe4b9);--surface-window-text:#071d33;--surface-window-muted:#40566b;
+    --surface-field-bg:#fffef8;--surface-field-text:#071a2f;--surface-placeholder:#5d6871;
+    --surface-calendar-title-bg:linear-gradient(180deg,#ffe100,#f0cc00);--surface-calendar-title-text:#071d33;
+    --component-neutral-bg:linear-gradient(180deg,#fffef7,#f7e36e);--component-neutral-text:#07213c;--component-neutral-border:#7b8f35;
+    --component-active-bg:linear-gradient(135deg,#009739,#0b1d6b);--component-active-text:#ffffff;--component-active-border:#ffe100;
+    --component-choice-bg:linear-gradient(180deg,#fffef7,#f8e46f);--component-choice-text:#071d33;--component-choice-border:#8f8a24;
+    --component-choice-active-bg:linear-gradient(135deg,#009739,#0b1d6b);--component-choice-active-text:#ffffff;--component-choice-active-border:#ffe100;
+  }
+  body[data-theme="ocean"]{
+    --surface-panel-bg:linear-gradient(180deg,#123b58,#09283e);--surface-panel-text:#effcff;--surface-panel-muted:#c4e8f2;--surface-panel-border:#4bb6dd;
+    --surface-window-bg:linear-gradient(180deg,#0d304b,#071d30);--surface-window-text:#effcff;--surface-window-muted:#c4e8f2;
+    --surface-field-bg:#effbff;--surface-field-text:#08233a;--surface-placeholder:#587082;
+    --surface-calendar-title-bg:linear-gradient(180deg,#0d3857,#071f34);--surface-calendar-title-text:#effcff;
+    --component-neutral-bg:linear-gradient(180deg,#f3fdff,#bcecff);--component-neutral-text:#07304c;--component-neutral-border:#52bfe3;
+    --component-active-bg:linear-gradient(135deg,#0891b2,#164e63);--component-active-text:#ffffff;--component-active-border:#67e8f9;
+    --component-choice-bg:linear-gradient(180deg,#ecfeff,#b7eaf7);--component-choice-text:#06334b;--component-choice-border:#52bfe3;
+    --component-choice-active-bg:linear-gradient(135deg,#0891b2,#164e63);--component-choice-active-text:#ffffff;--component-choice-active-border:#67e8f9;
+  }
+  body[data-theme="violet"]{
+    --surface-panel-bg:linear-gradient(180deg,#442969,#261541);--surface-panel-text:#faf7ff;--surface-panel-muted:#dfd2f3;--surface-panel-border:#a98bd8;
+    --surface-window-bg:linear-gradient(180deg,#38215b,#1c1032);--surface-window-text:#faf7ff;--surface-window-muted:#dfd2f3;
+    --surface-field-bg:#faf7ff;--surface-field-text:#26163d;--surface-placeholder:#746580;
+    --surface-calendar-title-bg:linear-gradient(180deg,#3c235f,#201238);--surface-calendar-title-text:#faf7ff;
+    --component-neutral-bg:linear-gradient(180deg,#fdfaff,#ddc9ff);--component-neutral-text:#321a52;--component-neutral-border:#ac89df;
+    --component-active-bg:linear-gradient(135deg,#7c3aed,#3b0764);--component-active-text:#ffffff;--component-active-border:#c4b5fd;
+    --component-choice-bg:linear-gradient(180deg,#fdfaff,#e0ccff);--component-choice-text:#2f164c;--component-choice-border:#a98bd8;
+    --component-choice-active-bg:linear-gradient(135deg,#7c3aed,#3b0764);--component-choice-active-text:#ffffff;--component-choice-active-border:#c4b5fd;
+  }
+  body[data-theme="gold"]{
+    --surface-panel-bg:linear-gradient(180deg,#443515,#271d09);--surface-panel-text:#fff9df;--surface-panel-muted:#e9ddb4;--surface-panel-border:#d6b743;
+    --surface-window-bg:linear-gradient(180deg,#392b0d,#1d1506);--surface-window-text:#fff9df;--surface-window-muted:#e9ddb4;
+    --surface-field-bg:#fffdf1;--surface-field-text:#2c230c;--surface-placeholder:#776e50;
+    --surface-calendar-title-bg:linear-gradient(180deg,#42320d,#211805);--surface-calendar-title-text:#fff9df;
+    --component-neutral-bg:linear-gradient(180deg,#fffdf1,#f4db78);--component-neutral-text:#332608;--component-neutral-border:#d1aa26;
+    --component-active-bg:linear-gradient(135deg,#9a6b06,#3b2704);--component-active-text:#fffbea;--component-active-border:#facc15;
+    --component-choice-bg:linear-gradient(180deg,#fffdf1,#f1d66d);--component-choice-text:#332608;--component-choice-border:#d1aa26;
+    --component-choice-active-bg:linear-gradient(135deg,#9a6b06,#3b2704);--component-choice-active-text:#fffbea;--component-choice-active-border:#facc15;
+  }
+  body[data-theme="emerald"]{
+    --surface-panel-bg:linear-gradient(180deg,#174936,#0b2b20);--surface-panel-text:#f0fff8;--surface-panel-muted:#c8ead9;--surface-panel-border:#47ba8b;
+    --surface-window-bg:linear-gradient(180deg,#123b2d,#081f18);--surface-window-text:#f0fff8;--surface-window-muted:#c8ead9;
+    --surface-field-bg:#f1fff8;--surface-field-text:#0b2a20;--surface-placeholder:#5d766b;
+    --surface-calendar-title-bg:linear-gradient(180deg,#123d2e,#08241b);--surface-calendar-title-text:#f0fff8;
+    --component-neutral-bg:linear-gradient(180deg,#f3fff9,#bfeeda);--component-neutral-text:#0b3a29;--component-neutral-border:#49b88b;
+    --component-active-bg:linear-gradient(135deg,#059669,#064e3b);--component-active-text:#ffffff;--component-active-border:#34d399;
+    --component-choice-bg:linear-gradient(180deg,#f3fff9,#c3efd9);--component-choice-text:#0b3326;--component-choice-border:#49b88b;
+    --component-choice-active-bg:linear-gradient(135deg,#059669,#064e3b);--component-choice-active-text:#ffffff;--component-choice-active-border:#34d399;
+  }
+  body[data-theme="dark"],body[data-theme="graphite"]{
+    --surface-panel-bg:linear-gradient(180deg,#363d48,#232932);--surface-panel-text:#f7fafc;--surface-panel-muted:#d4dae2;--surface-panel-border:#7f8b9b;
+    --surface-window-bg:linear-gradient(180deg,#303640,#1c2129);--surface-window-text:#f7fafc;--surface-window-muted:#d4dae2;
+    --surface-field-bg:#f5f7fa;--surface-field-text:#17202b;--surface-placeholder:#66717f;
+    --surface-calendar-title-bg:linear-gradient(180deg,#303641,#1a1f27);--surface-calendar-title-text:#f7fafc;
+    --component-neutral-bg:linear-gradient(180deg,#ffffff,#dbe1e8);--component-neutral-text:#1a222d;--component-neutral-border:#8e99a7;
+    --component-active-bg:linear-gradient(135deg,#475569,#111827);--component-active-text:#ffffff;--component-active-border:#94a3b8;
+    --component-choice-bg:linear-gradient(180deg,#ffffff,#dbe1e8);--component-choice-text:#17202b;--component-choice-border:#8e99a7;
+    --component-choice-active-bg:linear-gradient(135deg,#475569,#111827);--component-choice-active-text:#ffffff;--component-choice-active-border:#94a3b8;
+  }
+  body[data-theme="tesla"]{
+    --surface-panel-bg:linear-gradient(180deg,#402129,#211318);--surface-panel-text:#fff7f8;--surface-panel-muted:#e8ced3;--surface-panel-border:#bf5f71;
+    --surface-window-bg:linear-gradient(180deg,#311a20,#171014);--surface-window-text:#fff7f8;--surface-window-muted:#e8ced3;
+    --surface-field-bg:#fff8f9;--surface-field-text:#32151c;--surface-placeholder:#7c6268;
+    --surface-calendar-title-bg:linear-gradient(180deg,#3b1d24,#1c1014);--surface-calendar-title-text:#fff7f8;
+    --component-neutral-bg:linear-gradient(180deg,#fffafa,#f1cbd2);--component-neutral-text:#461722;--component-neutral-border:#c76879;
+    --component-active-bg:linear-gradient(135deg,#e82127,#7f1216);--component-active-text:#ffffff;--component-active-border:#ff8a8f;
+    --component-choice-bg:linear-gradient(180deg,#fffafa,#efc9d0);--component-choice-text:#3d151d;--component-choice-border:#c76879;
+    --component-choice-active-bg:linear-gradient(135deg,#e82127,#7f1216);--component-choice-active-text:#ffffff;--component-choice-active-border:#ff8a8f;
+  }
+  body[data-theme="sexta_13"],body[data-theme="resident_evil_2"]{
+    --surface-panel-bg:linear-gradient(180deg,#421d20,#211011);--surface-panel-text:#fff7f7;--surface-panel-muted:#e9cccc;--surface-panel-border:#bc4f55;
+    --surface-window-bg:linear-gradient(180deg,#35191b,#160b0c);--surface-window-text:#fff7f7;--surface-window-muted:#e9cccc;
+    --surface-field-bg:#fff8f8;--surface-field-text:#321416;--surface-placeholder:#7c6264;
+    --surface-calendar-title-bg:linear-gradient(180deg,#3d181b,#190a0b);--surface-calendar-title-text:#fff7f7;
+    --component-neutral-bg:linear-gradient(180deg,#fffafa,#efc7c9);--component-neutral-text:#48171a;--component-neutral-border:#c85c62;
+    --component-active-bg:linear-gradient(135deg,#991b1b,#450a0a);--component-active-text:#ffffff;--component-active-border:#ef4444;
+    --component-choice-bg:linear-gradient(180deg,#fffafa,#efc7c9);--component-choice-text:#3f1517;--component-choice-border:#c85c62;
+    --component-choice-active-bg:linear-gradient(135deg,#991b1b,#450a0a);--component-choice-active-text:#ffffff;--component-choice-active-border:#ef4444;
+  }
+  body[data-theme="game_of_thrones"]{
+    --surface-panel-bg:linear-gradient(180deg,#474035,#28231d);--surface-panel-text:#fffaf0;--surface-panel-muted:#e0d7c7;--surface-panel-border:#a9987b;
+    --surface-window-bg:linear-gradient(180deg,#3b352b,#1e1a15);--surface-window-text:#fffaf0;--surface-window-muted:#e0d7c7;
+    --surface-field-bg:#fffaf1;--surface-field-text:#29231b;--surface-placeholder:#756e63;
+    --surface-calendar-title-bg:linear-gradient(180deg,#3e382e,#211d17);--surface-calendar-title-text:#fffaf0;
+    --component-neutral-bg:linear-gradient(180deg,#fffdf7,#ded1b9);--component-neutral-text:#332b21;--component-neutral-border:#a79678;
+    --component-active-bg:linear-gradient(135deg,#8a6a3f,#2a2118);--component-active-text:#fffaf0;--component-active-border:#c7b38a;
+    --component-choice-bg:linear-gradient(180deg,#3f3930,#231f1a);--component-choice-text:#f5ead6;--component-choice-border:#8f7f66;
+    --component-choice-active-bg:linear-gradient(135deg,#c7b38a,#6b4f2e);--component-choice-active-text:#1d1710;--component-choice-active-border:#e2d2aa;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  :where(.modal){
+    background:var(--surface-window-bg) !important;
+    color:var(--surface-window-text) !important;
+    border-color:var(--surface-panel-border) !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  :where(.crmFormPanel,.crmPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,.surgeonModeSearchPanel,.accountPanel,.agoraV2Box,.personalFinanceCard,.personalExpensePanel){
+    background:var(--surface-panel-bg) !important;
+    color:var(--surface-panel-text) !important;
+    border-color:var(--surface-panel-border) !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  :where(.modal,.crmFormPanel,.crmPanel,.surgeonModeSearchPanel,.accountPanel,.agoraV2Box)
+  :where(.lbl,label,h1,h2,h3,h4,.ttl,.crmTitle,.themeTitle,.themeSectionTitle,.agoraV2BoxTitle,.agoraV2Name):not(.crmCleanCheck){
+    color:var(--surface-panel-text) !important;
+    -webkit-text-fill-color:var(--surface-panel-text) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  :where(.modal,.crmFormPanel,.crmPanel,.surgeonModeSearchPanel,.accountPanel,.agoraV2Box)
+  :where(.helper,.crmSub,.sub,.small,.themeDesc,.agoraV2BoxSub,.agoraV2Meta,.crmEmpty){
+    color:var(--surface-panel-muted) !important;
+    -webkit-text-fill-color:var(--surface-panel-muted) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  :where(input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),select,textarea,.input){
+    background:var(--surface-field-bg) !important;
+    color:var(--surface-field-text) !important;
+    -webkit-text-fill-color:var(--surface-field-text) !important;
+    border-color:var(--surface-panel-border) !important;
+    caret-color:var(--surface-field-text) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+    color-scheme:light !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  :where(input,textarea,.input)::placeholder{
+    color:var(--surface-placeholder) !important;
+    -webkit-text-fill-color:var(--surface-placeholder) !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  :where(.btn,.mBtn,.smallBtn,.crmTab,.crmExpandHint):not(.primary):not(.danger):not(.modeActive):not(:disabled){
+    background:var(--component-neutral-bg) !important;
+    color:var(--component-neutral-text) !important;
+    -webkit-text-fill-color:var(--component-neutral-text) !important;
+    border-color:var(--component-neutral-border) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  :where(.btn.primary,.mBtn.primary,.smallBtn.primary,.crmCreateBtn,.btn.modeActive,.crmTab.modeActive,.btn[aria-current="page"],.crmTab[aria-selected="true"]):not(.danger){
+    background:var(--component-active-bg) !important;
+    color:var(--component-active-text) !important;
+    -webkit-text-fill-color:var(--component-active-text) !important;
+    border-color:var(--component-active-border) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.36) !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  :where(.danger,[data-crm-del],[data-catalog-remove]){
+    background:var(--component-danger-bg) !important;
+    color:var(--component-danger-text) !important;
+    -webkit-text-fill-color:var(--component-danger-text) !important;
+    border-color:var(--component-danger-border) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.32) !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck,
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:not(:has(input:checked)){
+    background:var(--component-choice-bg) !important;
+    color:var(--component-choice-text) !important;
+    -webkit-text-fill-color:var(--component-choice-text) !important;
+    border-color:var(--component-choice-border) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck *,
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:not(:has(input:checked)) *{
+    color:var(--component-choice-text) !important;
+    -webkit-text-fill-color:var(--component-choice-text) !important;
+    text-shadow:none !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck.is-checked,
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:has(input:checked){
+    background:var(--component-choice-active-bg) !important;
+    color:var(--component-choice-active-text) !important;
+    -webkit-text-fill-color:var(--component-choice-active-text) !important;
+    border-color:var(--component-choice-active-border) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.36) !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck.is-checked *,
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:has(input:checked) *{
+    color:var(--component-choice-active-text) !important;
+    -webkit-text-fill-color:var(--component-choice-active-text) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.36) !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck input{
+    color:initial !important;
+    -webkit-text-fill-color:initial !important;
+    accent-color:var(--component-choice-active-border) !important;
+    filter:none !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  .mainCalendarCard > .sectionHead{
+    background:var(--surface-calendar-title-bg) !important;
+    color:var(--surface-calendar-title-text) !important;
+    border-color:var(--component-active-border) !important;
+  }
+
+  html :is(#surface-system-a,body):is(#surface-system-b,body):is(#surface-system-c,body)
+  .mainCalendarCard .month{
+    color:var(--surface-calendar-title-text) !important;
+    -webkit-text-fill-color:var(--surface-calendar-title-text) !important;
+    background:color-mix(in srgb,var(--surface-calendar-title-text) 10%,transparent) !important;
+    border:1px solid color-mix(in srgb,var(--surface-calendar-title-text) 22%,transparent) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.42) !important;
+  }
+</style>
+
 <style id="global-legibility-contrast-final-css">
   /*
     Camada final de legibilidade.
@@ -7517,6 +7846,172 @@ body[data-theme="senna_brasil"] .hdr{
 }
 </style>
 
+<style id="contrast-rule-before-head-close-final">
+  /*
+    Regra final de contraste dentro do HEAD.
+    Deve ficar depois dos estilos dos temas para impedir texto claro em botão claro.
+    Não altera login, Firebase, dados ou JavaScript.
+  */
+
+  body #crmPageCard label.crmCleanCheck:not(.is-checked){
+    background:linear-gradient(180deg,#fff8ec,#e5cfaa) !important;
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    border-color:#8a693d !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  body #crmPageCard label.crmCleanCheck:not(.is-checked) *{
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    text-shadow:none !important;
+  }
+
+  body #crmPageCard label.crmCleanCheck.is-checked{
+    background:linear-gradient(180deg,#70451f,#332012) !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    border-color:#d2a35d !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
+  }
+
+  body #crmPageCard label.crmCleanCheck.is-checked *{
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
+  }
+
+  body #crmPageCard label.crmCleanCheck:not(:has(input:checked)){
+    background:linear-gradient(180deg,#fff8ec,#e5cfaa) !important;
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    border-color:#8a693d !important;
+    text-shadow:none !important;
+  }
+
+  body #crmPageCard label.crmCleanCheck:not(:has(input:checked)) *{
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    text-shadow:none !important;
+  }
+
+  body #crmPageCard label.crmCleanCheck:has(input:checked){
+    background:linear-gradient(180deg,#70451f,#332012) !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    border-color:#d2a35d !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
+  }
+
+  body #crmPageCard label.crmCleanCheck:has(input:checked) *{
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
+  }
+
+  body #crmPageCard label.crmCleanCheck input{
+    accent-color:#70451f !important;
+    color:initial !important;
+    -webkit-text-fill-color:initial !important;
+    filter:none !important;
+  }
+
+  body :where(.btn,.mBtn,.smallBtn,.crmTab):not(.primary):not(.danger):not(.modeActive){
+    background:var(--ui-menu-button-bg,linear-gradient(180deg,#ffffff,#e7edf7)) !important;
+    color:var(--ui-menu-button-text,#101827) !important;
+    -webkit-text-fill-color:var(--ui-menu-button-text,#101827) !important;
+    border-color:var(--ui-menu-button-border,var(--line)) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  body :where(input,select,textarea,.input){
+    background:var(--ui-field-bg,#ffffff) !important;
+    color:var(--ui-field-text,#0b1220) !important;
+    -webkit-text-fill-color:var(--ui-field-text,#0b1220) !important;
+    border-color:var(--ui-border,var(--line)) !important;
+    caret-color:var(--ui-field-text,#0b1220) !important;
+    text-shadow:none !important;
+  }
+
+  body :where(input,textarea,.input)::placeholder{
+    color:var(--ui-placeholder,#5b687b) !important;
+    -webkit-text-fill-color:var(--ui-placeholder,#5b687b) !important;
+    opacity:1 !important;
+  }
+</style>
+
+<style id="crm-check-contrast-authoritative-css">
+  /*
+    Regra autoritária dos botões de marcação do cadastro.
+    Ela usa especificidade maior que as regras globais de tema que pintam "label"
+    dentro dos painéis, para impedir texto branco sobre botão claro.
+  */
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck{
+    background:linear-gradient(180deg,#fff7e8,#e0c28f) !important;
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    border-color:#8a693d !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.82),0 2px 8px rgba(0,0,0,.18) !important;
+  }
+
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck *,
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:not(:has(input:checked)) *{
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    text-shadow:none !important;
+  }
+
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck.is-checked,
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:has(input:checked){
+    background:linear-gradient(180deg,#70451f,#332012) !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    border-color:#d2a35d !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.48) !important;
+    box-shadow:0 0 0 3px rgba(210,163,93,.24),0 6px 16px rgba(0,0,0,.25) !important;
+  }
+
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck.is-checked *,
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:has(input:checked) *{
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.48) !important;
+  }
+
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:not(:has(input:checked)){
+    background:linear-gradient(180deg,#fff7e8,#e0c28f) !important;
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    text-shadow:none !important;
+  }
+
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:not(:has(input:checked)) *{
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    text-shadow:none !important;
+  }
+
+  html :is(#crm-check-contrast-a,body):is(#crm-check-contrast-b,body):is(#crm-check-contrast-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck input{
+    color:initial !important;
+    -webkit-text-fill-color:initial !important;
+    accent-color:#70451f !important;
+    filter:none !important;
+  }
+</style>
 </head>
 <body data-theme="senna_brasil">
   <header class="hdr">
@@ -17663,6 +18158,31 @@ body[data-theme="senna_brasil"] .hdr::after{
     -webkit-text-fill-color:#ffffff !important;
     text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
   }
+  #crmPageCard label.crmCleanCheck:not(:has(input:checked)){
+    background:linear-gradient(180deg,#fff7e9,#e4cfaa) !important;
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    border-color:#8a693d !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+  #crmPageCard label.crmCleanCheck:not(:has(input:checked)) *{
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    text-shadow:none !important;
+  }
+  #crmPageCard label.crmCleanCheck:has(input:checked){
+    background:linear-gradient(180deg,#70451f,#332012) !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    border-color:#d2a35d !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
+  }
+  #crmPageCard label.crmCleanCheck:has(input:checked) *{
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
+  }
   :where(.btn,.mBtn,.smallBtn,.crmTab):not(.primary):not(.danger):not(.modeActive){
     background:var(--ui-menu-button-bg,linear-gradient(180deg,#ffffff,#e7edf7)) !important;
     color:var(--ui-menu-button-text,#101827) !important;
@@ -17686,5 +18206,495 @@ body[data-theme="senna_brasil"] .hdr::after{
     #crmPageCard .crmCleanChoicePanel.internet-on .crmInternetOptions{
       display:grid !important;
     }
+  }
+</style>
+
+<style id="theme-surface-component-contrast-v2-final-authority">
+  /*
+    Autoridade final: aplica a arquitetura de superfícies/componentes depois
+    dos hotfixes antigos que ainda existem no arquivo.
+  */
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  :where(.modal){
+    background:var(--surface-window-bg) !important;
+    color:var(--surface-window-text) !important;
+    border-color:var(--surface-panel-border) !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  :where(.crmFormPanel,.crmPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,.surgeonModeSearchPanel,.accountPanel,.agoraV2Box,.personalFinanceCard,.personalExpensePanel){
+    background:var(--surface-panel-bg) !important;
+    color:var(--surface-panel-text) !important;
+    border-color:var(--surface-panel-border) !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  :where(.modal,.crmFormPanel,.crmPanel,.surgeonModeSearchPanel,.accountPanel,.agoraV2Box)
+  :where(.lbl,label,h1,h2,h3,h4,.ttl,.crmTitle,.themeTitle,.themeSectionTitle,.agoraV2BoxTitle,.agoraV2Name):not(.crmCleanCheck){
+    color:var(--surface-panel-text) !important;
+    -webkit-text-fill-color:var(--surface-panel-text) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  :where(.modal,.crmFormPanel,.crmPanel,.surgeonModeSearchPanel,.accountPanel,.agoraV2Box)
+  :where(.helper,.crmSub,.sub,.small,.themeDesc,.agoraV2BoxSub,.agoraV2Meta,.crmEmpty){
+    color:var(--surface-panel-muted) !important;
+    -webkit-text-fill-color:var(--surface-panel-muted) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  :where(input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),select,textarea,.input){
+    background:var(--surface-field-bg) !important;
+    color:var(--surface-field-text) !important;
+    -webkit-text-fill-color:var(--surface-field-text) !important;
+    border-color:var(--surface-panel-border) !important;
+    caret-color:var(--surface-field-text) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+    color-scheme:light !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  :where(input,textarea,.input)::placeholder{
+    color:var(--surface-placeholder) !important;
+    -webkit-text-fill-color:var(--surface-placeholder) !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  :where(.btn,.mBtn,.smallBtn,.crmTab,.crmExpandHint):not(.primary):not(.danger):not(.modeActive):not(:disabled){
+    background:var(--component-neutral-bg) !important;
+    color:var(--component-neutral-text) !important;
+    -webkit-text-fill-color:var(--component-neutral-text) !important;
+    border-color:var(--component-neutral-border) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  :where(.btn.primary,.mBtn.primary,.smallBtn.primary,.crmCreateBtn,.btn.modeActive,.crmTab.modeActive,.btn[aria-current="page"],.crmTab[aria-selected="true"]):not(.danger){
+    background:var(--component-active-bg) !important;
+    color:var(--component-active-text) !important;
+    -webkit-text-fill-color:var(--component-active-text) !important;
+    border-color:var(--component-active-border) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.36) !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  :where(.danger,[data-crm-del],[data-catalog-remove]){
+    background:var(--component-danger-bg) !important;
+    color:var(--component-danger-text) !important;
+    -webkit-text-fill-color:var(--component-danger-text) !important;
+    border-color:var(--component-danger-border) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.32) !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck,
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:not(:has(input:checked)){
+    background:var(--component-choice-bg) !important;
+    color:var(--component-choice-text) !important;
+    -webkit-text-fill-color:var(--component-choice-text) !important;
+    border-color:var(--component-choice-border) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck *,
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:not(:has(input:checked)) *{
+    color:var(--component-choice-text) !important;
+    -webkit-text-fill-color:var(--component-choice-text) !important;
+    text-shadow:none !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck.is-checked,
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:has(input:checked){
+    background:var(--component-choice-active-bg) !important;
+    color:var(--component-choice-active-text) !important;
+    -webkit-text-fill-color:var(--component-choice-active-text) !important;
+    border-color:var(--component-choice-active-border) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.36) !important;
+    opacity:1 !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck.is-checked *,
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:has(input:checked) *{
+    color:var(--component-choice-active-text) !important;
+    -webkit-text-fill-color:var(--component-choice-active-text) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.36) !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck input{
+    color:initial !important;
+    -webkit-text-fill-color:initial !important;
+    accent-color:var(--component-choice-active-border) !important;
+    filter:none !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  .mainCalendarCard > .sectionHead{
+    background:var(--surface-calendar-title-bg) !important;
+    color:var(--surface-calendar-title-text) !important;
+    border-color:var(--component-active-border) !important;
+  }
+
+  html :is(#surface-final-a,body):is(#surface-final-b,body):is(#surface-final-c,body)
+  .mainCalendarCard .month{
+    color:var(--surface-calendar-title-text) !important;
+    -webkit-text-fill-color:var(--surface-calendar-title-text) !important;
+    background:color-mix(in srgb,var(--surface-calendar-title-text) 10%,transparent) !important;
+    border:1px solid color-mix(in srgb,var(--surface-calendar-title-text) 22%,transparent) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.42) !important;
+  }
+</style>
+
+<style id="theme-semantic-contrast-system-v1">
+  /*
+    Sistema final de contraste por tema.
+    Cada componente usa um "papel visual" (botão neutro, botão ativo,
+    opção desmarcada, opção marcada), e cada tema fornece sua própria paleta.
+    Isso evita que uma correção boa em um tema vaze para outro.
+  */
+  body{
+    --theme-neutral-bg:var(--ui-menu-button-bg,linear-gradient(180deg,#ffffff,#e5edf8));
+    --theme-neutral-text:var(--ui-menu-button-text,#101827);
+    --theme-neutral-border:var(--ui-menu-button-border,var(--line));
+    --theme-active-bg:linear-gradient(135deg,var(--acc,#2563eb),color-mix(in srgb,var(--acc,#2563eb) 72%,#111827 28%));
+    --theme-active-text:#ffffff;
+    --theme-active-border:color-mix(in srgb,var(--acc,#2563eb) 74%,#ffffff 26%);
+    --theme-choice-bg:var(--theme-neutral-bg);
+    --theme-choice-text:var(--theme-neutral-text);
+    --theme-choice-border:var(--theme-neutral-border);
+    --theme-choice-active-bg:var(--theme-active-bg);
+    --theme-choice-active-text:var(--theme-active-text);
+    --theme-choice-active-border:var(--theme-active-border);
+  }
+
+  body[data-theme="light"]{
+    --theme-neutral-bg:linear-gradient(180deg,#ffffff,#dcecff);--theme-neutral-text:#0b315f;--theme-neutral-border:#76aade;
+    --theme-active-bg:linear-gradient(135deg,#2563eb,#1746a2);--theme-active-text:#ffffff;--theme-active-border:#1746a2;
+    --theme-choice-bg:linear-gradient(180deg,#ffffff,#e0efff);--theme-choice-text:#0a315d;--theme-choice-border:#77adda;
+    --theme-choice-active-bg:linear-gradient(135deg,#2563eb,#123f91);--theme-choice-active-text:#ffffff;--theme-choice-active-border:#0f3b88;
+  }
+  body[data-theme="paper"]{
+    --theme-neutral-bg:linear-gradient(180deg,#fffdf7,#e7dfd1);--theme-neutral-text:#28313a;--theme-neutral-border:#b7aa95;
+    --theme-active-bg:linear-gradient(135deg,#6b5a42,#30271c);--theme-active-text:#fffaf0;--theme-active-border:#6b5a42;
+    --theme-choice-bg:linear-gradient(180deg,#fffefa,#e9e1d2);--theme-choice-text:#2b251d;--theme-choice-border:#b8aa94;
+    --theme-choice-active-bg:linear-gradient(135deg,#766246,#31281d);--theme-choice-active-text:#fffaf0;--theme-choice-active-border:#8b785d;
+  }
+  body[data-theme="windows_xp"]{
+    --theme-neutral-bg:linear-gradient(180deg,#ffffff,#b9dcff);--theme-neutral-text:#07357e;--theme-neutral-border:#3c82d4;
+    --theme-active-bg:linear-gradient(135deg,#2c7df0,#0a4aa8);--theme-active-text:#ffffff;--theme-active-border:#0a4aa8;
+    --theme-choice-bg:linear-gradient(180deg,#ffffff,#cde7ff);--theme-choice-text:#07205a;--theme-choice-border:#3f86d6;
+    --theme-choice-active-bg:linear-gradient(135deg,#2d7de0,#0a45a2);--theme-choice-active-text:#ffffff;--theme-choice-active-border:#063f96;
+  }
+  body[data-theme="toy_story"]{
+    --theme-neutral-bg:linear-gradient(180deg,#fffef7,#ffe478);--theme-neutral-text:#0c3d67;--theme-neutral-border:#e4a900;
+    --theme-active-bg:linear-gradient(135deg,#ef4444,#b91c1c);--theme-active-text:#ffffff;--theme-active-border:#b91c1c;
+    --theme-choice-bg:linear-gradient(180deg,#ffffff,#ffe88b);--theme-choice-text:#10345c;--theme-choice-border:#dfa400;
+    --theme-choice-active-bg:linear-gradient(135deg,#2f78d6,#114da0);--theme-choice-active-text:#ffffff;--theme-choice-active-border:#114da0;
+  }
+  body[data-theme="nasa"]{
+    --theme-neutral-bg:linear-gradient(180deg,#ffffff,#cfe4ff);--theme-neutral-text:#092d5a;--theme-neutral-border:#4f89c8;
+    --theme-active-bg:linear-gradient(135deg,#0b3d91,#061f4a);--theme-active-text:#ffffff;--theme-active-border:#0b3d91;
+    --theme-choice-bg:linear-gradient(180deg,#ffffff,#d7e9ff);--theme-choice-text:#071f49;--theme-choice-border:#3974b8;
+    --theme-choice-active-bg:linear-gradient(135deg,#0b3d91,#081f49);--theme-choice-active-text:#ffffff;--theme-choice-active-border:#fc3d21;
+  }
+  body[data-theme="sonic"]{
+    --theme-neutral-bg:linear-gradient(180deg,#ffffff,#9bd3ff);--theme-neutral-text:#063e87;--theme-neutral-border:#1475d1;
+    --theme-active-bg:linear-gradient(135deg,#0a56c2,#063a8a);--theme-active-text:#ffffff;--theme-active-border:#ffd700;
+    --theme-choice-bg:linear-gradient(180deg,#ffffff,#b8e0ff);--theme-choice-text:#062f72;--theme-choice-border:#1475d1;
+    --theme-choice-active-bg:linear-gradient(135deg,#0a56c2,#063b8f);--theme-choice-active-text:#ffffff;--theme-choice-active-border:#ffd700;
+  }
+  body[data-theme="senna_brasil"],body[data-theme="senna_mclaren"],body[data-theme="senna_capacete"]{
+    --theme-neutral-bg:linear-gradient(180deg,#fffef7,#f7e36e);--theme-neutral-text:#07213c;--theme-neutral-border:#7b8f35;
+    --theme-active-bg:linear-gradient(135deg,#009739,#005c2a);--theme-active-text:#ffffff;--theme-active-border:#0b1d6b;
+    --theme-choice-bg:linear-gradient(180deg,#fffef7,#f8e46f);--theme-choice-text:#071d33;--theme-choice-border:#8f8a24;
+    --theme-choice-active-bg:linear-gradient(135deg,#009739,#0b1d6b);--theme-choice-active-text:#ffffff;--theme-choice-active-border:#ffe100;
+  }
+  body[data-theme="ocean"]{
+    --theme-neutral-bg:linear-gradient(180deg,#f3fdff,#bcecff);--theme-neutral-text:#07304c;--theme-neutral-border:#52bfe3;
+    --theme-active-bg:linear-gradient(135deg,#38bdf8,#075985);--theme-active-text:#ffffff;--theme-active-border:#7dd3fc;
+    --theme-choice-bg:linear-gradient(180deg,#ecfeff,#b7eaf7);--theme-choice-text:#06334b;--theme-choice-border:#52bfe3;
+    --theme-choice-active-bg:linear-gradient(135deg,#0891b2,#164e63);--theme-choice-active-text:#ffffff;--theme-choice-active-border:#67e8f9;
+  }
+  body[data-theme="violet"]{
+    --theme-neutral-bg:linear-gradient(180deg,#fdfaff,#ddc9ff);--theme-neutral-text:#321a52;--theme-neutral-border:#ac89df;
+    --theme-active-bg:linear-gradient(135deg,#7c3aed,#3b0764);--theme-active-text:#ffffff;--theme-active-border:#c4b5fd;
+    --theme-choice-bg:linear-gradient(180deg,#fdfaff,#e0ccff);--theme-choice-text:#2f164c;--theme-choice-border:#a98bd8;
+    --theme-choice-active-bg:linear-gradient(135deg,#7c3aed,#3b0764);--theme-choice-active-text:#ffffff;--theme-choice-active-border:#c4b5fd;
+  }
+  body[data-theme="gold"]{
+    --theme-neutral-bg:linear-gradient(180deg,#fffdf1,#f4db78);--theme-neutral-text:#332608;--theme-neutral-border:#d1aa26;
+    --theme-active-bg:linear-gradient(135deg,#b8860b,#4b3205);--theme-active-text:#fffbea;--theme-active-border:#facc15;
+    --theme-choice-bg:linear-gradient(180deg,#fffdf1,#f1d66d);--theme-choice-text:#332608;--theme-choice-border:#d1aa26;
+    --theme-choice-active-bg:linear-gradient(135deg,#9a6b06,#3b2704);--theme-choice-active-text:#fffbea;--theme-choice-active-border:#facc15;
+  }
+  body[data-theme="emerald"]{
+    --theme-neutral-bg:linear-gradient(180deg,#f3fff9,#bfeeda);--theme-neutral-text:#0b3a29;--theme-neutral-border:#49b88b;
+    --theme-active-bg:linear-gradient(135deg,#059669,#064e3b);--theme-active-text:#ffffff;--theme-active-border:#34d399;
+    --theme-choice-bg:linear-gradient(180deg,#f3fff9,#c3efd9);--theme-choice-text:#0b3326;--theme-choice-border:#49b88b;
+    --theme-choice-active-bg:linear-gradient(135deg,#059669,#064e3b);--theme-choice-active-text:#ffffff;--theme-choice-active-border:#34d399;
+  }
+  body[data-theme="dark"],body[data-theme="graphite"]{
+    --theme-neutral-bg:linear-gradient(180deg,#ffffff,#dbe1e8);--theme-neutral-text:#1a222d;--theme-neutral-border:#8e99a7;
+    --theme-active-bg:linear-gradient(135deg,#475569,#111827);--theme-active-text:#ffffff;--theme-active-border:#94a3b8;
+    --theme-choice-bg:linear-gradient(180deg,#ffffff,#dbe1e8);--theme-choice-text:#17202b;--theme-choice-border:#8e99a7;
+    --theme-choice-active-bg:linear-gradient(135deg,#475569,#111827);--theme-choice-active-text:#ffffff;--theme-choice-active-border:#94a3b8;
+  }
+  body[data-theme="tesla"]{
+    --theme-neutral-bg:linear-gradient(180deg,#fffafa,#f1cbd2);--theme-neutral-text:#461722;--theme-neutral-border:#c76879;
+    --theme-active-bg:linear-gradient(135deg,#e82127,#7f1216);--theme-active-text:#ffffff;--theme-active-border:#ff8a8f;
+    --theme-choice-bg:linear-gradient(180deg,#fffafa,#efc9d0);--theme-choice-text:#3d151d;--theme-choice-border:#c76879;
+    --theme-choice-active-bg:linear-gradient(135deg,#e82127,#7f1216);--theme-choice-active-text:#ffffff;--theme-choice-active-border:#ff8a8f;
+  }
+  body[data-theme="sexta_13"],body[data-theme="resident_evil_2"]{
+    --theme-neutral-bg:linear-gradient(180deg,#fffafa,#efc7c9);--theme-neutral-text:#48171a;--theme-neutral-border:#c85c62;
+    --theme-active-bg:linear-gradient(135deg,#b91c1c,#450a0a);--theme-active-text:#ffffff;--theme-active-border:#ef4444;
+    --theme-choice-bg:linear-gradient(180deg,#fffafa,#efc7c9);--theme-choice-text:#3f1517;--theme-choice-border:#c85c62;
+    --theme-choice-active-bg:linear-gradient(135deg,#991b1b,#450a0a);--theme-choice-active-text:#ffffff;--theme-choice-active-border:#ef4444;
+  }
+  body[data-theme="game_of_thrones"]{
+    --theme-neutral-bg:linear-gradient(180deg,#fffdf7,#ded1b9);--theme-neutral-text:#332b21;--theme-neutral-border:#a79678;
+    --theme-active-bg:linear-gradient(135deg,#8a6a3f,#2a2118);--theme-active-text:#fffaf0;--theme-active-border:#c7b38a;
+    --theme-choice-bg:linear-gradient(180deg,#3f3930,#231f1a);--theme-choice-text:#f5ead6;--theme-choice-border:#8f7f66;
+    --theme-choice-active-bg:linear-gradient(135deg,#c7b38a,#6b4f2e);--theme-choice-active-text:#1d1710;--theme-choice-active-border:#e2d2aa;
+  }
+
+  html :is(#semantic-theme-a,body):is(#semantic-theme-b,body):is(#semantic-theme-c,body)
+  :where(.btn,.mBtn,.smallBtn,.crmTab,.crmExpandHint):not(.primary):not(.danger):not(.modeActive):not(:disabled){
+    background:var(--theme-neutral-bg) !important;
+    color:var(--theme-neutral-text) !important;
+    -webkit-text-fill-color:var(--theme-neutral-text) !important;
+    border-color:var(--theme-neutral-border) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  html :is(#semantic-theme-a,body):is(#semantic-theme-b,body):is(#semantic-theme-c,body)
+  :where(.btn.modeActive,.crmTab.modeActive,.btn[aria-current="page"],.crmTab[aria-selected="true"]){
+    background:var(--theme-active-bg) !important;
+    color:var(--theme-active-text) !important;
+    -webkit-text-fill-color:var(--theme-active-text) !important;
+    border-color:var(--theme-active-border) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.36) !important;
+    opacity:1 !important;
+  }
+
+  html :is(#semantic-theme-a,body):is(#semantic-theme-b,body):is(#semantic-theme-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck,
+  html :is(#semantic-theme-a,body):is(#semantic-theme-b,body):is(#semantic-theme-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:not(:has(input:checked)){
+    background:var(--theme-choice-bg) !important;
+    color:var(--theme-choice-text) !important;
+    -webkit-text-fill-color:var(--theme-choice-text) !important;
+    border-color:var(--theme-choice-border) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  html :is(#semantic-theme-a,body):is(#semantic-theme-b,body):is(#semantic-theme-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck *,
+  html :is(#semantic-theme-a,body):is(#semantic-theme-b,body):is(#semantic-theme-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:not(:has(input:checked)) *{
+    color:var(--theme-choice-text) !important;
+    -webkit-text-fill-color:var(--theme-choice-text) !important;
+    text-shadow:none !important;
+  }
+
+  html :is(#semantic-theme-a,body):is(#semantic-theme-b,body):is(#semantic-theme-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck.is-checked,
+  html :is(#semantic-theme-a,body):is(#semantic-theme-b,body):is(#semantic-theme-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:has(input:checked){
+    background:var(--theme-choice-active-bg) !important;
+    color:var(--theme-choice-active-text) !important;
+    -webkit-text-fill-color:var(--theme-choice-active-text) !important;
+    border-color:var(--theme-choice-active-border) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.36) !important;
+    opacity:1 !important;
+  }
+
+  html :is(#semantic-theme-a,body):is(#semantic-theme-b,body):is(#semantic-theme-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck.is-checked *,
+  html :is(#semantic-theme-a,body):is(#semantic-theme-b,body):is(#semantic-theme-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:has(input:checked) *{
+    color:var(--theme-choice-active-text) !important;
+    -webkit-text-fill-color:var(--theme-choice-active-text) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.36) !important;
+  }
+
+  html :is(#semantic-theme-a,body):is(#semantic-theme-b,body):is(#semantic-theme-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck input{
+    color:initial !important;
+    -webkit-text-fill-color:initial !important;
+    accent-color:var(--theme-active-border) !important;
+    filter:none !important;
+  }
+</style>
+
+<style id="theme-surface-component-contrast-v2-ultimate">
+  /*
+    Última camada visual do arquivo.
+    Usa as variáveis profissionais de superfície/componente e vence os blocos antigos.
+  */
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  :where(.modal){
+    background:var(--surface-window-bg) !important;
+    color:var(--surface-window-text) !important;
+    border-color:var(--surface-panel-border) !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  :where(.crmFormPanel,.crmPanel,.crmDoctorReport,.crmCommercialBox,.crmOverdueBox,.surgeonModeSearchPanel,.accountPanel,.agoraV2Box,.personalFinanceCard,.personalExpensePanel){
+    background:var(--surface-panel-bg) !important;
+    color:var(--surface-panel-text) !important;
+    border-color:var(--surface-panel-border) !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  :where(.modal,.crmFormPanel,.crmPanel,.surgeonModeSearchPanel,.accountPanel,.agoraV2Box)
+  :where(.lbl,label,h1,h2,h3,h4,.ttl,.crmTitle,.themeTitle,.themeSectionTitle,.agoraV2BoxTitle,.agoraV2Name):not(.crmCleanCheck){
+    color:var(--surface-panel-text) !important;
+    -webkit-text-fill-color:var(--surface-panel-text) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  :where(.modal,.crmFormPanel,.crmPanel,.surgeonModeSearchPanel,.accountPanel,.agoraV2Box)
+  :where(.helper,.crmSub,.sub,.small,.themeDesc,.agoraV2BoxSub,.agoraV2Meta,.crmEmpty){
+    color:var(--surface-panel-muted) !important;
+    -webkit-text-fill-color:var(--surface-panel-muted) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  :where(input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),select,textarea,.input){
+    background:var(--surface-field-bg) !important;
+    color:var(--surface-field-text) !important;
+    -webkit-text-fill-color:var(--surface-field-text) !important;
+    border-color:var(--surface-panel-border) !important;
+    caret-color:var(--surface-field-text) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+    color-scheme:light !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  :where(input,textarea,.input)::placeholder{
+    color:var(--surface-placeholder) !important;
+    -webkit-text-fill-color:var(--surface-placeholder) !important;
+    opacity:1 !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  :where(.btn,.mBtn,.smallBtn,.crmTab,.crmExpandHint):not(.primary):not(.danger):not(.modeActive):not(:disabled){
+    background:var(--component-neutral-bg) !important;
+    color:var(--component-neutral-text) !important;
+    -webkit-text-fill-color:var(--component-neutral-text) !important;
+    border-color:var(--component-neutral-border) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  :where(.btn.primary,.mBtn.primary,.smallBtn.primary,.crmCreateBtn,.btn.modeActive,.crmTab.modeActive,.btn[aria-current="page"],.crmTab[aria-selected="true"]):not(.danger){
+    background:var(--component-active-bg) !important;
+    color:var(--component-active-text) !important;
+    -webkit-text-fill-color:var(--component-active-text) !important;
+    border-color:var(--component-active-border) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.36) !important;
+    opacity:1 !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  :where(.danger,[data-crm-del],[data-catalog-remove]){
+    background:var(--component-danger-bg) !important;
+    color:var(--component-danger-text) !important;
+    -webkit-text-fill-color:var(--component-danger-text) !important;
+    border-color:var(--component-danger-border) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.32) !important;
+    opacity:1 !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck,
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:not(:has(input:checked)){
+    background:var(--component-choice-bg) !important;
+    color:var(--component-choice-text) !important;
+    -webkit-text-fill-color:var(--component-choice-text) !important;
+    border-color:var(--component-choice-border) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck *,
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:not(:has(input:checked)) *{
+    color:var(--component-choice-text) !important;
+    -webkit-text-fill-color:var(--component-choice-text) !important;
+    text-shadow:none !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck.is-checked,
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:has(input:checked){
+    background:var(--component-choice-active-bg) !important;
+    color:var(--component-choice-active-text) !important;
+    -webkit-text-fill-color:var(--component-choice-active-text) !important;
+    border-color:var(--component-choice-active-border) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.36) !important;
+    opacity:1 !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck.is-checked *,
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck:has(input:checked) *{
+    color:var(--component-choice-active-text) !important;
+    -webkit-text-fill-color:var(--component-choice-active-text) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.36) !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  #crmPageCard .crmFormPanel label.crmCleanCheck input{
+    color:initial !important;
+    -webkit-text-fill-color:initial !important;
+    accent-color:var(--component-choice-active-border) !important;
+    filter:none !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  .mainCalendarCard > .sectionHead{
+    background:var(--surface-calendar-title-bg) !important;
+    color:var(--surface-calendar-title-text) !important;
+    border-color:var(--component-active-border) !important;
+  }
+
+  html :is(#ultimate-surface-a,body):is(#ultimate-surface-b,body):is(#ultimate-surface-c,body)
+  .mainCalendarCard .month{
+    color:var(--surface-calendar-title-text) !important;
+    -webkit-text-fill-color:var(--surface-calendar-title-text) !important;
+    background:color-mix(in srgb,var(--surface-calendar-title-text) 10%,transparent) !important;
+    border:1px solid color-mix(in srgb,var(--surface-calendar-title-text) 22%,transparent) !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.42) !important;
   }
 </style>
