@@ -8992,11 +8992,37 @@ body[data-theme="senna_brasil"] .hdr{
         const cloudExists = (typeof snap.exists === 'function') ? snap.exists() : !!snap.exists;
         if (cloudExists) {
           const remoteData = (typeof snap.data === 'function') ? snap.data() : (snap.data || {});
-          const rawState = (remoteData && remoteData.state) ? remoteData.state : remoteData;
+          const rawState =
+            (remoteData && remoteData.state) ||
+            (remoteData && remoteData.currentState) ||
+            (remoteData && remoteData.appState) ||
+            (remoteData && remoteData.agendaState) ||
+            (remoteData && remoteData.agenda) ||
+            remoteData;
           const remoteState = normalizeState(rawState || {});
-          state = remoteState;
-        } else {
-          state = deepClone(DEFAULTS);
+          if (stateDataScore(remoteState) > 0) {
+            state = remoteState;
+          }
+        }
+
+        if (stateDataScore(state) === 0) {
+          const backups = await fetchCloudBackups(50).catch(() => []);
+          const recoverable = backups
+            .map(b => normalizeState((b && (b.state || b.currentState || b.appState || b.agendaState || b.agenda || b.data)) || {}))
+            .find(candidate => stateDataScore(candidate) > 0);
+          if (recoverable) {
+            state = recoverable;
+          }
+        }
+
+        if (stateDataScore(state) === 0) {
+          clearScope();
+          clearDelScope();
+          clearRetroDel();
+          renderAll();
+          setSaveStatus('error','Nuvem sem conteúdo');
+          updateCloudStatus('Login realizado, mas nenhum conteúdo salvo foi encontrado na nuvem.');
+          return false;
         }
 
         clearScope();
