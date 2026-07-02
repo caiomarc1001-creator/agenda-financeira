@@ -9134,6 +9134,7 @@ body[data-theme="senna_brasil"] .hdr{
                 <div><div class="lbl">Mês</div><input class="input" id="personalFinanceMonth" type="month"></div>
                 <div><div class="lbl">Pesquisar</div><input class="input" id="personalExpenseSearch" placeholder="Descrição, categoria ou observação"></div>
                 <div><div class="lbl">Status</div><select class="input" id="personalExpenseFilterStatus"><option value="all">Todas</option><option value="pending">Pendentes</option><option value="paid">Pagas</option></select></div>
+                <div><div class="lbl">Ordenar</div><select class="input" id="personalExpenseSort"><option value="manual">Ordem manual</option><option value="date_asc">Vencimento crescente</option></select></div>
               </div>
               <div class="personalExpenseList" id="personalExpenseList"></div>
             </div>
@@ -14898,6 +14899,41 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const vm = personalVisibleMonth();
       return { ...vm, from:iso(new Date(vm.y, vm.m, 1)), to:iso(new Date(vm.y, vm.m + 1, 0)) };
     }
+    function personalMonthKeyFromDate(dateISO){
+      const s = String(dateISO || '');
+      return /^\d{4}-\d{2}/.test(s) ? s.slice(0,7) : personalVisibleMonth().key;
+    }
+    function personalCurrentMonthKey(){
+      return personalMonthBounds().key;
+    }
+    function personalExpenseDueDateForMonth(exp, bounds){
+      const base = String(exp.date || '');
+      if (!base) return '';
+      if (exp.recurrence !== 'monthly') return base;
+      const day = Math.max(1, Math.min(31, Number(base.slice(8,10)) || 1));
+      const last = new Date(bounds.y, bounds.m + 1, 0).getDate();
+      return `${bounds.key}-${String(Math.min(day, last)).padStart(2,'0')}`;
+    }
+    function personalExpenseMonthOverride(exp, monthKey){
+      exp.months = exp.months && typeof exp.months === 'object' && !Array.isArray(exp.months) ? exp.months : {};
+      exp.months[monthKey] = exp.months[monthKey] && typeof exp.months[monthKey] === 'object' ? exp.months[monthKey] : {};
+      return exp.months[monthKey];
+    }
+    function personalExpenseView(exp, bounds){
+      const monthKey = bounds.key;
+      const override = exp.months && typeof exp.months === 'object' ? (exp.months[monthKey] || {}) : {};
+      const monthly = exp.recurrence === 'monthly';
+      return {
+        ...exp,
+        _baseId:exp.id,
+        _monthKey:monthKey,
+        _displayDate:personalExpenseDueDateForMonth(exp, bounds),
+        _effectiveValue:Number(override.value ?? exp.value ?? 0),
+        _effectiveStatus:String(override.status ?? (monthly ? 'pending' : (exp.status || 'pending'))),
+        _effectiveNotes:String(override.notes ?? exp.notes ?? ''),
+        _manualOrder:Number(override.order ?? exp.order ?? 0)
+      };
+    }
     function personalAgendaRevenueForMonth(y,m){
       try{
         const rows = buildRuleFinancialRows(state.payRules || [], 'receivable', y, m);
@@ -14920,29 +14956,39 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const bounds = personalMonthBounds();
       const q = String(UI.el('personalExpenseSearch')?.value || '').trim().toLowerCase();
       const status = UI.el('personalExpenseFilterStatus')?.value || 'all';
+      const sort = UI.el('personalExpenseSort')?.value || state.ui?.personalExpenseSort || 'manual';
       return state.personalExpenses
         .filter(exp => personalExpenseOccursInMonth(exp, bounds))
-        .filter(exp => status === 'all' || String(exp.status || 'pending') === status)
+        .map(exp => personalExpenseView(exp, bounds))
+        .filter(exp => status === 'all' || String(exp._effectiveStatus || 'pending') === status)
         .filter(exp => {
           if (!q) return true;
           return [exp.desc, exp.category, exp.notes].some(v => String(v || '').toLowerCase().includes(q));
         })
-        .sort((a,b)=>String(a.date || '').localeCompare(String(b.date || '')) || String(a.desc || '').localeCompare(String(b.desc || ''),'pt-BR'));
+        .sort((a,b)=>{
+          if (sort === 'date_asc') return String(a._displayDate || a.date || '').localeCompare(String(b._displayDate || b.date || '')) || String(a.desc || '').localeCompare(String(b.desc || ''),'pt-BR');
+          return Number(a._manualOrder || 0) - Number(b._manualOrder || 0) || String(a._displayDate || a.date || '').localeCompare(String(b._displayDate || b.date || '')) || String(a.desc || '').localeCompare(String(b.desc || ''),'pt-BR');
+        });
     }
     function personalExpenseHtml(exp){
-      const paid = String(exp.status || 'pending') === 'paid';
+      const paid = String(exp._effectiveStatus || exp.status || 'pending') === 'paid';
+      const value = Number(exp._effectiveValue ?? exp.value ?? 0);
+      const displayDate = exp._displayDate || exp.date || '';
+      const recurrentHint = exp.recurrence === 'monthly' ? ` · mensal · competência ${escapeHtml(exp._monthKey || '')}` : '';
       return `<details class="personalExpenseItem">
         <summary class="personalExpenseSummary">
-          <span><b>${escapeHtml(exp.desc || 'Despesa sem descrição')}</b><small>${escapeHtml(exp.category || 'Sem categoria')} · ${formatDateBR(exp.date || '')}${exp.recurrence === 'monthly' ? ' · mensal' : ''}</small></span>
-          <strong>${fmtMoney(Number(exp.value || 0))}</strong>
+          <span><b>${escapeHtml(exp.desc || 'Despesa sem descrição')}</b><small>${escapeHtml(exp.category || 'Sem categoria')} · vence ${formatDateBR(displayDate)}${recurrentHint}</small></span>
+          <strong>${fmtMoney(value)}</strong>
           <em class="${paid ? 'paid' : 'pending'}">${paid ? 'Pago' : 'Pendente'}</em>
         </summary>
         <div class="personalExpenseDetails">
-          <div class="helper">${escapeHtml(exp.notes || 'Sem observações.')}</div>
+          <div class="helper">${escapeHtml(exp._effectiveNotes || exp.notes || 'Sem observações.')}</div>
           <div class="personalExpenseActions">
-            <button class="smallBtn" type="button" data-personal-toggle="${escapeAttr(exp.id)}">${paid ? 'Marcar pendente' : 'Marcar pago'}</button>
-            <button class="smallBtn" type="button" data-personal-edit="${escapeAttr(exp.id)}">Editar</button>
-            <button class="smallBtn danger" type="button" data-personal-delete="${escapeAttr(exp.id)}">Excluir</button>
+            <button class="smallBtn" type="button" data-personal-move="up" data-personal-id="${escapeAttr(exp._baseId || exp.id)}">↑ Subir</button>
+            <button class="smallBtn" type="button" data-personal-move="down" data-personal-id="${escapeAttr(exp._baseId || exp.id)}">↓ Descer</button>
+            <button class="smallBtn" type="button" data-personal-toggle="${escapeAttr(exp._baseId || exp.id)}">${paid ? 'Marcar pendente neste mês' : 'Marcar pago neste mês'}</button>
+            <button class="smallBtn" type="button" data-personal-edit="${escapeAttr(exp._baseId || exp.id)}">Editar</button>
+            <button class="smallBtn danger" type="button" data-personal-delete="${escapeAttr(exp._baseId || exp.id)}">Excluir</button>
           </div>
         </div>
       </details>`;
@@ -14963,6 +15009,7 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       if (!date) return alert('Informe o vencimento da despesa.');
       if (!(value > 0)) return alert('Informe um valor maior que zero.');
       pushHistorySnapshot();
+      const existing = PersonalFinanceForm.editingId ? state.personalExpenses.find(x=>x.id===PersonalFinanceForm.editingId) : null;
       const model = {
         id:PersonalFinanceForm.editingId || uid(),
         desc,
@@ -14975,8 +15022,66 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
         updatedAt:new Date().toISOString()
       };
       const idx = state.personalExpenses.findIndex(x=>x.id===model.id);
-      if (idx >= 0) state.personalExpenses[idx] = { ...state.personalExpenses[idx], ...model };
-      else state.personalExpenses.push({ ...model, createdAt:new Date().toISOString() });
+      if (idx >= 0) {
+        if (existing?.recurrence === 'monthly') {
+          const currentKey = personalCurrentMonthKey();
+          const previous = state.personalExpenses[idx];
+          const previousBaseDate = String(previous.date || date);
+          const editedDay = String(date || '').slice(8,10);
+          const monthlyBaseDate = /^\d{4}-\d{2}-\d{2}$/.test(previousBaseDate) && /^\d{2}$/.test(editedDay)
+            ? `${previousBaseDate.slice(0,8)}${editedDay}`
+            : date;
+          const monthOverride = personalExpenseMonthOverride(previous, currentKey);
+          monthOverride.value = value;
+          monthOverride.status = UI.el('personalExpenseStatus')?.value || 'pending';
+          monthOverride.notes = String(UI.el('personalExpenseNotes')?.value || '').trim();
+          monthOverride.updatedAt = new Date().toISOString();
+          state.personalExpenses[idx] = {
+            ...previous,
+            desc,
+            category:String(UI.el('personalExpenseCategory')?.value || '').trim(),
+            date:monthlyBaseDate,
+            recurrence:UI.el('personalExpenseRecurrence')?.value || 'none',
+            updatedAt:new Date().toISOString()
+          };
+          if (state.personalExpenses[idx].recurrence !== 'monthly') {
+            state.personalExpenses[idx].value = value;
+            state.personalExpenses[idx].status = UI.el('personalExpenseStatus')?.value || 'pending';
+            state.personalExpenses[idx].notes = String(UI.el('personalExpenseNotes')?.value || '').trim();
+          }
+        } else {
+          const updated = { ...state.personalExpenses[idx], ...model };
+          if (updated.recurrence === 'monthly') {
+            const currentKey = personalCurrentMonthKey();
+            updated.months = updated.months && typeof updated.months === 'object' && !Array.isArray(updated.months) ? updated.months : {};
+            updated.months[currentKey] = {
+              ...(updated.months[currentKey] || {}),
+              value,
+              status:model.status,
+              notes:model.notes,
+              updatedAt:new Date().toISOString()
+            };
+            updated.status = 'pending';
+          }
+          state.personalExpenses[idx] = updated;
+        }
+      } else {
+        const order = state.personalExpenses.length ? Math.max(...state.personalExpenses.map(x=>Number(x.order || 0))) + 1 : 1;
+        const created = { ...model, order, createdAt:new Date().toISOString() };
+        if (created.recurrence === 'monthly') {
+          const currentKey = personalCurrentMonthKey();
+          created.months = {
+            [currentKey]: {
+              value,
+              status:model.status,
+              notes:model.notes,
+              updatedAt:new Date().toISOString()
+            }
+          };
+          created.status = 'pending';
+        }
+        state.personalExpenses.push(created);
+      }
       save();
       clearPersonalExpenseForm();
       renderPersonalFinance();
@@ -14984,23 +15089,57 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     function editPersonalExpense(id){
       const exp = personalEnsure().find(x=>x.id===id);
       if (!exp) return;
+      const view = personalExpenseView(exp, personalMonthBounds());
       PersonalFinanceForm.editingId = id;
       if (UI.el('personalExpenseDesc')) UI.el('personalExpenseDesc').value = exp.desc || '';
       if (UI.el('personalExpenseCategory')) UI.el('personalExpenseCategory').value = exp.category || '';
-      if (UI.el('personalExpenseDate')) UI.el('personalExpenseDate').value = exp.date || '';
-      if (UI.el('personalExpenseValue')) UI.el('personalExpenseValue').value = Number(exp.value || 0);
-      if (UI.el('personalExpenseStatus')) UI.el('personalExpenseStatus').value = exp.status || 'pending';
+      if (UI.el('personalExpenseDate')) UI.el('personalExpenseDate').value = view._displayDate || exp.date || '';
+      if (UI.el('personalExpenseValue')) UI.el('personalExpenseValue').value = Number(view._effectiveValue || 0);
+      if (UI.el('personalExpenseStatus')) UI.el('personalExpenseStatus').value = view._effectiveStatus || 'pending';
       if (UI.el('personalExpenseRecurrence')) UI.el('personalExpenseRecurrence').value = exp.recurrence || 'none';
-      if (UI.el('personalExpenseNotes')) UI.el('personalExpenseNotes').value = exp.notes || '';
-      if (UI.el('personalExpenseSave')) UI.el('personalExpenseSave').textContent='Atualizar despesa';
+      if (UI.el('personalExpenseNotes')) UI.el('personalExpenseNotes').value = view._effectiveNotes || '';
+      if (UI.el('personalExpenseSave')) UI.el('personalExpenseSave').textContent= exp.recurrence === 'monthly' ? 'Atualizar este mês' : 'Atualizar despesa';
       UI.el('personalFinancePageCard')?.scrollIntoView({behavior:'smooth',block:'start'});
     }
     function togglePersonalExpense(id){
       const exp = personalEnsure().find(x=>x.id===id);
       if (!exp) return;
       pushHistorySnapshot();
-      exp.status = String(exp.status || 'pending') === 'paid' ? 'pending' : 'paid';
+      if (exp.recurrence === 'monthly') {
+        const currentKey = personalCurrentMonthKey();
+        const monthOverride = personalExpenseMonthOverride(exp, currentKey);
+        const currentStatus = String(monthOverride.status || 'pending');
+        monthOverride.status = currentStatus === 'paid' ? 'pending' : 'paid';
+        monthOverride.updatedAt = new Date().toISOString();
+      } else {
+        exp.status = String(exp.status || 'pending') === 'paid' ? 'pending' : 'paid';
+      }
       exp.updatedAt = new Date().toISOString();
+      save();
+      renderPersonalFinance();
+    }
+    function personalEnsureOrders(){
+      personalEnsure().forEach((exp, idx) => {
+        if (!Number.isFinite(Number(exp.order)) || Number(exp.order) <= 0) exp.order = idx + 1;
+      });
+    }
+    function movePersonalExpense(id, dir){
+      personalEnsureOrders();
+      state.ui = state.ui || {};
+      state.ui.personalExpenseSort = 'manual';
+      const sortInput = UI.el('personalExpenseSort');
+      if (sortInput) sortInput.value = 'manual';
+      const visibleIds = personalFilteredExpenses().map(exp => exp._baseId || exp.id);
+      const index = visibleIds.indexOf(id);
+      const targetIndex = dir === 'up' ? index - 1 : index + 1;
+      if (index < 0 || targetIndex < 0 || targetIndex >= visibleIds.length) return;
+      const current = state.personalExpenses.find(exp => exp.id === visibleIds[index]);
+      const target = state.personalExpenses.find(exp => exp.id === visibleIds[targetIndex]);
+      if (!current || !target) return;
+      pushHistorySnapshot();
+      const currentOrder = Number(current.order || index + 1);
+      current.order = Number(target.order || targetIndex + 1);
+      target.order = currentOrder;
       save();
       renderPersonalFinance();
     }
@@ -15020,10 +15159,14 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
       const bounds = personalMonthBounds();
       const monthInput = UI.el('personalFinanceMonth');
       if (monthInput && !monthInput.value) monthInput.value = bounds.key;
-      const allMonth = state.personalExpenses.filter(exp => personalExpenseOccursInMonth(exp, bounds));
+      const sortInput = UI.el('personalExpenseSort');
+      if (sortInput && !sortInput.value) sortInput.value = state.ui?.personalExpenseSort || 'manual';
+      const allMonth = state.personalExpenses
+        .filter(exp => personalExpenseOccursInMonth(exp, bounds))
+        .map(exp => personalExpenseView(exp, bounds));
       const filtered = personalFilteredExpenses();
-      const paid = allMonth.filter(x=>String(x.status || 'pending') === 'paid').reduce((acc,x)=>acc+Number(x.value||0),0);
-      const pending = allMonth.filter(x=>String(x.status || 'pending') !== 'paid').reduce((acc,x)=>acc+Number(x.value||0),0);
+      const paid = allMonth.filter(x=>String(x._effectiveStatus || 'pending') === 'paid').reduce((acc,x)=>acc+Number(x._effectiveValue||0),0);
+      const pending = allMonth.filter(x=>String(x._effectiveStatus || 'pending') !== 'paid').reduce((acc,x)=>acc+Number(x._effectiveValue||0),0);
       const total = paid + pending;
       const agendaRevenue = personalAgendaRevenueForMonth(bounds.y, bounds.m);
       const dash = UI.el('personalFinanceDashboard');
@@ -15100,13 +15243,16 @@ Antes de restaurar, o sistema criará um backup de segurança na nuvem com o est
     UI.el('personalFinanceMonth')?.addEventListener('change', e => { state.ui=state.ui||{}; state.ui.personalFinanceMonth=e.target.value; save(); renderPersonalFinance(); });
     UI.el('personalExpenseSearch')?.addEventListener('input', renderPersonalFinance);
     UI.el('personalExpenseFilterStatus')?.addEventListener('change', renderPersonalFinance);
+    UI.el('personalExpenseSort')?.addEventListener('change', e => { state.ui=state.ui||{}; state.ui.personalExpenseSort=e.target.value || 'manual'; save(); renderPersonalFinance(); });
     UI.el('personalExpenseList')?.addEventListener('click', e => {
       const toggle=e.target.closest('[data-personal-toggle]');
       const edit=e.target.closest('[data-personal-edit]');
       const del=e.target.closest('[data-personal-delete]');
+      const move=e.target.closest('[data-personal-move]');
       if(toggle) togglePersonalExpense(toggle.dataset.personalToggle);
       if(edit) editPersonalExpense(edit.dataset.personalEdit);
       if(del) deletePersonalExpense(del.dataset.personalDelete);
+      if(move) movePersonalExpense(move.dataset.personalId, move.dataset.personalMove);
     });
 
     /* Ponte controlada para os aprimoramentos administrativos carregados ao final do HTML. */
@@ -18915,6 +19061,124 @@ body[data-theme="senna_brasil"] .hdr::after{
     .personalExpenseSummary em{justify-self:stretch !important}
     .personalExpenseActions{justify-content:stretch !important}
     .personalExpenseActions .smallBtn{flex:1 1 100% !important}
+  }
+</style>
+
+<style id="personal-expenses-wide-studio-v1">
+  /*
+    Despesas pessoais como página principal, com dimensão semelhante
+    ao cadastro de pacientes: largura confortável, centralizada e responsiva.
+  */
+  body.personal-finance-mode .container{
+    display:block !important;
+    width:min(100%,1320px) !important;
+    max-width:1320px !important;
+    margin:0 auto !important;
+    padding:clamp(10px,1vw,16px) clamp(10px,1.2vw,18px) 36px !important;
+  }
+
+  body.personal-finance-mode .mainCol{
+    display:none !important;
+  }
+
+  body.personal-finance-mode .sidebarCol{
+    display:block !important;
+    width:100% !important;
+    max-width:1180px !important;
+    margin:0 auto !important;
+  }
+
+  body.personal-finance-mode #personalFinancePageCard{
+    width:100% !important;
+    max-width:1180px !important;
+    margin:0 auto !important;
+    min-height:calc(100dvh - 132px) !important;
+    border-radius:22px !important;
+    overflow:hidden !important;
+  }
+
+  body.personal-finance-mode #personalFinancePageCard > .sectionHead{
+    min-height:76px !important;
+    padding:18px 22px !important;
+  }
+
+  body.personal-finance-mode #personalFinancePageCard > .padded{
+    padding:18px 22px 22px !important;
+  }
+
+  body.personal-finance-mode .personalFinanceHero{
+    gap:16px !important;
+  }
+
+  body.personal-finance-mode .personalFinanceDashboard{
+    grid-template-columns:repeat(5,minmax(150px,1fr)) !important;
+    gap:12px !important;
+  }
+
+  body.personal-finance-mode .personalFinanceKpi{
+    min-height:116px !important;
+    padding:16px !important;
+  }
+
+  body.personal-finance-mode .personalFinancePanel{
+    padding:18px !important;
+    border-radius:22px !important;
+  }
+
+  body.personal-finance-mode .personalFinanceForm{
+    grid-template-columns:repeat(3,minmax(180px,1fr)) !important;
+  }
+
+  body.personal-finance-mode .personalFinanceFilters{
+    grid-template-columns:minmax(160px,.75fr) minmax(280px,1.6fr) minmax(160px,.75fr) !important;
+  }
+
+  body.personal-finance-mode .personalFinanceForm,
+  body.personal-finance-mode .personalFinanceFilters{
+    gap:13px !important;
+  }
+
+  body.personal-finance-mode .personalExpenseList{
+    margin-top:16px !important;
+  }
+
+  body.personal-finance-mode .personalExpenseSummary{
+    min-height:68px !important;
+    padding:14px 16px !important;
+  }
+
+  @media(max-width:1180px){
+    body.personal-finance-mode .container,
+    body.personal-finance-mode .sidebarCol,
+    body.personal-finance-mode #personalFinancePageCard{
+      max-width:100% !important;
+    }
+
+    body.personal-finance-mode .personalFinanceDashboard{
+      grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    }
+
+    body.personal-finance-mode .personalFinanceForm,
+    body.personal-finance-mode .personalFinanceFilters{
+      grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    }
+  }
+
+  @media(max-width:720px){
+    body.personal-finance-mode #personalFinancePageCard > .sectionHead,
+    body.personal-finance-mode #personalFinancePageCard > .padded{
+      padding:14px !important;
+    }
+
+    body.personal-finance-mode .personalFinanceDashboard,
+    body.personal-finance-mode .personalFinanceForm,
+    body.personal-finance-mode .personalFinanceFilters{
+      grid-template-columns:1fr !important;
+    }
+
+    body.personal-finance-mode .personalFinanceForm .span2{
+      grid-column:auto !important;
+    }
   }
 </style>
 
