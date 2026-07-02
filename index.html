@@ -6107,6 +6107,189 @@ body{
 
 </style>
 
+<style id="global-legibility-contrast-final-css">
+  /*
+    Camada final de legibilidade.
+    Regra central: fundo claro -> texto escuro; fundo escuro -> texto claro.
+    Mantida em CSS puro para não tocar em login, Firebase ou dados.
+  */
+
+  /* Campos e legendas em áreas de formulário/modal */
+  :where(.modal,.crmFormPanel,.crmPanel,#crmPageCard,.surgeonModeSearchPanel,.accountPanel)
+  :where(.lbl,label,.themeSectionTitle,.themeTitle,.ttl,h1,h2,h3,h4,strong,b){
+    color:var(--ui-text,var(--txt)) !important;
+    -webkit-text-fill-color:var(--ui-text,var(--txt)) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  :where(.modal,.crmFormPanel,.crmPanel,#crmPageCard,.surgeonModeSearchPanel,.accountPanel)
+  :where(.helper,.small,.sub,.crmSub,.themeDesc,.crmEmpty){
+    color:var(--ui-muted,var(--mut)) !important;
+    -webkit-text-fill-color:var(--ui-muted,var(--mut)) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  :where(input,select,textarea,.input){
+    background:var(--ui-field-bg,#ffffff) !important;
+    color:var(--ui-field-text,#0b1220) !important;
+    -webkit-text-fill-color:var(--ui-field-text,#0b1220) !important;
+    border-color:var(--ui-border,var(--line)) !important;
+    caret-color:var(--ui-field-text,#0b1220) !important;
+    text-shadow:none !important;
+  }
+
+  :where(input,textarea,.input)::placeholder{
+    color:var(--ui-placeholder,#5b687b) !important;
+    -webkit-text-fill-color:var(--ui-placeholder,#5b687b) !important;
+    opacity:1 !important;
+    text-shadow:none !important;
+  }
+
+  /* Botões claros comuns sempre com texto escuro definido pelo tema */
+  :where(.btn,.mBtn,.smallBtn,.crmTab):not(.primary):not(.danger):not(.modeActive){
+    background:var(--ui-menu-button-bg,linear-gradient(180deg,#ffffff,#e7edf7)) !important;
+    color:var(--ui-menu-button-text,#101827) !important;
+    -webkit-text-fill-color:var(--ui-menu-button-text,#101827) !important;
+    border-color:var(--ui-menu-button-border,var(--line)) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  /* Botões de perigo/ação escuros com texto branco */
+  :where(.danger,[data-crm-del],[data-catalog-remove]){
+    background:linear-gradient(180deg,#c7352b,#8f1d18) !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    border-color:#7f1d1d !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.35) !important;
+    opacity:1 !important;
+  }
+
+  /* Correção específica dos botões de marcação do cadastro de pacientes */
+  #crmPageCard label.crmCleanCheck,
+  #crmPageCard label.crmCleanCheck:not(.is-checked):not(:has(input:checked)){
+    background:linear-gradient(180deg,#fff7e9,#e4cfaa) !important;
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    border-color:#8a693d !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 2px 8px rgba(0,0,0,.16) !important;
+  }
+
+  #crmPageCard label.crmCleanCheck *,
+  #crmPageCard label.crmCleanCheck:not(.is-checked):not(:has(input:checked)) *{
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    text-shadow:none !important;
+  }
+
+  #crmPageCard label.crmCleanCheck.is-checked,
+  #crmPageCard label.crmCleanCheck:has(input:checked){
+    background:linear-gradient(180deg,#70451f,#332012) !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    border-color:#d2a35d !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
+    box-shadow:0 0 0 3px rgba(210,163,93,.25),0 6px 16px rgba(0,0,0,.22) !important;
+  }
+
+  #crmPageCard label.crmCleanCheck.is-checked *,
+  #crmPageCard label.crmCleanCheck:has(input:checked) *{
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
+  }
+
+  #crmPageCard label.crmCleanCheck input{
+    accent-color:#70451f !important;
+    color:initial !important;
+    -webkit-text-fill-color:initial !important;
+    filter:none !important;
+  }
+
+  /* Botões primários permanecem escuros/vivos com texto claro. */
+  :where(.btn.primary,.mBtn.primary,.smallBtn.primary,.crmCreateBtn){
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.28) !important;
+  }
+</style>
+
+<style id="global-legibility-last-word-css">
+  /* Última camada: corrige contraste de botões/textos sem alterar dados, login ou Firebase. */
+
+  :where(.modal,.crmFormPanel,.crmPanel,#crmPageCard,.surgeonModeSearchPanel,.accountPanel)
+  :where(.lbl,label,.themeSectionTitle,.themeTitle,.ttl,h1,h2,h3,h4,strong,b){
+    color:var(--ui-text,var(--txt)) !important;
+    -webkit-text-fill-color:var(--ui-text,var(--txt)) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  :where(input,select,textarea,.input){
+    background:var(--ui-field-bg,#ffffff) !important;
+    color:var(--ui-field-text,#0b1220) !important;
+    -webkit-text-fill-color:var(--ui-field-text,#0b1220) !important;
+    border-color:var(--ui-border,var(--line)) !important;
+    caret-color:var(--ui-field-text,#0b1220) !important;
+    text-shadow:none !important;
+  }
+
+  :where(.btn,.mBtn,.smallBtn,.crmTab):not(.primary):not(.danger):not(.modeActive){
+    background:var(--ui-menu-button-bg,linear-gradient(180deg,#ffffff,#e7edf7)) !important;
+    color:var(--ui-menu-button-text,#101827) !important;
+    -webkit-text-fill-color:var(--ui-menu-button-text,#101827) !important;
+    border-color:var(--ui-menu-button-border,var(--line)) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+
+  #crmPageCard label.crmCleanCheck,
+  #crmPageCard label.crmCleanCheck:not(.is-checked):not(:has(input:checked)){
+    background:linear-gradient(180deg,#fff7e9,#e4cfaa) !important;
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    border-color:#8a693d !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 2px 8px rgba(0,0,0,.16) !important;
+  }
+
+  #crmPageCard label.crmCleanCheck *,
+  #crmPageCard label.crmCleanCheck:not(.is-checked):not(:has(input:checked)) *{
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    text-shadow:none !important;
+  }
+
+  #crmPageCard label.crmCleanCheck.is-checked,
+  #crmPageCard label.crmCleanCheck:has(input:checked){
+    background:linear-gradient(180deg,#70451f,#332012) !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    border-color:#d2a35d !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
+    box-shadow:0 0 0 3px rgba(210,163,93,.25),0 6px 16px rgba(0,0,0,.22) !important;
+  }
+
+  #crmPageCard label.crmCleanCheck.is-checked *,
+  #crmPageCard label.crmCleanCheck:has(input:checked) *{
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
+  }
+
+  #crmPageCard label.crmCleanCheck input{
+    accent-color:#70451f !important;
+    color:initial !important;
+    -webkit-text-fill-color:initial !important;
+    filter:none !important;
+  }
+</style>
+
 <style id="patient-register-clean-v1-final-css">
   /* Cadastro de pacientes mais limpo: mantém só os campos essenciais visíveis. */
   .crmHiddenLegacyFields{
@@ -17448,6 +17631,53 @@ body[data-theme="senna_brasil"] .hdr::after{
     color:initial !important;
     -webkit-text-fill-color:initial !important;
     filter:none !important;
+  }
+  #crmPageCard label.crmCleanCheck,
+  #crmPageCard label.crmCleanCheck:not(.is-checked):not(:has(input:checked)){
+    background:linear-gradient(180deg,#fff7e9,#e4cfaa) !important;
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    border-color:#8a693d !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 2px 8px rgba(0,0,0,.16) !important;
+  }
+  #crmPageCard label.crmCleanCheck *,
+  #crmPageCard label.crmCleanCheck:not(.is-checked):not(:has(input:checked)) *{
+    color:#1b1209 !important;
+    -webkit-text-fill-color:#1b1209 !important;
+    text-shadow:none !important;
+  }
+  #crmPageCard label.crmCleanCheck.is-checked,
+  #crmPageCard label.crmCleanCheck:has(input:checked){
+    background:linear-gradient(180deg,#70451f,#332012) !important;
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    border-color:#d2a35d !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
+    box-shadow:0 0 0 3px rgba(210,163,93,.25),0 6px 16px rgba(0,0,0,.22) !important;
+  }
+  #crmPageCard label.crmCleanCheck.is-checked *,
+  #crmPageCard label.crmCleanCheck:has(input:checked) *{
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    text-shadow:0 1px 2px rgba(0,0,0,.45) !important;
+  }
+  :where(.btn,.mBtn,.smallBtn,.crmTab):not(.primary):not(.danger):not(.modeActive){
+    background:var(--ui-menu-button-bg,linear-gradient(180deg,#ffffff,#e7edf7)) !important;
+    color:var(--ui-menu-button-text,#101827) !important;
+    -webkit-text-fill-color:var(--ui-menu-button-text,#101827) !important;
+    border-color:var(--ui-menu-button-border,var(--line)) !important;
+    text-shadow:none !important;
+    opacity:1 !important;
+  }
+  :where(input,select,textarea,.input){
+    background:var(--ui-field-bg,#ffffff) !important;
+    color:var(--ui-field-text,#0b1220) !important;
+    -webkit-text-fill-color:var(--ui-field-text,#0b1220) !important;
+    border-color:var(--ui-border,var(--line)) !important;
+    caret-color:var(--ui-field-text,#0b1220) !important;
+    text-shadow:none !important;
   }
   #crmPageCard .crmCleanChoicePanel.internet-on .crmInternetOptions{
     display:flex !important;
